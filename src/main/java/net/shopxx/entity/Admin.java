@@ -261,5 +261,10 @@ public class Admin extends User {
 	public void preUpdate() {
 		setEmail(StringUtils.lowerCase(getEmail()));
 	}
+	
+	public static void main(String[] args) {
+		String credentials = "123456";
+		System.out.println(DigestUtils.md5Hex(credentials.toString()));
+	}
 
 }
