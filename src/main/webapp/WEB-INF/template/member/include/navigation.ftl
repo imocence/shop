@@ -32,6 +32,10 @@
 				<dd>
 					<a href="${base}/member/point_log/list"[#if current == "pointLogList"] class="current"[/#if]>${message("member.pointLog.list")}</a>
 				</dd>
+                <dd>
+                    <a href="${base}/member/coupon_code/rechange"[#if current == "couponCodeRechange"] class="current"[/#if]>${message("member.couponCode.rechange")}</a>
+                </dd>
+
 			</dl>
 			<dl>
 				<dt>${message("member.navigation.productFavorite")}</dt>

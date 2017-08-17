@@ -85,6 +85,14 @@ public class CouponCodeController extends BaseController {
 	}
 
 	/**
+	 * 充券记录
+	 */
+	@GetMapping("/rechange")
+	public String rechange(ModelMap model) {
+
+		return "member/coupon_code/rechange";
+	}
+	/**
 	 * 列表
 	 */
 	@GetMapping("/list")

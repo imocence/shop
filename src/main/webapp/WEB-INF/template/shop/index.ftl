@@ -6,7 +6,7 @@
 <meta name="author" content="SHOP++ Team" />
 <meta name="copyright" content="SHOP++" />
 [@seo type = "index"]
-	<title>${seo.resolveTitle()}[#if showPowered] - Powered By SHOP++[/#if]</title>
+	<title>${seo.resolveTitle()}</title>
 	[#if seo.resolveKeywords()?has_content]
 		<meta name="keywords" content="${seo.resolveKeywords()}" />
 	[/#if]
