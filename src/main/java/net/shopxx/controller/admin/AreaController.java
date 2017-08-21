@@ -62,7 +62,7 @@ public class AreaController extends BaseController {
 		area.setDeliveryCenters(null);
 		area.setFreightConfigs(null);
 		areaService.save(area);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -84,7 +84,7 @@ public class AreaController extends BaseController {
 			return ERROR_VIEW;
 		}
 		areaService.update(area, "fullName", "treePath", "grade", "parent", "children", "members", "receivers", "orders", "deliveryCenters", "freightConfigs");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -109,7 +109,7 @@ public class AreaController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long id) {
 		areaService.delete(id);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

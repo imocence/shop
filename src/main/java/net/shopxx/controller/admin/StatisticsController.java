@@ -10,6 +10,12 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import net.shopxx.Message;
+import net.shopxx.Setting;
+import net.shopxx.service.CacheService;
+import net.shopxx.util.SystemUtils;
+import net.shopxx.util.WebUtils;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -19,11 +25,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import net.shopxx.Setting;
-import net.shopxx.service.CacheService;
-import net.shopxx.util.SystemUtils;
-import net.shopxx.util.WebUtils;
 
 /**
  * Controller - 统计
@@ -81,7 +82,7 @@ public class StatisticsController extends BaseController {
 		setting.setIsCnzzEnabled(isEnabled);
 		SystemUtils.setSetting(setting);
 		cacheService.clear();
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:setting";
 	}
 

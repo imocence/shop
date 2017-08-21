@@ -57,7 +57,7 @@ public class FriendLinkController extends BaseController {
 			return ERROR_VIEW;
 		}
 		friendLinkService.save(friendLink);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -85,7 +85,7 @@ public class FriendLinkController extends BaseController {
 			return ERROR_VIEW;
 		}
 		friendLinkService.update(friendLink);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -104,7 +104,7 @@ public class FriendLinkController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		friendLinkService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

@@ -41,12 +41,14 @@ public class BaseController {
 	/**
 	 * 错误消息
 	 */
-	protected static final Message ERROR_MESSAGE = Message.error("common.message.error");
+	protected static final String ERROR_MESSAGE = "common.message.error";
+//	protected static final Message ERROR_MESSAGE = Message.error("common.message.error");
 
 	/**
 	 * 成功消息
 	 */
-	protected static final Message SUCCESS_MESSAGE = Message.success("common.message.success");
+	protected static final String SUCCESS_MESSAGE = "common.message.success";
+//	protected static final Message SUCCESS_MESSAGE = Message.success("common.message.success");
 
 	/**
 	 * "验证结果"属性名称

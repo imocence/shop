@@ -67,7 +67,7 @@ public class MemberRankController extends BaseController {
 		memberRank.setMembers(null);
 		memberRank.setPromotions(null);
 		memberRankService.save(memberRank);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -101,7 +101,7 @@ public class MemberRankController extends BaseController {
 			return ERROR_VIEW;
 		}
 		memberRankService.update(memberRank, "members", "promotions");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -132,7 +132,7 @@ public class MemberRankController extends BaseController {
 			}
 			memberRankService.delete(ids);
 		}
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

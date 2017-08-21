@@ -205,7 +205,7 @@ public class ProductController extends BaseController {
 			productService.create(product, sku);
 		}
 
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -266,7 +266,7 @@ public class ProductController extends BaseController {
 			productService.modify(product, sku);
 		}
 
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -304,7 +304,7 @@ public class ProductController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		productService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 	/**

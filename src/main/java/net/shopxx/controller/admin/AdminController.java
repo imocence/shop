@@ -89,7 +89,7 @@ public class AdminController extends BaseController {
 		admin.setLastLoginIp(null);
 		admin.setLastLoginDate(null);
 		adminService.save(admin);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -125,7 +125,7 @@ public class AdminController extends BaseController {
 		} else {
 			adminService.update(admin, "username", "encodedPassword", "isLocked", "lockDate", "lastLoginIp", "lastLoginDate");
 		}
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -147,7 +147,7 @@ public class AdminController extends BaseController {
 			return Message.error("admin.common.deleteAllNotAllowed");
 		}
 		adminService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

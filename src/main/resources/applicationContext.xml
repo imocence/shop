@@ -159,7 +159,7 @@
 		<property name="basenames" value="${message.basenames}" />
 	</bean>
 
-	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver" />
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
 
 	<bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
 		<property name="config">

@@ -185,7 +185,7 @@ public class OrderController extends BaseController {
 		}
 		orderService.modify(order);
 
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -218,7 +218,7 @@ public class OrderController extends BaseController {
 			return ERROR_VIEW;
 		}
 		orderService.review(order, passed);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:view?id=" + id;
 	}
 
@@ -242,7 +242,7 @@ public class OrderController extends BaseController {
 		}
 		orderPayment.setFee(BigDecimal.ZERO);
 		orderService.payment(order, orderPayment);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:view?id=" + orderId;
 	}
 
@@ -264,7 +264,7 @@ public class OrderController extends BaseController {
 			return ERROR_VIEW;
 		}
 		orderService.refunds(order, orderRefunds);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:view?id=" + orderId;
 	}
 
@@ -329,7 +329,7 @@ public class OrderController extends BaseController {
 			}
 		}
 		orderService.shipping(order, orderShipping);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:view?id=" + orderId;
 	}
 
@@ -367,7 +367,7 @@ public class OrderController extends BaseController {
 			return ERROR_VIEW;
 		}
 		orderService.returns(order, orderReturns);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:view?id=" + orderId;
 	}
 
@@ -384,7 +384,7 @@ public class OrderController extends BaseController {
 			return ERROR_VIEW;
 		}
 		orderService.receive(order);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:view?id=" + id;
 	}
 
@@ -401,7 +401,7 @@ public class OrderController extends BaseController {
 			return ERROR_VIEW;
 		}
 		orderService.complete(order);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:view?id=" + id;
 	}
 
@@ -418,7 +418,7 @@ public class OrderController extends BaseController {
 			return ERROR_VIEW;
 		}
 		orderService.fail(order);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:view?id=" + id;
 	}
 
@@ -460,7 +460,7 @@ public class OrderController extends BaseController {
 			}
 			orderService.delete(ids);
 		}
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

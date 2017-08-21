@@ -61,7 +61,7 @@ public class ConsultationController extends BaseController {
 		replyConsultation.setIp(request.getRemoteAddr());
 		consultationService.reply(consultation, replyConsultation);
 
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:reply?id=" + id;
 	}
 
@@ -87,7 +87,7 @@ public class ConsultationController extends BaseController {
 			consultation.setIsShow(isShow);
 			consultationService.update(consultation);
 		}
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -107,10 +107,10 @@ public class ConsultationController extends BaseController {
 	public @ResponseBody Message deleteReply(Long id) {
 		Consultation consultation = consultationService.find(id);
 		if (consultation == null || consultation.getForConsultation() == null) {
-			return ERROR_MESSAGE;
+			return Message.error(ERROR_MESSAGE);
 		}
 		consultationService.delete(consultation);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class ConsultationController extends BaseController {
 		if (ids != null) {
 			consultationService.delete(ids);
 		}
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

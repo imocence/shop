@@ -80,7 +80,7 @@ public class PointController extends BaseController {
 			return ERROR_VIEW;
 		}
 		memberService.addPoint(member, amount, PointLog.Type.adjustment, memo);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:log";
 	}
 

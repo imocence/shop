@@ -59,7 +59,7 @@ public class NavigationController extends BaseController {
 			return ERROR_VIEW;
 		}
 		navigationService.save(navigation);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -84,7 +84,7 @@ public class NavigationController extends BaseController {
 			return ERROR_VIEW;
 		}
 		navigationService.update(navigation);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -105,7 +105,7 @@ public class NavigationController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		navigationService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

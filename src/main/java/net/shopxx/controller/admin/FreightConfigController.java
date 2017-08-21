@@ -80,7 +80,7 @@ public class FreightConfigController extends BaseController {
 			return ERROR_VIEW;
 		}
 		freightConfigService.save(freightConfig);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -108,7 +108,7 @@ public class FreightConfigController extends BaseController {
 			return ERROR_VIEW;
 		}
 		freightConfigService.update(freightConfig, "shippingMethod");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -129,7 +129,7 @@ public class FreightConfigController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		freightConfigService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

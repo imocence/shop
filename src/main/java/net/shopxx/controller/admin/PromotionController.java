@@ -145,7 +145,7 @@ public class PromotionController extends BaseController {
 		promotion.setProducts(null);
 		promotion.setProductCategories(null);
 		promotionService.save(promotion);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -195,7 +195,7 @@ public class PromotionController extends BaseController {
 			return ERROR_VIEW;
 		}
 		promotionService.update(promotion, "products", "productCategories");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -214,7 +214,7 @@ public class PromotionController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		promotionService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

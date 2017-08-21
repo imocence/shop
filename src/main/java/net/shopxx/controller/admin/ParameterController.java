@@ -68,7 +68,7 @@ public class ParameterController extends BaseController {
 			return ERROR_VIEW;
 		}
 		parameterService.save(parameter);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -96,7 +96,7 @@ public class ParameterController extends BaseController {
 			return ERROR_VIEW;
 		}
 		parameterService.update(parameter, "productCategory");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -115,7 +115,7 @@ public class ParameterController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		parameterService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

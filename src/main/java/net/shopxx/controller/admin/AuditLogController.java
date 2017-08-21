@@ -55,7 +55,7 @@ public class AuditLogController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		auditLogService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class AuditLogController extends BaseController {
 	@PostMapping("/clear")
 	public @ResponseBody Message clear() {
 		auditLogService.clear();
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

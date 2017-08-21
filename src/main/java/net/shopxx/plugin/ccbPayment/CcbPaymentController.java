@@ -53,7 +53,7 @@ public class CcbPaymentController extends BaseController {
 			pluginConfig.setAttributes(null);
 			pluginConfigService.save(pluginConfig);
 		}
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class CcbPaymentController extends BaseController {
 		if (ccbPaymentPlugin.getIsInstalled()) {
 			pluginConfigService.deleteByPluginId(ccbPaymentPlugin.getId());
 		}
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class CcbPaymentController extends BaseController {
 		pluginConfig.setIsEnabled(isEnabled);
 		pluginConfig.setOrder(order);
 		pluginConfigService.update(pluginConfig);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:/admin/payment_plugin/list";
 	}
 

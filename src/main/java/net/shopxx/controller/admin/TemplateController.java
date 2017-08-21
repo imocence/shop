@@ -7,6 +7,11 @@ package net.shopxx.controller.admin;
 
 import javax.inject.Inject;
 
+import net.shopxx.Message;
+import net.shopxx.TemplateConfig;
+import net.shopxx.service.TemplateService;
+import net.shopxx.util.SystemUtils;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -15,10 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
-
-import net.shopxx.TemplateConfig;
-import net.shopxx.service.TemplateService;
-import net.shopxx.util.SystemUtils;
 
 /**
  * Controller - 模板
@@ -58,7 +59,7 @@ public class TemplateController extends BaseController {
 		}
 		templateService.write(id, content);
 		freeMarkerConfigurer.getConfiguration().clearTemplateCache();
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 

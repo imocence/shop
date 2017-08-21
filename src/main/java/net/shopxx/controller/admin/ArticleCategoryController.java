@@ -59,7 +59,7 @@ public class ArticleCategoryController extends BaseController {
 		articleCategory.setChildren(null);
 		articleCategory.setArticles(null);
 		articleCategoryService.save(articleCategory);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -95,7 +95,7 @@ public class ArticleCategoryController extends BaseController {
 			}
 		}
 		articleCategoryService.update(articleCategory, "treePath", "grade", "children", "articles");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -115,7 +115,7 @@ public class ArticleCategoryController extends BaseController {
 	public @ResponseBody Message delete(Long id) {
 		ArticleCategory articleCategory = articleCategoryService.find(id);
 		if (articleCategory == null) {
-			return ERROR_MESSAGE;
+			return Message.error(ERROR_MESSAGE);
 		}
 		Set<ArticleCategory> children = articleCategory.getChildren();
 		if (children != null && !children.isEmpty()) {
@@ -126,7 +126,7 @@ public class ArticleCategoryController extends BaseController {
 			return Message.error("admin.articleCategory.deleteExistArticleNotAllowed");
 		}
 		articleCategoryService.delete(id);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

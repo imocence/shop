@@ -8,6 +8,12 @@ package net.shopxx.controller.admin;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import net.shopxx.Pageable;
+import net.shopxx.entity.Member;
+import net.shopxx.entity.Message;
+import net.shopxx.service.MemberService;
+import net.shopxx.service.MessageService;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,12 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import net.shopxx.Pageable;
-import net.shopxx.entity.Member;
-import net.shopxx.entity.Message;
-import net.shopxx.service.MemberService;
-import net.shopxx.service.MessageService;
 
 /**
  * Controller - 消息
@@ -165,7 +165,7 @@ public class MessageController extends BaseController {
 		messageService.update(forMessage);
 
 		if ((forMessage.getReceiver() == null && !forMessage.getSenderDelete()) || (forMessage.getSender() == null && !forMessage.getReceiverDelete())) {
-			addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+			addFlashMessage(redirectAttributes, net.shopxx.Message.success(SUCCESS_MESSAGE));
 			return "redirect:view?id=" + forMessage.getId();
 		} else {
 			addFlashMessage(redirectAttributes, net.shopxx.Message.success("admin.message.replySuccess"));
@@ -201,7 +201,7 @@ public class MessageController extends BaseController {
 				messageService.delete(id, null);
 			}
 		}
-		return SUCCESS_MESSAGE;
+		return net.shopxx.Message.success(SUCCESS_MESSAGE);
 	}
 
 }
