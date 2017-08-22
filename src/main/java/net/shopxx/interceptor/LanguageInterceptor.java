@@ -2,10 +2,13 @@ package net.shopxx.interceptor;
 
 import java.util.Locale;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.shopxx.controller.common.LanguageController;
+import net.shopxx.entity.Language;
+import net.shopxx.service.LanguageService;
 import net.shopxx.util.WebUtils;
 
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -18,6 +21,9 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  */
 public class LanguageInterceptor extends HandlerInterceptorAdapter {
 
+	@Inject
+	private LanguageService languageService;
+	
 	/**
 	 * 请求前处理
 	 * 
@@ -34,10 +40,15 @@ public class LanguageInterceptor extends HandlerInterceptorAdapter {
 		String code = (String)WebUtils.getRequest().getSession().getAttribute(LanguageController.CODE);
 		if (null == code) {
 			Locale locale = Locale.getDefault();
-			code = locale.getLanguage() + "_" + locale.getCountry();
-			WebUtils.getRequest().getSession().setAttribute(LanguageController.CODE, code);
+			String localeStr = locale.getLanguage() + "_" + locale.getCountry();
+			Language language = languageService.findByLocale(localeStr);
+			if (null == language) {
+				language = languageService.findByLocale(Locale.US.toString());
+			}
+			if (null != language) {
+				WebUtils.getRequest().getSession().setAttribute(LanguageController.CODE, language.getCode());
+			}
 		}
 		return super.preHandle(request, response, handler);
 	}
-
 }

@@ -4,8 +4,6 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
 import net.shopxx.Message;
 import net.shopxx.entity.Language;
 import net.shopxx.service.CacheService;

@@ -34,4 +34,15 @@ public class LanguageDaoImpl extends BaseDaoImpl<Language, Long> implements Lang
 		TypedQuery<Language> query = entityManager.createQuery(jpql, Language.class).setParameter("code", code);
 		return query.getSingleResult();
 	}
+	
+	/**
+	 * 根据locale获取语言
+	 * @param locale
+	 * @return
+	 */
+	public Language findByLocale(String locale){
+		String jpql = "SELECT language FROM Language language WHERE language.state='1' and language.locale=:locale";
+		TypedQuery<Language> query = entityManager.createQuery(jpql, Language.class).setParameter("locale", locale);
+		return query.getSingleResult();
+	}
 }

@@ -27,4 +27,11 @@ public interface LanguageDao extends BaseDao<Language, Long> {
 	 * @return
 	 */
 	Language findByCode(String code);
+	
+	/**
+	 * 根据locale获取语言
+	 * @param locale
+	 * @return
+	 */
+	Language findByLocale(String locale);
 }
