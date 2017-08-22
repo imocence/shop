@@ -3,9 +3,6 @@ package net.shopxx.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
-
 /**
  * Entity - 语言
  * 
@@ -16,38 +13,41 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class Language extends OrderedEntity<Long> {
 
 	private static final long serialVersionUID = 1L;
-
+	
+	/**
+	 * 点击数缓存名称
+	 */
+	public static final String LANGUAGE_CACHE_NAME = "language";
+	
 	/**
 	 * 编码
 	 */
-	@NotEmpty
-	@Length(max = 10)
-	@Column(nullable = false)
+	@Column
 	private String code;
 
 	/**
 	 * 名称
 	 */
-	@NotEmpty
-	@Length(max = 60)
-	@Column(nullable = false)
+	@Column
 	private String name;
 	
 	/**
 	 * 语言
 	 */
-	@NotEmpty
-	@Length(max = 60)
-	@Column(nullable = false)
+	@Column
 	private String locale;
 	
 	/**
 	 * 国际化key
 	 */
-	@NotEmpty
-	@Length(max = 60)
-	@Column(nullable = false)
+	@Column
 	private String message;
+	
+	/**
+	 * state
+	 */
+	@Column
+	private String state;
 
 	public String getCode() {
 		return code;
@@ -79,5 +79,13 @@ public class Language extends OrderedEntity<Long> {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 }

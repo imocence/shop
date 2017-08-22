@@ -129,7 +129,7 @@ $().ready(function() {
 													[/#list]
 												</span>
 											[#elseif memberAttribute.type == "birth"]
-												<input type="text" name="memberAttribute_${memberAttribute.id}" class="text" value="${currentUser.birth}" onfocus="WdatePicker();" />
+												<input type="text" name="memberAttribute_${memberAttribute.id}" class="text" value="${currentUser.birth}" onfocus="WdatePicker({lang:'${message("Setting.locale.lang")}'});" />
 											[#elseif memberAttribute.type == "area"]
 												<span class="fieldSet">
 													<input type="hidden" id="areaId" name="memberAttribute_${memberAttribute.id}" value="${(currentUser.area.id)!}" treePath="${(currentUser.area.treePath)!}" />

@@ -38,8 +38,22 @@ $().ready(function() {
 			$iframe.show().siblings().hide();
 		}
 	});
-
 });
+
+function changeLanguage(){
+	var language = $("#language").val();
+	console.log(language);
+	$.ajax({
+		url: "${base}/common/language/change",
+		type: "POST",
+		data: {code: language},
+		dataType: "json",
+		cache: false,
+		success: function(message) {
+			window.location.reload();
+		}
+	});
+}
 </script>
 </head>
 <body>
@@ -129,6 +143,13 @@ $().ready(function() {
 					${message("admin.index.hello")}!
 					<a href="profile/edit" target="iframe">[${message("admin.index.profile")}]</a>
 					<a href="logout" target="_top">[${message("admin.index.logout")}]</a>
+					<select id="language" name="language" onchange="changeLanguage();">
+						[@language]
+							[#list languages as language]
+								<option value="${language.code}"[#if language.code == languageCode] selected="selected"[/#if]>${message("${language.message}")}</option>
+							[/#list]
+						[/@language]
+					</select>
 				</div>
 			</th>
 		</tr>

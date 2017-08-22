@@ -45,7 +45,7 @@
 		
 		// 日期选择
 		$datepicker.datepicker({
-			language: "${locale}",
+			language: "${message("Setting.locale.lang")}",
 			format: "yyyy-mm-dd",
 			todayHighlight: true,
 			autoclose: true
