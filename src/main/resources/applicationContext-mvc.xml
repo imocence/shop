@@ -124,6 +124,10 @@
 			<mvc:mapping path="/admin/**" />
 			<bean class="net.shopxx.audit.AuditLogInterceptor" />
 		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="net.shopxx.interceptor.LanguageInterceptor" />
+		</mvc:interceptor>
 	</mvc:interceptors>
 
 	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
