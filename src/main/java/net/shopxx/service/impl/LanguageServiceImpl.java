@@ -55,4 +55,17 @@ public class LanguageServiceImpl extends BaseServiceImpl<Language, Long> impleme
 			return language;
 		}
 	}
+	
+	public Language findByLocale(String locale){
+		Ehcache cache = cacheManager.getEhcache(Language.LANGUAGE_CACHE_NAME);
+		String key = "locale_" + locale;
+		Element element = cache.get(key);
+		if (element != null) {
+			return (Language)element.getObjectValue();
+		} else {
+			Language language = languageDao.findByLocale(locale);
+			cache.put(new Element(key, language));
+			return language;
+		}
+	}
 }
