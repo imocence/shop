@@ -133,6 +133,7 @@
 				<entry key="ad_position" value-ref="adPositionDirective" />
 				<entry key="member_attribute_list" value-ref="memberAttributeListDirective" />
 				<entry key="navigation_list" value-ref="navigationListDirective" />
+				<entry key="language" value-ref="languageDirective" />
 				<entry key="friend_link_list" value-ref="friendLinkListDirective" />
 				<entry key="brand_list" value-ref="brandListDirective" />
 				<entry key="attribute_list" value-ref="attributeListDirective" />

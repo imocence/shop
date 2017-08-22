@@ -19,5 +19,5 @@ public interface LanguageService extends BaseService<Language, Long> {
 	 */
 	List<Language> find();
 
-
+	Language findByCode(String code);
 }

@@ -19,8 +19,19 @@ import org.springframework.stereotype.Repository;
 public class LanguageDaoImpl extends BaseDaoImpl<Language, Long> implements LanguageDao {
 
 	public List<Language> find() {
-		String jpql = "SELECT code,name,locale,message FROM `Language` WHERE state='1' ORDER BY orders";
+		String jpql = "SELECT language FROM Language language WHERE language.state='1' ORDER BY language.order";
 		TypedQuery<Language> query = entityManager.createQuery(jpql, Language.class);
 		return query.getResultList();
+	}
+	
+	/**
+	 * 根据code获取语言
+	 * @param code
+	 * @return
+	 */
+	public Language findByCode(String code){
+		String jpql = "SELECT language FROM Language language WHERE language.state='1' and language.code=:code";
+		TypedQuery<Language> query = entityManager.createQuery(jpql, Language.class).setParameter("code", code);
+		return query.getSingleResult();
 	}
 }

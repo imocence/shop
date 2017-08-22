@@ -60,5 +60,9 @@ public class CacheServiceImpl implements CacheService {
 		reloadableResourceBundleMessageSource.clearCache();
 		configService.init();
 	}
+	
+	@CacheEvict(value = { "index", "area", "article", "product", "brand", "promotion", "review", "consultation", "friendLink", "productCategory", "sitemap", "commonJs" }, allEntries = true)
+	public void clearPage() {
+	}
 
 }

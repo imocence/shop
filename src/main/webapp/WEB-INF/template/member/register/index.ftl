@@ -16,7 +16,6 @@
 <script type="text/javascript" src="${base}/resources/member/datePicker/WdatePicker.js"></script>
 <script type="text/javascript">
 $().ready(function() {
-
 	var $registerForm = $("#registerForm");
 	var $areaId = $("#areaId");
 	var $captcha = $("#captcha");
@@ -200,7 +199,7 @@ $().ready(function() {
 														[/#list]
 													</span>
 												[#elseif memberAttribute.type == "birth"]
-													<input type="text" name="memberAttribute_${memberAttribute.id}" class="text" onfocus="WdatePicker();" />
+													<input type="text" name="memberAttribute_${memberAttribute.id}" class="text" onfocus="WdatePicker({lang:'${message("Setting.locale.lang")}'});" />
 												[#elseif memberAttribute.type == "area"]
 													<span class="fieldSet">
 														<input type="hidden" id="areaId" name="memberAttribute_${memberAttribute.id}" />
@@ -267,7 +266,7 @@ $().ready(function() {
 									<dt>${message("member.register.hasAccount")}</dt>
 									<dd>
 										${message("member.register.tips")}
-										<a href="${base}/member/login">${message("member.register.login")}</a>
+										<a href="${base}/member/login">${message("member.register.login")}</a>111${message("Setting.locale.lang")}
 									</dd>
 								</dl>
 							</div>

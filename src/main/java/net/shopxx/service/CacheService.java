@@ -31,5 +31,10 @@ public interface CacheService {
 	 * 清除缓存
 	 */
 	void clear();
+	
+	/**
+	 * 清除页面缓存
+	 */
+	void clearPage();
 
 }

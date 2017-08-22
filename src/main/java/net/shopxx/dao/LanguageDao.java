@@ -17,8 +17,14 @@ public interface LanguageDao extends BaseDao<Language, Long> {
 	 * 
 	 * @param count
 	 *            数量
-	 * @return 顶级地区
+	 * @return 所有语言
 	 */
 	List<Language> find();
 	
+	/**
+	 * 根据code获取语言
+	 * @param code
+	 * @return
+	 */
+	Language findByCode(String code);
 }

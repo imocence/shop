@@ -9,7 +9,7 @@
 
 var shopxx = {
 	base: "${base}",
-	locale: "${locale}"
+	locale: "${message("Setting.locale.lang")}"
 };
 
 var setting = {

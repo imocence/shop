@@ -9,6 +9,7 @@
 	<cache name="messageConfig" maxElementsInMemory="100" eternal="true" overflowToDisk="true" />
 	<cache name="index" maxElementsInMemory="100" timeToIdleSeconds="60" timeToLiveSeconds="60" eternal="false" overflowToDisk="true" />
 	<cache name="area" maxElementsInMemory="1000" timeToIdleSeconds="3600" timeToLiveSeconds="86400" eternal="false" overflowToDisk="true" />
+	<cache name="language" maxElementsInMemory="1000" timeToIdleSeconds="3600" timeToLiveSeconds="86400" eternal="false" overflowToDisk="true" />
 	<cache name="seo" maxElementsInMemory="1000" timeToIdleSeconds="3600" timeToLiveSeconds="86400" eternal="false" overflowToDisk="true" />
 	<cache name="adPosition" maxElementsInMemory="1000" timeToIdleSeconds="3600" timeToLiveSeconds="86400" eternal="false" overflowToDisk="true" />
 	<cache name="memberAttribute" maxElementsInMemory="1000" timeToIdleSeconds="3600" timeToLiveSeconds="86400" eternal="false" overflowToDisk="true" />
