@@ -164,9 +164,9 @@
 			<nav>
 				<div class="row">
 					<div class="col-xs-3 text-center">
-						<a href="${base}/product/list/1">
-							<img src="${base}/upload/image/index_nav_1.png" alt="积分乐园">
-							积分乐园
+						<a href="${base}/product_category">
+							<img src="${base}/upload/image/全部分类.png" alt="全部分类">
+                            全部分类
 						</a>
 					</div>
 					<div class="col-xs-3 text-center">
@@ -183,32 +183,32 @@
 					</div>
 					<div class="col-xs-3 text-center">
 						<a href="${base}/product/list/1">
-							<img src="${base}/upload/image/index_nav_4.png" alt="平板来袭">
-							平板来袭
+							<img src="${base}/upload/image/热门.png" alt="热门搜索">
+                            热门搜索
 						</a>
 					</div>
 					<div class="col-xs-3 text-center">
-						<a href="${base}/product/list/1">
-							<img src="${base}/upload/image/index_nav_5.png" alt="手机专场">
-							手机专场
+						<a href="${base}/member/index">
+							<img src="${base}/upload/image/会员中心.png" alt="会员中心">
+                            会员中心
 						</a>
 					</div>
 					<div class="col-xs-3 text-center">
-						<a href="${base}/product/list/1">
-							<img src="${base}/upload/image/index_nav_6.png" alt="心随乐动">
-							心随乐动
+						<a href="${base}/member/order/list">
+							<img src="${base}/upload/image/我的订单.png" alt="我的订单">
+                            我的订单
 						</a>
 					</div>
 					<div class="col-xs-3 text-center">
-						<a href="${base}/product/list/1">
-							<img src="${base}/upload/image/index_nav_7.png" alt="发现好货">
-							发现好货
+						<a href="${base}/cart/list">
+							<img src="${base}/upload/image/购物车.png" alt="购物车">
+                            购物车
 						</a>
 					</div>
 					<div class="col-xs-3 text-center">
-						<a href="${base}/product/list/1">
-							<img src="${base}/upload/image/index_nav_8.png" alt="乐享视界">
-							乐享视界
+						<a href="${base}/member/product_favorite/list">
+							<img src="${base}/upload/image/tsdyf-我的收藏.png" alt="我的收藏">
+                            我的收藏
 						</a>
 					</div>
 				</div>

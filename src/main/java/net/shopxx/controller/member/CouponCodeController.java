@@ -85,12 +85,20 @@ public class CouponCodeController extends BaseController {
 	}
 
 	/**
-	 * 充券记录
+	 * 券转赠送
 	 */
-	@GetMapping("/rechange")
-	public String rechange(ModelMap model) {
+	@GetMapping("/transfer")
+	public String transfer(ModelMap model) {
 
-		return "member/coupon_code/rechange";
+		return "member/coupon_code/transfer";
+	}
+	/**
+	 * 券转列表
+	 */
+	@GetMapping("/transfer_record")
+	public String transfer_record(ModelMap model) {
+
+		return "member/coupon_code/transfer_record";
 	}
 	/**
 	 * 列表

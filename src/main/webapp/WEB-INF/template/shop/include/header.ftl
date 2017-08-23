@@ -13,10 +13,7 @@
         var defaultKeyword = "${message("shop.header.keyword")}";
         var $changelanguage = $("#changelanguage");
 
-        //获取选择语言的值
-        $changelanguage.change(function(){
-            $(this).val();
-        });
+
 
         if ($.trim(currentMemberUsername) != "") {
             $headerName.text(currentMemberUsername).show();
@@ -103,7 +100,7 @@
         <div class="row">
             <div class="span3">
                 <a href="${base}/">
-                    <img src="${setting.logo}" alt="${setting.siteName}"/>
+                    <img style="width: 200px" src="${base}${setting.logo}" alt="${setting.siteName}"/>
                 </a>
             </div>
             <div class="span6">

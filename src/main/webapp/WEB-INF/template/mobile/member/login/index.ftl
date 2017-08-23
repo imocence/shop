@@ -169,7 +169,7 @@ ${message("member.login.title")}
         [#--<a href="${base}/member/register">${message("member.login.register")}</a>--]
         [#--</div>--]
         [#--<div class="col-xs-6 text-right">--]
-            <div class="col-xs-6">
+            <div class="col-xs-12 text-right">
                 <a href="${base}/password/forgot">${message("member.login.forgotPassword")}</a>
             </div>
         </div>
