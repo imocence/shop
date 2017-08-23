@@ -9,9 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import net.shopxx.controller.common.LanguageController;
 import net.shopxx.entity.Language;
 import net.shopxx.service.LanguageService;
+import net.shopxx.util.SpringUtils;
 import net.shopxx.util.WebUtils;
 
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 /**
  * Interceptor - 语言拦截器
@@ -25,7 +28,7 @@ public class LanguageInterceptor extends HandlerInterceptorAdapter {
 	private LanguageService languageService;
 	
 	/**
-	 * 请求前处理
+	 * 请求前处理,设置languageCode到session中
 	 * 
 	 * @param request
 	 *            HttpServletRequest
@@ -39,7 +42,11 @@ public class LanguageInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		String code = (String)WebUtils.getRequest().getSession().getAttribute(LanguageController.CODE);
 		if (null == code) {
-			Locale locale = Locale.getDefault();
+			LocaleResolver localeResolver = SpringUtils.getBean("localeResolver", LocaleResolver.class);
+			Locale locale = localeResolver.resolveLocale(WebUtils.getRequest());
+			if (null  == locale) {
+				locale = Locale.getDefault();
+			}
 			String localeStr = locale.getLanguage() + "_" + locale.getCountry();
 			Language language = languageService.findByLocale(localeStr);
 			if (null == language) {
