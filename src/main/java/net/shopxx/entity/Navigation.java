@@ -75,7 +75,14 @@ public class Navigation extends OrderedEntity<Long> {
 	@NotNull
 	@Column(nullable = false)
 	private Boolean isBlankTarget;
-
+	
+	/**
+	 * 国家code
+	 */
+	@Length(max = 255)
+	@Column
+	private String country;
+	
 	/**
 	 * 获取名称
 	 * 
@@ -152,4 +159,11 @@ public class Navigation extends OrderedEntity<Long> {
 		this.isBlankTarget = isBlankTarget;
 	}
 
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
 }

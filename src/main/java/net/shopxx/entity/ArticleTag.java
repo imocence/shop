@@ -55,7 +55,14 @@ public class ArticleTag extends OrderedEntity<Long> {
 	 */
 	@ManyToMany(mappedBy = "articleTags", fetch = FetchType.LAZY)
 	private Set<Article> articles = new HashSet<>();
-
+	
+	/**
+	 * 国家code
+	 */
+	@Length(max = 255)
+	@Column
+	private String country;
+	
 	/**
 	 * 获取名称
 	 * 
@@ -130,6 +137,14 @@ public class ArticleTag extends OrderedEntity<Long> {
 	 */
 	public void setArticles(Set<Article> articles) {
 		this.articles = articles;
+	}
+	
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 
 	/**
