@@ -57,6 +57,14 @@ public class ReceiverController extends BaseController {
 		}
 		model.addAttribute("receiver", receiver);
 	}
+	/**
+	 * 券转赠送
+	 */
+	@GetMapping("/language")
+	public String transfer(ModelMap model) {
+
+		return "member/receiver/language";
+	}
 
 	/**
 	 * 列表
