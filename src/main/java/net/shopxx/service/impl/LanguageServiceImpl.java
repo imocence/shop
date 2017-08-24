@@ -50,8 +50,13 @@ public class LanguageServiceImpl extends BaseServiceImpl<Language, Long> impleme
 		if (element != null) {
 			return (Language)element.getObjectValue();
 		} else {
-			Language language = languageDao.findByCode(code);
-			cache.put(new Element(code, language));
+			Language language = null;
+			try {
+				language = languageDao.findByCode(code);
+				cache.put(new Element(code, language));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return language;
 		}
 	}
@@ -63,8 +68,13 @@ public class LanguageServiceImpl extends BaseServiceImpl<Language, Long> impleme
 		if (element != null) {
 			return (Language)element.getObjectValue();
 		} else {
-			Language language = languageDao.findByLocale(locale);
-			cache.put(new Element(key, language));
+			Language language = null;
+			try {
+				language = languageDao.findByLocale(locale);
+				cache.put(new Element(key, language));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return language;
 		}
 	}
