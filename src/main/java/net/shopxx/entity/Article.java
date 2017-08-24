@@ -163,7 +163,14 @@ public class Article extends BaseEntity<Long> {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@OrderBy("order asc")
 	private Set<ArticleTag> articleTags = new HashSet<>();
-
+	
+	/**
+	 * 国家code
+	 */
+	@Length(max = 255)
+	@Column
+	private String country;
+	
 	/**
 	 * 获取标题
 	 * 
@@ -374,6 +381,14 @@ public class Article extends BaseEntity<Long> {
 	 */
 	public void setArticleTags(Set<ArticleTag> articleTags) {
 		this.articleTags = articleTags;
+	}
+	
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 
 	/**

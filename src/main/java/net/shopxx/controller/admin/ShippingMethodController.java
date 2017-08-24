@@ -64,7 +64,7 @@ public class ShippingMethodController extends BaseController {
 		shippingMethod.setFreightConfigs(null);
 		shippingMethod.setOrders(null);
 		shippingMethodService.save(shippingMethod);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -90,7 +90,7 @@ public class ShippingMethodController extends BaseController {
 			return ERROR_VIEW;
 		}
 		shippingMethodService.update(shippingMethod, "freightConfigs", "orders");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -112,7 +112,7 @@ public class ShippingMethodController extends BaseController {
 			return Message.error("admin.common.deleteAllNotAllowed");
 		}
 		shippingMethodService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

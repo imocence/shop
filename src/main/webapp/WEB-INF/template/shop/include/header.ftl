@@ -51,6 +51,21 @@ $().ready(function() {
 	});
 
 });
+
+function changeLanguage(){
+	var language = $("#language").val();
+	console.log(language);
+	$.ajax({
+		url: "${base}/common/language/change",
+		type: "POST",
+		data: {code: language},
+		dataType: "json",
+		cache: false,
+		success: function(message) {
+			window.location.reload();
+		}
+	});
+}
 </script>
 <div class="header">
 	<div class="top">
@@ -81,6 +96,15 @@ $().ready(function() {
 				<li id="headerCart" class="headerCart">
 					<a href="${base}/cart/list">${message("shop.header.cart")}</a>
 					(<em></em>)
+				</li>
+				<li>
+					<select id="language" name="language" onchange="changeLanguage();">
+						[@language]
+							[#list languages as language]
+								<option value="${language.code}"[#if language.code == languageCode] selected="selected"[/#if]>${message("${language.message}")}</option>
+							[/#list]
+						[/@language]
+					</select>
 				</li>
 			</ul>
 		</div>

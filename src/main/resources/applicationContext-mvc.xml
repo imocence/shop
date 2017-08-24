@@ -26,7 +26,7 @@
 			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
 				<property name="supportedMediaTypes">
 					<list>
-						<!-- <value>${html_content_type}</value> -->
+						<value>${html_content_type}</value>
 						<value>${json_content_type}</value>
 					</list>
 				</property>
@@ -153,5 +153,4 @@
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="defaultEncoding" value="UTF-8" />
 	</bean>
-
 </beans>

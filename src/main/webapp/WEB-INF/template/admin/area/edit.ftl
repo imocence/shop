@@ -41,7 +41,7 @@ $().ready(function() {
 					${message("admin.area.parent")}:
 				</th>
 				<td>
-					[#if area.parent??]${area.parent.name}[#else]${message("admin.area.root")}[/#if]
+					[#if area.parent??]${area.parent.name}[#else]${area.country.name}[/#if]
 				</td>
 			</tr>
 			<tr>

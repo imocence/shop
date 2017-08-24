@@ -98,6 +98,10 @@ public class Member extends User {
 	 * "当前用户名"Cookie名称
 	 */
 	public static final String CURRENT_USERNAME_COOKIE_NAME = "currentMemberUsername";
+	/**
+	 * "当前用户编号"Cookie名称
+	 */
+	public static final String CURRENT_USERCODE_COOKIE_NAME = "currentMemberUsercode";
 
 	/**
 	 * 会员注册项值属性个数

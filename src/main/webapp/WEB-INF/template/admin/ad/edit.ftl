@@ -121,7 +121,7 @@ $().ready(function() {
 					${message("Ad.beginDate")}:
 				</th>
 				<td>
-					<input type="text" id="beginDate" name="beginDate" class="text Wdate" value="[#if ad.beginDate??]${ad.beginDate?string("yyyy-MM-dd HH:mm:ss")}[/#if]" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss', maxDate: '#F{$dp.$D(\'endDate\')}'});" />
+					<input type="text" id="beginDate" name="beginDate" class="text Wdate" value="[#if ad.beginDate??]${ad.beginDate?string("yyyy-MM-dd HH:mm:ss")}[/#if]" onfocus="WdatePicker({lang:'${message("Setting.locale.lang")}', dateFmt: 'yyyy-MM-dd HH:mm:ss', maxDate: '#F{$dp.$D(\'endDate\')}'});" />
 				</td>
 			</tr>
 			<tr>
@@ -129,7 +129,7 @@ $().ready(function() {
 					${message("Ad.endDate")}:
 				</th>
 				<td>
-					<input type="text" id="endDate" name="endDate" class="text Wdate" value="[#if ad.endDate??]${ad.endDate?string("yyyy-MM-dd HH:mm:ss")}[/#if]" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss', minDate: '#F{$dp.$D(\'beginDate\')}'});" />
+					<input type="text" id="endDate" name="endDate" class="text Wdate" value="[#if ad.endDate??]${ad.endDate?string("yyyy-MM-dd HH:mm:ss")}[/#if]" onfocus="WdatePicker({lang:'${message("Setting.locale.lang")}', dateFmt: 'yyyy-MM-dd HH:mm:ss', minDate: '#F{$dp.$D(\'beginDate\')}'});" />
 				</td>
 			</tr>
 			<tr>

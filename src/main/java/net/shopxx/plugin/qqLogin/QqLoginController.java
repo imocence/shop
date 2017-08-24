@@ -53,7 +53,7 @@ public class QqLoginController extends BaseController {
 			pluginConfig.setAttributes(null);
 			pluginConfigService.save(pluginConfig);
 		}
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class QqLoginController extends BaseController {
 		if (qqLoginPlugin.getIsInstalled()) {
 			pluginConfigService.deleteByPluginId(qqLoginPlugin.getId());
 		}
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class QqLoginController extends BaseController {
 		pluginConfig.setIsEnabled(isEnabled);
 		pluginConfig.setOrder(order);
 		pluginConfigService.update(pluginConfig);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:/admin/login_plugin/list";
 	}
 

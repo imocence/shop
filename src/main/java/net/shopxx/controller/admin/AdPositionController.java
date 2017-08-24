@@ -51,7 +51,7 @@ public class AdPositionController extends BaseController {
 		}
 		adPosition.setAds(null);
 		adPositionService.save(adPosition);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -73,7 +73,7 @@ public class AdPositionController extends BaseController {
 			return ERROR_VIEW;
 		}
 		adPositionService.update(adPosition, "ads");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -92,7 +92,7 @@ public class AdPositionController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		adPositionService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

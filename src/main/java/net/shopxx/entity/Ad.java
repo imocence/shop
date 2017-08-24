@@ -99,7 +99,14 @@ public class Ad extends OrderedEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(nullable = false)
 	private AdPosition adPosition;
-
+	
+	/**
+	 * 国家code
+	 */
+	@Length(max = 255)
+	@Column
+	private String country;
+	
 	/**
 	 * 获取标题
 	 * 
@@ -250,6 +257,14 @@ public class Ad extends OrderedEntity<Long> {
 	 */
 	public void setAdPosition(AdPosition adPosition) {
 		this.adPosition = adPosition;
+	}
+	
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 
 	/**

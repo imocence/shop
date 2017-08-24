@@ -44,8 +44,8 @@ public class ConfigServiceImpl implements ConfigService {
 	private FreeMarkerConfigurer freeMarkerConfigurer;
 	@Inject
 	private ReloadableResourceBundleMessageSource reloadableResourceBundleMessageSource;
-	@Inject
-	private FixedLocaleResolver fixedLocaleResolver;
+//	@Inject
+//	private FixedLocaleResolver fixedLocaleResolver;
 
 	public void init() {
 		try {
@@ -76,7 +76,7 @@ public class ConfigServiceImpl implements ConfigService {
 				configuration.setSetting("template_update_delay", templateUpdateDelay);
 				reloadableResourceBundleMessageSource.setCacheSeconds(messageCacheSeconds);
 			}
-			fixedLocaleResolver.setDefaultLocale(LocaleUtils.toLocale(setting.getLocale().toString()));
+//			fixedLocaleResolver.setDefaultLocale(LocaleUtils.toLocale(setting.getLocale().toString()));
 		} catch (TemplateModelException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		} catch (TemplateException e) {

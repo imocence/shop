@@ -27,7 +27,7 @@ $().ready(function() {
 				$.ajax({
 					url: "delete",
 					type: "POST",
-					data: {id: $this.attr("val")},
+					data: {id: $this.attr("val"),country: $this.attr("country")},
 					dataType: "json",
 					cache: false,
 					success: function(message) {
@@ -50,7 +50,7 @@ $().ready(function() {
 		${message("admin.area.list")}
 	</div>
 	<div class="bar">
-		<a href="add[#if parent??]?parentId=${parent.id}[/#if]" class="iconButton">
+		<a href="add[#if parent??]?parentId=${parent.id}[/#if][#if country??]?countryId=${country.id}[/#if]" class="iconButton">
 			<span class="addIcon">&nbsp;</span>${message("admin.common.add")}
 		</a>
 		[#if parent??]
@@ -58,42 +58,82 @@ $().ready(function() {
 				<a href="list?parentId=${parent.parent.id}" class="iconButton">
 					<span class="upIcon">&nbsp;</span>${message("admin.area.parent")}
 				</a>
-			[#else]
-				<a href="list" class="iconButton">
+			[/#if]
+			[#if parent.country??]
+				<a href="list?countryId=${parent.country.id}" class="iconButton">
 					<span class="upIcon">&nbsp;</span>${message("admin.area.parent")}
 				</a>
 			[/#if]
 		[/#if]
+		[#if country??]
+				<a href="list" class="iconButton">
+					<span class="upIcon">&nbsp;</span>${message("admin.area.parent")}
+				</a>
+		[/#if]
 	</div>
 	<table id="listTable" class="list">
-		<tr>
-			<th colspan="5" class="green" style="text-align: center;">
-				[#if parent??]${message("admin.area.parent")} - ${parent.name}[#else]${message("admin.area.root")}[/#if]
-			</th>
-		</tr>
-		[#list areas?chunk(5, "") as row]
+		[#if countries??]
 			<tr>
-				[#list row as area]
-					[#if area?has_content]
-						<td>
-							<a href="list?parentId=${area.id}" title="${message("admin.common.view")}">${area.name}</a>
-							<a href="edit?id=${area.id}">[${message("admin.common.edit")}]</a>
-							<a href="javascript:;" class="delete" val="${area.id}">[${message("admin.common.delete")}]</a>
-						</td>
-					[#else]
-						<td>
-							&nbsp;
-						</td>
-					[/#if]
-				[/#list]
+				<th colspan="5" class="green" style="text-align: center;">
+					${message("admin.area.root")}
+				</th>
 			</tr>
-		[/#list]
-		[#if !areas?has_content]
+			[#list countries?chunk(5, "") as row]
+				<tr>
+					[#list row as country]
+						[#if country?has_content]
+							<td>
+								<a href="list?countryId=${country.id}" title="${message("admin.common.view")}">${country.name}</a>
+								<a href="editCountry?id=${country.id}">[${message("admin.common.edit")}]</a>
+								<a href="javascript:;" class="delete" val="${country.id}" country="1">[${message("admin.common.delete")}]</a>
+							</td>
+						[#else]
+							<td>
+								&nbsp;
+							</td>
+						[/#if]
+					[/#list]
+				</tr>
+			[/#list]
+			<!--[#if !country?has_content]
+				<tr>
+					<td colspan="5" style="text-align: center; color: red;">
+						${message("admin.area.emptyChildren")} <a href="add" class="silver">${message("admin.common.add")}</a>
+					</td>
+				</tr>
+			[/#if]
+			-->
+		[#else]
 			<tr>
-				<td colspan="5" style="text-align: center; color: red;">
-					${message("admin.area.emptyChildren")} <a href="add[#if parent??]?parentId=${parent.id}[/#if]" class="silver">${message("admin.common.add")}</a>
-				</td>
+				<th colspan="5" class="green" style="text-align: center;">
+					[#if parent??]${message("admin.area.parent")} - ${parent.name}[#else]${country.name}[/#if]
+				</th>
 			</tr>
+			[#list areas?chunk(5, "") as row]
+				<tr>
+					[#list row as area]
+						[#if area?has_content]
+							<td>
+								<a href="list?parentId=${area.id}" title="${message("admin.common.view")}">${area.name}</a>
+								<a href="edit?id=${area.id}">[${message("admin.common.edit")}]</a>
+								<a href="javascript:;" class="delete" val="${area.id}">[${message("admin.common.delete")}]</a>
+							</td>
+						[#else]
+							<td>
+								&nbsp;
+							</td>
+						[/#if]
+					[/#list]
+				</tr>
+			[/#list]
+			<!-- [#if !areas?has_content]
+				<tr>
+					<td colspan="5" style="text-align: center; color: red;">
+						${message("admin.area.emptyChildren")} <a href="add[#if parent??]?parentId=${parent.id}[/#if]" class="silver">${message("admin.common.add")}</a>
+					</td>
+				</tr>
+			[/#if]
+			-->
 		[/#if]
 	</table>
 </body>

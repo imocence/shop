@@ -78,9 +78,9 @@ $().ready(function() {
 				</div>
 			</div>
 			${message("admin.orderStatistic.beginDate")}:
-			<input type="text" id="beginDate" name="beginDate" class="text Wdate" value="${beginDate?string("yyyy-MM-dd")}" style="width: 120px;" onfocus="WdatePicker({maxDate: '#F{$dp.$D(\'endDate\')}'});" />
+			<input type="text" id="beginDate" name="beginDate" class="text Wdate" value="${beginDate?string("yyyy-MM-dd")}" style="width: 120px;" onfocus="WdatePicker({lang:'${message("Setting.locale.lang")}', maxDate: '#F{$dp.$D(\'endDate\')}'});" />
 			${message("admin.orderStatistic.endDate")}:
-			<input type="text" id="endDate" name="endDate" class="text Wdate" value="${endDate?string("yyyy-MM-dd")}" style="width: 120px;" onfocus="WdatePicker({minDate: '#F{$dp.$D(\'beginDate\')}'});" />
+			<input type="text" id="endDate" name="endDate" class="text Wdate" value="${endDate?string("yyyy-MM-dd")}" style="width: 120px;" onfocus="WdatePicker({lang:'${message("Setting.locale.lang")}', minDate: '#F{$dp.$D(\'beginDate\')}'});" />
 			<input type="submit" class="button" value="${message("admin.common.submit")}" />
 		</div>
 		<div id="chart" class="chart"></div>

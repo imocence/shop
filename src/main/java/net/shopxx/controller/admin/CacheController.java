@@ -7,14 +7,15 @@ package net.shopxx.controller.admin;
 
 import javax.inject.Inject;
 
+import net.shopxx.Message;
+import net.shopxx.service.CacheService;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import net.shopxx.service.CacheService;
 
 /**
  * Controller - 缓存
@@ -57,7 +58,7 @@ public class CacheController extends BaseController {
 	@PostMapping("/clear")
 	public String clear(RedirectAttributes redirectAttributes) {
 		cacheService.clear();
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:clear";
 	}
 

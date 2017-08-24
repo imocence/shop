@@ -70,7 +70,14 @@ public class FriendLink extends OrderedEntity<Long> {
 	@Pattern(regexp = "^(?i)(http:\\/\\/|https:\\/\\/|ftp:\\/\\/|mailto:|\\/|#).*$")
 	@Column(nullable = false)
 	private String url;
-
+	
+	/**
+	 * 国家code
+	 */
+	@Length(max = 255)
+	@Column
+	private String country;
+	
 	/**
 	 * 获取名称
 	 * 
@@ -147,4 +154,11 @@ public class FriendLink extends OrderedEntity<Long> {
 		this.url = url;
 	}
 
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
 }

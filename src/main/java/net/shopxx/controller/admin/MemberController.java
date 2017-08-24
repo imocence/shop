@@ -7,7 +7,7 @@ package net.shopxx.controller.admin;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,11 +34,15 @@ import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Area;
 import net.shopxx.entity.BaseEntity;
+import net.shopxx.entity.FiBankbookBalance;
+import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.Member.Gender;
 import net.shopxx.entity.MemberAttribute;
 import net.shopxx.entity.NapaStores;
 import net.shopxx.service.AreaService;
+import net.shopxx.service.FiBankbookBalanceService;
+import net.shopxx.service.FiBankbookJournalService;
 import net.shopxx.service.MemberAttributeService;
 import net.shopxx.service.MemberRankService;
 import net.shopxx.service.MemberService;
@@ -74,7 +78,11 @@ public class MemberController extends BaseController {
 	private MemberRankService memberRankService;
 	@Inject
 	private MemberAttributeService memberAttributeService;
-
+	@Inject
+	FiBankbookBalanceService fiBankbookBalanceService;
+	
+	@Inject
+	FiBankbookJournalService fiBankbookJournalService;
 	/**
 	 * 检查用户名是否存在
 	 */
@@ -208,6 +216,20 @@ public class MemberController extends BaseController {
 			try {
 				if(null == memberService.findByUsercode(userCode)){
 					memberService.save(member);
+					
+					
+					FiBankbookBalance balance1 = new FiBankbookBalance();
+					balance1.setBalance(BigDecimal.ZERO);
+					balance1.setType("1");
+					balance1.setUserCode(userCode);
+					fiBankbookBalanceService.save(balance1);
+					
+					FiBankbookBalance balance2 = new FiBankbookBalance();
+					balance2.setBalance(BigDecimal.ZERO);
+					balance2.setType("2");
+					balance2.setUserCode(userCode);
+					fiBankbookBalanceService.save(balance2);
+					
 				}else{
 					memberService.update(member);
 				}
@@ -270,7 +292,7 @@ public class MemberController extends BaseController {
 		member.setOutMessages(null);
 		member.setPointLogs(null);
 		memberService.save(member);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -323,7 +345,7 @@ public class MemberController extends BaseController {
 			memberService.update(member, "username", "encodedPassword", "point", "balance", "amount", "isLocked", "lockDate", "lastLoginIp", "lastLoginDate", "safeKey", "cart", "orders", "paymentTransactions", "depositLogs", "couponCodes", "receivers", "reviews", "consultations", "productFavorites",
 					"productNotifies", "inMessages", "outMessages", "pointLogs");
 		}
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -429,7 +451,7 @@ public class MemberController extends BaseController {
 			}
 			memberService.delete(ids);
 		}
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

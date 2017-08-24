@@ -23,9 +23,20 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.3</version>
 				<configuration>
-					<warSourceDirectory>WebContent</warSourceDirectory>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
+				  <warName>globalilife</warName>
+				  <!-- 激活spring profile -->
+				  <webResources>
+					  <resource>
+						  <filtering>true</filtering>
+						  <directory>src/main/webapp</directory>
+						  <includes>
+							  <include>**/web.xml</include>
+						  </includes>
+					  </resource>
+				  </webResources>
+				  <warSourceDirectory>src/main/webapp</warSourceDirectory>
+				  <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+			  </configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>

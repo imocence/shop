@@ -9,7 +9,7 @@
 
 var shopxx = {
 	base: "${base}",
-	locale: "${locale}"
+	locale: "${message("Setting.locale.lang")}"
 };
 
 var setting = {
@@ -465,7 +465,7 @@ function message(code) {
 					'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', '|',
 					'print', 'preview', 'searchreplace', 'drafts'
 				]],
-				lang: '${locale}',
+				lang: '${message("Setting.locale.lang")}',
 				iframeCssUrl: null,
 				pageBreakTag: 'shopxx_page_break_tag',
 				wordCount: false

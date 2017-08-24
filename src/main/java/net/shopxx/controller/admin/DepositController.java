@@ -81,7 +81,7 @@ public class DepositController extends BaseController {
 			return ERROR_VIEW;
 		}
 		memberService.addBalance(member, amount, DepositLog.Type.adjustment, memo);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:log";
 	}
 

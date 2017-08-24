@@ -50,7 +50,7 @@ public class DeliveryTemplateController extends BaseController {
 			return ERROR_VIEW;
 		}
 		deliveryTemplateService.save(deliveryTemplate);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -72,7 +72,7 @@ public class DeliveryTemplateController extends BaseController {
 			return ERROR_VIEW;
 		}
 		deliveryTemplateService.update(deliveryTemplate);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -91,6 +91,6 @@ public class DeliveryTemplateController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		deliveryTemplateService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 }
