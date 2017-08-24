@@ -7,7 +7,6 @@ package net.shopxx.controller.admin;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,19 +26,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.shopxx.Message;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
-import net.shopxx.entity.Area;
 import net.shopxx.entity.BaseEntity;
 import net.shopxx.entity.FiBankbookBalance;
-import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.Member;
-import net.shopxx.entity.Member.Gender;
 import net.shopxx.entity.MemberAttribute;
-import net.shopxx.entity.NapaStores;
 import net.shopxx.service.AreaService;
 import net.shopxx.service.FiBankbookBalanceService;
 import net.shopxx.service.FiBankbookJournalService;
@@ -49,7 +43,6 @@ import net.shopxx.service.MemberService;
 import net.shopxx.service.NapaStoresService;
 import net.shopxx.service.UserService;
 import net.shopxx.util.TimeUtil;
-import net.shopxx.util.WebUtils;
 
 /**
  * Controller - 会员
@@ -69,11 +62,7 @@ public class MemberController extends BaseController {
 	@Inject
 	private MemberService memberService;
 	@Inject
-	private AreaService areaService;
-	@Inject
 	private UserService userService;
-	@Inject
-	private NapaStoresService napaStoresService;
 	@Inject
 	private MemberRankService memberRankService;
 	@Inject
@@ -113,7 +102,7 @@ public class MemberController extends BaseController {
 	@GetMapping("/view")
 	public String view(Long id, ModelMap model) {
 		Member member = memberService.find(id);
-		List<Member> memberList = getListMember("'"+member.getUsercode()+"'");
+		List<Member> memberList = memberService.getListMember("'"+member.getUsercode()+"'",urlPath,urlSignature);
 		member = memberList.get(0);
 		model.addAttribute("genders", Member.Gender.values());
 		model.addAttribute("memberAttributes", memberAttributeService.findList(true, true));
@@ -146,7 +135,7 @@ public class MemberController extends BaseController {
 												String signature,//验证码
 												HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		Map<String,Object> map = new HashMap<String, Object>();
-		String errCode = "0000";
+		String errCode = "\"0000\"";
 		
 		member.setUsername(userCode);
 		member.setUsercode(userCode);
@@ -216,8 +205,7 @@ public class MemberController extends BaseController {
 			try {
 				if(null == memberService.findByUsercode(userCode)){
 					memberService.save(member);
-					
-					
+					//创建会员的存折
 					FiBankbookBalance balance1 = new FiBankbookBalance();
 					balance1.setBalance(BigDecimal.ZERO);
 					balance1.setType("1");
@@ -229,7 +217,6 @@ public class MemberController extends BaseController {
 					balance2.setType("2");
 					balance2.setUserCode(userCode);
 					fiBankbookBalanceService.save(balance2);
-					
 				}else{
 					memberService.update(member);
 				}
@@ -362,7 +349,9 @@ public class MemberController extends BaseController {
 				userCode = userCode + "'" + memberDes.getUsercode()+"',";
 			}
 			userCode = userCode.substring(0,userCode.length() - 1);
-			List<Member> newMemberList = getListMember(userCode);
+			List<Member> newMemberList = memberService.getListMember(userCode,urlPath,urlSignature);
+			
+			//memberService.verifyLogin(userCode,"888888",urlPath);
 			member.getContent().clear();
 			member.getContent().addAll(newMemberList);
 		}
@@ -371,71 +360,6 @@ public class MemberController extends BaseController {
 		model.addAttribute("memberAttributes", memberAttributeService.findAll());
 		model.addAttribute("page", member);
 		return "admin/member/list";
-	}
-	/**
-	 * 获取多会员信息接口
-	 * @return
-	 */
-	public List<Member> getListMember(String userCodes){		
-		Map<String, Object> parameterMap = new HashMap<>();
-		parameterMap.put("signature", DigestUtils.md5Hex(FORATNOWTIME+urlSignature));
-		parameterMap.put("userCode", userCodes);
-		System.out.println(parameterMap.toString());
-		
-		String userCodeMap = WebUtils.postJson(urlPath+"/getMemberInfoToShop.html",parameterMap);
-		List<Member> members = new ArrayList<Member>();
-		JSONObject jsStr = JSONObject.fromObject(userCodeMap); 
-		String errKey = jsStr.getString("errCode");
-		if(!"0000".equals(errKey)){
-			return null;
-		}else{
-			String result = jsStr.getString("result");
-			JSONArray memberJson = JSONArray.fromObject(result); 
-			if(memberJson.size()>0){
-			
-			  for(int i=0;i<memberJson.size();i++){
-			    JSONObject job = memberJson.getJSONObject(i);  // 遍历 jsonarray 数组，把每一个对象转成 json 对象
-
-			    Member member = json(job);
-			    members.add(member);
-			  }
-			}
-		}
-		return members;
-	}
-	/**
-	 * 解析json中的数据
-	 */
-	public Member json(JSONObject jsonObject){
-
-		String locale = jsonObject.get("company_code").toString();//国别
-		String email = jsonObject.get("email").toString();
-		String mobileMe = jsonObject.get("mobile").toString();
-		String address = jsonObject.get("store_address").toString();//地址
-		String napaCode = jsonObject.get("store_id").toString();//区代编码
-		String mobile = jsonObject.get("store_mobile").toString();//区代电话
-		Long id = Long.valueOf(jsonObject.get("type").toString());//类型id
-		String user_name = jsonObject.get("user_name").toString();
-		String user_code = jsonObject.get("user_code").toString();
-
-		Member member = memberService.findByUsercode(user_code);//這個方法不是框架裡的嗎  我寫的我刚写的 好的 我看看
-
-		member.setAddress(address);
-		member.setLocale(locale);
-		member.setMobile(mobileMe);
-		member.setUsercode(user_code);
-		member.setUsername(user_code);
-		member.setPhone(mobileMe);
-		member.setName(user_name);
-		member.setEmail(email);
-		member.setMemberRank(memberRankService.find(id));
-		
-		//区代
-		NapaStores napaStores =napaStoresService.findByNapaCode(napaCode);
-		member.setNapaStores(napaStores);
-		
-		return member;
-		
 	}
 	/**
 	 * 删除

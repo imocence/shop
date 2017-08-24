@@ -136,7 +136,8 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 	protected boolean onLoginSuccess(org.apache.shiro.authc.AuthenticationToken authenticationToken, Subject subject, ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
-
+		User user = userService.getCurrent();
+		
 		applicationEventPublisher.publishEvent(new UserLoggedInEvent(this, userService.getCurrent()));
 
 		if (WebUtils.isAjaxRequest(request)) {

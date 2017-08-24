@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import net.shopxx.entity.Member;
@@ -69,5 +70,9 @@ public class LoginController extends BaseController {
 		model.addAttribute("loginPlugins", pluginService.getActiveLoginPlugins(request));
 		return currentUser != null ? "redirect:" + memberIndex : memberLoginView;
 	}
-
+	@PostMapping("/validate")
+	public boolean validate(Member member,@CurrentUser Member currentUser, HttpServletRequest request, HttpServletResponse response){
+		System.out.println(11111);
+		return true;
+	}
 }
