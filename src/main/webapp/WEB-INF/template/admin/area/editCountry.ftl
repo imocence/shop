@@ -33,15 +33,15 @@ $().ready(function() {
 	<div class="breadcrumb">
 		${message("admin.area.edit")}
 	</div>
-	<form id="inputForm" action="update" method="post">
-		<input type="hidden" name="id" value="${area.id}" />
+	<form id="inputForm" action="updateCountry" method="post">
+		<input type="hidden" name="id" value="${country.id}" />
 		<table class="input">
 			<tr>
 				<th>
 					${message("admin.area.parent")}:
 				</th>
 				<td>
-					[#if area.parent??]${area.parent.name}[#else]${area.country.name}[/#if]
+					${message("admin.area.root")}
 				</td>
 			</tr>
 			<tr>
@@ -49,7 +49,15 @@ $().ready(function() {
 					<span class="requiredField">*</span>${message("Area.name")}:
 				</th>
 				<td>
-					<input type="text" name="name" class="text" value="${area.name}" maxlength="200" />
+					<input type="text" name="name" class="text" value="${country.name}" maxlength="200" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span class="requiredField">*</span>${message("Country.nameLocal")}:
+				</th>
+				<td>
+					<input type="text" name="nameLocal" value="${country.nameLocal}" class="text" maxlength="200" />
 				</td>
 			</tr>
 			<tr>
@@ -57,7 +65,7 @@ $().ready(function() {
 					${message("admin.common.order")}:
 				</th>
 				<td>
-					<input type="text" name="order" class="text" value="${area.order}" maxlength="9" />
+					<input type="text" name="order" class="text" value="${country.order}" maxlength="9" />
 				</td>
 			</tr>
 			<tr>

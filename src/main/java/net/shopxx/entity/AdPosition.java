@@ -83,7 +83,14 @@ public class AdPosition extends BaseEntity<Long> {
 	@OneToMany(mappedBy = "adPosition", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	@OrderBy("order asc")
 	private Set<Ad> ads = new HashSet<>();
-
+	
+	/**
+	 * 国家code
+	 */
+	@Length(max = 255)
+	@Column
+	private String country;
+	
 	/**
 	 * 获取名称
 	 * 
@@ -196,6 +203,14 @@ public class AdPosition extends BaseEntity<Long> {
 	 */
 	public void setAds(Set<Ad> ads) {
 		this.ads = ads;
+	}
+	
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 
 	/**
