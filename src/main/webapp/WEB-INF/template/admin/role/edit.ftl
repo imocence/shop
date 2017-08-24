@@ -304,6 +304,21 @@ $().ready(function() {
 					</span>
 				</td>
 			</tr>
+			<tr class="permissions">
+				<th>
+					<a href="javascript:;" class="selectAll" title="${message("admin.role.selectAll")}">${message("admin.role.capital")}</a>
+				</th>
+				<td>
+					<span class="fieldSet">
+						<label>
+							<input type="checkbox" name="permissions" value="admin:fiBankbookBalance"[#if role.permissions?seq_contains("admin:fiBankbookBalance")] checked="checked"[/#if] />${message("admin.role.fiBankbookBalance")}
+						</label>
+						<label>
+							<input type="checkbox" name="permissions" value="admin:fiBankbookJournal"[#if role.permissions?seq_contains("admin:fiBankbookJournal")] checked="checked"[/#if] />${message("admin.role.fiBankbookJournal")}
+						</label>
+					</span>
+				</td>
+			</tr>
 			[#if role.isSystem]
 				<tr>
 					<th>
