@@ -8,11 +8,14 @@ package net.shopxx.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.PreRemove;
@@ -89,6 +92,13 @@ public class Brand extends OrderedEntity<Long> {
 	 */
 	@Lob
 	private String introduction;
+	
+	   /**
+     * 国家
+     */
+    @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.REFRESH)
+    @JoinColumn(nullable = true)
+    private Country country;
 
 	/**
 	 * 商品
@@ -264,5 +274,19 @@ public class Brand extends OrderedEntity<Long> {
 			}
 		}
 	}
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+	
+	
 
 }
