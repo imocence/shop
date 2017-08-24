@@ -14,11 +14,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.PreRemove;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
@@ -45,7 +47,7 @@ public class Area extends OrderedEntity<Long> {
 	 */
 	@NotEmpty
 	@Length(max = 200)
-	@Column(nullable = false)
+	@Column(name = "name",nullable = false)
 	private String name;
 
 	/**
@@ -71,6 +73,13 @@ public class Area extends OrderedEntity<Long> {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Area parent;
+	
+	/**
+     * 国家
+     */
+    @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.REFRESH)
+    @JoinColumn(nullable = true)
+    private Country country;
 
 	/**
 	 * 下级地区
@@ -389,4 +398,13 @@ public class Area extends OrderedEntity<Long> {
 		}
 	}
 
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+	
 }
