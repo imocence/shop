@@ -61,6 +61,20 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
+					<span class="requiredField">*</span>${message("common.country")}:
+				</th>
+				<td>
+					<select name="country">
+						[@country]
+							[#list countrys as country]
+								<option value="${country.name}">${message("${country.nameLocal}")}</option>
+							[/#list]
+						[/@country]
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>
 					${message("admin.navigation.systemUrl")}:
 				</th>
 				<td>
