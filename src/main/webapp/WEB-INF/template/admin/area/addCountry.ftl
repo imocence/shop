@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>${message("admin.area.edit")} - Powered By SHOP++</title>
+<title>${message("admin.area.add")} - Powered By SHOP++</title>
 <meta name="author" content="SHOP++ Team" />
 <meta name="copyright" content="SHOP++" />
 <link href="${base}/resources/admin/css/common.css" rel="stylesheet" type="text/css" />
@@ -31,17 +31,17 @@ $().ready(function() {
 </head>
 <body>
 	<div class="breadcrumb">
-		${message("admin.area.edit")}
+		${message("admin.area.add")}
 	</div>
-	<form id="inputForm" action="update" method="post">
-		<input type="hidden" name="id" value="${area.id}" />
+	<form id="inputForm" action="saveCountry" method="post">
+		
 		<table class="input">
 			<tr>
 				<th>
 					${message("admin.area.parent")}:
 				</th>
 				<td>
-					[#if area.parent??]${area.parent.name}[#else]${area.country.name}[/#if]
+					[#if parent??]${parent.name}[#else]${message("admin.area.root")}[/#if]
 				</td>
 			</tr>
 			<tr>
@@ -49,7 +49,15 @@ $().ready(function() {
 					<span class="requiredField">*</span>${message("Area.name")}:
 				</th>
 				<td>
-					<input type="text" name="name" class="text" value="${area.name}" maxlength="200" />
+					<input type="text" name="name" class="text" maxlength="200" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span class="requiredField">*</span>${message("Country.nameLocal")}:
+				</th>
+				<td>
+					<input type="text" name="nameLocal" class="text" maxlength="200" />
 				</td>
 			</tr>
 			<tr>
@@ -57,7 +65,7 @@ $().ready(function() {
 					${message("admin.common.order")}:
 				</th>
 				<td>
-					<input type="text" name="order" class="text" value="${area.order}" maxlength="9" />
+					<input type="text" name="order" class="text" maxlength="9" />
 				</td>
 			</tr>
 			<tr>

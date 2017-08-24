@@ -37,13 +37,16 @@ $().ready(function() {
 		[#if parent??]
 			<input type="hidden" name="parentId" value="${parent.id}" />
 		[/#if]
+		[#if country??]
+			<input type="hidden" name="countryId" value="${country.id}" />
+		[/#if]
 		<table class="input">
 			<tr>
 				<th>
 					${message("admin.area.parent")}:
 				</th>
 				<td>
-					[#if parent??]${parent.name}[#else]${message("admin.area.root")}[/#if]
+					[#if parent??]${parent.name}[#else]${country.name}[/#if]
 				</td>
 			</tr>
 			<tr>
