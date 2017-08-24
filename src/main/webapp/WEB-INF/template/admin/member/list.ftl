@@ -14,7 +14,7 @@
 $().ready(function() {
 
 	[@flash_message /]
-
+	
 });
 </script>
 </head>
@@ -24,13 +24,13 @@ $().ready(function() {
 	</div>
 	<form id="listForm" action="list" method="get">
 		<div class="bar">
-			<a href="add" class="iconButton">
+			<!-- <a href="add" class="iconButton">
 				<span class="addIcon">&nbsp;</span>${message("admin.common.add")}
-			</a>
+			</a> -->
 			<div class="buttonGroup">
-				<a href="javascript:;" id="deleteButton" class="iconButton disabled">
+				<!--<a href="javascript:;" id="deleteButton" class="iconButton disabled">
 					<span class="deleteIcon">&nbsp;</span>${message("admin.common.delete")}
-				</a>
+				</a>-->
 				<a href="javascript:;" id="refreshButton" class="iconButton">
 					<span class="refreshIcon">&nbsp;</span>${message("admin.common.refresh")}
 				</a>
@@ -53,7 +53,7 @@ $().ready(function() {
 					<button type="submit">&nbsp;</button>
 				</div>
 				<ul>
-					<li[#if page.searchProperty == "username"] class="current"[/#if] val="username">${message("Member.username")}</li>
+					<li[#if page.searchProperty == "usercode"] class="current"[/#if] val="usercode">${message("Member.usercode")}</li>
 					<li[#if page.searchProperty == "email"] class="current"[/#if] val="email">${message("Member.email")}</li>
 				</ul>
 			</div>
@@ -110,7 +110,7 @@ $().ready(function() {
 					</td>
 					<td>
 						<a href="view?id=${member.id}">[${message("admin.common.view")}]</a>
-						<a href="edit?id=${member.id}">[${message("admin.common.edit")}]</a>
+						<!-- <a href="edit?id=${member.id}">[${message("admin.common.edit")}]</a> -->
 					</td>
 				</tr>
 			[/#list]

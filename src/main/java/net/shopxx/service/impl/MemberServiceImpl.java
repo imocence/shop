@@ -102,6 +102,11 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	public Member findByUsername(String username) {
 		return memberDao.find("username", StringUtils.lowerCase(username));
 	}
+	
+	@Transactional(readOnly = true)
+	public Member findByUsercode(String usercode) {
+		return memberDao.find("usercode", usercode);//这也是？我写的
+	}
 
 	@Transactional(readOnly = true)
 	public boolean emailExists(String email) {

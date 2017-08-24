@@ -86,7 +86,7 @@
 				</td>
 			</tr>
 		[/#if]
-		<tr>
+		<!-- <tr>
 			<th>
 				${message("Member.point")}:
 			</th>
@@ -94,7 +94,7 @@
 				${member.point}
 				<a href="../point/log?memberId=${member.id}">[${message("admin.common.view")}]</a>
 			</td>
-		</tr>
+		</tr> -->
 		<tr>
 			<th>
 				${message("Member.balance")}:

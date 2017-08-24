@@ -118,7 +118,27 @@ public class Member extends User {
 	@Pattern.List({ @Pattern(regexp = "^[0-9a-zA-Z_\\u4e00-\\u9fa5]+$"), @Pattern(regexp = "^.*[^\\d].*$") })
 	@Column(nullable = false, updatable = false, unique = true)
 	private String username;
+	/**
+	 * 会员编号
+	 */
+	@JsonView(BaseView.class)
+	@NotEmpty(groups = Save.class)
+	@Length(min = 4, max = 20)
+	@Pattern.List({ @Pattern(regexp = "^[0-9a-zA-Z_\\u4e00-\\u9fa5]+$"), @Pattern(regexp = "^.*[^\\d].*$") })
+	@Column(nullable = false, updatable = false, unique = true)
+	private String usercode;
+	
 
+	/**
+	 * 国际化
+	 */
+	@Column(nullable = false)
+	private String locale;
+	/**
+	 * 加盟店id
+	 */
+	private NapaStores napaStores;
+	
 	/**
 	 * 密码
 	 */
@@ -840,7 +860,42 @@ public class Member extends User {
 	public void setSafeKey(SafeKey safeKey) {
 		this.safeKey = safeKey;
 	}
-
+	/**
+	 * 会员编号
+	 */
+	public String getUsercode() {
+		return usercode;
+	}
+	/**
+	 * 会员编号
+	 */
+	public void setUsercode(String usercode) {
+		this.usercode = usercode;
+	}
+	/**
+	 * 国际化
+	 */
+	public String getLocale() {
+		return locale;
+	}
+	/**
+	 * 国际化
+	 */
+	public void setLocale(String locale) {
+		this.locale = locale;
+	}
+	/**
+	 * 加盟店id
+	 */
+	public NapaStores getNapaStores() {
+		return napaStores;
+	}
+	/**
+	 * 加盟店id
+	 */
+	public void setNapaStores(NapaStores napaStores) {
+		this.napaStores = napaStores;
+	}
 	/**
 	 * 获取地区
 	 * 
@@ -1326,6 +1381,7 @@ public class Member extends User {
 	@PrePersist
 	public void prePersist() {
 		setUsername(StringUtils.lowerCase(getUsername()));
+		setUsercode(getUsercode());
 		setEmail(StringUtils.lowerCase(getEmail()));
 		setMobile(StringUtils.lowerCase(getMobile()));
 	}
@@ -1338,5 +1394,4 @@ public class Member extends User {
 		setEmail(StringUtils.lowerCase(getEmail()));
 		setMobile(StringUtils.lowerCase(getMobile()));
 	}
-
 }

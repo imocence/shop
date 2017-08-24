@@ -52,5 +52,4 @@ public interface MemberRankService extends BaseService<MemberRank, Long> {
 	 * @return 会员等级，不包含特殊会员等级，若不存在则返回null
 	 */
 	MemberRank findByAmount(BigDecimal amount);
-
 }

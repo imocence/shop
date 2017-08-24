@@ -41,6 +41,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -430,7 +431,58 @@ public final class WebUtils {
 		}
 		return result;
 	}
+	/**
+	 * POST请求
+	 * 
+	 * @param url
+	 *            URL
+	 * @param parameterMap
+	 *            请求参数
+	 * @return 返回结果
+	 */
+	public static String postJson(String url, Map<String, Object> parameterMap) {
+		Assert.hasText(url);
 
+		String result = null;
+		try {
+			JSONObject param = new JSONObject();
+			if (parameterMap != null) {
+				for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
+					String name = entry.getKey();
+					String value = ConvertUtils.convert(entry.getValue());
+					if (StringUtils.isNotEmpty(name)) {
+						param.put(name,value);
+					}
+				}
+			}
+			StringEntity se = new StringEntity(param.toString());
+			HttpPost httpPost = new HttpPost(url);
+			httpPost.setEntity(se);
+			CloseableHttpResponse httpResponse = HTTP_CLIENT.execute(httpPost);
+			try {
+				HttpEntity httpEntity = httpResponse.getEntity();
+				if (httpEntity != null) {
+					result = EntityUtils.toString(httpEntity, "UTF-8");
+					EntityUtils.consume(httpEntity);
+				}
+			} finally {
+				try {
+					httpResponse.close();
+				} catch (IOException e) {
+					System.out.println("连接超时");
+				}
+			}
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		} catch (ClientProtocolException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		} catch (ParseException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+		return result;
+	}
 	/**
 	 * GET请求
 	 * 
@@ -521,5 +573,5 @@ public final class WebUtils {
 		}
 		return result;
 	}
-
+	
 }

@@ -7,6 +7,8 @@ package net.shopxx.service;
 
 import java.math.BigDecimal;
 
+import org.springframework.stereotype.Repository;
+
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.DepositLog;
@@ -20,6 +22,7 @@ import net.shopxx.security.AuthenticationProvider;
  * @author SHOP++ Team
  * @version 5.0.3
  */
+@Repository
 public interface MemberService extends BaseService<Member, Long>, AuthenticationProvider {
 
 	/**
@@ -39,7 +42,14 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	 * @return 会员，若不存在则返回null
 	 */
 	Member findByUsername(String username);
-
+	/**
+	 * 根据用户编码查找会员
+	 * 
+	 * @param usercode
+	 *            用户编码
+	 * @return 会员，若不存在则返回null
+	 */
+	Member findByUsercode(String usercode);
 	/**
 	 * 判断E-mail是否存在
 	 * 
