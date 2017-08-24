@@ -73,7 +73,7 @@ public class ProductCategoryController extends BaseController {
 		productCategory.setAttributes(null);
 		productCategory.setSpecifications(null);
 		productCategoryService.save(productCategory);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -113,7 +113,7 @@ public class ProductCategoryController extends BaseController {
 			}
 		}
 		productCategoryService.update(productCategory, "treePath", "grade", "children", "products", "parameters", "attributes", "specifications");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -133,7 +133,7 @@ public class ProductCategoryController extends BaseController {
 	public @ResponseBody Message delete(Long id) {
 		ProductCategory productCategory = productCategoryService.find(id);
 		if (productCategory == null) {
-			return ERROR_MESSAGE;
+			return Message.error(ERROR_MESSAGE);
 		}
 		Set<ProductCategory> children = productCategory.getChildren();
 		if (children != null && !children.isEmpty()) {
@@ -144,7 +144,7 @@ public class ProductCategoryController extends BaseController {
 			return Message.error("admin.productCategory.deleteExistProductNotAllowed");
 		}
 		productCategoryService.delete(id);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

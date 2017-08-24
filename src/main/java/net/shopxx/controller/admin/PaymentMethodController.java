@@ -54,7 +54,7 @@ public class PaymentMethodController extends BaseController {
 		paymentMethod.setShippingMethods(null);
 		paymentMethod.setOrders(null);
 		paymentMethodService.save(paymentMethod);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -78,7 +78,7 @@ public class PaymentMethodController extends BaseController {
 			return ERROR_VIEW;
 		}
 		paymentMethodService.update(paymentMethod, "shippingMethods", "orders");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -100,7 +100,7 @@ public class PaymentMethodController extends BaseController {
 			return Message.error("admin.common.deleteAllNotAllowed");
 		}
 		paymentMethodService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

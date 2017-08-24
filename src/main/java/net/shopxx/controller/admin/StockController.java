@@ -12,6 +12,13 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import net.shopxx.Message;
+import net.shopxx.Pageable;
+import net.shopxx.entity.Sku;
+import net.shopxx.entity.StockLog;
+import net.shopxx.service.SkuService;
+import net.shopxx.service.StockLogService;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -21,12 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import net.shopxx.Pageable;
-import net.shopxx.entity.Sku;
-import net.shopxx.entity.StockLog;
-import net.shopxx.service.SkuService;
-import net.shopxx.service.StockLogService;
 
 /**
  * Controller - 库存
@@ -88,7 +89,7 @@ public class StockController extends BaseController {
 			return ERROR_VIEW;
 		}
 		skuService.addStock(sku, quantity, StockLog.Type.stockIn, memo);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:log";
 	}
 
@@ -117,7 +118,7 @@ public class StockController extends BaseController {
 			return ERROR_VIEW;
 		}
 		skuService.addStock(sku, -quantity, StockLog.Type.stockOut, memo);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:log";
 	}
 

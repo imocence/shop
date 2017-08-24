@@ -52,7 +52,7 @@ public class ProductTagController extends BaseController {
 		}
 		productTag.setProducts(null);
 		productTagService.save(productTag);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -74,7 +74,7 @@ public class ProductTagController extends BaseController {
 			return ERROR_VIEW;
 		}
 		productTagService.update(productTag, "products");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -93,7 +93,7 @@ public class ProductTagController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		productTagService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

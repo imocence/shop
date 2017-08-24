@@ -61,7 +61,7 @@ public class SettingController extends BaseController {
 	@PostMapping("/test_smtp")
 	public @ResponseBody Message testSmtp(String smtpHost, Integer smtpPort, String smtpUsername, String smtpPassword, Boolean smtpSSLEnabled, String smtpFromMail, String toMail) {
 		if (StringUtils.isEmpty(toMail)) {
-			return ERROR_MESSAGE;
+			return Message.error(ERROR_MESSAGE);
 		}
 
 		Setting setting = SystemUtils.getSetting();
@@ -73,7 +73,7 @@ public class SettingController extends BaseController {
 			properties.put("smtpSSLEnabled", smtpSSLEnabled);
 			properties.put("smtpFromMail", smtpFromMail);
 			if (!isValid(Setting.class, properties)) {
-				return ERROR_MESSAGE;
+				return Message.error(ERROR_MESSAGE);
 			}
 			mailService.sendTestSmtpMail(smtpHost, smtpPort, smtpUsername, StringUtils.isNotEmpty(smtpPassword) ? smtpPassword : setting.getSmtpPassword(), smtpSSLEnabled, smtpFromMail, toMail);
 		} catch (Exception e) {
@@ -152,7 +152,7 @@ public class SettingController extends BaseController {
 		SystemUtils.setSetting(setting);
 		cacheService.clear();
 
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:edit";
 	}
 

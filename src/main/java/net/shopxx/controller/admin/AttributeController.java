@@ -74,7 +74,7 @@ public class AttributeController extends BaseController {
 		} else {
 			attribute.setPropertyIndex(null);
 			attributeService.save(attribute);
-			addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+			addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		}
 		return "redirect:list";
 	}
@@ -104,7 +104,7 @@ public class AttributeController extends BaseController {
 			return ERROR_VIEW;
 		}
 		attributeService.update(attribute, "propertyIndex", "productCategory");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -123,7 +123,7 @@ public class AttributeController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		attributeService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

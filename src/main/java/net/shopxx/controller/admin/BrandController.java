@@ -59,7 +59,7 @@ public class BrandController extends BaseController {
 		brand.setProducts(null);
 		brand.setProductCategories(null);
 		brandService.save(brand);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -87,7 +87,7 @@ public class BrandController extends BaseController {
 			return ERROR_VIEW;
 		}
 		brandService.update(brand, "products", "productCategories");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -106,7 +106,7 @@ public class BrandController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		brandService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

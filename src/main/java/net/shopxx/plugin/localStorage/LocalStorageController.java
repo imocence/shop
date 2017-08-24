@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import net.shopxx.Message;
 import net.shopxx.controller.admin.BaseController;
 import net.shopxx.entity.PluginConfig;
 import net.shopxx.service.PluginConfigService;
@@ -52,7 +53,7 @@ public class LocalStorageController extends BaseController {
 		pluginConfig.setIsEnabled(true);
 		pluginConfig.setOrder(order);
 		pluginConfigService.update(pluginConfig);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:/admin/storage_plugin/list";
 	}
 

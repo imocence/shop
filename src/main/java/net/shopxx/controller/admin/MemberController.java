@@ -145,7 +145,7 @@ public class MemberController extends BaseController {
 		member.setOutMessages(null);
 		member.setPointLogs(null);
 		memberService.save(member);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -198,7 +198,7 @@ public class MemberController extends BaseController {
 			memberService.update(member, "username", "encodedPassword", "point", "balance", "amount", "isLocked", "lockDate", "lastLoginIp", "lastLoginDate", "safeKey", "cart", "orders", "paymentTransactions", "depositLogs", "couponCodes", "receivers", "reviews", "consultations", "productFavorites",
 					"productNotifies", "inMessages", "outMessages", "pointLogs");
 		}
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -227,7 +227,7 @@ public class MemberController extends BaseController {
 			}
 			memberService.delete(ids);
 		}
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

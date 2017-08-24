@@ -110,7 +110,7 @@ public class MemberAttributeController extends BaseController {
 		}
 		memberAttribute.setPropertyIndex(null);
 		memberAttributeService.save(memberAttribute);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -158,7 +158,7 @@ public class MemberAttributeController extends BaseController {
 			}
 		}
 		memberAttributeService.update(memberAttribute, "type", "propertyIndex");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -177,7 +177,7 @@ public class MemberAttributeController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		memberAttributeService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

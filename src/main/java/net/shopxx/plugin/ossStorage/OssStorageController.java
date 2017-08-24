@@ -52,7 +52,7 @@ public class OssStorageController extends BaseController {
 			pluginConfig.setAttributes(null);
 			pluginConfigService.save(pluginConfig);
 		}
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class OssStorageController extends BaseController {
 		if (ossStoragePlugin.getIsInstalled()) {
 			pluginConfigService.deleteByPluginId(ossStoragePlugin.getId());
 		}
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class OssStorageController extends BaseController {
 		pluginConfig.setIsEnabled(isEnabled);
 		pluginConfig.setOrder(order);
 		pluginConfigService.update(pluginConfig);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:/admin/storage_plugin/list";
 	}
 

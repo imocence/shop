@@ -55,7 +55,7 @@ public class DeliveryCenterController extends BaseController {
 		}
 		deliveryCenter.setAreaName(null);
 		deliveryCenterService.save(deliveryCenter);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -78,7 +78,7 @@ public class DeliveryCenterController extends BaseController {
 			return ERROR_VIEW;
 		}
 		deliveryCenterService.update(deliveryCenter, "areaName");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -97,7 +97,7 @@ public class DeliveryCenterController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		deliveryCenterService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

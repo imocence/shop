@@ -7,6 +7,11 @@ package net.shopxx.controller.admin;
 
 import javax.inject.Inject;
 
+import net.shopxx.Message;
+import net.shopxx.entity.Admin;
+import net.shopxx.security.CurrentUser;
+import net.shopxx.service.AdminService;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -15,10 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import net.shopxx.entity.Admin;
-import net.shopxx.security.CurrentUser;
-import net.shopxx.service.AdminService;
 
 /**
  * Controller - 个人资料
@@ -69,7 +70,7 @@ public class ProfileController extends BaseController {
 		}
 		currentUser.setEmail(email);
 		adminService.update(currentUser);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:edit";
 	}
 

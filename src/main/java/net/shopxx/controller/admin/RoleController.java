@@ -53,7 +53,7 @@ public class RoleController extends BaseController {
 		role.setIsSystem(false);
 		role.setAdmins(null);
 		roleService.save(role);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -79,7 +79,7 @@ public class RoleController extends BaseController {
 			return ERROR_VIEW;
 		}
 		roleService.update(role, "isSystem", "admins");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -106,7 +106,7 @@ public class RoleController extends BaseController {
 			}
 			roleService.delete(ids);
 		}
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

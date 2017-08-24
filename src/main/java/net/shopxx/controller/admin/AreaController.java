@@ -92,7 +92,7 @@ public class AreaController extends BaseController {
 		area.setDeliveryCenters(null);
 		area.setFreightConfigs(null);
 		areaService.save(area);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 

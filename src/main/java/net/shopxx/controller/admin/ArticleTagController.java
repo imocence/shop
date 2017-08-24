@@ -52,7 +52,7 @@ public class ArticleTagController extends BaseController {
 		}
 		articleTag.setArticles(null);
 		articleTagService.save(articleTag);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -74,7 +74,7 @@ public class ArticleTagController extends BaseController {
 			return ERROR_VIEW;
 		}
 		articleTagService.update(articleTag, "articles");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -93,7 +93,7 @@ public class ArticleTagController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		articleTagService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

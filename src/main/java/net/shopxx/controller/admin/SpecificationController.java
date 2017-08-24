@@ -68,7 +68,7 @@ public class SpecificationController extends BaseController {
 			return ERROR_VIEW;
 		}
 		specificationService.save(specification);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -97,7 +97,7 @@ public class SpecificationController extends BaseController {
 			return ERROR_VIEW;
 		}
 		specificationService.update(specification, "productCategory");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -116,7 +116,7 @@ public class SpecificationController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		specificationService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

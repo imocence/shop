@@ -51,7 +51,7 @@ public class DeliveryCorpController extends BaseController {
 		}
 		deliveryCorp.setShippingMethods(null);
 		deliveryCorpService.save(deliveryCorp);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -73,7 +73,7 @@ public class DeliveryCorpController extends BaseController {
 			return ERROR_VIEW;
 		}
 		deliveryCorpService.update(deliveryCorp, "shippingMethods");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -92,7 +92,7 @@ public class DeliveryCorpController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		deliveryCorpService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 }

@@ -90,7 +90,7 @@ public class CouponController extends BaseController {
 		coupon.setPromotions(null);
 		coupon.setOrders(null);
 		couponService.save(coupon);
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -130,7 +130,7 @@ public class CouponController extends BaseController {
 			coupon.setPoint(null);
 		}
 		couponService.update(coupon, "couponCodes", "promotions", "orders");
-		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 
@@ -149,7 +149,7 @@ public class CouponController extends BaseController {
 	@PostMapping("/delete")
 	public @ResponseBody Message delete(Long[] ids) {
 		couponService.delete(ids);
-		return SUCCESS_MESSAGE;
+		return Message.success(SUCCESS_MESSAGE);
 	}
 
 	/**

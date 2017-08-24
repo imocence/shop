@@ -76,6 +76,20 @@ $().ready( function() {
 	});
 
 });
+
+function changeLanguage(){
+	var language = $("#language").val();
+	$.ajax({
+		url: "${base}/common/language/change",
+		type: "POST",
+		data: {code: language},
+		dataType: "json",
+		cache: false,
+		success: function(message) {
+			window.location.reload();
+		}
+	});
+}
 </script>
 </head>
 <body>
@@ -114,6 +128,23 @@ $().ready( function() {
 						</td>
 					</tr>
 				[/#if]
+				<tr>
+					<td>
+						&nbsp;
+					</td>
+					<th>
+						${message("Setting.locale")}:
+					</th>
+					<td>
+						<select id="language" name="language" onchange="changeLanguage();">
+							[@language]
+								[#list languages as language]
+									<option value="${language.code}"[#if language.code == languageCode] selected="selected"[/#if]>${message("${language.message}")}</option>
+								[/#list]
+							[/@language]
+						</select>
+					</td>
+				</tr>
 				<tr>
 					<td>
 						&nbsp;
