@@ -66,6 +66,18 @@ $().ready(function() {
 		<table class="input">
 			<tr>
 				<th>
+					${message("Brand.country")}:
+				</th>
+				<td>
+					<select id="countryId" name="country.id">
+						[#list countries as country]
+							<option value="${country.id}"[#if country.id == brand.country.id] selected="selected"[/#if]>${country.name}</option>
+						[/#list]
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>
 					${message("Attribute.productCategory")}:
 				</th>
 				<td>

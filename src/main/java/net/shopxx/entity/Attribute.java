@@ -8,6 +8,7 @@ package net.shopxx.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Converter;
@@ -62,6 +63,13 @@ public class Attribute extends OrderedEntity<Long> {
 	@Column(nullable = false, length = 4000)
 	@Convert(converter = OptionConverter.class)
 	private List<String> options = new ArrayList<>();
+	
+	   /**
+     * 国家
+     */
+    @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.REFRESH)
+    @JoinColumn(nullable = true)
+    private Country country;
 
 	/**
 	 * 获取名称
@@ -148,5 +156,15 @@ public class Attribute extends OrderedEntity<Long> {
 	@Converter
 	public static class OptionConverter extends BaseAttributeConverter<List<String>> {
 	}
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+	
+	
 
 }

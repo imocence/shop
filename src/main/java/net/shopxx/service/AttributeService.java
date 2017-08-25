@@ -9,7 +9,10 @@ import java.util.List;
 
 import net.shopxx.Filter;
 import net.shopxx.Order;
+import net.shopxx.Page;
+import net.shopxx.Pageable;
 import net.shopxx.entity.Attribute;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.ProductCategory;
 
 /**
@@ -71,5 +74,7 @@ public interface AttributeService extends BaseService<Attribute, Long> {
 	 * @return 属性值
 	 */
 	String toAttributeValue(Attribute attribute, String value);
+
+    Page<Attribute> findPage(Country country, Pageable pageable);
 
 }
