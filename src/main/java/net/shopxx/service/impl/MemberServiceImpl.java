@@ -120,7 +120,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	
 	@Transactional(readOnly = true)
 	public Member findByUsercode(String usercode) {
-		return memberDao.find("usercode", usercode);//这也是？我写的
+		return memberDao.find("usercode", usercode);
 	}
 
 	@Transactional(readOnly = true)
@@ -295,7 +295,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 				String address = job.get("store_address").toString();//地址
 				String napaCode = job.get("store_id").toString();//区代编码
 				String mobile = job.get("store_mobile").toString();//区代电话
-				Long id = Long.valueOf(job.get("type").toString());//类型id
+				int type = Integer.parseInt(job.get("type").toString());//类型id
 				String user_name = job.get("user_name").toString();
 				String user_code = job.get("user_code").toString();
 
@@ -309,12 +309,8 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 				member.setPhone(mobileMe);
 				member.setName(user_name);
 				member.setEmail(email);
-				member.setMemberRank(memberRankService.find(id));
-				
-				//区代
-				NapaStores napaStores = napaStoresService.findByNapaCode(napaCode);
+				member.setMemberRank(memberRankService.find(Long.valueOf(type+1)));
 
-				member.setNapaStores(napaStores);
 				
 			    members.add(member);
 			  }

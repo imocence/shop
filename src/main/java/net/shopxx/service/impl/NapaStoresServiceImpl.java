@@ -23,7 +23,10 @@ public class NapaStoresServiceImpl extends BaseServiceImpl<NapaStores, Long> imp
 	
 	@Transactional(readOnly = true)
 	public NapaStores findByNapaCode(String napaCode) {
-		return napaStoresDao.find("napa_code", napaCode);
+		return napaStoresDao.find("napaCode", napaCode);
 	}
-
+	@Transactional(readOnly = true)
+	public NapaStores findByUserCode(String userCode) {
+		return napaStoresDao.find("userCode", userCode);
+	}
 }

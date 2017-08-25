@@ -1,8 +1,15 @@
 package net.shopxx.service.impl;
 
+import java.util.List;
+
+import javax.inject.Inject;
+
+import net.shopxx.dao.FiBankbookBalanceDao;
+import net.shopxx.dao.MemberRankDao;
 import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.service.FiBankbookBalanceService;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class FiBankbookBalanceServiceImpl extends BaseServiceImpl<FiBankbookBalance, Long> implements FiBankbookBalanceService {
-
+	@Inject
+	private FiBankbookBalanceDao fiBankbookBalanceDao;
+	@Override
+	@Transactional
+	public List<FiBankbookBalance> findByUserCode(String userCode){
+		return (List<FiBankbookBalance>) fiBankbookBalanceDao.find("user_cede", userCode);
+	}
 	@Override
 	@Transactional
 	public FiBankbookBalance save(FiBankbookBalance fiBankbookBalance) {

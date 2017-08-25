@@ -14,7 +14,8 @@
 				<!--  -->
 				<entry key="/admin/member" value="anon" />
 				<entry key="/admin/member/setMember" value="anon" />
-				
+				<entry key="/admin/napaStores" value="anon" />
+				<entry key="/admin/store/setStore" value="anon" />
 				
 				<entry key="/order/**" value="memberAuthc,perms[member]" />
 

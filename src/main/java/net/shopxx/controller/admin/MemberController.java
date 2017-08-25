@@ -6,7 +6,6 @@
 package net.shopxx.controller.admin;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +33,7 @@ import net.shopxx.entity.BaseEntity;
 import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
-import net.shopxx.service.AreaService;
+import net.shopxx.entity.NapaStores;
 import net.shopxx.service.FiBankbookBalanceService;
 import net.shopxx.service.FiBankbookJournalService;
 import net.shopxx.service.MemberAttributeService;
@@ -69,7 +68,8 @@ public class MemberController extends BaseController {
 	private MemberAttributeService memberAttributeService;
 	@Inject
 	FiBankbookBalanceService fiBankbookBalanceService;
-	
+	@Inject
+	NapaStoresService napaStoresService;
 	@Inject
 	FiBankbookJournalService fiBankbookJournalService;
 	/**
@@ -131,7 +131,7 @@ public class MemberController extends BaseController {
 												String store_mobile,//区代电话
 												String user_name,
 												String userCode,
-												Long type,//类型id
+												String type,//类型id
 												String signature,//验证码
 												HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		Map<String,Object> map = new HashMap<String, Object>();
@@ -148,7 +148,7 @@ public class MemberController extends BaseController {
 		if(type == null){
 			member.setMemberRank(memberRankService.find(1L));
 		}else{
-			member.setMemberRank(memberRankService.find(type));
+			member.setMemberRank(memberRankService.find(Long.valueOf(type)));
 		}
 		
 		member.setIsEnabled(true);
@@ -204,7 +204,17 @@ public class MemberController extends BaseController {
 			member.setPointLogs(null);//n
 			try {
 				if(null == memberService.findByUsercode(userCode)){
+					//区代账号创建
+					NapaStores napaStores = new NapaStores();
+					napaStores.setMobile(store_mobile);
+					napaStores.setNapaCode(store_id);
+					napaStores.setUserCode(userCode);
+					napaStores.setType(0);
+					napaStores.setBalance(BigDecimal.ZERO);
+					napaStoresService.save(napaStores);
+					
 					memberService.save(member);
+					
 					//创建会员的存折
 					FiBankbookBalance balance1 = new FiBankbookBalance();
 					balance1.setBalance(BigDecimal.ZERO);
@@ -217,6 +227,9 @@ public class MemberController extends BaseController {
 					balance2.setType("2");
 					balance2.setUserCode(userCode);
 					fiBankbookBalanceService.save(balance2);
+					
+					
+					
 				}else{
 					memberService.update(member);
 				}

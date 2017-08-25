@@ -138,10 +138,6 @@ public class Member extends User {
 	 */
 	@Column(nullable = false)
 	private String locale;
-	/**
-	 * 加盟店id
-	 */
-	private NapaStores napaStores;
 	
 	/**
 	 * 密码
@@ -152,13 +148,16 @@ public class Member extends User {
 	private String password;
 
 	/**
-	 * 加密密码
+	 * 加密密码  @Length(max = 200)
 	 */
 	@Column(nullable = false)
 	private String encodedPassword;
 
 	/**
 	 * E-mail
+	 * 
+	 * 
+	 * 
 	 */
 	@NotEmpty
 	@Email
@@ -888,18 +887,7 @@ public class Member extends User {
 	public void setLocale(String locale) {
 		this.locale = locale;
 	}
-	/**
-	 * 加盟店id
-	 */
-	public NapaStores getNapaStores() {
-		return napaStores;
-	}
-	/**
-	 * 加盟店id
-	 */
-	public void setNapaStores(NapaStores napaStores) {
-		this.napaStores = napaStores;
-	}
+
 	/**
 	 * 获取地区
 	 * 

@@ -30,6 +30,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import net.shopxx.Results;
 import net.shopxx.entity.User;
 import net.shopxx.event.UserLoggedInEvent;
+import net.shopxx.service.MemberService;
 import net.shopxx.service.UserService;
 import net.shopxx.util.JsonUtils;
 import net.shopxx.util.WebUtils;
@@ -59,6 +60,10 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 	private ApplicationEventPublisher applicationEventPublisher;
 	@Inject
 	private UserService userService;
+	@Inject
+	MemberService memberService;
+	@Value("${url.path}")
+	private String urlPath;
 
 	/**
 	 * 创建令牌
@@ -73,7 +78,12 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 	protected org.apache.shiro.authc.AuthenticationToken createToken(ServletRequest servletRequest, ServletResponse servletResponse) {
 		String username = getUsername(servletRequest);
 		String password = getPassword(servletRequest);
-		boolean rememberMe = isRememberMe(servletRequest);
+		boolean rememberMe = false;
+		boolean validate = memberService.verifyLogin(username,password,urlPath);
+		if(validate){
+			rememberMe = isRememberMe(servletRequest);
+		}
+		
 		String host = getHost(servletRequest);
 		return new UserAuthenticationToken(getUserClass(), username, password, rememberMe, host);
 	}
