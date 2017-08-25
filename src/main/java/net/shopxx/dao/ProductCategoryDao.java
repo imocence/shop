@@ -7,6 +7,7 @@ package net.shopxx.dao;
 
 import java.util.List;
 
+import net.shopxx.entity.Country;
 import net.shopxx.entity.ProductCategory;
 
 /**
@@ -51,5 +52,7 @@ public interface ProductCategoryDao extends BaseDao<ProductCategory, Long> {
 	 * @return 下级商品分类
 	 */
 	List<ProductCategory> findChildren(ProductCategory productCategory, boolean recursive, Integer count);
+
+	List<ProductCategory> findChildren(ProductCategory productCategory, boolean recursive, Integer count, Country country);
 
 }

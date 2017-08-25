@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.shopxx.Message;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.ProductCategory;
 import net.shopxx.service.BrandService;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.ProductCategoryService;
 import net.shopxx.service.PromotionService;
 
@@ -42,17 +44,39 @@ public class ProductCategoryController extends BaseController {
 	private BrandService brandService;
 	@Inject
 	private PromotionService promotionService;
+	
+	@Inject
+    private CountryService countryService;
 
 	/**
 	 * 添加
 	 */
 	@GetMapping("/add")
 	public String add(ModelMap model) {
-		model.addAttribute("productCategoryTree", productCategoryService.findTree());
+	    List<Country> countries = countryService.findRoots();
+	    if (countries != null && !countries.isEmpty()) {
+	        return listByCountry(countries.get(0).getId(), model);
+	    }
+		/*model.addAttribute("productCategoryTree", productCategoryService.findTree());
+		model.addAttribute("countries", countryService.findRoots());
 		model.addAttribute("brands", brandService.findAll());
-		model.addAttribute("promotions", promotionService.findAll());
+		model.addAttribute("promotions", promotionService.findAll());*/
 		return "admin/product_category/add";
 	}
+	
+	/**
+     * 添加
+     */
+    @GetMapping("/listByCountry")
+    public String listByCountry(Long countryId,ModelMap model) {
+        Country country = countryService.find(countryId);
+        model.addAttribute("countryId", countryId);
+        model.addAttribute("productCategoryTree", productCategoryService.findTree(country));
+        model.addAttribute("countries", countryService.findRoots());
+        model.addAttribute("brands", country.getBrands());
+        model.addAttribute("promotions", promotionService.findAll());
+        return "admin/product_category/add";
+    }
 
 	/**
 	 * 保存
@@ -72,6 +96,7 @@ public class ProductCategoryController extends BaseController {
 		productCategory.setParameters(null);
 		productCategory.setAttributes(null);
 		productCategory.setSpecifications(null);
+		productCategory.setCountry(countryService.find(productCategory.getCountry().getId()));
 		productCategoryService.save(productCategory);
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -83,9 +108,10 @@ public class ProductCategoryController extends BaseController {
 	@GetMapping("/edit")
 	public String edit(Long id, ModelMap model) {
 		ProductCategory productCategory = productCategoryService.find(id);
-		model.addAttribute("productCategoryTree", productCategoryService.findTree());
-		model.addAttribute("brands", brandService.findAll());
+		model.addAttribute("productCategoryTree", productCategoryService.findTree(productCategory.getCountry()));
+		model.addAttribute("brands", productCategory.getCountry().getBrands());
 		model.addAttribute("promotions", promotionService.findAll());
+		model.addAttribute("countries", countryService.findRoots());
 		model.addAttribute("productCategory", productCategory);
 		model.addAttribute("children", productCategoryService.findChildren(productCategory, true, null));
 		return "admin/product_category/edit";
@@ -112,6 +138,8 @@ public class ProductCategoryController extends BaseController {
 				return ERROR_VIEW;
 			}
 		}
+		
+		productCategory.setCountry(countryService.find(productCategoryService.find(productCategory.getId()).getCountry().getId()));
 		productCategoryService.update(productCategory, "treePath", "grade", "children", "products", "parameters", "attributes", "specifications");
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -121,8 +149,14 @@ public class ProductCategoryController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(ModelMap model) {
-		model.addAttribute("productCategoryTree", productCategoryService.findTree());
+	public String list(ModelMap model,Long countryId) {
+	    model.addAttribute("countries", countryService.findRoots());
+	    if (countryId != null) {
+	        model.addAttribute("productCategoryTree", productCategoryService.findTree(countryService.find(countryId)));
+	    } else {
+	        model.addAttribute("productCategoryTree", productCategoryService.findTree());
+	    }
+	   
 		return "admin/product_category/list";
 	}
 

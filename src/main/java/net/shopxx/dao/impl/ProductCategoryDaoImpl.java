@@ -21,6 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.springframework.stereotype.Repository;
 
 import net.shopxx.dao.ProductCategoryDao;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.ProductCategory;
 
 /**
@@ -58,6 +59,16 @@ public class ProductCategoryDaoImpl extends BaseDaoImpl<ProductCategory, Long> i
 		}
 		return query.getResultList();
 	}
+	
+	@Override
+    public List<ProductCategory> findChildren(ProductCategory productCategory, boolean recursive, Integer count, Country country) {
+	    TypedQuery<ProductCategory> query;
+	    String jpql = "select productCategory from ProductCategory productCategory where productCategory.country = :country order by productCategory.grade asc, productCategory.order asc";
+	    query = entityManager.createQuery(jpql, ProductCategory.class).setParameter("country", country);
+	    List<ProductCategory> result = query.getResultList();
+        sort(result);
+        return result;
+    }
 
 	public List<ProductCategory> findChildren(ProductCategory productCategory, boolean recursive, Integer count) {
 		TypedQuery<ProductCategory> query;
@@ -121,5 +132,7 @@ public class ProductCategoryDaoImpl extends BaseDaoImpl<ProductCategory, Long> i
 			}
 		});
 	}
+
+   
 
 }

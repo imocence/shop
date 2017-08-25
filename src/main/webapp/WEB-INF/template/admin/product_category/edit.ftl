@@ -46,6 +46,14 @@ $().ready(function() {
 		<table class="input">
 			<tr>
 				<th>
+					${message("Brand.country")}:
+				</th>
+				<td>
+					${productCategory.country.name}
+				</td>
+			</tr>
+			<tr>
+				<th>
 					<span class="requiredField">*</span>${message("ProductCategory.name")}:
 				</th>
 				<td>
@@ -86,7 +94,7 @@ $().ready(function() {
 					[/#list]
 				</td>
 			</tr>
-			<tr class="promotions">
+			<!--tr class="promotions">
 				<th>
 					${message("ProductCategory.promotions")}:
 				</th>
@@ -97,7 +105,7 @@ $().ready(function() {
 						</label>
 					[/#list]
 				</td>
-			</tr>
+			</tr-->
 			<tr>
 				<th>
 					${message("ProductCategory.seoTitle")}:

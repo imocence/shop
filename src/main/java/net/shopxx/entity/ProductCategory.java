@@ -15,6 +15,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -87,6 +88,13 @@ public class ProductCategory extends OrderedEntity<Long> {
 	 */
 	@Column(nullable = false)
 	private Integer grade;
+	
+	 /**
+     * 国家
+     */
+    @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.REFRESH)
+    @JoinColumn(nullable = true)
+    private Country country;
 
 	/**
 	 * 上级分类
@@ -514,5 +522,15 @@ public class ProductCategory extends OrderedEntity<Long> {
 			recursiveParents(parents, parent);
 		}
 	}
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+	
+	
 
 }
