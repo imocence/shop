@@ -63,7 +63,7 @@ $().ready(function() {
 							<li[#if country.id == currentType] class="current"[/#if] val="${country.id}">${country.name}</li>
 						[/#list]
 					</ul>
-		   </div>
+		   		</div>
 				<div id="pageSizeMenu" class="dropdownMenu">
 					<a href="javascript:;" class="button">
 						${message("admin.page.pageSize")}<span class="arrow">&nbsp;</span>

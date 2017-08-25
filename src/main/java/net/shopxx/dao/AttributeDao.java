@@ -9,7 +9,10 @@ import java.util.List;
 
 import net.shopxx.Filter;
 import net.shopxx.Order;
+import net.shopxx.Page;
+import net.shopxx.Pageable;
 import net.shopxx.entity.Attribute;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.ProductCategory;
 
 /**
@@ -43,5 +46,7 @@ public interface AttributeDao extends BaseDao<Attribute, Long> {
 	 * @return 属性
 	 */
 	List<Attribute> findList(ProductCategory productCategory, Integer count, List<Filter> filters, List<Order> orders);
+
+    Page<Attribute> findPage(Country country, Pageable pageable);
 
 }

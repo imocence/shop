@@ -24,8 +24,10 @@ import net.shopxx.Message;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Attribute;
 import net.shopxx.entity.BaseEntity;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Product;
 import net.shopxx.service.AttributeService;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.ProductCategoryService;
 
 /**
@@ -40,8 +42,12 @@ public class AttributeController extends BaseController {
 
 	@Inject
 	private AttributeService attributeService;
+	
 	@Inject
 	private ProductCategoryService productCategoryService;
+	
+	@Inject
+    private CountryService countryService;
 
 	/**
 	 * 添加
@@ -50,6 +56,7 @@ public class AttributeController extends BaseController {
 	public String add(Long sampleId, ModelMap model) {
 		model.addAttribute("sample", attributeService.find(sampleId));
 		model.addAttribute("productCategoryTree", productCategoryService.findTree());
+		model.addAttribute("countries", countryService.findRoots());
 		return "admin/attribute/add";
 	}
 
@@ -68,6 +75,8 @@ public class AttributeController extends BaseController {
 		if (!isValid(attribute, BaseEntity.Save.class)) {
 			return ERROR_VIEW;
 		}
+		attribute.setCountry(countryService.find(attribute.getCountry().getId()));
+		
 		Integer propertyIndex = attributeService.findUnusedPropertyIndex(attribute.getProductCategory());
 		if (propertyIndex == null) {
 			addFlashMessage(redirectAttributes, Message.error("admin.attribute.addCountNotAllowed", Product.ATTRIBUTE_VALUE_PROPERTY_COUNT));
@@ -86,6 +95,7 @@ public class AttributeController extends BaseController {
 	public String edit(Long id, ModelMap model) {
 		model.addAttribute("productCategoryTree", productCategoryService.findTree());
 		model.addAttribute("attribute", attributeService.find(id));
+		model.addAttribute("countries", countryService.findRoots());
 		return "admin/attribute/edit";
 	}
 
@@ -103,6 +113,7 @@ public class AttributeController extends BaseController {
 		if (!isValid(attribute)) {
 			return ERROR_VIEW;
 		}
+		attribute.setCountry(countryService.find(attribute.getCountry().getId()));
 		attributeService.update(attribute, "propertyIndex", "productCategory");
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -112,8 +123,11 @@ public class AttributeController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Pageable pageable, ModelMap model) {
-		model.addAttribute("page", attributeService.findPage(pageable));
+	public String list(Pageable pageable,Long countryId, ModelMap model) {
+	    model.addAttribute("countries", countryService.findRoots());
+	    model.addAttribute("countryId", countryId);
+        Country country = countryService.find(countryId);
+		model.addAttribute("page", attributeService.findPage(country,pageable));
 		return "admin/attribute/list";
 	}
 
