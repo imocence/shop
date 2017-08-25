@@ -62,12 +62,25 @@ $().ready(function() {
 		<table class="input">
 			<tr>
 				<th>
+					${message("Brand.country")}:
+				</th>
+				<td>
+					<select id="countryId" name="country.id">
+						[#list countries as country]
+							<option value="${country.id}">${country.name}</option>
+						[/#list]
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>
 					<span class="requiredField">*</span>${message("Brand.name")}:
 				</th>
 				<td>
 					<input type="text" name="name" class="text" maxlength="200" />
 				</td>
 			</tr>
+			
 			<tr>
 				<th>
 					${message("Brand.type")}:

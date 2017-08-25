@@ -249,11 +249,11 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	 */
 	@Override
 	@Transactional
-	public boolean verifyLogin(String usercode,String password,String urlPath){
+	public boolean verifyLogin(String usercode,String password,String urlPath,String urlSignature){
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("userCode", StringUtils.upperCase(usercode));
-		parameterMap.put("password", DigestUtils.md5Hex(password));
-		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getFormatNowTime("yyyyMMdd")+"${url.signature}"));
+		parameterMap.put("password", DigestUtils.md5Hex("a"+password));
+		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getFormatNowTime("yyyyMMdd")+urlSignature));
 		//登录
 		String userCodeMap = WebUtils.postJson(urlPath+"/verifyLoginToShop.html",parameterMap);
 		JSONObject jsStr = JSONObject.fromObject(userCodeMap); 

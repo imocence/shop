@@ -17,9 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.shopxx.Filter;
 import net.shopxx.Order;
+import net.shopxx.Page;
+import net.shopxx.Pageable;
 import net.shopxx.dao.BrandDao;
 import net.shopxx.dao.ProductCategoryDao;
 import net.shopxx.entity.Brand;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.ProductCategory;
 import net.shopxx.service.BrandService;
 
@@ -93,5 +96,10 @@ public class BrandServiceImpl extends BaseServiceImpl<Brand, Long> implements Br
 	public void delete(Brand brand) {
 		super.delete(brand);
 	}
+
+    @Override
+    public Page<Brand> findPage(Country country, Pageable pageable) {
+        return brandDao.findPage(country,pageable);
+    }
 
 }

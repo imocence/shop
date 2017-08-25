@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd"
 	default-lazy-init="true">
-
+	<!-- 安全认证过滤器 -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager" />
 		<property name="unauthorizedUrl" value="/common/error/unauthorized" />
+		<!-- 定义权限 -->
 		<property name="filterChainDefinitionMap">
 			<map>
 				<entry key="/member/register" value="anon" />
@@ -119,16 +120,16 @@
 			</map>
 		</property>
 	</bean>
-
+	<!--多个realm 的集中管理,  -->
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<property name="realm" ref="authorizingRealm" />
 		<property name="cacheManager" ref="shiroCacheManager" />
 	</bean>
-
+	
 	<bean id="authorizingRealm" class="net.shopxx.security.AuthorizingRealm">
 		<property name="authorizationCacheName" value="authorization" />
 	</bean>
-
+	<!-- 定义授权缓存管理器 -->
 	<bean id="shiroCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
 		<property name="cacheManager" ref="ehCacheManager" />
 	</bean>

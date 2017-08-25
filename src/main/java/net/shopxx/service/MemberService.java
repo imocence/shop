@@ -8,7 +8,6 @@ package net.shopxx.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 
 import net.shopxx.Page;
@@ -66,7 +65,7 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	 * 			usercode(大写)
 	 * return Member
 	 */
-	boolean verifyLogin(String usercode,String password,String urlPath);
+	boolean verifyLogin(String usercode,String password,String urlPath,String urlSignature);
 	/**
 	 * 获取多会员信息接口
 	 * @return

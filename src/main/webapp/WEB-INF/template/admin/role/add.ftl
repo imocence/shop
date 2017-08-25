@@ -303,6 +303,21 @@ $().ready(function() {
 					</span>
 				</td>
 			</tr>
+			<tr class="permissions">
+				<th>
+					<a href="javascript:;" class="selectAll" title="${message("admin.role.selectAll")}">${message("admin.role.capital")}</a>
+				</th>
+				<td>
+					<span class="fieldSet">
+						<label>
+							<input type="checkbox" name="permissions" value="admin:fiBankbookBalance" />${message("admin.role.fiBankbookBalance")}
+						</label>
+						<label>
+							<input type="checkbox" name="permissions" value="admin:fiBankbookJournal" />${message("admin.role.fiBankbookJournal")}
+						</label>
+					</span>
+				</td>
+			</tr>
 			<tr>
 				<th>
 					&nbsp;

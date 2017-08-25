@@ -12,7 +12,7 @@
 <script type="text/javascript">
 $().ready(function() {
 
-	var $nav = $("#nav a:not(:last)");
+	var $nav = $("#nav a");
 	var $menu = $("#menu dl");
 	var $menuItem = $("#menu a");
 	var $iframe = $("#iframe");
@@ -128,9 +128,14 @@ function changeLanguage(){
 								[#break /]
 							[/@shiro.hasPermission]
 						[/#list]
-						<li>
-							<a href="${base}/" target="_blank">${message("admin.index.home")}</a>
-						</li>
+						[#list ["admin:fiBankbookBalance", "admin:fiBankbookJournal"] as permission]
+							[@shiro.hasPermission name = permission]
+								<li>
+									<a href="#capital">${message("admin.index.capitalNav")}</a>
+								</li>
+								[#break /]
+							[/@shiro.hasPermission]
+						[/#list]
 					</ul>
 				</div>
 				<div class="link">
@@ -453,6 +458,19 @@ function changeLanguage(){
 					[@shiro.hasPermission name="admin:auditLog"]
 						<dd>
 							<a href="audit_log/list" target="iframe">${message("admin.index.auditLog")}</a>
+						</dd>
+					[/@shiro.hasPermission]
+				</dl>
+				<dl id="capital">
+					<dt>${message("admin.index.capitalGroup")}</dt>
+					[@shiro.hasPermission name="admin:fiBankbookBalance"]
+						<dd>
+							<a href="fiBankbookBalance/list" target="iframe">${message("admin.index.fiBankbookBalance")}</a>
+						</dd>
+					[/@shiro.hasPermission]
+					[@shiro.hasPermission name="admin:fiBankbookJournal"]
+						<dd>
+							<a href="fiBankbookJournal/list" target="iframe">${message("admin.index.fiBankbookJournal")}</a>
 						</dd>
 					[/@shiro.hasPermission]
 				</dl>

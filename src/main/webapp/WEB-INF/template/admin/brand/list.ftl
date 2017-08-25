@@ -13,7 +13,24 @@
 <script type="text/javascript">
 $().ready(function() {
 
+   	var $listForm = $("#listForm");
+	var $countryId = $("#countryId");
+	var $typeMenu = $("#typeMenu");
+	var $typeMenuItem = $("#typeMenu li");
 	[@flash_message /]
+	
+	$typeMenu.hover(
+		function() {
+			$(this).children("ul").show();
+		}, function() {
+			$(this).children("ul").hide();
+		}
+	);
+	
+	$typeMenuItem.click(function() {
+		$countryId.val($(this).attr("val"));
+		$listForm.submit();
+	});
 
 });
 </script>
@@ -23,6 +40,7 @@ $().ready(function() {
 		${message("admin.brand.list")} <span>(${message("admin.page.total", page.total)})</span>
 	</div>
 	<form id="listForm" action="list" method="get">
+	    <input type="hidden" id="countryId" name="countryId" value="${countryId}" />
 		<div class="bar">
 			<a href="add" class="iconButton">
 				<span class="addIcon">&nbsp;</span>${message("admin.common.add")}
@@ -34,6 +52,18 @@ $().ready(function() {
 				<a href="javascript:;" id="refreshButton" class="iconButton">
 					<span class="refreshIcon">&nbsp;</span>${message("admin.common.refresh")}
 				</a>
+				<div id="typeMenu" class="dropdownMenu">
+					<a href="javascript:;" class="button">
+						${message("Brand.country")}<span class="arrow">&nbsp;</span>
+					</a>
+					<ul>
+						<li[#if countryId == null] class="current"[/#if] val="">${message("Brand.country.all")}</li>
+						[#assign currentType = countryId]
+						[#list countries as country]
+							<li[#if country.id == currentType] class="current"[/#if] val="${country.id}">${country.name}</li>
+						[/#list]
+					</ul>
+		   </div>
 				<div id="pageSizeMenu" class="dropdownMenu">
 					<a href="javascript:;" class="button">
 						${message("admin.page.pageSize")}<span class="arrow">&nbsp;</span>
@@ -64,6 +94,9 @@ $().ready(function() {
 					<input type="checkbox" id="selectAll" />
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" name="name">${message("Brand.country")}</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="name">${message("Brand.name")}</a>
 				</th>
 				<th>
@@ -83,6 +116,9 @@ $().ready(function() {
 				<tr>
 					<td>
 						<input type="checkbox" name="ids" value="${brand.id}" />
+					</td>
+					<td>
+						${brand.country.name}
 					</td>
 					<td>
 						${brand.name}

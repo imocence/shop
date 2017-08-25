@@ -130,6 +130,7 @@ public class MemberController extends BaseController {
 												String store_id,//区代编码
 												String store_mobile,//区代电话
 												String user_name,
+												String password,
 												String userCode,
 												String type,//类型id
 												String signature,//验证码
@@ -140,8 +141,8 @@ public class MemberController extends BaseController {
 		member.setUsername(userCode);
 		member.setUsercode(userCode);
 		
-		member.setPassword("123123");
-		member.setEncodedPassword("123123");
+		member.setPassword("a123456");
+		member.setEncodedPassword(DigestUtils.md5Hex("a123456"));
 		if(null == email){
 			member.setEmail("greenleaf@qq.com");
 		}

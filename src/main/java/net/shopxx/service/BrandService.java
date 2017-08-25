@@ -9,7 +9,10 @@ import java.util.List;
 
 import net.shopxx.Filter;
 import net.shopxx.Order;
+import net.shopxx.Page;
+import net.shopxx.Pageable;
 import net.shopxx.entity.Brand;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.ProductCategory;
 
 /**
@@ -51,5 +54,7 @@ public interface BrandService extends BaseService<Brand, Long> {
 	 * @return 品牌
 	 */
 	List<Brand> findList(Long productCategoryId, Integer count, List<Filter> filters, List<Order> orders, boolean useCache);
+
+    Page<Brand> findPage(Country country, Pageable pageable);
 
 }

@@ -9,7 +9,10 @@ import java.util.List;
 
 import net.shopxx.Filter;
 import net.shopxx.Order;
+import net.shopxx.Page;
+import net.shopxx.Pageable;
 import net.shopxx.entity.Brand;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.ProductCategory;
 
 /**
@@ -34,5 +37,7 @@ public interface BrandDao extends BaseDao<Brand, Long> {
 	 * @return 品牌
 	 */
 	List<Brand> findList(ProductCategory productCategory, Integer count, List<Filter> filters, List<Order> orders);
+
+    Page<Brand> findPage(Country country, Pageable pageable);
 
 }

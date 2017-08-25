@@ -55,7 +55,8 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 
 	@Value("${json_content_type}")
 	private String jsonContentType;
-
+	@Value("${url.signature}")
+	private String urlSignature;
 	@Inject
 	private ApplicationEventPublisher applicationEventPublisher;
 	@Inject
@@ -78,15 +79,20 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 	protected org.apache.shiro.authc.AuthenticationToken createToken(ServletRequest servletRequest, ServletResponse servletResponse) {
 		String username = getUsername(servletRequest);
 		String password = getPassword(servletRequest);
-		boolean rememberMe = false;
-		boolean validate = memberService.verifyLogin(username,password,urlPath);
-		if(validate){
-			rememberMe = isRememberMe(servletRequest);
+		String requestURI = ((HttpServletRequest) servletRequest).getRequestURI();
+		if(username != null && requestURI.indexOf("admin") < 0){
+			boolean validate = memberService.verifyLogin(username,password,urlPath,urlSignature);
+			if(validate){
+				password =  "a123456";
+			}			
 		}
+		
+		boolean rememberMe = isRememberMe(servletRequest);
 		
 		String host = getHost(servletRequest);
 		return new UserAuthenticationToken(getUserClass(), username, password, rememberMe, host);
 	}
+
 
 	/**
 	 * 是否允许访问
@@ -101,6 +107,7 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 	 */
 	@Override
 	protected boolean isAccessAllowed(ServletRequest servletRequest, ServletResponse servletResponse, Object mappedValue) {
+		
 		Subject subject = getSubject(servletRequest, servletResponse);
 		Object principal = subject != null ? subject.getPrincipal() : null;
 		if (principal != null && !getUserClass().isAssignableFrom(principal.getClass())) {
@@ -146,7 +153,6 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 	protected boolean onLoginSuccess(org.apache.shiro.authc.AuthenticationToken authenticationToken, Subject subject, ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
-		User user = userService.getCurrent();
 		
 		applicationEventPublisher.publishEvent(new UserLoggedInEvent(this, userService.getCurrent()));
 
