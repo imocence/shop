@@ -150,7 +150,7 @@
 				<entry key="review_list" value-ref="reviewListDirective" />
 				<entry key="consultation_list" value-ref="consultationListDirective" />
 				<entry key="promotion_list" value-ref="promotionListDirective" />
-				<entry key="country" value-ref="countryDirective" />
+				<entry key="country_list" value-ref="countryDirective" />
 			</map>
 		</property>
 	</bean>

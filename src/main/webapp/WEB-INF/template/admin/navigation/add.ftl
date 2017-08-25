@@ -65,11 +65,11 @@ $().ready(function() {
 				</th>
 				<td>
 					<select name="country">
-						[@country]
+						[@country_list]
 							[#list countrys as country]
 								<option value="${country.name}">${message("${country.nameLocal}")}</option>
 							[/#list]
-						[/@country]
+						[/@country_list]
 					</select>
 				</td>
 			</tr>
