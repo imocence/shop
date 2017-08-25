@@ -19,7 +19,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import net.shopxx.Message;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Brand;
+import net.shopxx.entity.Country;
 import net.shopxx.service.BrandService;
+import net.shopxx.service.CountryService;
 
 /**
  * Controller - 品牌
@@ -33,6 +35,9 @@ public class BrandController extends BaseController {
 
 	@Inject
 	private BrandService brandService;
+	
+    @Inject
+	private CountryService countryService;
 
 	/**
 	 * 添加
@@ -40,6 +45,7 @@ public class BrandController extends BaseController {
 	@GetMapping("/add")
 	public String add(ModelMap model) {
 		model.addAttribute("types", Brand.Type.values());
+		model.addAttribute("countries", countryService.findRoots());
 		return "admin/brand/add";
 	}
 
@@ -56,6 +62,8 @@ public class BrandController extends BaseController {
 		} else if (StringUtils.isEmpty(brand.getLogo())) {
 			return ERROR_VIEW;
 		}
+		
+		brand.setCountry(countryService.find(brand.getCountry().getId()));
 		brand.setProducts(null);
 		brand.setProductCategories(null);
 		brandService.save(brand);
@@ -70,6 +78,7 @@ public class BrandController extends BaseController {
 	public String edit(Long id, ModelMap model) {
 		model.addAttribute("types", Brand.Type.values());
 		model.addAttribute("brand", brandService.find(id));
+		model.addAttribute("countries", countryService.findRoots());
 		return "admin/brand/edit";
 	}
 
@@ -86,6 +95,7 @@ public class BrandController extends BaseController {
 		} else if (StringUtils.isEmpty(brand.getLogo())) {
 			return ERROR_VIEW;
 		}
+		brand.setCountry(countryService.find(brand.getCountry().getId()));
 		brandService.update(brand, "products", "productCategories");
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -95,8 +105,11 @@ public class BrandController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Pageable pageable, ModelMap model) {
-		model.addAttribute("page", brandService.findPage(pageable));
+	public String list(Pageable pageable,Long countryId, ModelMap model) {
+	    model.addAttribute("countries", countryService.findRoots());
+	    model.addAttribute("countryId", countryId);
+	    Country country = countryService.find(countryId);
+		model.addAttribute("page", brandService.findPage(country,pageable));
 		return "admin/brand/list";
 	}
 

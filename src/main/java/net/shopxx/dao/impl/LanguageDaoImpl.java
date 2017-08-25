@@ -32,7 +32,11 @@ public class LanguageDaoImpl extends BaseDaoImpl<Language, Long> implements Lang
 	public Language findByCode(String code){
 		String jpql = "SELECT language FROM Language language WHERE language.state='1' and language.code=:code";
 		TypedQuery<Language> query = entityManager.createQuery(jpql, Language.class).setParameter("code", code);
-		return query.getSingleResult();
+		List<Language> list= query.getResultList();
+		if (null != list && !list.isEmpty()) {
+			return list.get(0);
+		}
+		return null;
 	}
 	
 	/**
@@ -43,6 +47,10 @@ public class LanguageDaoImpl extends BaseDaoImpl<Language, Long> implements Lang
 	public Language findByLocale(String locale){
 		String jpql = "SELECT language FROM Language language WHERE language.state='1' and language.locale=:locale";
 		TypedQuery<Language> query = entityManager.createQuery(jpql, Language.class).setParameter("locale", locale);
-		return query.getSingleResult();
+		List<Language> list= query.getResultList();
+		if (null != list && !list.isEmpty()) {
+			return list.get(0);
+		}
+		return null;
 	}
 }
