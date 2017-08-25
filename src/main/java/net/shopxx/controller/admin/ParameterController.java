@@ -23,7 +23,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import net.shopxx.Message;
 import net.shopxx.Pageable;
 import net.shopxx.entity.BaseEntity;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Parameter;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.ParameterService;
 import net.shopxx.service.ProductCategoryService;
 
@@ -39,8 +41,12 @@ public class ParameterController extends BaseController {
 
 	@Inject
 	private ParameterService parameterService;
+	
 	@Inject
 	private ProductCategoryService productCategoryService;
+	
+	@Inject
+    private CountryService countryService;
 
 	/**
 	 * 添加
@@ -48,6 +54,7 @@ public class ParameterController extends BaseController {
 	@GetMapping("/add")
 	public String add(Long sampleId, ModelMap model) {
 		model.addAttribute("sample", parameterService.find(sampleId));
+		model.addAttribute("countries", countryService.findRoots());
 		model.addAttribute("productCategoryTree", productCategoryService.findTree());
 		return "admin/parameter/add";
 	}
@@ -67,6 +74,8 @@ public class ParameterController extends BaseController {
 		if (!isValid(parameter, BaseEntity.Save.class)) {
 			return ERROR_VIEW;
 		}
+		
+		parameter.setCountry(countryService.find(parameter.getCountry().getId()));
 		parameterService.save(parameter);
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -78,6 +87,7 @@ public class ParameterController extends BaseController {
 	@GetMapping("/edit")
 	public String edit(Long id, ModelMap model) {
 		model.addAttribute("parameter", parameterService.find(id));
+		model.addAttribute("countries", countryService.findRoots());
 		return "admin/parameter/edit";
 	}
 
@@ -95,6 +105,7 @@ public class ParameterController extends BaseController {
 		if (!isValid(parameter, BaseEntity.Update.class)) {
 			return ERROR_VIEW;
 		}
+		parameter.setCountry(countryService.find(parameter.getCountry().getId()));
 		parameterService.update(parameter, "productCategory");
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -104,8 +115,11 @@ public class ParameterController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Pageable pageable, ModelMap model) {
-		model.addAttribute("page", parameterService.findPage(pageable));
+	public String list(Pageable pageable,Long countryId,  ModelMap model) {
+	    model.addAttribute("countries", countryService.findRoots());
+        model.addAttribute("countryId", countryId);
+        Country country = countryService.find(countryId);
+		model.addAttribute("page", parameterService.findPage(country,pageable));
 		return "admin/parameter/list";
 	}
 
