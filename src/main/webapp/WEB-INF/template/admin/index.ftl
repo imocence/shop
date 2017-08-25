@@ -12,7 +12,7 @@
 <script type="text/javascript">
 $().ready(function() {
 
-	var $nav = $("#nav a:not(:last)");
+	var $nav = $("#nav a");
 	var $menu = $("#menu dl");
 	var $menuItem = $("#menu a");
 	var $iframe = $("#iframe");
