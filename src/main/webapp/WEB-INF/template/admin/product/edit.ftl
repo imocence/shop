@@ -644,6 +644,14 @@ $().ready(function() {
 				fraction: ${setting.priceScale}
 			}
 		},
+		coupon: {
+			required: true,
+			min: 0,
+			decimal: {
+				integer: 12,
+				fraction: ${setting.priceScale}
+			}
+		},
 		cost: {
 			min: 0,
 			decimal: {
@@ -739,6 +747,7 @@ $().ready(function() {
 	<form id="inputForm" action="update" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="id" value="${product.id}" />
 		<input type="hidden" id="isDefault" name="sku.isDefault" value="true" />
+		${message("Brand.country")}:${product.productCategory.country.name}
 		<ul id="tab" class="tab">
 			<li>
 				<input type="button" value="${message("admin.product.base")}" />
@@ -755,7 +764,7 @@ $().ready(function() {
 			<li>
 				<input type="button" value="${message("admin.product.attribute")}" />
 			</li>
-			<li>
+			<li class="hidden">
 				<input type="button" value="${message("admin.product.specification")}" />
 			</li>
 		</ul>
@@ -818,6 +827,14 @@ $().ready(function() {
 					</th>
 					<td>
 						<input type="text" id="price" name="sku.price" class="text" value="${product.defaultSku.price}" maxlength="16"[#if product.hasSpecification()] disabled="disabled"[/#if] />
+					</td>
+				</tr>
+				<tr[#if product.hasSpecification()] class="hidden"[/#if]>
+					<th>
+						<span class="requiredField">*</span>${message("Sku.coupon")}:
+					</th>
+					<td>
+						<input type="text" id="coupon" name="sku.coupon" class="text" value="${product.defaultSku.price}" maxlength="16"[#if product.hasSpecification()] disabled="disabled"[/#if] />
 					</td>
 				</tr>
 			[/#if]
@@ -905,6 +922,14 @@ $().ready(function() {
 						<input type="text" id="stock" name="sku.stock" class="text" value="${product.defaultSku.stock}" maxlength="9" title="${message("Sku.allocatedStock")}: ${product.defaultSku.allocatedStock}" readonly="readonly" />
 						<a href="../stock/stock_in?skuId=${product.defaultSku.id}" title="${message("admin.product.stockIn")}">+</a>
 						<a href="../stock/stock_out?skuId=${product.defaultSku.id}" title="${message("admin.product.stockOut")}">-</a>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						${message("Sku.warning")}:
+					</th>
+					<td>
+						<input type="text" id="warning" name="sku.warning" class="text" value="${product.defaultSku.warning}" maxlength="9"  />
 					</td>
 				</tr>
 			[/#if]

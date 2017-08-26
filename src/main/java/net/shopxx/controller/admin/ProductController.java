@@ -184,8 +184,8 @@ public class ProductController extends BaseController {
         model.addAttribute("countries", countryService.findRoots());
         model.addAttribute("brands", country.getBrands());
         model.addAttribute("types", Product.Type.values());
-        model.addAttribute("promotions", promotionService.findAll());
-        model.addAttribute("productTags", productTagService.findAll());
+//        model.addAttribute("promotions", promotionService.findAll());
+//        model.addAttribute("productTags", productTagService.findAll());
         model.addAttribute("specifications", specificationService.findAll());
         return "admin/product/add";
     }
@@ -242,13 +242,16 @@ public class ProductController extends BaseController {
 	 */
 	@GetMapping("/edit")
 	public String edit(Long id, ModelMap model) {
+	    Product pro =  productService.find(id);
+	   
 		model.addAttribute("types", Product.Type.values());
-		model.addAttribute("productCategoryTree", productCategoryService.findTree());
-		model.addAttribute("brands", brandService.findAll());
-		model.addAttribute("promotions", promotionService.findAll());
-		model.addAttribute("productTags", productTagService.findAll());
-		model.addAttribute("specifications", specificationService.findAll());
-		model.addAttribute("product", productService.find(id));
+		model.addAttribute("productCategoryTree", productCategoryService.findTree( pro.getProductCategory().getCountry()));
+		model.addAttribute("brands", pro.getProductCategory().getCountry().getBrands());
+//		model.addAttribute("promotions", promotionService.findAll());
+//		model.addAttribute("productTags", productTagService.findAll());
+//		model.addAttribute("specifications", specificationService.findAll());
+		model.addAttribute("product", pro);
+		model.addAttribute("countries", countryService.findRoots());
 		return "admin/product/edit";
 	}
 
@@ -302,8 +305,12 @@ public class ProductController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Product.Type type, Long productCategoryId, Long brandId, Long promotionId, Long productTagId, Boolean isMarketable, Boolean isList, Boolean isTop, Boolean isOutOfStock, Boolean isStockAlert, Pageable pageable, ModelMap model) {
-		ProductCategory productCategory = productCategoryService.find(productCategoryId);
+	public String list(Product.Type type,Long countryId, Long productCategoryId, Long brandId, Long promotionId, Long productTagId, Boolean isMarketable, Boolean isList, Boolean isTop, Boolean isOutOfStock, Boolean isStockAlert, Pageable pageable, ModelMap model) {
+		//todo
+	    if (countryId != null) {
+		    Country country =   countryService.find(countryId);
+		}
+	    ProductCategory productCategory = productCategoryService.find(productCategoryId);
 		Brand brand = brandService.find(brandId);
 		Promotion promotion = promotionService.find(promotionId);
 		ProductTag productTag = productTagService.find(productTagId);
@@ -322,6 +329,7 @@ public class ProductController extends BaseController {
 		model.addAttribute("isTop", isTop);
 		model.addAttribute("isOutOfStock", isOutOfStock);
 		model.addAttribute("isStockAlert", isStockAlert);
+		model.addAttribute("countries", countryService.findRoots());
 		model.addAttribute("page", productService.findPage(type, productCategory, brand, promotion, productTag, null, null, null, isMarketable, isList, isTop, isOutOfStock, isStockAlert, null, null, pageable));
 		return "admin/product/list";
 	}

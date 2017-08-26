@@ -669,6 +669,15 @@ $().ready(function() {
 					fraction: ${setting.priceScale}
 				}
 			},
+			name: "required",
+			"sku.coupon": {
+				required: true,
+				min: 0,
+				decimal: {
+					integer: 12,
+					fraction: ${setting.priceScale}
+				}
+			},
 			"sku.cost": {
 				min: 0,
 				decimal: {
@@ -758,7 +767,7 @@ $().ready(function() {
 			<li>
 				<input type="button" value="${message("admin.product.attribute")}" />
 			</li>
-			<li>
+			<li class="hidden">
 				<input type="button" value="${message("admin.product.specification")}" />
 			</li>
 		</ul>
@@ -828,6 +837,14 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
+					<span class="requiredField">*</span>${message("Sku.coupon")}:
+				</th>
+				<td>
+					<input type="text" id="ticket" name="sku.coupon" class="text" maxlength="16" />
+				</td>
+			</tr>
+			<tr>
+				<th>
 					${message("Sku.cost")}:
 				</th>
 				<td>
@@ -891,6 +908,14 @@ $().ready(function() {
 				</th>
 				<td>
 					<input type="text" id="stock" name="sku.stock" class="text" value="1" maxlength="9" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span </span>${message("Sku.warning")}:
+				</th>
+				<td>
+					<input type="text" id="warning" name="sku.warning" class="text" value="1" maxlength="9" />
 				</td>
 			</tr>
 			<tr>

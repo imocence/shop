@@ -232,14 +232,24 @@ public class Product extends BaseEntity<Long> {
 	private Product.Type type;
 
 	/**
-	 * 销售价
+	 * 券
 	 */
 	@JsonView(BaseView.class)
 	@Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
 	@NumericField
 	@FieldBridge(impl = BigDecimalNumericFieldBridge.class)
 	@Column(nullable = false, precision = 21, scale = 6)
-	private BigDecimal price;
+	private BigDecimal coupon;
+	
+	   /**
+     * 销售价
+     */
+    @JsonView(BaseView.class)
+    @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
+    @NumericField
+    @FieldBridge(impl = BigDecimalNumericFieldBridge.class)
+    @Column(nullable = false, precision = 21, scale = 6)
+    private BigDecimal price;
 
 	/**
 	 * 成本价
@@ -2198,5 +2208,15 @@ public class Product extends BaseEntity<Long> {
 	@Converter
 	public static class SpecificationItemConverter extends BaseAttributeConverter<List<SpecificationItem>> {
 	}
+
+    public BigDecimal getCoupon() {
+        return coupon;
+    }
+
+    public void setCoupon(BigDecimal coupon) {
+        this.coupon = coupon;
+    }
+	
+	
 
 }

@@ -348,11 +348,13 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 			break;
 		case exchange:
 			sku.setPrice(BigDecimal.ZERO);
+			sku.setCoupon(BigDecimal.ZERO);
 			sku.setRewardPoint(0L);
 			product.setPromotions(null);
 			break;
 		case gift:
 			sku.setPrice(BigDecimal.ZERO);
+			sku.setCoupon(BigDecimal.ZERO);
 			sku.setRewardPoint(0L);
 			sku.setExchangePoint(0L);
 			product.setPromotions(null);
@@ -375,6 +377,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 		sku.setStockLogs(null);
 		sku.setGiftPromotions(null);
 
+		product.setCoupon(sku.getCoupon());//设置券
 		product.setPrice(sku.getPrice());
 		product.setCost(sku.getCost());
 		product.setMarketPrice(sku.getMarketPrice());
@@ -568,6 +571,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 		}
 
 		product.setPrice(sku.getPrice());
+		product.setCoupon(sku.getCoupon());
 		product.setCost(sku.getCost());
 		product.setMarketPrice(sku.getMarketPrice());
 		setValue(product);
