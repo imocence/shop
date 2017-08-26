@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
 
 import net.shopxx.dao.CountryDao;
 import net.shopxx.entity.Country;
+import net.shopxx.entity.Language;
 
 /**
  * Dao - 地区
@@ -40,5 +41,19 @@ public class CountryDaoImpl extends BaseDaoImpl<Country, Long> implements Countr
 		}
 		return query.getResultList();
 	}
-
+	
+	/**
+	 * 根据name获取国家
+	 * @param name
+	 * @return
+	 */
+	public Country findByName(String name){
+		String jpql = "select country from Country country WHERE country.state='1' and country.name=:name";
+		TypedQuery<Country> query = entityManager.createQuery(jpql, Country.class).setParameter("name", name);
+		List<Country> list= query.getResultList();
+		if (null != list && !list.isEmpty()) {
+			return list.get(0);
+		}
+		return null;
+	}
 }

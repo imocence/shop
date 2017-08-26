@@ -9,7 +9,6 @@
 	<cache name="messageConfig" maxElementsInMemory="100" eternal="true" overflowToDisk="true" />
 	<cache name="index" maxElementsInMemory="100" timeToIdleSeconds="60" timeToLiveSeconds="60" eternal="false" overflowToDisk="true" />
 	<cache name="area" maxElementsInMemory="1000" timeToIdleSeconds="3600" timeToLiveSeconds="86400" eternal="false" overflowToDisk="true" />
-	<cache name="language" maxElementsInMemory="1000" timeToIdleSeconds="3600" timeToLiveSeconds="86400" eternal="false" overflowToDisk="true" />
 	<cache name="seo" maxElementsInMemory="1000" timeToIdleSeconds="3600" timeToLiveSeconds="86400" eternal="false" overflowToDisk="true" />
 	<cache name="adPosition" maxElementsInMemory="1000" timeToIdleSeconds="3600" timeToLiveSeconds="86400" eternal="false" overflowToDisk="true" />
 	<cache name="memberAttribute" maxElementsInMemory="1000" timeToIdleSeconds="3600" timeToLiveSeconds="86400" eternal="false" overflowToDisk="true" />
@@ -35,5 +34,6 @@
 	<cache name="captcha" maxElementsInMemory="1000000" timeToIdleSeconds="600" timeToLiveSeconds="600" eternal="false" overflowToDisk="true" />
 	<cache name="authorization" maxElementsInMemory="1000000" timeToIdleSeconds="3600" timeToLiveSeconds="86400" eternal="false" overflowToDisk="true" />
 	<cache name="failedLoginAttempts" maxElementsInMemory="1000000" eternal="true" overflowToDisk="true" />
-
+	<cache name="language" maxElementsInMemory="1000" timeToIdleSeconds="3600" timeToLiveSeconds="86400" eternal="false" overflowToDisk="true" />
+	<cache name="country" maxElementsInMemory="1000" timeToIdleSeconds="3600" timeToLiveSeconds="86400" eternal="false" overflowToDisk="true" />
 </ehcache>

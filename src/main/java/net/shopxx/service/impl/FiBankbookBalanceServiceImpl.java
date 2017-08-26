@@ -1,6 +1,13 @@
 package net.shopxx.service.impl;
 
+import javax.inject.Inject;
+
+import net.shopxx.Page;
+import net.shopxx.Pageable;
+import net.shopxx.dao.FiBankbookBalanceDao;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.FiBankbookBalance;
+import net.shopxx.entity.Member;
 import net.shopxx.service.FiBankbookBalanceService;
 
 import org.springframework.stereotype.Service;
@@ -14,7 +21,25 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class FiBankbookBalanceServiceImpl extends BaseServiceImpl<FiBankbookBalance, Long> implements FiBankbookBalanceService {
-
+	
+	@Inject
+	private FiBankbookBalanceDao bankbookBalanceDao;
+	
+	/**
+	 * 查找实体对象分页
+	 *
+	 * @param member
+	 *            会员
+	 * @param country
+	 *            国家
+	 * @param pageable
+	 *            分页信息
+	 * @return 实体对象分页
+	 */
+	public Page<FiBankbookBalance> findPage(Member member, Country country, Pageable pageable){
+		return bankbookBalanceDao.findPage(member, country, pageable);
+	}
+	
 	@Override
 	@Transactional
 	public FiBankbookBalance save(FiBankbookBalance fiBankbookBalance) {
