@@ -4,9 +4,12 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.validator.constraints.Length;
+import com.fasterxml.jackson.annotation.JsonView;
 
 /**
  * Entity - 存折
@@ -21,11 +24,26 @@ public class FiBankbookBalance extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * 用户编码
+	 * 类型
 	 */
-	@Length(max = 20)
-	@Column(name="user_code", nullable = false)
-	private String userCode;
+	public enum Type {
+		/**
+		 * 余额账户
+		 */
+		balance,
+
+		/**
+		 * 购物券账户
+		 */
+		coupon
+	}
+	
+	/**
+	 * 会员
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="user_code", referencedColumnName="usercode")
+	private Member member;
 	
 	/**
 	 * 支付手续费
@@ -34,18 +52,25 @@ public class FiBankbookBalance extends BaseEntity<Long> {
 	private BigDecimal balance;
 	
 	/**
-	 * 类型，type=1 为余额账户 ，type=2购物券账户
+	 * 类型，type=0为余额账户 ，type=1购物券账户
 	 */
-	@Length(max = 2)
-	@Column
-	private String type; 
+	@JsonView(BaseView.class)
+	@Column(nullable = false, updatable = false)
+	private Type type;
 	
-	public String getUserCode() {
-		return userCode;
+	/**
+	 * 国家
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
+	
+	public Member getMember() {
+		return member;
 	}
 
-	public void setUserCode(String userCode) {
-		this.userCode = userCode;
+	public void setMember(Member member) {
+		this.member = member;
 	}
 
 	public BigDecimal getBalance() {
@@ -56,12 +81,19 @@ public class FiBankbookBalance extends BaseEntity<Long> {
 		this.balance = balance;
 	}
 
-	public String getType() {
+	public Type getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(Type type) {
 		this.type = type;
 	}
 
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
 }

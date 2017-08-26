@@ -14,8 +14,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
 import net.shopxx.dao.CountryDao;
 import net.shopxx.entity.Country;
+import net.shopxx.entity.Language;
 import net.shopxx.service.CountryService;
 
 /**
@@ -28,13 +32,32 @@ import net.shopxx.service.CountryService;
 public class CountryServiceImpl extends BaseServiceImpl<Country, Long> implements CountryService {
 
 	@Inject
-	private CountryDao areaDao;
+	private CacheManager cacheManager;
+	@Inject
+	private CountryDao countryDao;
 
 	@Transactional(readOnly = true)
 	public List<Country> findRoots() {
-		return areaDao.findRoots(null);
+		return countryDao.findRoots(null);
 	}
 	
+	/**
+	 * 根据name获取国家
+	 * @param name
+	 * @return
+	 */
+	public Country findByName(String name){
+		Ehcache cache = cacheManager.getEhcache(Language.LANGUAGE_CACHE_NAME);
+		String key = "name_" + name;
+		Element element = cache.get(key);
+		if (element != null) {
+			return (Country)element.getObjectValue();
+		} else {
+			Country country = countryDao.findByName(name);
+			cache.put(new Element(key, country));
+			return country;
+		}
+	}
 
 	@Override
 	@Transactional

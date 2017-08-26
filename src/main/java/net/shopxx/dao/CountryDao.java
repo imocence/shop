@@ -27,6 +27,11 @@ public interface CountryDao extends BaseDao<Country, Long> {
 	 */
 	List<Country> findRoots(Integer count);
 
-
+	/**
+	 * 根据name获取国家
+	 * @param name
+	 * @return
+	 */
+	Country findByName(String name);
 
 }

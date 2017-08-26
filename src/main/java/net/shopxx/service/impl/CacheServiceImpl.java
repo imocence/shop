@@ -54,7 +54,7 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@CacheEvict(value = { "setting", "templateConfig", "pluginConfig", "messageConfig", "index", "area", "seo", "adPosition", "memberAttribute", "navigation", "friendLink", "brand", "attribute", "article", "articleCategory", "articleTag", "product", "productCategory", "productTag", "review",
-			"consultation", "promotion", "sitemap", "commonJs", "transitSteps", "authorization" }, allEntries = true)
+			"consultation", "promotion", "sitemap", "commonJs", "transitSteps", "authorization", "language", "country" }, allEntries = true)
 	public void clear() {
 		freeMarkerConfigurer.getConfiguration().clearTemplateCache();
 		reloadableResourceBundleMessageSource.clearCache();
