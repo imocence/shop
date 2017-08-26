@@ -69,11 +69,7 @@ $().ready(function() {
 					${message("Brand.country")}:
 				</th>
 				<td>
-					<select id="countryId" name="country.id">
-						[#list countries as country]
-							<option value="${country.id}"[#if country.id == parameter.country.id] selected="selected"[/#if]>${country.name}</option>
-						[/#list]
-					</select>
+					${parameter.productCategory.country.name}
 				</td>
 			</tr>
 			<tr>

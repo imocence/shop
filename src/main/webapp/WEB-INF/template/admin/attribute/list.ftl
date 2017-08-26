@@ -41,6 +41,7 @@ $().ready(function() {
 		${message("admin.attribute.list")} <span>(${message("admin.page.total", page.total)})</span>
 	</div>
 	<form id="listForm" action="list" method="get">
+		 <input type="hidden" id="countryId" name="countryId" value="${countryId}" />
 		<div class="bar">
 			<a href="add" class="iconButton">
 				<span class="addIcon">&nbsp;</span>${message("admin.common.add")}
@@ -117,7 +118,7 @@ $().ready(function() {
 						<input type="checkbox" name="ids" value="${attribute.id}" />
 					</td>
 					<td>
-						${brand.country.name}
+						${attribute.productCategory.country.name}
 					</td>
 					<td>
 						${attribute.name}

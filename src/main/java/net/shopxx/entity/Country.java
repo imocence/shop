@@ -51,6 +51,13 @@ public class Country extends OrderedEntity<Long> {
     private Set<Area> areas = new HashSet<>();
     
     /**
+     * 下级地区
+     */
+    @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
+    @OrderBy("order asc")
+    private Set<ProductCategory> productCategories = new HashSet<>();
+    
+    /**
      * 下级地品牌
      */
     @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)

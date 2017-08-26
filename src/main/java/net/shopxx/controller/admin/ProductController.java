@@ -30,6 +30,7 @@ import net.shopxx.Pageable;
 import net.shopxx.entity.Attribute;
 import net.shopxx.entity.BaseEntity;
 import net.shopxx.entity.Brand;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Parameter;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.ProductCategory;
@@ -39,6 +40,7 @@ import net.shopxx.entity.Sku;
 import net.shopxx.entity.Specification;
 import net.shopxx.service.AttributeService;
 import net.shopxx.service.BrandService;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.ParameterValueService;
 import net.shopxx.service.ProductCategoryService;
 import net.shopxx.service.ProductImageService;
@@ -81,6 +83,9 @@ public class ProductController extends BaseController {
 	private AttributeService attributeService;
 	@Inject
 	private SpecificationService specificationService;
+	
+	@Inject
+	private CountryService countryService;
 
 	/**
 	 * 检查编号是否存在
@@ -153,14 +158,37 @@ public class ProductController extends BaseController {
 	 */
 	@GetMapping("/add")
 	public String add(ModelMap model) {
-		model.addAttribute("types", Product.Type.values());
+	    List<Country> countries = countryService.findRoots();
+        if (countries != null && !countries.isEmpty()) {
+            return listByCountry(countries.get(0).getId(), model);
+        }
+        
+		/*model.addAttribute("types", Product.Type.values());
 		model.addAttribute("productCategoryTree", productCategoryService.findTree());
 		model.addAttribute("brands", brandService.findAll());
 		model.addAttribute("promotions", promotionService.findAll());
 		model.addAttribute("productTags", productTagService.findAll());
-		model.addAttribute("specifications", specificationService.findAll());
+		model.addAttribute("countries", countryService.findRoots());
+		model.addAttribute("specifications", specificationService.findAll());*/
 		return "admin/product/add";
 	}
+	
+	   /**
+     * 添加
+     */
+    @GetMapping("listByCountry")
+    public String listByCountry(Long countryId,ModelMap model) {
+        Country country = countryService.find(countryId);
+        model.addAttribute("countryId", countryId);
+        model.addAttribute("productCategoryTree", productCategoryService.findTree(country));
+        model.addAttribute("countries", countryService.findRoots());
+        model.addAttribute("brands", country.getBrands());
+        model.addAttribute("types", Product.Type.values());
+        model.addAttribute("promotions", promotionService.findAll());
+        model.addAttribute("productTags", productTagService.findAll());
+        model.addAttribute("specifications", specificationService.findAll());
+        return "admin/product/add";
+    }
 
 	/**
 	 * 保存

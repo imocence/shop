@@ -117,7 +117,7 @@ $().ready(function() {
 						<input type="checkbox" name="ids" value="${parameter.id}" />
 					</td>
 					<td>
-						${parameter.country.name}
+						${parameter.productCategory.country.name}
 					</td>
 					<td>
 						${parameter.group}

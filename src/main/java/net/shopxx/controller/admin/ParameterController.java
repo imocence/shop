@@ -5,6 +5,8 @@
  */
 package net.shopxx.controller.admin;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -53,11 +55,29 @@ public class ParameterController extends BaseController {
 	 */
 	@GetMapping("/add")
 	public String add(Long sampleId, ModelMap model) {
-		model.addAttribute("sample", parameterService.find(sampleId));
+	    List<Country> countries = countryService.findRoots();
+        if (countries != null && !countries.isEmpty()) {
+            return listByCountry(countries.get(0).getId(), model);
+        }
+        
+		/*model.addAttribute("sample", parameterService.find(sampleId));
 		model.addAttribute("countries", countryService.findRoots());
-		model.addAttribute("productCategoryTree", productCategoryService.findTree());
+		model.addAttribute("productCategoryTree", productCategoryService.findTree());*/
 		return "admin/parameter/add";
 	}
+
+	
+    /**
+     * 添加
+     */
+    @GetMapping("/listByCountry")
+    public String listByCountry(Long countryId,ModelMap model) {
+        Country country = countryService.find(countryId);
+        model.addAttribute("countryId", countryId);
+        model.addAttribute("productCategoryTree", productCategoryService.findTree(country));
+        model.addAttribute("countries", countryService.findRoots());
+        return "admin/parameter/add";
+    }
 
 	/**
 	 * 保存
@@ -75,7 +95,6 @@ public class ParameterController extends BaseController {
 			return ERROR_VIEW;
 		}
 		
-		parameter.setCountry(countryService.find(parameter.getCountry().getId()));
 		parameterService.save(parameter);
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -105,7 +124,6 @@ public class ParameterController extends BaseController {
 		if (!isValid(parameter, BaseEntity.Update.class)) {
 			return ERROR_VIEW;
 		}
-		parameter.setCountry(countryService.find(parameter.getCountry().getId()));
 		parameterService.update(parameter, "productCategory");
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";

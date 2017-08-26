@@ -63,13 +63,6 @@ public class Attribute extends OrderedEntity<Long> {
 	@Column(nullable = false, length = 4000)
 	@Convert(converter = OptionConverter.class)
 	private List<String> options = new ArrayList<>();
-	
-	   /**
-     * 国家
-     */
-    @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.REFRESH)
-    @JoinColumn(nullable = true)
-    private Country country;
 
 	/**
 	 * 获取名称
@@ -157,14 +150,6 @@ public class Attribute extends OrderedEntity<Long> {
 	public static class OptionConverter extends BaseAttributeConverter<List<String>> {
 	}
 
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }
-	
 	
 
 }

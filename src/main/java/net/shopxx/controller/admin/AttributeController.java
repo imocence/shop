@@ -5,6 +5,8 @@
  */
 package net.shopxx.controller.admin;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -54,11 +56,29 @@ public class AttributeController extends BaseController {
 	 */
 	@GetMapping("/add")
 	public String add(Long sampleId, ModelMap model) {
-		model.addAttribute("sample", attributeService.find(sampleId));
+	    
+	    List<Country> countries = countryService.findRoots();
+        if (countries != null && !countries.isEmpty()) {
+            return listByCountry(countries.get(0).getId(), model);
+        }
+        
+		/*model.addAttribute("sample", attributeService.find(sampleId));
 		model.addAttribute("productCategoryTree", productCategoryService.findTree());
-		model.addAttribute("countries", countryService.findRoots());
+		model.addAttribute("countries", countryService.findRoots());*/
 		return "admin/attribute/add";
 	}
+	
+	/**
+     * 添加
+     */
+    @GetMapping("/listByCountry")
+    public String listByCountry(Long countryId,ModelMap model) {
+        Country country = countryService.find(countryId);
+        model.addAttribute("countryId", countryId);
+        model.addAttribute("productCategoryTree", productCategoryService.findTree(country));
+        model.addAttribute("countries", countryService.findRoots());
+        return "admin/attribute/add";
+    }
 
 	/**
 	 * 保存
@@ -75,7 +95,6 @@ public class AttributeController extends BaseController {
 		if (!isValid(attribute, BaseEntity.Save.class)) {
 			return ERROR_VIEW;
 		}
-		attribute.setCountry(countryService.find(attribute.getCountry().getId()));
 		
 		Integer propertyIndex = attributeService.findUnusedPropertyIndex(attribute.getProductCategory());
 		if (propertyIndex == null) {
@@ -113,7 +132,7 @@ public class AttributeController extends BaseController {
 		if (!isValid(attribute)) {
 			return ERROR_VIEW;
 		}
-		attribute.setCountry(countryService.find(attribute.getCountry().getId()));
+		
 		attributeService.update(attribute, "propertyIndex", "productCategory");
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";

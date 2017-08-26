@@ -56,6 +56,8 @@ $().ready(function() {
 	var parameterIndex = 0;
 	var specificationItemEntryId = 0;
 	var hasSpecification = false;
+	var $countryId = $("#countryId");
+	var $countrySelect = $("#countrySelect");
 	
 	[@flash_message /]
 	
@@ -711,6 +713,17 @@ $().ready(function() {
 			form.submit();
 		}
 	});
+	
+	$countrySelect.change(function(){ 
+        $countryId.val($(this).children('option:selected').val());
+        $("#name").val("test");
+        $("#price").val(20);
+        $("#stock").val(20);
+        $inputForm.attr('method','get');      
+        $inputForm.attr('action','listByCountry');      
+       	
+        $inputForm.submit();
+	}) 
 
 });
 </script>
@@ -721,6 +734,14 @@ $().ready(function() {
 	</div>
 	<form id="inputForm" action="save" method="post" enctype="multipart/form-data">
 		<input type="hidden" id="isDefault" name="sku.isDefault" value="true" />
+		<input type="hidden" id="countryId" name="countryId" value="${countryId}" />
+		<ul>
+			<select id="countrySelect" name="country.id">
+				[#list countries as country]
+					<option value="${country.id}"[#if country.id == countryId] selected="selected"[/#if]>${country.name}</option>
+				[/#list]
+			</select>
+		</ul>
 		<ul id="tab" class="tab">
 			<li>
 				<input type="button" value="${message("admin.product.base")}" />
@@ -786,7 +807,7 @@ $().ready(function() {
 					<span class="requiredField">*</span>${message("Product.name")}:
 				</th>
 				<td>
-					<input type="text" name="name" class="text" maxlength="200" />
+					<input type="text" id="name" name="name" class="text" maxlength="200" />
 				</td>
 			</tr>
 			<tr>

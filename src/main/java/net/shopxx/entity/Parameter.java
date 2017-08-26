@@ -51,13 +51,6 @@ public class Parameter extends OrderedEntity<Long> {
 	private ProductCategory productCategory;
 	
 	/**
-     * 国家
-     */
-    @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.REFRESH)
-    @JoinColumn(nullable = true)
-    private Country country;
-
-	/**
 	 * 参数名称
 	 */
 	@NotEmpty
@@ -132,14 +125,6 @@ public class Parameter extends OrderedEntity<Long> {
 	public static class NameConverter extends BaseAttributeConverter<List<String>> {
 	}
 
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }
-	
 	
 
 }

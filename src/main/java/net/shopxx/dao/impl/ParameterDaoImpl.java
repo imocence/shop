@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +19,7 @@ import net.shopxx.dao.ParameterDao;
 import net.shopxx.entity.Brand;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.Parameter;
+import net.shopxx.entity.ProductCategory;
 
 /**
  * Dao - 参数
@@ -36,7 +38,11 @@ public class ParameterDaoImpl extends BaseDaoImpl<Parameter, Long> implements Pa
         criteriaQuery.select(root);
         Predicate restrictions = criteriaBuilder.conjunction();
         if (country != null) {
-            restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("country"), country));
+            Subquery<ProductCategory> subquery = criteriaQuery.subquery(ProductCategory.class);
+            Root<ProductCategory> subqueryRoot = subquery.from(ProductCategory.class);
+            subquery.select(subqueryRoot);
+            subquery.where(criteriaBuilder.equal(subqueryRoot.get("country"), country));
+            restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.in(root.get("productCategory")).value(subquery));
         }
         criteriaQuery.where(restrictions);
         return super.findPage(criteriaQuery, pageable);

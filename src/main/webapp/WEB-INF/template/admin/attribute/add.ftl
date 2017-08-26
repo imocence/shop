@@ -17,6 +17,9 @@ $().ready(function() {
 	var $inputForm = $("#inputForm");
 	var $addOptionButton = $("#addOptionButton");
 	var $optionTable = $("#optionTable");
+	var $countryId = $("#countryId");
+	var $countrySelect = $("#countrySelect");
+	var $name = $("#name");
 	
 	[@flash_message /]
 	
@@ -54,6 +57,16 @@ $().ready(function() {
 			options: "required"
 		}
 	});
+	
+	$countrySelect.change(function(){ 
+        $countryId.val($(this).children('option:selected').val());
+        $("input[name='name']").val("test");
+        $("input[name='options']").val("test");	
+        $inputForm.attr('method','get');      
+        $inputForm.attr('action','listByCountry');      
+       	
+        $inputForm.submit();
+	}) 
 
 });
 </script>
@@ -63,15 +76,16 @@ $().ready(function() {
 		${message("admin.attribute.add")}
 	</div>
 	<form id="inputForm" action="save" method="post">
+		<input type="hidden" id="countryId" name="countryId" value="${countryId}" />
 		<table class="input">
 			<tr>
 				<th>
 					${message("Brand.country")}:
 				</th>
 				<td>
-					<select id="countryId" name="country.id">
+					<select id="countrySelect" name="country.id">
 						[#list countries as country]
-							<option value="${country.id}">${country.name}</option>
+							<option value="${country.id}"[#if country.id == countryId] selected="selected"[/#if]>${country.name}</option>
 						[/#list]
 					</select>
 				</td>
