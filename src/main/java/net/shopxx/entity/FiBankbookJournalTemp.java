@@ -21,14 +21,14 @@ import org.hibernate.validator.constraints.Length;
 import com.fasterxml.jackson.annotation.JsonView;
 
 /**
- * Entity - 交易记录表
+ * Entity - 交易记录临时表
  * 
  * @author gaoxiang
  * @version 1.0.0
  */
 @Entity
-@Table(name="fi_bankbook_journal")
-public class FiBankbookJournal extends BaseEntity<Long> {
+@Table(name="fi_bankbook_journal_temp")
+public class FiBankbookJournalTemp extends BaseEntity<Long> {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -84,6 +84,23 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	}
 	
 	/**
+	 * 核实状态
+	 * @author gaoxiang
+	 *
+	 */
+	public enum ConfirmStatus {
+		/**
+		 * 未核实
+		 */
+		unconfirmed,
+		
+		/**
+		 * 已核实
+		 */
+		confirmed;
+	}
+	
+	/**
 	 * 国家
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -102,7 +119,7 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	 */
 	@JsonView(BaseView.class)
 	@Column(name="deal_type")
-	private FiBankbookJournal.DealType dealType;
+	private FiBankbookJournalTemp.DealType dealType;
 	
 	/**
 	 * 处理日期
@@ -124,12 +141,6 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	@Length(max = 255)
 	@Column
 	private String notes; 
-	
-	/**
-	 * 余额
-	 */
-	@Column(precision = 21, scale = 6)
-	private BigDecimal balance;
 	
 	/**
 	 * 备注
@@ -157,7 +168,7 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	 */
 	@JsonView(BaseView.class)
 	@Column(name="money_type")
-	private FiBankbookJournal.MoneyType moneyType;
+	private FiBankbookJournalTemp.MoneyType moneyType;
 	
 	/**
 	 * 唯一标示
@@ -167,31 +178,32 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	private String uniqueCode; 
 	
 	/**
-	 * 上一条交易记录ID
-	 */
-	@Length(max = 20)
-	@Column(name="last_id")
-	private Long lastId; 
-	
-	/**
-	 * 上一条交易记录的金额
-	 */
-	@Column(name="last_money", precision = 21, scale = 6)
-	private BigDecimal lastMoney;
-	
-	
-	/**
 	 * 类型  0:电子币账户  1:购物券账户
 	 */
 	@JsonView(BaseView.class)
 	@Column(name="type")
-	private FiBankbookJournal.Type type;
+	private FiBankbookJournalTemp.Type type;
 	
 	/**
-	 * 交易记录线下表ID
+	 * 核实人标示
 	 */
-	@Column(name="journal_temp_id")
-	private Integer journalTempId; 
+	@Length(max = 20)
+	@Column(name="confirm_code")
+	private String confirmCode; 
+	
+	/**
+	 * 核实人名称
+	 */
+	@Length(max = 255)
+	@Column(name="confirm_name")
+	private String confirmName; 
+	
+	/**
+	 * 类型  0:未核实  1:已核实
+	 */
+	@JsonView(BaseView.class)
+	@Column(name="confirm_status")
+	private FiBankbookJournalTemp.ConfirmStatus confirmStatus;
 
 	public Date getDealDate() {
 		return dealDate;
@@ -215,14 +227,6 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 
 	public void setNotes(String notes) {
 		this.notes = notes;
-	}
-
-	public BigDecimal getBalance() {
-		return balance;
-	}
-
-	public void setBalance(BigDecimal balance) {
-		this.balance = balance;
 	}
 
 	public String getRemark() {
@@ -257,22 +261,6 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 		this.uniqueCode = uniqueCode;
 	}
 
-	public Long getLastId() {
-		return lastId;
-	}
-
-	public void setLastId(Long lastId) {
-		this.lastId = lastId;
-	}
-
-	public BigDecimal getLastMoney() {
-		return lastMoney;
-	}
-
-	public void setLastMoney(BigDecimal lastMoney) {
-		this.lastMoney = lastMoney;
-	}
-
 	public Country getCountry() {
 		return country;
 	}
@@ -289,35 +277,51 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 		this.member = member;
 	}
 
-	public FiBankbookJournal.DealType getDealType() {
+	public FiBankbookJournalTemp.DealType getDealType() {
 		return dealType;
 	}
 
-	public void setDealType(FiBankbookJournal.DealType dealType) {
+	public void setDealType(FiBankbookJournalTemp.DealType dealType) {
 		this.dealType = dealType;
 	}
 
-	public FiBankbookJournal.MoneyType getMoneyType() {
+	public FiBankbookJournalTemp.MoneyType getMoneyType() {
 		return moneyType;
 	}
 
-	public void setMoneyType(FiBankbookJournal.MoneyType moneyType) {
+	public void setMoneyType(FiBankbookJournalTemp.MoneyType moneyType) {
 		this.moneyType = moneyType;
 	}
 
-	public FiBankbookJournal.Type getType() {
+	public FiBankbookJournalTemp.Type getType() {
 		return type;
 	}
 
-	public void setType(FiBankbookJournal.Type type) {
+	public void setType(FiBankbookJournalTemp.Type type) {
 		this.type = type;
 	}
 
-	public Integer getJournalTempId() {
-		return journalTempId;
+	public String getConfirmCode() {
+		return confirmCode;
 	}
 
-	public void setJournalTempId(Integer journalTempId) {
-		this.journalTempId = journalTempId;
+	public void setConfirmCode(String confirmCode) {
+		this.confirmCode = confirmCode;
+	}
+
+	public String getConfirmName() {
+		return confirmName;
+	}
+
+	public void setConfirmName(String confirmName) {
+		this.confirmName = confirmName;
+	}
+
+	public FiBankbookJournalTemp.ConfirmStatus getConfirmStatus() {
+		return confirmStatus;
+	}
+
+	public void setConfirmStatus(FiBankbookJournalTemp.ConfirmStatus confirmStatus) {
+		this.confirmStatus = confirmStatus;
 	}
 }

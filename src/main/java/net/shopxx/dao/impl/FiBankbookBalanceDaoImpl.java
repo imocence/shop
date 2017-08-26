@@ -9,7 +9,6 @@ import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.dao.FiBankbookBalanceDao;
 import net.shopxx.entity.Country;
-import net.shopxx.entity.DepositLog;
 import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.Member;
 

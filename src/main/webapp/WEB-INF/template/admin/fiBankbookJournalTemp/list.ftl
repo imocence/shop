@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>${message("admin.fiBankbookBalance.list")} - Powered By SHOP++</title>
+<title>${message("admin.fiBankbookJournalTemp.list")} - Powered By SHOP++</title>
 <meta name="author" content="SHOP++ Team" />
 <meta name="copyright" content="SHOP++" />
 <link href="${base}/resources/admin/css/common.css" rel="stylesheet" type="text/css" />
@@ -25,6 +25,10 @@ $().ready(function() {
 	var $type = $("#type");
 	var $typeMenu = $("#typeMenu");
 	var $typeMenuItem = $("#typeMenu li");
+	
+	var $confirmStatus = $("#confirmStatus");
+	var $confirmStatusMenu = $("#confirmStatusMenu");
+	var $confirmStatusMenuItem = $("#confirmStatusMenu li");
 	
 	$moneyTypeMenu.hover(
 		function() {
@@ -52,17 +56,30 @@ $().ready(function() {
 		$listForm.submit();
 	});
 	
+	$confirmStatusMenu.hover(
+		function() {
+			$(this).children("ul").show();
+		}, function() {
+			$(this).children("ul").hide();
+		}
+	);
+	
+	$confirmStatusMenuItem.click(function() {
+		$confirmStatus.val($(this).attr("val"));
+		$listForm.submit();
+	});
 });
 </script>
 </head>
 <body>
 	<div class="breadcrumb">
-		${message("admin.fiBankbookJournal.list")} <span>(${message("admin.page.total", page.total)})</span>
+		${message("admin.fiBankbookJournalTemp.list")} <span>(${message("admin.page.total", page.total)})</span>
 	</div>
 	<form id="listForm" action="list" method="get">
 		<input type="hidden" id="countryName" name="countryName" value="${countryName}" />
 		<input type="hidden" id="type" name="type" value="${type}" />
 		<input type="hidden" id="moneyType" name="moneyType" value="${moneyType}" />
+		<input type="hidden" id="confirmStatus" name="confirmStatus" value="${confirmStatus}" />
 		<div class="bar">
 			<div class="buttonGroup">
 				<a href="javascript:;" id="refreshButton" class="iconButton">
@@ -114,6 +131,17 @@ $().ready(function() {
 						[/#list]
 					</ul>
 				</div>
+				<div id="confirmStatusMenu" class="dropdownMenu">
+					<a href="javascript:;" class="button">
+						${message("admin.fiBankbookJournalTemp.confirmStatus")}<span class="arrow">&nbsp;</span>
+					</a>
+					<ul>
+						<li[#if confirmStatus == null] class="current"[/#if] val="">${message("admin.common.choose")}</li>
+						[#list confirmStatuss as value]
+							<li[#if value == confirmStatus] class="current"[/#if] val="${value}">${message("admin.fiBankbookJournalTemp.confirmStatus." + value)}</li>
+						[/#list]
+					</ul>
+				</div>
 			</div>
 			<div id="searchPropertyMenu" class="dropdownMenu">
 				<div class="search">
@@ -123,14 +151,15 @@ $().ready(function() {
 				</div>
 				<ul>
 					<li[#if page.searchProperty == "member.usercode"] class="current"[/#if] val="member.usercode">${message("common.member.code")}</li>
-					<li[#if page.searchProperty == "uniqueCode"] class="current"[/#if] val="uniqueCode">${message("admin.fiBankbookJournal.uniqueCode")}</li>
+					<li[#if page.searchProperty == "createrName"] class="current"[/#if] val="createrName">${message("common.createrName")}</li>
 				</ul>
 			</div>
-			${message("admin.fiBankbookJournal.date")}:
+			${message("common.createdDate")}:
 			<input type="text" id="beginDate" name="beginDate" class="text Wdate" value="[#if beginDate??]${beginDate?string("yyyy-MM-dd HH:mm:ss")}[/#if]" style="width: 140px;" onfocus="WdatePicker({lang:'${message("Setting.locale.lang")}', maxDate: '#F{$dp.$D(\'endDate\')}', dateFmt:'yyyy-MM-dd HH:mm:ss'});" />
 			-
 			<input type="text" id="endDate" name="endDate" class="text Wdate" value="[#if endDate??]${endDate?string("yyyy-MM-dd HH:mm:ss")}[/#if]" style="width: 140px;" onfocus="WdatePicker({lang:'${message("Setting.locale.lang")}', minDate: '#F{$dp.$D(\'beginDate\')}', dateFmt:'yyyy-MM-dd HH:mm:ss'});" />
 			<input type="submit" class="button" value="${message("common.button.search")}" />
+				<input type="button" class="button" value="${message("admin.fiBankbookJournalTemp.button.confirm")}" />
 		</div>
 		<table id="listTable" class="list">
 			<tr>
@@ -141,13 +170,13 @@ $().ready(function() {
 					<a href="javascript:;" class="sort" name="member.username">${message("common.member.name")}</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="dealDate">${message("admin.fiBankbookJournal.date")}</a>
-				</th>
-				<th>
 					<a href="javascript:;" class="sort" name="type">${message("admin.fiBankbookJournal.type")}</a>
 				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="moneyType">${message("admin.fiBankbookJournal.moneyType")}</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="dealType">${message("admin.fiBankbookJournalTemp.dealType")}</a>
 				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="uniqueCode">${message("admin.fiBankbookJournal.uniqueCode")}</a>
@@ -156,16 +185,22 @@ $().ready(function() {
 					<a href="javascript:;" class="sort" name="notes">${message("admin.fiBankbookJournal.notes")}</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="dealType">${message("admin.fiBankbookJournal.dealType.deposit")}</a>
+					<a href="javascript:;" >${message("admin.fiBankbookJournal.dealType.deposit")}</a>
 				</th>
 				<th>
 					<a href="javascript:;" >${message("admin.fiBankbookJournal.dealType.takeout")}</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="balance">${message("admin.fiBankbookJournal.balance")}</a>
+					<a href="javascript:;" class="sort" name="confirmStatus">${message("admin.fiBankbookJournalTemp.confirmStatus")}</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="createrName">${message("admin.fiBankbookJournal.operator")}</a>
+					<a href="javascript:;" class="sort" name="createrName">${message("common.createrName")}</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="createdDate">${message("common.createdDate")}</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="confirmName">${message("admin.fiBankbookJournalTemp.confirmName")}</a>
 				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="country">${message("common.country")}</a>
@@ -180,13 +215,13 @@ $().ready(function() {
 						${fiBankbookJournal.member.username}
 					</td>
 					<td>
-						<span title="${fiBankbookJournal.dealDate?string("yyyy-MM-dd HH:mm:ss")}">${fiBankbookJournal.dealDate?string("yyyy-MM-dd HH:mm:ss")}</span>
-					</td>
-					<td>
 						${message("admin.fiBankbookJournal.type." + fiBankbookJournal.type)}
 					</td>
 					<td>
 						${message("admin.fiBankbookJournal.moneyType." + fiBankbookJournal.moneyType)}
+					</td>
+					<td>
+						${message("admin.fiBankbookJournal.dealType." + fiBankbookJournal.dealType)}
 					</td>
 					<td>
 						${fiBankbookJournal.uniqueCode}
@@ -199,19 +234,27 @@ $().ready(function() {
 							${fiBankbookJournal.money}
 						</td>
 						<td>
+							0.00
 						</td>
 					[#else]
 						<td>
+							0.00
 						</td>
 						<td>
 							${fiBankbookJournal.money}
 						</td>
 					[/#if]
 					<td>
-						${fiBankbookJournal.balance}
+						${message("admin.fiBankbookJournalTemp.confirmStatus." + fiBankbookJournal.confirmStatus)}
 					</td>
 					<td>
 						${fiBankbookJournal.createrName}
+					</td>
+					<td>
+						<span title="${fiBankbookJournal.createdDate?string("yyyy-MM-dd HH:mm:ss")}">${fiBankbookJournal.createdDate?string("yyyy-MM-dd HH:mm:ss")}</span>
+					</td>
+					<td>
+						${fiBankbookJournal.confirmName}
 					</td>
 					<td>
 						${message("${fiBankbookJournal.country.nameLocal}")}

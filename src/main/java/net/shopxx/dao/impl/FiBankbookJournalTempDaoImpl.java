@@ -9,9 +9,9 @@ import javax.persistence.criteria.Root;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
-import net.shopxx.dao.FiBankbookJournalDao;
+import net.shopxx.dao.FiBankbookJournalTempDao;
 import net.shopxx.entity.Country;
-import net.shopxx.entity.FiBankbookJournal;
+import net.shopxx.entity.FiBankbookJournalTemp;
 
 import org.springframework.stereotype.Repository;
 
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Repository;
  * @version 5.0.3
  */
 @Repository
-public class FiBankbookJournalDaoImpl extends BaseDaoImpl<FiBankbookJournal, Long> implements FiBankbookJournalDao {
+public class FiBankbookJournalTempDaoImpl extends BaseDaoImpl<FiBankbookJournalTemp, Long> implements FiBankbookJournalTempDao {
 	
 	/**
 	 * 查找交易记录分页
@@ -33,6 +33,8 @@ public class FiBankbookJournalDaoImpl extends BaseDaoImpl<FiBankbookJournal, Lon
 	 *            账户类型
 	 * @param moneyType
 	 *            资金类型
+	 * @param confirmStatus
+	 *            核实状态
 	 * @param beginDate
 	 *            起始日期
 	 * @param endDate
@@ -41,10 +43,10 @@ public class FiBankbookJournalDaoImpl extends BaseDaoImpl<FiBankbookJournal, Lon
 	 *            分页信息
 	 * @return 交易记录分页
 	 */
-	public Page<FiBankbookJournal> findPage(Country country, FiBankbookJournal.Type type, FiBankbookJournal.MoneyType moneyType, Date beginDate, Date endDate, Pageable pageable){
+	public Page<FiBankbookJournalTemp> findPage(Country country, FiBankbookJournalTemp.Type type, FiBankbookJournalTemp.MoneyType moneyType, FiBankbookJournalTemp.ConfirmStatus confirmStatus, Date beginDate, Date endDate, Pageable pageable){
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<FiBankbookJournal> criteriaQuery = criteriaBuilder.createQuery(FiBankbookJournal.class);
-		Root<FiBankbookJournal> root = criteriaQuery.from(FiBankbookJournal.class);
+		CriteriaQuery<FiBankbookJournalTemp> criteriaQuery = criteriaBuilder.createQuery(FiBankbookJournalTemp.class);
+		Root<FiBankbookJournalTemp> root = criteriaQuery.from(FiBankbookJournalTemp.class);
 		criteriaQuery.select(root);
 		Predicate restrictions = criteriaBuilder.conjunction();
 		if (country != null) {
@@ -56,11 +58,14 @@ public class FiBankbookJournalDaoImpl extends BaseDaoImpl<FiBankbookJournal, Lon
 		if (moneyType != null) {
 			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("moneyType"), moneyType));
 		}
+		if (confirmStatus != null) {
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("confirmStatus"), confirmStatus));
+		}
 		if (beginDate != null) {
-			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.or(criteriaBuilder.greaterThanOrEqualTo(root.<Date>get("dealDate"), beginDate)));
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.or(criteriaBuilder.greaterThanOrEqualTo(root.<Date>get("createdDate"), beginDate)));
 		}
 		if (endDate != null) {
-			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.or(criteriaBuilder.lessThanOrEqualTo(root.<Date>get("dealDate"), endDate)));
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.or(criteriaBuilder.lessThanOrEqualTo(root.<Date>get("createdDate"), endDate)));
 		}
 		criteriaQuery.where(restrictions);
 		return super.findPage(criteriaQuery, pageable);
