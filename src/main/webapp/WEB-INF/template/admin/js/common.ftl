@@ -27,7 +27,8 @@ var messages = {
 	"admin.dialog.ok": "${message("admin.dialog.ok")}",
 	"admin.dialog.cancel": "${message("admin.dialog.cancel")}",
 	"admin.dialog.deleteConfirm": "${message("admin.dialog.deleteConfirm")}",
-	"admin.dialog.clearConfirm": "${message("admin.dialog.clearConfirm")}"
+	"admin.dialog.clearConfirm": "${message("admin.dialog.clearConfirm")}",
+	"admin.dialog.verifyConfirm": "${message("admin.dialog.verifyConfirm")}"
 };
 
 // UUID

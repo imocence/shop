@@ -49,6 +49,23 @@ public class FiBankbookJournalTempServiceImpl extends BaseServiceImpl<FiBankbook
 		return fiBankbookJournalTempDao.findPage(country, type, moneyType, confirmStatus, beginDate, endDate, pageable);
 	}
 	
+	/**
+	 * 核实实体对象
+	 * 
+	 * @param ids
+	 *            ID
+	 */
+	@SuppressWarnings("unchecked")
+	public void confirm(Long... ids){
+		if (ids != null) {
+			for (Long id : ids) {
+				FiBankbookJournalTemp entity = fiBankbookJournalTempDao.find(id);
+				entity.setConfirmStatus(FiBankbookJournalTemp.ConfirmStatus.confirmed);
+				fiBankbookJournalTempDao.persist(entity);
+			}
+		}
+	}
+	
 	@Override
 	@Transactional
 	public FiBankbookJournalTemp save(FiBankbookJournalTemp fiBankbookJournalTemp) {

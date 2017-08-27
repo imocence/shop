@@ -35,4 +35,13 @@ public interface FiBankbookJournalTempService extends BaseService<FiBankbookJour
 	 * @return 交易记录分页
 	 */
 	Page<FiBankbookJournalTemp> findPage(Country country, FiBankbookJournalTemp.Type type, FiBankbookJournalTemp.MoneyType moneyType, FiBankbookJournalTemp.ConfirmStatus confirmStatus, Date beginDate, Date endDate, Pageable pageable);
+	
+	/**
+	 * 核实实体对象
+	 * 
+	 * @param ids
+	 *            ID
+	 */
+	@SuppressWarnings("unchecked")
+	void confirm(Long... ids);
 }

@@ -70,4 +70,5 @@ public class FiBankbookJournalTempDaoImpl extends BaseDaoImpl<FiBankbookJournalT
 		criteriaQuery.where(restrictions);
 		return super.findPage(criteriaQuery, pageable);
 	}
+	
 }
