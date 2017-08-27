@@ -306,19 +306,22 @@ public class ProductController extends BaseController {
 	 */
 	@GetMapping("/list")
 	public String list(Product.Type type,Long countryId, Long productCategoryId, Long brandId, Long promotionId, Long productTagId, Boolean isMarketable, Boolean isList, Boolean isTop, Boolean isOutOfStock, Boolean isStockAlert, Pageable pageable, ModelMap model) {
-		//todo
+	    Country country = null;
 	    if (countryId != null) {
-		    Country country =   countryService.find(countryId);
+		    country =   countryService.find(countryId);
+		    model.addAttribute("brands",country.getBrands());
+		    model.addAttribute("productCategoryTree", productCategoryService.findTree(country));
+		} else  {
+		    model.addAttribute("productCategoryTree", productCategoryService.findTree());
+	        model.addAttribute("brands", brandService.findAll());
 		}
 	    ProductCategory productCategory = productCategoryService.find(productCategoryId);
 		Brand brand = brandService.find(brandId);
 		Promotion promotion = promotionService.find(promotionId);
 		ProductTag productTag = productTagService.find(productTagId);
 		model.addAttribute("types", Product.Type.values());
-		model.addAttribute("productCategoryTree", productCategoryService.findTree());
-		model.addAttribute("brands", brandService.findAll());
-		model.addAttribute("promotions", promotionService.findAll());
-		model.addAttribute("productTags", productTagService.findAll());
+//		model.addAttribute("promotions", promotionService.findAll());
+//		model.addAttribute("productTags", productTagService.findAll());
 		model.addAttribute("type", type);
 		model.addAttribute("productCategoryId", productCategoryId);
 		model.addAttribute("brandId", brandId);
@@ -330,7 +333,7 @@ public class ProductController extends BaseController {
 		model.addAttribute("isOutOfStock", isOutOfStock);
 		model.addAttribute("isStockAlert", isStockAlert);
 		model.addAttribute("countries", countryService.findRoots());
-		model.addAttribute("page", productService.findPage(type, productCategory, brand, promotion, productTag, null, null, null, isMarketable, isList, isTop, isOutOfStock, isStockAlert, null, null, pageable));
+		model.addAttribute("page", productService.findPage(type, productCategory, country, brand, promotion, productTag, null, null, null, isMarketable, isList, isTop, isOutOfStock, isStockAlert, null, null, pageable));
 		return "admin/product/list";
 	}
 

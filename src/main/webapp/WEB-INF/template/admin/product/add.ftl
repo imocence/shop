@@ -744,7 +744,7 @@ $().ready(function() {
 	<form id="inputForm" action="save" method="post" enctype="multipart/form-data">
 		<input type="hidden" id="isDefault" name="sku.isDefault" value="true" />
 		<input type="hidden" id="countryId" name="countryId" value="${countryId}" />
-		<ul>
+		<ul style="padding-left: 160px;padding-top:15px">
 			<select id="countrySelect" name="country.id">
 				[#list countries as country]
 					<option value="${country.id}"[#if country.id == countryId] selected="selected"[/#if]>${country.name}</option>

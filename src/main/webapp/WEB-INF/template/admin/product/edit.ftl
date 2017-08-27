@@ -747,7 +747,7 @@ $().ready(function() {
 	<form id="inputForm" action="update" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="id" value="${product.id}" />
 		<input type="hidden" id="isDefault" name="sku.isDefault" value="true" />
-		${message("Brand.country")}:${product.productCategory.country.name}
+		<div style="padding-left: 160px;padding-top:15px">${message("Brand.country")}:${product.productCategory.country.name}</div>
 		<ul id="tab" class="tab">
 			<li>
 				<input type="button" value="${message("admin.product.base")}" />
