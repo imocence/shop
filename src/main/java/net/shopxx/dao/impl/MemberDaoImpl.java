@@ -5,18 +5,22 @@
  */
 package net.shopxx.dao.impl;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.dao.MemberDao;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
 
@@ -85,5 +89,29 @@ public class MemberDaoImpl extends BaseDaoImpl<Member, Long> implements MemberDa
 		String jpql = "update Member mem set mem." + propertyName + " = null";
 		entityManager.createQuery(jpql).executeUpdate();
 	}
+	
+	/**
+	 * 根据编号和名称查找会员
+	 * @param keyword
+	 * @param country
+	 * @param count
+	 * @return
+	 */
+	public List<Member> search(String keyword, Country country, Integer count) {
+		if (StringUtils.isEmpty(keyword)) {
+			return Collections.emptyList();
+		}
 
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Member> criteriaQuery = criteriaBuilder.createQuery(Member.class);
+		Root<Member> root = criteriaQuery.from(Member.class);
+		criteriaQuery.select(root);
+		Predicate restrictions = criteriaBuilder.conjunction();
+		if (country != null) {
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("country"), country));
+		}
+		restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.or(criteriaBuilder.like(root.<String>get("username"), "%" + keyword + "%"), criteriaBuilder.like(root.<String>get("usercode"), "%" + keyword + "%")));
+		criteriaQuery.where(restrictions);
+		return super.findList(criteriaQuery, null, count, null, null);
+	}
 }

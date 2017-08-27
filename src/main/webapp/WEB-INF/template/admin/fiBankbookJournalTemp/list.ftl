@@ -30,6 +30,12 @@ $().ready(function() {
 	var $confirmStatusMenu = $("#confirmStatusMenu");
 	var $confirmStatusMenuItem = $("#confirmStatusMenu li");
 	
+	var $confirmButton = $("#confirmButton");
+	var $ids = $("#listTable input[name='ids']");
+	var $contentRow = $("#listTable tr:gt(0)");
+	var $listTable = $("#listTable");
+	var $selectAll = $("#selectAll");
+		
 	$moneyTypeMenu.hover(
 		function() {
 			$(this).children("ul").show();
@@ -68,6 +74,75 @@ $().ready(function() {
 		$confirmStatus.val($(this).attr("val"));
 		$listForm.submit();
 	});
+	
+	// 确认
+	$confirmButton.click( function() {
+		var $this = $(this);
+		if ($this.hasClass("disabled")) {
+			return false;
+		}
+		var $checkedIds = $("#listTable input[name='ids']:enabled:checked");
+		$.dialog({
+			type: "warn",
+			content: "${message("admin.dialog.verifyConfirm")}",
+			ok: "${message("admin.dialog.ok")}",
+			cancel: "${message("admin.dialog.cancel")}",
+			onOk: function() {
+				$.ajax({
+					url: "confirm",
+					type: "POST",
+					data: $checkedIds.serialize(),
+					dataType: "json",
+					cache: false,
+					success: function(message) {
+						$.message(message);
+						if (message.type == "success") {
+							location.reload(true);
+						}
+						$confirmButton.addClass("disabled");
+						$selectAll.prop("checked", false);
+						$checkedIds.prop("checked", false);
+					}
+				});
+			}
+		});
+		return false;
+	});
+	
+	// 选择
+	$ids.click( function() {
+		var $this = $(this);
+		if ($this.prop("checked")) {
+			$this.closest("tr").addClass("selected");
+			$confirmButton.removeClass("disabled");
+		} else {
+			$this.closest("tr").removeClass("selected");
+			if ($("#listTable input[name='ids']:enabled:checked").size() > 0) {
+				$confirmButton.removeClass("disabled");
+			} else {
+				$confirmButton.addClass("disabled");
+			}
+		}
+	});
+	
+	// 全选
+	$selectAll.click( function() {
+		var $this = $(this);
+		var $enabledIds = $("#listTable input[name='ids']:enabled");
+		if ($this.prop("checked")) {
+			$enabledIds.prop("checked", true);
+			if ($enabledIds.filter(":checked").size() > 0) {
+				$confirmButton.removeClass("disabled");
+				$contentRow.addClass("selected");
+			} else {
+				$confirmButton.addClass("disabled");
+			}
+		} else {
+			$enabledIds.prop("checked", false);
+			$confirmButton.addClass("disabled");
+			$contentRow.removeClass("selected");
+		}
+	});
 });
 </script>
 </head>
@@ -80,7 +155,7 @@ $().ready(function() {
 		<input type="hidden" id="type" name="type" value="${type}" />
 		<input type="hidden" id="moneyType" name="moneyType" value="${moneyType}" />
 		<input type="hidden" id="confirmStatus" name="confirmStatus" value="${confirmStatus}" />
-		<div class="bar">
+		<div class="bar" style="height:auto;">
 			<div class="buttonGroup">
 				<a href="javascript:;" id="refreshButton" class="iconButton">
 					<span class="refreshIcon">&nbsp;</span>${message("admin.common.refresh")}
@@ -160,11 +235,16 @@ $().ready(function() {
 			<input type="text" id="endDate" name="endDate" class="text Wdate" value="[#if endDate??]${endDate?string("yyyy-MM-dd HH:mm:ss")}[/#if]" style="width: 140px;" onfocus="WdatePicker({lang:'${message("Setting.locale.lang")}', minDate: '#F{$dp.$D(\'beginDate\')}', dateFmt:'yyyy-MM-dd HH:mm:ss'});" />
 			<input type="submit" class="button" value="${message("common.button.search")}" />
 			[#if isconfirm]
-				<input type="button" class="button" value="${message("admin.fiBankbookJournalTemp.button.confirm")}" />
+			<div class="buttonGroup">
+				<input id="confirmButton" type="button" class="button disabled" value="${message("admin.fiBankbookJournalTemp.button.confirm")}" />
+			</div>
 			[/#if]
 		</div>
 		<table id="listTable" class="list">
 			<tr>
+				<th class="check">
+					<input type="checkbox" id="selectAll" />
+				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="member.usercode">${message("common.member.code")}</a>
 				</th>
@@ -210,6 +290,11 @@ $().ready(function() {
 			</tr>
 			[#list page.content as fiBankbookJournal]
 				<tr>
+					<td>
+						[#if fiBankbookJournal.confirmStatus == 'unconfirmed']
+							<input type="checkbox" name="ids" value="${fiBankbookJournal.id}" />
+						[/#if]
+					</td>
 					<td>
 						${fiBankbookJournal.member.usercode}
 					</td>
