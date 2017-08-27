@@ -147,7 +147,7 @@ $().ready(function() {
 							<\/select>
 						<\/td>
 					<\/tr>
-					<tr>
+					<tr class="hidden">
 						<th>
 							${message("Product.productTags")}:
 						<\/th>
@@ -164,7 +164,7 @@ $().ready(function() {
 							<\/select>
 						<\/td>
 					<\/tr>
-					<tr>
+					<tr class="hidden">
 						<th>
 							${message("Product.promotions")}:
 						<\/th>
@@ -307,6 +307,9 @@ $().ready(function() {
 					<span>${message("Product.price")}</span>
 				</th>
 				<th>
+					<span>${message("Product.coupon")}</span>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="isMarketable">${message("Product.isMarketable")}</a>
 				</th>
 				<th>
@@ -345,6 +348,9 @@ $().ready(function() {
 					</td>
 					<td>
 						${currency(product.price, true)}
+					</td>
+					<td>
+						${product.coupon}
 					</td>
 					<td>
 						<span class="${product.isMarketable?string("true", "false")}Icon">&nbsp;</span>
