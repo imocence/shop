@@ -480,7 +480,7 @@ function changeLanguage(){
 					[/@shiro.hasPermission]
 					[@shiro.hasPermission name="admin:fiBankbookJournalTempConfirm"]
 						<dd>
-							<a href="fiBankbookJournalTemp/list" target="iframe">${message("admin.index.fiBankbookJournalTempConfirm")}</a>
+							<a href="fiBankbookJournalTemp/listTemp" target="iframe">${message("admin.index.fiBankbookJournalTempConfirm")}</a>
 						</dd>
 					[/@shiro.hasPermission]
 					[@shiro.hasPermission name="admin:fiBankbookJournalTempAdd"]

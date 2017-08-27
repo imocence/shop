@@ -159,7 +159,9 @@ $().ready(function() {
 			-
 			<input type="text" id="endDate" name="endDate" class="text Wdate" value="[#if endDate??]${endDate?string("yyyy-MM-dd HH:mm:ss")}[/#if]" style="width: 140px;" onfocus="WdatePicker({lang:'${message("Setting.locale.lang")}', minDate: '#F{$dp.$D(\'beginDate\')}', dateFmt:'yyyy-MM-dd HH:mm:ss'});" />
 			<input type="submit" class="button" value="${message("common.button.search")}" />
+			[#if isconfirm]
 				<input type="button" class="button" value="${message("admin.fiBankbookJournalTemp.button.confirm")}" />
+			[/#if]
 		</div>
 		<table id="listTable" class="list">
 			<tr>
