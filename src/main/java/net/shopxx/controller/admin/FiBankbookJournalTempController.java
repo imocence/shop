@@ -13,10 +13,9 @@ import net.shopxx.entity.Role;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.FiBankbookJournalTempService;
+import net.shopxx.util.PermissionUitl;
 import net.shopxx.util.StringUtil;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,24 +57,8 @@ public class FiBankbookJournalTempController extends BaseController {
 		}
 		model.addAttribute("page", fiBankbookJournalTempService.findPage(country, type, moneyType, confirmStatus, beginDate, endDate, pageable));
 		model.addAttribute("countryName", countryName);
-		boolean isconfirm = false;
-		Set<Role> roles = currentUser.getRoles();
-		for (Role role : roles) {
-			if(role.getPermissions().contains("admin:fiBankbookJournalTempConfirm")){
-				isconfirm = true;
-				break;
-			}
-		}
-		model.addAttribute("isconfirm", isconfirm);
+		model.addAttribute("isconfirm", PermissionUitl.isPermission(currentUser, PermissionUitl.JOURNAL_TEMP_CONFIRM));
 		return "admin/fiBankbookJournalTemp/list";
-	}
-	
-	/**
-	 * 充值列表
-	 */
-	@GetMapping("/listTemp")
-	public String listTemp(@CurrentUser Admin currentUser, String countryName, FiBankbookJournalTemp.Type type, FiBankbookJournalTemp.MoneyType moneyType, FiBankbookJournalTemp.ConfirmStatus confirmStatus, Date beginDate, Date endDate, Pageable pageable, ModelMap model) {
-		return list(currentUser, countryName, type, moneyType, confirmStatus, beginDate, endDate, pageable, model);
 	}
 	
 	/**
