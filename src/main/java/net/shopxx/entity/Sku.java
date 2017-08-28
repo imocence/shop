@@ -89,6 +89,16 @@ public class Sku extends BaseEntity<Long> {
 	@Digits(integer = 12, fraction = 3)
 	@Column(nullable = false, precision = 21, scale = 6)
 	private BigDecimal price;
+	
+	/**
+     * 券
+     */
+    @JsonView(BaseView.class)
+    @NotNull(groups = General.class)
+    @Min(0)
+    @Digits(integer = 12, fraction = 3)
+    @Column(nullable = false, precision = 21, scale = 6)
+    private BigDecimal coupon;
 
 	/**
 	 * 成本价
@@ -131,6 +141,14 @@ public class Sku extends BaseEntity<Long> {
 	@Min(0)
 	@Column(nullable = false)
 	private Integer stock;
+	
+	/**
+     * 库存告警
+     */
+    @Min(0)
+    @Column(nullable = true)
+    private Integer waring;
+    
 
 	/**
 	 * 已分配库存
@@ -773,5 +791,23 @@ public class Sku extends BaseEntity<Long> {
 	@Converter
 	public static class SpecificationValueConverter extends BaseAttributeConverter<List<SpecificationValue>> {
 	}
+
+    public BigDecimal getCoupon() {
+        return coupon;
+    }
+
+    public void setCoupon(BigDecimal coupon) {
+        this.coupon = coupon;
+    }
+
+    public Integer getWaring() {
+        return waring;
+    }
+
+    public void setWaring(Integer waring) {
+        this.waring = waring;
+    }
+	
+	
 
 }

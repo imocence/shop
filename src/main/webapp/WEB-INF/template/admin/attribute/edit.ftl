@@ -66,6 +66,14 @@ $().ready(function() {
 		<table class="input">
 			<tr>
 				<th>
+					${message("Brand.country")}:
+				</th>
+				<td>
+					${attribute.productCategory.country.name}
+				</td>
+			</tr>
+			<tr>
+				<th>
 					${message("Attribute.productCategory")}:
 				</th>
 				<td>

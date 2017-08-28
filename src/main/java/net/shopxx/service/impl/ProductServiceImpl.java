@@ -60,6 +60,7 @@ import net.shopxx.dao.SnDao;
 import net.shopxx.dao.StockLogDao;
 import net.shopxx.entity.Attribute;
 import net.shopxx.entity.Brand;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.ProductCategory;
 import net.shopxx.entity.ProductTag;
@@ -162,9 +163,9 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 	}
 
 	@Transactional(readOnly = true)
-	public Page<Product> findPage(Product.Type type, ProductCategory productCategory, Brand brand, Promotion promotion, ProductTag productTag, Map<Attribute, String> attributeValueMap, BigDecimal startPrice, BigDecimal endPrice, Boolean isMarketable, Boolean isList, Boolean isTop,
+	public Page<Product> findPage(Product.Type type, ProductCategory productCategory,Country country, Brand brand, Promotion promotion, ProductTag productTag, Map<Attribute, String> attributeValueMap, BigDecimal startPrice, BigDecimal endPrice, Boolean isMarketable, Boolean isList, Boolean isTop,
 			Boolean isOutOfStock, Boolean isStockAlert, Boolean hasPromotion, Product.OrderType orderType, Pageable pageable) {
-		return productDao.findPage(type, productCategory, brand, promotion, productTag, attributeValueMap, startPrice, endPrice, isMarketable, isList, isTop, isOutOfStock, isStockAlert, hasPromotion, orderType, pageable);
+		return productDao.findPage(type, productCategory,country, brand, promotion, productTag, attributeValueMap, startPrice, endPrice, isMarketable, isList, isTop, isOutOfStock, isStockAlert, hasPromotion, orderType, pageable);
 	}
 
 	@Transactional(readOnly = true)
@@ -348,11 +349,13 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 			break;
 		case exchange:
 			sku.setPrice(BigDecimal.ZERO);
+			sku.setCoupon(BigDecimal.ZERO);
 			sku.setRewardPoint(0L);
 			product.setPromotions(null);
 			break;
 		case gift:
 			sku.setPrice(BigDecimal.ZERO);
+			sku.setCoupon(BigDecimal.ZERO);
 			sku.setRewardPoint(0L);
 			sku.setExchangePoint(0L);
 			product.setPromotions(null);
@@ -375,6 +378,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 		sku.setStockLogs(null);
 		sku.setGiftPromotions(null);
 
+		product.setCoupon(sku.getCoupon());//设置券
 		product.setPrice(sku.getPrice());
 		product.setCost(sku.getCost());
 		product.setMarketPrice(sku.getMarketPrice());
@@ -568,6 +572,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 		}
 
 		product.setPrice(sku.getPrice());
+		product.setCoupon(sku.getCoupon());
 		product.setCost(sku.getCost());
 		product.setMarketPrice(sku.getMarketPrice());
 		setValue(product);

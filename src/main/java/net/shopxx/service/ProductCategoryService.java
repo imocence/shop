@@ -7,6 +7,7 @@ package net.shopxx.service;
 
 import java.util.List;
 
+import net.shopxx.entity.Country;
 import net.shopxx.entity.ProductCategory;
 
 /**
@@ -106,5 +107,7 @@ public interface ProductCategoryService extends BaseService<ProductCategory, Lon
 	 * @return 下级商品分类
 	 */
 	List<ProductCategory> findChildren(Long productCategoryId, boolean recursive, Integer count, boolean useCache);
+
+	List<ProductCategory> findTree(Country country);
 
 }

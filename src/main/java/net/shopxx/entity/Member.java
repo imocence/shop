@@ -364,6 +364,19 @@ public class Member extends User {
 	private Set<PointLog> pointLogs = new HashSet<>();
 
 	/**
+	 * 用户编码
+	 */
+	@Length(max = 255)
+	private String usercode;
+	
+	/**
+	 * 国家
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="locale", referencedColumnName="name_cn")
+	private Country country;
+	
+	/**
 	 * 获取用户名
 	 * 
 	 * @return 用户名
@@ -1339,4 +1352,19 @@ public class Member extends User {
 		setMobile(StringUtils.lowerCase(getMobile()));
 	}
 
+	public String getUsercode() {
+		return usercode;
+	}
+
+	public void setUsercode(String usercode) {
+		this.usercode = usercode;
+	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
 }

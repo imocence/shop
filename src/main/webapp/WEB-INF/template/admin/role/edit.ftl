@@ -316,6 +316,15 @@ $().ready(function() {
 						<label>
 							<input type="checkbox" name="permissions" value="admin:fiBankbookJournal"[#if role.permissions?seq_contains("admin:fiBankbookJournal")] checked="checked"[/#if] />${message("admin.role.fiBankbookJournal")}
 						</label>
+						<label>
+							<input type="checkbox" name="permissions" value="admin:fiBankbookJournalTemp"[#if role.permissions?seq_contains("admin:fiBankbookJournalTemp")] checked="checked"[/#if] />${message("admin.role.fiBankbookJournalTemp")}
+						</label>
+						<label>
+							<input type="checkbox" name="permissions" value="admin:fiBankbookJournalTempConfirm"[#if role.permissions?seq_contains("admin:fiBankbookJournalTempConfirm")] checked="checked"[/#if] />${message("admin.role.fiBankbookJournalTempConfirm")}
+						</label>
+						<label>
+							<input type="checkbox" name="permissions" value="admin:fiBankbookJournalTempAdd"[#if role.permissions?seq_contains("admin:fiBankbookJournalTempAdd")] checked="checked"[/#if] />${message("admin.role.fiBankbookJournalTempAdd")}
+						</label>
 					</span>
 				</td>
 			</tr>

@@ -16,6 +16,7 @@ import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Attribute;
 import net.shopxx.entity.Brand;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.ProductCategory;
 import net.shopxx.entity.ProductTag;
@@ -99,6 +100,7 @@ public interface ProductDao extends BaseDao<Product, Long> {
 	 *            类型
 	 * @param productCategory
 	 *            商品分类
+	 * @param country 
 	 * @param brand
 	 *            品牌
 	 * @param promotion
@@ -129,7 +131,7 @@ public interface ProductDao extends BaseDao<Product, Long> {
 	 *            分页信息
 	 * @return 商品分页
 	 */
-	Page<Product> findPage(Product.Type type, ProductCategory productCategory, Brand brand, Promotion promotion, ProductTag productTag, Map<Attribute, String> attributeValueMap, BigDecimal startPrice, BigDecimal endPrice, Boolean isMarketable, Boolean isList, Boolean isTop, Boolean isOutOfStock,
+	Page<Product> findPage(Product.Type type, ProductCategory productCategory, Country country, Brand brand, Promotion promotion, ProductTag productTag, Map<Attribute, String> attributeValueMap, BigDecimal startPrice, BigDecimal endPrice, Boolean isMarketable, Boolean isList, Boolean isTop, Boolean isOutOfStock,
 			Boolean isStockAlert, Boolean hasPromotion, Product.OrderType orderType, Pageable pageable);
 
 	/**

@@ -47,8 +47,25 @@ $().ready(function() {
 	var $filterMenu = $("#filterMenu");
 	var $filterMenuItem = $("#filterMenu li");
 	var $moreButton = $("#moreButton");
+	var $countryId = $("#countryId");
+	var $typeMenu = $("#typeMenu");
+	var $typeMenuItem = $("#typeMenu li");
 	
 	[@flash_message /]
+	
+	
+	$typeMenu.hover(
+		function() {
+			$(this).children("ul").show();
+		}, function() {
+			$(this).children("ul").hide();
+		}
+	);
+	
+	$typeMenuItem.click(function() {
+		$countryId.val($(this).attr("val"));
+		$listForm.submit();
+	});
 	
 	// 筛选菜单
 	$filterMenu.hover(
@@ -130,7 +147,7 @@ $().ready(function() {
 							<\/select>
 						<\/td>
 					<\/tr>
-					<tr>
+					<tr class="hidden">
 						<th>
 							${message("Product.productTags")}:
 						<\/th>
@@ -147,7 +164,7 @@ $().ready(function() {
 							<\/select>
 						<\/td>
 					<\/tr>
-					<tr>
+					<tr class="hidden">
 						<th>
 							${message("Product.promotions")}:
 						<\/th>
@@ -179,6 +196,7 @@ $().ready(function() {
 			}
 		});
 	});
+	
 
 });
 </script>
@@ -188,6 +206,7 @@ $().ready(function() {
 		${message("admin.product.list")} <span>(${message("admin.page.total", page.total)})</span>
 	</div>
 	<form id="listForm" action="list" method="get">
+		<input type="hidden" id="countryId" name="countryId" value="${countryId}" />
 		<input type="hidden" id="type" name="type" value="${type}" />
 		<input type="hidden" id="productCategoryId" name="productCategoryId" value="${productCategoryId}" />
 		<input type="hidden" id="brandId" name="brandId" value="${brandId}" />
@@ -209,6 +228,18 @@ $().ready(function() {
 				<a href="javascript:;" id="refreshButton" class="iconButton">
 					<span class="refreshIcon">&nbsp;</span>${message("admin.common.refresh")}
 				</a>
+				<div id="typeMenu" class="dropdownMenu">
+					<a href="javascript:;" class="button">
+						${message("Brand.country")}<span class="arrow">&nbsp;</span>
+					</a>
+					<ul>
+						<li[#if countryId == null] class="current"[/#if] val="">${message("Brand.country.all")}</li>
+						[#assign currentType = countryId]
+						[#list countries as country]
+							<li[#if country.id == currentType] class="current"[/#if] val="${country.id}">${country.name}</li>
+						[/#list]
+					</ul>
+			 	</div>
 				<div id="filterMenu" class="dropdownMenu">
 					<a href="javascript:;" class="button">
 						${message("admin.product.filter")}<span class="arrow">&nbsp;</span>
@@ -261,6 +292,9 @@ $().ready(function() {
 					<input type="checkbox" id="selectAll" />
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" name="name">${message("Brand.country")}</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="sn">${message("Product.sn")}</a>
 				</th>
 				<th>
@@ -271,6 +305,9 @@ $().ready(function() {
 				</th>
 				<th>
 					<span>${message("Product.price")}</span>
+				</th>
+				<th>
+					<span>${message("Product.coupon")}</span>
 				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="isMarketable">${message("Product.isMarketable")}</a>
@@ -286,6 +323,9 @@ $().ready(function() {
 				<tr>
 					<td>
 						<input type="checkbox" name="ids" value="${product.id}" />
+					</td>
+					<td>
+						${product.productCategory.country.name}
 					</td>
 					<td>
 						<span[#if product.isOutOfStock] class="red"[#elseif product.isStockAlert] class="blue"[/#if]>
@@ -308,6 +348,9 @@ $().ready(function() {
 					</td>
 					<td>
 						${currency(product.price, true)}
+					</td>
+					<td>
+						${product.coupon}
 					</td>
 					<td>
 						<span class="${product.isMarketable?string("true", "false")}Icon">&nbsp;</span>

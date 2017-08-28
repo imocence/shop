@@ -29,6 +29,7 @@ import net.shopxx.Setting;
 import net.shopxx.dao.ProductDao;
 import net.shopxx.entity.Attribute;
 import net.shopxx.entity.Brand;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.ProductCategory;
 import net.shopxx.entity.ProductTag;
@@ -181,7 +182,7 @@ public class ProductDaoImpl extends BaseDaoImpl<Product, Long> implements Produc
 		return super.findList(criteriaQuery, first, count);
 	}
 
-	public Page<Product> findPage(Product.Type type, ProductCategory productCategory, Brand brand, Promotion promotion, ProductTag productTag, Map<Attribute, String> attributeValueMap, BigDecimal startPrice, BigDecimal endPrice, Boolean isMarketable, Boolean isList, Boolean isTop,
+	public Page<Product> findPage(Product.Type type, ProductCategory productCategory,Country country, Brand brand, Promotion promotion, ProductTag productTag, Map<Attribute, String> attributeValueMap, BigDecimal startPrice, BigDecimal endPrice, Boolean isMarketable, Boolean isList, Boolean isTop,
 			Boolean isOutOfStock, Boolean isStockAlert, Boolean hasPromotion, Product.OrderType orderType, Pageable pageable) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
@@ -198,6 +199,14 @@ public class ProductDaoImpl extends BaseDaoImpl<Product, Long> implements Produc
 			subquery.where(criteriaBuilder.or(criteriaBuilder.equal(subqueryRoot, productCategory), criteriaBuilder.like(subqueryRoot.<String>get("treePath"), "%" + ProductCategory.TREE_PATH_SEPARATOR + productCategory.getId() + ProductCategory.TREE_PATH_SEPARATOR + "%")));
 			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.in(root.get("productCategory")).value(subquery));
 		}
+		if (country != null) {
+            Subquery<ProductCategory> subquery = criteriaQuery.subquery(ProductCategory.class);
+            Root<ProductCategory> subqueryRoot = subquery.from(ProductCategory.class);
+            subquery.select(subqueryRoot);
+            subquery.where(criteriaBuilder.equal(subqueryRoot.get("country"), country));
+            restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.in(root.get("productCategory")).value(subquery));
+        }
+		 
 		if (brand != null) {
 			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("brand"), brand));
 		}

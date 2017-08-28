@@ -20,10 +20,13 @@ import org.springframework.util.Assert;
 
 import net.shopxx.Filter;
 import net.shopxx.Order;
+import net.shopxx.Page;
+import net.shopxx.Pageable;
 import net.shopxx.dao.AttributeDao;
 import net.shopxx.dao.ProductCategoryDao;
 import net.shopxx.dao.ProductDao;
 import net.shopxx.entity.Attribute;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.ProductCategory;
 import net.shopxx.service.AttributeService;
 
@@ -124,5 +127,10 @@ public class AttributeServiceImpl extends BaseServiceImpl<Attribute, Long> imple
 
 		super.delete(attribute);
 	}
+
+    @Override
+    public Page<Attribute> findPage(Country country, Pageable pageable) {
+        return attributeDao.findPage(country,pageable);
+    }
 
 }

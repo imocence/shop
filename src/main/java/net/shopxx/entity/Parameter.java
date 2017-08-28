@@ -8,6 +8,7 @@ package net.shopxx.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Converter;
@@ -48,7 +49,7 @@ public class Parameter extends OrderedEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(nullable = false, updatable = false)
 	private ProductCategory productCategory;
-
+	
 	/**
 	 * 参数名称
 	 */
@@ -123,5 +124,7 @@ public class Parameter extends OrderedEntity<Long> {
 	@Converter
 	public static class NameConverter extends BaseAttributeConverter<List<String>> {
 	}
+
+	
 
 }

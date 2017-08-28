@@ -23,6 +23,9 @@
 $().ready(function() {
 
 	var $inputForm = $("#inputForm");
+	var $countryId = $("#countryId");
+	var $countrySelect = $("#countrySelect");
+	var $name = $("#name");
 	
 	[@flash_message /]
 	
@@ -33,6 +36,15 @@ $().ready(function() {
 			order: "digits"
 		}
 	});
+	
+	$countrySelect.change(function(){ 
+        $countryId.val($(this).children('option:selected').val());
+        $name.val("test");
+        $inputForm.attr('method','get');      
+        $inputForm.attr('action','listByCountry');      
+       	
+        $inputForm.submit();
+	}) 
 
 });
 </script>
@@ -42,7 +54,20 @@ $().ready(function() {
 		${message("admin.productCategory.add")}
 	</div>
 	<form id="inputForm" action="save" method="post">
+	    <input type="hidden" id="countryId" name="countryId" value="${countryId}" />
 		<table class="input">
+			<tr>
+				<th>
+					${message("Brand.country")}:
+				</th>
+				<td>
+					<select id="countrySelect" name="country.id">
+						[#list countries as country]
+							<option value="${country.id}"[#if country.id == countryId] selected="selected"[/#if]>${country.name}</option>
+						[/#list]
+					</select>
+				</td>
+			</tr>
 			<tr>
 				<th>
 					<span class="requiredField">*</span>${message("ProductCategory.name")}:
@@ -83,7 +108,7 @@ $().ready(function() {
 					[/#list]
 				</td>
 			</tr>
-			<tr class="promotions">
+			<!-- tr class="promotions">
 				<th>
 					${message("ProductCategory.promotions")}:
 				</th>
@@ -94,7 +119,7 @@ $().ready(function() {
 						</label>
 					[/#list]
 				</td>
-			</tr>
+			</tr-->
 			<tr>
 				<th>
 					${message("ProductCategory.seoTitle")}:

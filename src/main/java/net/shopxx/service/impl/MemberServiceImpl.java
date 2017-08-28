@@ -6,17 +6,12 @@
 package net.shopxx.service.impl;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.persistence.LockModeType;
-
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
@@ -24,6 +19,7 @@ import net.shopxx.dao.DepositLogDao;
 import net.shopxx.dao.MemberDao;
 import net.shopxx.dao.MemberRankDao;
 import net.shopxx.dao.PointLogDao;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.DepositLog;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberRank;
@@ -32,6 +28,12 @@ import net.shopxx.entity.User;
 import net.shopxx.service.MailService;
 import net.shopxx.service.MemberService;
 import net.shopxx.service.SmsService;
+
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 /**
  * Service - 会员
@@ -131,6 +133,18 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	@Transactional(readOnly = true)
 	public Member findByMobile(String mobile) {
 		return memberDao.find("mobile", StringUtils.lowerCase(mobile));
+	}
+	
+	/**
+	 * 根据usercode查找会员
+	 * 
+	 * @param usercode
+	 *            用户编号
+	 * @return 会员，若不存在则返回null
+	 */
+	@Transactional(readOnly = true)
+	public Member findByUsercode(String usercode){
+		return memberDao.find("usercode", usercode);
 	}
 
 	@Transactional(readOnly = true)
@@ -233,6 +247,17 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		mailService.sendRegisterMemberMail(pMember);
 		smsService.sendRegisterMemberSms(pMember);
 		return pMember;
+	}
+	
+	/**
+	 * 根据编号和名称查找会员
+	 * @param keyword
+	 * @param country
+	 * @param count
+	 * @return
+	 */
+	public List<Member> search(String keyword, Country country, Integer count){
+		return memberDao.search(keyword, country, count);
 	}
 
 }
