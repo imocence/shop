@@ -727,6 +727,7 @@ $().ready(function() {
         $countryId.val($(this).children('option:selected').val());
         $("#name").val("test");
         $("#price").val(20);
+        $("#coupon").val(20);
         $("#stock").val(20);
         $inputForm.attr('method','get');      
         $inputForm.attr('action','listByCountry');      
@@ -840,7 +841,7 @@ $().ready(function() {
 					<span class="requiredField">*</span>${message("Sku.coupon")}:
 				</th>
 				<td>
-					<input type="text" id="ticket" name="sku.coupon" class="text" maxlength="16" />
+					<input type="text" id="coupon" name="sku.coupon" class="text" maxlength="16" />
 				</td>
 			</tr>
 			<tr>
