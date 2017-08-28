@@ -13,7 +13,6 @@ import javax.persistence.criteria.Root;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.dao.ArticleTagDao;
-import net.shopxx.entity.Article;
 import net.shopxx.entity.ArticleTag;
 import net.shopxx.entity.Country;
 

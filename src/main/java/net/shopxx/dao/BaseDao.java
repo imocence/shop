@@ -15,7 +15,6 @@ import net.shopxx.Order;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.BaseEntity;
-import net.shopxx.entity.Country;
 
 /**
  * Dao - 基类
