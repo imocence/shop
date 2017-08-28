@@ -15,6 +15,7 @@ import net.shopxx.Pageable;
 import net.shopxx.entity.Article;
 import net.shopxx.entity.ArticleCategory;
 import net.shopxx.entity.ArticleTag;
+import net.shopxx.entity.Country;
 
 /**
  * Dao - 文章
@@ -76,5 +77,15 @@ public interface ArticleDao extends BaseDao<Article, Long> {
 	 * @return 文章分页
 	 */
 	Page<Article> findPage(ArticleCategory articleCategory, ArticleTag articleTag, Boolean isPublication, Pageable pageable);
-
+	
+	/**
+	 * 搜索文章分页
+	 * 
+	 * @param country
+	 *            国家
+	 * @param pageable
+	 *            分页信息
+	 * @return 文章分页
+	 */
+	Page<Article> findPage(Country country, Pageable pageable);
 }

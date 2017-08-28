@@ -7,6 +7,16 @@ package net.shopxx.controller.admin;
 
 import javax.inject.Inject;
 
+import net.shopxx.Message;
+import net.shopxx.Pageable;
+import net.shopxx.entity.Country;
+import net.shopxx.entity.Navigation;
+import net.shopxx.service.ArticleCategoryService;
+import net.shopxx.service.CountryService;
+import net.shopxx.service.NavigationService;
+import net.shopxx.service.ProductCategoryService;
+import net.shopxx.util.StringUtil;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,13 +24,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import net.shopxx.Message;
-import net.shopxx.Pageable;
-import net.shopxx.entity.Navigation;
-import net.shopxx.service.ArticleCategoryService;
-import net.shopxx.service.NavigationService;
-import net.shopxx.service.ProductCategoryService;
 
 /**
  * Controller - 导航
@@ -38,7 +41,9 @@ public class NavigationController extends BaseController {
 	private ArticleCategoryService articleCategoryService;
 	@Inject
 	private ProductCategoryService productCategoryService;
-
+	@Inject
+	private CountryService countryService;
+	
 	/**
 	 * 添加
 	 */
@@ -54,10 +59,11 @@ public class NavigationController extends BaseController {
 	 * 保存
 	 */
 	@PostMapping("/save")
-	public String save(Navigation navigation, RedirectAttributes redirectAttributes) {
+	public String save(Navigation navigation, String countryName, RedirectAttributes redirectAttributes) {
 		if (!isValid(navigation)) {
 			return ERROR_VIEW;
 		}
+		navigation.setCountry(countryService.findByName(countryName));
 		navigationService.save(navigation);
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -79,10 +85,11 @@ public class NavigationController extends BaseController {
 	 * 更新
 	 */
 	@PostMapping("/update")
-	public String update(Navigation navigation, RedirectAttributes redirectAttributes) {
+	public String update(Navigation navigation, String countryName, RedirectAttributes redirectAttributes) {
 		if (!isValid(navigation)) {
 			return ERROR_VIEW;
 		}
+		navigation.setCountry(countryService.findByName(countryName));
 		navigationService.update(navigation);
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -92,10 +99,15 @@ public class NavigationController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Pageable pageable, ModelMap model) {
-		model.addAttribute("topNavigations", navigationService.findList(Navigation.Position.top));
-		model.addAttribute("middleNavigations", navigationService.findList(Navigation.Position.middle));
-		model.addAttribute("bottomNavigations", navigationService.findList(Navigation.Position.bottom));
+	public String list(String countryName, Pageable pageable, ModelMap model) {
+		Country country = null;
+		if (StringUtil.isNotEmpty(countryName)) {
+			country = countryService.findByName(countryName);
+		}
+		model.addAttribute("countryName", countryName);
+		model.addAttribute("topNavigations", navigationService.findList(Navigation.Position.top, country));
+		model.addAttribute("middleNavigations", navigationService.findList(Navigation.Position.middle, country));
+		model.addAttribute("bottomNavigations", navigationService.findList(Navigation.Position.bottom, country));
 		return "admin/navigation/list";
 	}
 

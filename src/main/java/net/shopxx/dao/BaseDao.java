@@ -15,6 +15,7 @@ import net.shopxx.Order;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.BaseEntity;
+import net.shopxx.entity.Country;
 
 /**
  * Dao - 基类
@@ -171,7 +172,7 @@ public interface BaseDao<T extends BaseEntity<ID>, ID extends Serializable> {
 	 * @return 实体对象分页
 	 */
 	Page<T> findPage(Pageable pageable);
-
+	
 	/**
 	 * 查询实体对象数量
 	 * 

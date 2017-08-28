@@ -8,6 +8,7 @@ package net.shopxx.dao;
 import java.util.List;
 
 import net.shopxx.entity.ArticleCategory;
+import net.shopxx.entity.Country;
 
 /**
  * Dao - 文章分类
@@ -51,5 +52,20 @@ public interface ArticleCategoryDao extends BaseDao<ArticleCategory, Long> {
 	 * @return 下级文章分类
 	 */
 	List<ArticleCategory> findChildren(ArticleCategory articleCategory, boolean recursive, Integer count);
+	
+	/**
+	 * 查找下级文章分类
+	 * 
+	 * @param articleCategory
+	 *            文章分类
+	 * @param recursive
+	 *            是否递归
+	 * @param count
+	 *            数量
+	 * @param country
+	 *            国家        
+	 * @return 下级文章分类
+	 */
+	List<ArticleCategory> findChildren(ArticleCategory articleCategory, boolean recursive, Integer count, Country country);
 
 }

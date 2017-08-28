@@ -26,6 +26,7 @@ import net.shopxx.dao.ArticleDao;
 import net.shopxx.entity.Article;
 import net.shopxx.entity.ArticleCategory;
 import net.shopxx.entity.ArticleTag;
+import net.shopxx.entity.Country;
 
 /**
  * Dao - 文章
@@ -111,6 +112,28 @@ public class ArticleDaoImpl extends BaseDaoImpl<Article, Long> implements Articl
 		if (pageable == null || ((StringUtils.isEmpty(pageable.getOrderProperty()) || pageable.getOrderDirection() == null) && CollectionUtils.isEmpty(pageable.getOrders()))) {
 			criteriaQuery.orderBy(criteriaBuilder.desc(root.get("isTop")), criteriaBuilder.desc(root.get("createdDate")));
 		}
+		return super.findPage(criteriaQuery, pageable);
+	}
+	
+	/**
+	 * 搜索文章分页
+	 * 
+	 * @param country
+	 *            国家
+	 * @param pageable
+	 *            分页信息
+	 * @return 文章分页
+	 */
+	public Page<Article> findPage(Country country, Pageable pageable){
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Article> criteriaQuery = criteriaBuilder.createQuery(Article.class);
+		Root<Article> root = criteriaQuery.from(Article.class);
+		criteriaQuery.select(root);
+		Predicate restrictions = criteriaBuilder.conjunction();
+		if (country != null) {
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("country"), country));
+		}
+		criteriaQuery.where(restrictions);
 		return super.findPage(criteriaQuery, pageable);
 	}
 

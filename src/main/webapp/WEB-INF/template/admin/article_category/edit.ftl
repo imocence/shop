@@ -38,6 +38,20 @@ $().ready(function() {
 		<table class="input">
 			<tr>
 				<th>
+					<span class="requiredField">*</span>${message("common.country")}:
+				</th>
+				<td>
+					<select name="countryName">
+						[@country_list]
+							[#list countrys as country]
+								<option value="${country.name}"[#if country.name == articleCategory.country.name] selected="selected"[/#if]>${message("${country.nameLocal}")}</option>
+							[/#list]
+						[/@country_list]
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>
 					<span class="requiredField">*</span>${message("ArticleCategory.name")}:
 				</th>
 				<td>

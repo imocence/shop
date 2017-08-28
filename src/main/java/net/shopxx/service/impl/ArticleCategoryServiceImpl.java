@@ -18,6 +18,7 @@ import org.springframework.util.Assert;
 
 import net.shopxx.dao.ArticleCategoryDao;
 import net.shopxx.entity.ArticleCategory;
+import net.shopxx.entity.Country;
 import net.shopxx.service.ArticleCategoryService;
 
 /**
@@ -66,6 +67,17 @@ public class ArticleCategoryServiceImpl extends BaseServiceImpl<ArticleCategory,
 	@Transactional(readOnly = true)
 	public List<ArticleCategory> findTree() {
 		return articleCategoryDao.findChildren(null, true, null);
+	}
+	
+	/**
+	 * 查找文章分类树
+	 * @param country
+	 *            国家
+	 * @return 文章分类树
+	 */
+	@Transactional(readOnly = true)
+	public List<ArticleCategory> findTree(Country country){
+		return articleCategoryDao.findChildren(null, true, null, country);
 	}
 
 	@Transactional(readOnly = true)

@@ -7,6 +7,16 @@ package net.shopxx.controller.admin;
 
 import javax.inject.Inject;
 
+import net.shopxx.Filter;
+import net.shopxx.Message;
+import net.shopxx.Pageable;
+import net.shopxx.entity.Ad;
+import net.shopxx.entity.Country;
+import net.shopxx.service.AdPositionService;
+import net.shopxx.service.AdService;
+import net.shopxx.service.CountryService;
+import net.shopxx.util.StringUtil;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,12 +24,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import net.shopxx.Message;
-import net.shopxx.Pageable;
-import net.shopxx.entity.Ad;
-import net.shopxx.service.AdPositionService;
-import net.shopxx.service.AdService;
 
 /**
  * Controller - 广告
@@ -35,7 +39,9 @@ public class AdController extends BaseController {
 	private AdService adService;
 	@Inject
 	private AdPositionService adPositionService;
-
+	@Inject
+	private CountryService countryService;
+	
 	/**
 	 * 添加
 	 */
@@ -50,7 +56,7 @@ public class AdController extends BaseController {
 	 * 保存
 	 */
 	@PostMapping("/save")
-	public String save(Ad ad, Long adPositionId, RedirectAttributes redirectAttributes) {
+	public String save(Ad ad, Long adPositionId, String countryName, RedirectAttributes redirectAttributes) {
 		ad.setAdPosition(adPositionService.find(adPositionId));
 		if (!isValid(ad)) {
 			return ERROR_VIEW;
@@ -63,6 +69,7 @@ public class AdController extends BaseController {
 		} else {
 			ad.setContent(null);
 		}
+		ad.setCountry(countryService.findByName(countryName));
 		adService.save(ad);
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -83,7 +90,7 @@ public class AdController extends BaseController {
 	 * 更新
 	 */
 	@PostMapping("/update")
-	public String update(Ad ad, Long adPositionId, RedirectAttributes redirectAttributes) {
+	public String update(Ad ad, Long adPositionId, String countryName, RedirectAttributes redirectAttributes) {
 		ad.setAdPosition(adPositionService.find(adPositionId));
 		if (!isValid(ad)) {
 			return ERROR_VIEW;
@@ -96,6 +103,7 @@ public class AdController extends BaseController {
 		} else {
 			ad.setContent(null);
 		}
+		ad.setCountry(countryService.findByName(countryName));
 		adService.update(ad);
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -105,7 +113,19 @@ public class AdController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Pageable pageable, ModelMap model) {
+	public String list(String countryName, Pageable pageable, ModelMap model) {
+		Country country = null;
+		if (StringUtil.isNotEmpty(countryName)) {
+			country = countryService.findByName(countryName);
+		}
+		model.addAttribute("countryName", countryName);
+		if (null != country) {
+			Filter filter = new Filter();
+			filter.setProperty("country");
+			filter.setValue(country);
+			filter.setOperator(Filter.Operator.eq);
+			pageable.getFilters().add(filter);
+		}
 		model.addAttribute("page", adService.findPage(pageable));
 		return "admin/ad/list";
 	}

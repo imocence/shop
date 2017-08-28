@@ -85,7 +85,7 @@ public class FiBankbookJournalTempController extends BaseController {
 	 * 新增
 	 */
 	@GetMapping("/add")
-	public String add(String countryName, FiBankbookJournal.Type type, FiBankbookJournal.MoneyType moneyType, FiBankbookJournalTemp.ConfirmStatus confirmStatus, Date beginDate, Date endDate, Pageable pageable, ModelMap model) {
+	public String add(ModelMap model) {
 		model.addAttribute("types", FiBankbookJournal.Type.values());
 		model.addAttribute("moneyTypes", FiBankbookJournal.MoneyType.values());
 		model.addAttribute("dealTypes", FiBankbookJournal.DealType.values());

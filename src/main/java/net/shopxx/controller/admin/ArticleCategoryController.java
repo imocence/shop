@@ -21,7 +21,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import net.shopxx.Message;
 import net.shopxx.entity.Article;
 import net.shopxx.entity.ArticleCategory;
+import net.shopxx.entity.Country;
 import net.shopxx.service.ArticleCategoryService;
+import net.shopxx.service.CountryService;
+import net.shopxx.util.StringUtil;
 
 /**
  * Controller - 文章分类
@@ -35,7 +38,9 @@ public class ArticleCategoryController extends BaseController {
 
 	@Inject
 	private ArticleCategoryService articleCategoryService;
-
+	@Inject
+	private CountryService countryService;
+	
 	/**
 	 * 添加
 	 */
@@ -49,7 +54,7 @@ public class ArticleCategoryController extends BaseController {
 	 * 保存
 	 */
 	@PostMapping("/save")
-	public String save(ArticleCategory articleCategory, Long parentId, RedirectAttributes redirectAttributes) {
+	public String save(ArticleCategory articleCategory, Long parentId, String countryName, RedirectAttributes redirectAttributes) {
 		articleCategory.setParent(articleCategoryService.find(parentId));
 		if (!isValid(articleCategory)) {
 			return ERROR_VIEW;
@@ -58,6 +63,7 @@ public class ArticleCategoryController extends BaseController {
 		articleCategory.setGrade(null);
 		articleCategory.setChildren(null);
 		articleCategory.setArticles(null);
+		articleCategory.setCountry(countryService.findByName(countryName));
 		articleCategoryService.save(articleCategory);
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -79,7 +85,7 @@ public class ArticleCategoryController extends BaseController {
 	 * 更新
 	 */
 	@PostMapping("/update")
-	public String update(ArticleCategory articleCategory, Long parentId, RedirectAttributes redirectAttributes) {
+	public String update(ArticleCategory articleCategory, Long parentId, String countryName, RedirectAttributes redirectAttributes) {
 		articleCategory.setParent(articleCategoryService.find(parentId));
 		if (!isValid(articleCategory)) {
 			return ERROR_VIEW;
@@ -94,6 +100,7 @@ public class ArticleCategoryController extends BaseController {
 				return ERROR_VIEW;
 			}
 		}
+		articleCategory.setCountry(countryService.findByName(countryName));
 		articleCategoryService.update(articleCategory, "treePath", "grade", "children", "articles");
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -103,8 +110,13 @@ public class ArticleCategoryController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(ModelMap model) {
-		model.addAttribute("articleCategoryTree", articleCategoryService.findTree());
+	public String list(String countryName, ModelMap model) {
+		Country country = null;
+		if (StringUtil.isNotEmpty(countryName)) {
+			country = countryService.findByName(countryName);
+		}
+		model.addAttribute("countryName", countryName);
+		model.addAttribute("articleCategoryTree", articleCategoryService.findTree(country));
 		return "admin/article_category/list";
 	}
 

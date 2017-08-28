@@ -10,6 +10,7 @@
 <script type="text/javascript" src="${base}/resources/admin/js/jquery.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/common.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/list.js"></script>
+<script type="text/javascript" src="${base}/resources/admin/js/country.js"></script>
 <script type="text/javascript">
 $().ready(function() {
 
@@ -49,43 +50,67 @@ $().ready(function() {
 	<div class="breadcrumb">
 		${message("admin.articleCategory.list")}
 	</div>
-	<div class="bar">
-		<a href="add" class="iconButton">
-			<span class="addIcon">&nbsp;</span>${message("admin.common.add")}
-		</a>
-		<a href="javascript:;" id="refreshButton" class="iconButton">
-			<span class="refreshIcon">&nbsp;</span>${message("admin.common.refresh")}
-		</a>
-	</div>
-	<table id="listTable" class="list">
-		<tr>
-			<th>
-				<span>${message("ArticleCategory.name")}</span>
-			</th>
-			<th>
-				<span>${message("admin.common.order")}</span>
-			</th>
-			<th>
-				<span>${message("admin.common.action")}</span>
-			</th>
-		</tr>
-		[#list articleCategoryTree as articleCategory]
+	<form id="listForm" action="list" method="get">
+		<input type="hidden" id="countryName" name="countryName" value="${countryName}" />
+		<div class="bar">
+			<a href="add" class="iconButton">
+				<span class="addIcon">&nbsp;</span>${message("admin.common.add")}
+			</a>
+			<a href="javascript:;" id="refreshButton" class="iconButton">
+				<span class="refreshIcon">&nbsp;</span>${message("admin.common.refresh")}
+			</a>
+			<div class="buttonGroup">
+				<div id="countryMenu" class="dropdownMenu">
+					<a href="javascript:;" class="button">
+						${message("common.country")}<span class="arrow">&nbsp;</span>
+					</a>
+					<ul>
+						<li[#if country.name == null] class="current"[/#if] val="">${message("common.country.all")}</li>
+						[@country_list]
+							[#list countrys as country]
+								<li[#if country.name == countryName] class="current"[/#if] val="${country.name}">${message("${country.nameLocal}")}</li>
+							[/#list]
+						[/@country_list]
+					</ul>
+				</div>
+			</div>
+		</div>
+		<table id="listTable" class="list">
 			<tr>
-				<td>
-					<span style="margin-left: ${articleCategory.grade * 20}px;[#if articleCategory.grade == 0] color: #000000;[/#if]">
-						${articleCategory.name}
-					</span>
-				</td>
-				<td>
-					${articleCategory.order}
-				</td>
-				<td>
-					<a href="${base}${articleCategory.path}" target="_blank">[${message("admin.common.view")}]</a>
-					<a href="edit?id=${articleCategory.id}">[${message("admin.common.edit")}]</a>
-					<a href="javascript:;" class="delete" val="${articleCategory.id}">[${message("admin.common.delete")}]</a>
-				</td>
+				<th>
+					<span>${message("ArticleCategory.name")}</span>
+				</th>
+				<th>
+					<span>${message("admin.common.order")}</span>
+				</th>
+				<th>
+					<span>${message("common.country")}</span>
+				</th>
+				<th>
+					<span>${message("admin.common.action")}</span>
+				</th>
 			</tr>
-		[/#list]
-	</table>
+			[#list articleCategoryTree as articleCategory]
+				<tr>
+					<td>
+						<span style="margin-left: ${articleCategory.grade * 20}px;[#if articleCategory.grade == 0] color: #000000;[/#if]">
+							${articleCategory.name}
+						</span>
+					</td>
+					<td>
+						${articleCategory.order}
+					</td>
+					<td>
+						${message("${articleCategory.country.nameLocal}")}
+					</td>
+					<td>
+						<a href="${base}${articleCategory.path}" target="_blank">[${message("admin.common.view")}]</a>
+						<a href="edit?id=${articleCategory.id}">[${message("admin.common.edit")}]</a>
+						<a href="javascript:;" class="delete" val="${articleCategory.id}">[${message("admin.common.delete")}]</a>
+					</td>
+				</tr>
+			[/#list]
+		</table>
+	</form>
 </body>
 </html>
