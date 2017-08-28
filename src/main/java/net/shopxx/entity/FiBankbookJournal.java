@@ -5,6 +5,9 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.search.annotations.Analyze;
@@ -15,11 +18,13 @@ import org.hibernate.search.annotations.Resolution;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 /**
  * Entity - 交易记录表
  * 
  * @author gaoxiang
- * @version 5.0.3
+ * @version 1.0.0
  */
 @Entity
 @Table(name="fi_bankbook_journal")
@@ -28,25 +33,76 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * 企业编码
-	 */
-	@Length(max = 4)
-	@Column(name="company_code", nullable = false)
-	private String companyCode;
-	
-	/**
-	 * 用户编码
-	 */
-	@Length(max = 20)
-	@Column(name="user_code", nullable = false)
-	private String userCode;
-	
-	/**
 	 * 处理类型
+	 * @author gaoxiang
+	 *
 	 */
-	@Length(max = 1)
+	public enum DealType {
+		/**
+		 * 存入
+		 */
+		deposit,
+		
+		/**
+		 * 取出
+		 */
+		takeout;
+	}
+	
+	/**
+	 * 账户类型
+	 * @author gaoxiang
+	 *
+	 */
+	public enum Type {
+		/**
+		 * 电子币账户
+		 */
+		balance,
+		
+		/**
+		 * 购物券账户
+		 */
+		coupon;
+	}
+	
+	/**
+	 * 资金类别
+	 * @author gaoxiang
+	 *
+	 */
+	public enum MoneyType {
+		/**
+		 * 现金
+		 */
+		cash,
+		
+		/**
+		 * 在线充值
+		 */
+		recharge;
+	}
+	
+	/**
+	 * 国家
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="company_code", referencedColumnName="name_cn")
+	private Country country;
+	
+	/**
+	 * 会员
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="user_code", referencedColumnName="usercode")
+	private Member member;
+	
+	/**
+	 * 处理类型 deal_type  0:存入  1取出
+	 */
+	@JsonView(BaseView.class)
 	@Column(name="deal_type")
-	private String dealType;
+	private FiBankbookJournal.DealType dealType;
 	
 	/**
 	 * 处理日期
@@ -97,11 +153,11 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	private String createrName; 
 	
 	/**
-	 * 资金类型
+	 * 资金类型  0:现金  1:在线充值
 	 */
-	@Length(max = 5)
+	@JsonView(BaseView.class)
 	@Column(name="money_type")
-	private Integer moneyType; 
+	private FiBankbookJournal.MoneyType moneyType;
 	
 	/**
 	 * 唯一标示
@@ -123,36 +179,19 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	@Column(name="last_money", precision = 21, scale = 6)
 	private BigDecimal lastMoney;
 	
+	
 	/**
-	 * 类型
+	 * 类型  0:电子币账户  1:购物券账户
 	 */
-	@Length(max = 2)
+	@JsonView(BaseView.class)
 	@Column(name="type")
-	private String type;
-
-	public String getCompanyCode() {
-		return companyCode;
-	}
-
-	public void setCompanyCode(String companyCode) {
-		this.companyCode = companyCode;
-	}
-
-	public String getUserCode() {
-		return userCode;
-	}
-
-	public void setUserCode(String userCode) {
-		this.userCode = userCode;
-	}
-
-	public String getDealType() {
-		return dealType;
-	}
-
-	public void setDealType(String dealType) {
-		this.dealType = dealType;
-	}
+	private FiBankbookJournal.Type type;
+	
+	/**
+	 * 交易记录线下表ID
+	 */
+	@Column(name="journal_temp_id")
+	private Integer journalTempId; 
 
 	public Date getDealDate() {
 		return dealDate;
@@ -210,14 +249,6 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 		this.createrName = createrName;
 	}
 
-	public Integer getMoneyType() {
-		return moneyType;
-	}
-
-	public void setMoneyType(Integer moneyType) {
-		this.moneyType = moneyType;
-	}
-
 	public String getUniqueCode() {
 		return uniqueCode;
 	}
@@ -242,11 +273,51 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 		this.lastMoney = lastMoney;
 	}
 
-	public String getType() {
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
+
+	public Member getMember() {
+		return member;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
+
+	public FiBankbookJournal.DealType getDealType() {
+		return dealType;
+	}
+
+	public void setDealType(FiBankbookJournal.DealType dealType) {
+		this.dealType = dealType;
+	}
+
+	public FiBankbookJournal.MoneyType getMoneyType() {
+		return moneyType;
+	}
+
+	public void setMoneyType(FiBankbookJournal.MoneyType moneyType) {
+		this.moneyType = moneyType;
+	}
+
+	public FiBankbookJournal.Type getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(FiBankbookJournal.Type type) {
 		this.type = type;
-	} 
+	}
+
+	public Integer getJournalTempId() {
+		return journalTempId;
+	}
+
+	public void setJournalTempId(Integer journalTempId) {
+		this.journalTempId = journalTempId;
+	}
 }

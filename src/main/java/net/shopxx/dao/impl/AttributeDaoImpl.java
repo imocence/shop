@@ -9,15 +9,21 @@ import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import net.shopxx.Filter;
 import net.shopxx.Order;
+import net.shopxx.Page;
+import net.shopxx.Pageable;
 import net.shopxx.dao.AttributeDao;
 import net.shopxx.entity.Attribute;
+import net.shopxx.entity.Brand;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.ProductCategory;
 
@@ -53,5 +59,24 @@ public class AttributeDaoImpl extends BaseDaoImpl<Attribute, Long> implements At
 		}
 		return super.findList(criteriaQuery, null, count, filters, orders);
 	}
+
+    @Override
+    public Page<Attribute> findPage(Country country, Pageable pageable) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Attribute> criteriaQuery = criteriaBuilder.createQuery(Attribute.class);
+        Root<Attribute> root = criteriaQuery.from(Attribute.class);
+        criteriaQuery.select(root);
+        Predicate restrictions = criteriaBuilder.conjunction();
+        if (country != null) {
+            Subquery<ProductCategory> subquery = criteriaQuery.subquery(ProductCategory.class);
+            Root<ProductCategory> subqueryRoot = subquery.from(ProductCategory.class);
+            subquery.select(subqueryRoot);
+            subquery.where(criteriaBuilder.equal(subqueryRoot.get("country"), country));
+            restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.in(root.get("productCategory")).value(subquery));
+        }
+   
+        criteriaQuery.where(restrictions);
+        return super.findPage(criteriaQuery, pageable);
+    }
 
 }

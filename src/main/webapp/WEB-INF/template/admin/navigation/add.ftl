@@ -65,6 +65,7 @@ $().ready(function() {
 				</th>
 				<td>
 					<select name="country">
+
 						[@country]
 							[#list countrys as country]
 								<option value="${country.name}">${message("${country.nameLocal}")}</option>

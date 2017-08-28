@@ -128,7 +128,8 @@ function changeLanguage(){
 								[#break /]
 							[/@shiro.hasPermission]
 						[/#list]
-						[#list ["admin:fiBankbookBalance", "admin:fiBankbookJournal"] as permission]
+
+						[#list ["admin:fiBankbookBalance", "admin:fiBankbookJournal", "admin:fiBankbookJournalTemp", "admin:fiBankbookJournalTempConfirm", "admin:fiBankbookJournalTempAdd"] as permission]
 							[@shiro.hasPermission name = permission]
 								<li>
 									<a href="#capital">${message("admin.index.capitalNav")}</a>
@@ -471,6 +472,20 @@ function changeLanguage(){
 					[@shiro.hasPermission name="admin:fiBankbookJournal"]
 						<dd>
 							<a href="fiBankbookJournal/list" target="iframe">${message("admin.index.fiBankbookJournal")}</a>
+						</dd>
+					[/@shiro.hasPermission]
+
+					[#list ["admin:fiBankbookJournalTemp", "admin:fiBankbookJournalTempConfirm"] as permission]
+						[@shiro.hasPermission name = permission]
+							<dd>
+								<a href="fiBankbookJournalTemp/list" target="iframe">${message("admin.index.fiBankbookJournalTemp")}</a>
+							</dd>
+							[#break /]
+						[/@shiro.hasPermission]
+					[/#list]
+					[@shiro.hasPermission name="admin:fiBankbookJournalTempAdd"]
+						<dd>
+							<a href="fiBankbookJournalTemp/add" target="iframe">${message("admin.index.fiBankbookJournalTempAdd")}</a>
 						</dd>
 					[/@shiro.hasPermission]
 				</dl>

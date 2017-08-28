@@ -4,6 +4,9 @@ import java.util.List;
 
 import net.shopxx.Filter;
 import net.shopxx.Order;
+import net.shopxx.Page;
+import net.shopxx.Pageable;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.Member;
 
@@ -26,4 +29,17 @@ public interface FiBankbookBalanceService extends BaseService<FiBankbookBalance,
 	 * 
 	 */
 	FiBankbookBalance findByKey(String fiBanKey, String fiBanValue);
+	
+	/**
+	 * 查找实体对象分页
+	 *
+	 * @param member
+	 *            会员
+	 * @param country
+	 *            国家
+	 * @param pageable
+	 *            分页信息
+	 * @return 实体对象分页
+	 */
+	Page<FiBankbookBalance> findPage(Member member, Country country, Pageable pageable);
 }

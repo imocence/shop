@@ -286,7 +286,4 @@ public class Brand extends OrderedEntity<Long> {
     public static long getSerialversionuid() {
         return serialVersionUID;
     }
-	
-	
-
 }

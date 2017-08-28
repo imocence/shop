@@ -13,6 +13,11 @@
 <script type="text/javascript">
 $().ready(function() {
 
+	var $listForm = $("#listForm");
+	var $countryId = $("#countryId");
+	var $typeMenu = $("#typeMenu");
+	var $typeMenuItem = $("#typeMenu li");
+
 	var $delete = $("#listTable a.delete");
 	
 	[@flash_message /]
@@ -41,6 +46,20 @@ $().ready(function() {
 		});
 		return false;
 	});
+	
+	
+	$typeMenu.hover(
+		function() {
+			$(this).children("ul").show();
+		}, function() {
+			$(this).children("ul").hide();
+		}
+	);
+	
+	$typeMenuItem.click(function() {
+		$countryId.val($(this).attr("val"));
+		$listForm.submit();
+	});
 
 });
 </script>
@@ -49,16 +68,36 @@ $().ready(function() {
 	<div class="breadcrumb">
 		${message("admin.productCategory.list")}
 	</div>
+	<form id="listForm" action="list" method="get">
+	    <input type="hidden" id="countryId" name="countryId" value="${countryId}" />
+	 </form>
 	<div class="bar">
 		<a href="add" class="iconButton">
 			<span class="addIcon">&nbsp;</span>${message("admin.common.add")}
 		</a>
-		<a href="javascript:;" id="refreshButton" class="iconButton">
-			<span class="refreshIcon">&nbsp;</span>${message("admin.common.refresh")}
-		</a>
+		<div class="buttonGroup">
+			<a href="javascript:;" id="refreshButton" class="iconButton">
+				<span class="refreshIcon">&nbsp;</span>${message("admin.common.refresh")}
+			</a>
+			<div id="typeMenu" class="dropdownMenu">
+				<a href="javascript:;" class="button">
+					${message("Brand.country")}<span class="arrow">&nbsp;</span>
+				</a>
+				<ul>
+					<li[#if countryId == null] class="current"[/#if] val="">${message("Brand.country.all")}</li>
+					[#assign currentType = countryId]
+					[#list countries as country]
+						<li[#if country.id == currentType] class="current"[/#if] val="${country.id}">${country.name}</li>
+					[/#list]
+				</ul>
+			 </div>
+		 </div>
 	</div>
 	<table id="listTable" class="list">
 		<tr>
+			<th>
+				<a href="javascript:;" class="sort" name="name">${message("Brand.country")}</a>
+			</th>
 			<th>
 				<span>${message("ProductCategory.name")}</span>
 			</th>
@@ -71,6 +110,9 @@ $().ready(function() {
 		</tr>
 		[#list productCategoryTree as productCategory]
 			<tr>
+				<td>
+					${productCategory.country.name}
+				</td>
 				<td>
 					<span style="margin-left: ${productCategory.grade * 20}px;[#if productCategory.grade == 0] color: #000000;[/#if]">
 						${productCategory.name}

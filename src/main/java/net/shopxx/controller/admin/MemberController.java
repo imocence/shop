@@ -31,9 +31,11 @@ import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.BaseEntity;
 import net.shopxx.entity.FiBankbookBalance;
+import net.shopxx.entity.FiBankbookBalance.Type;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
 import net.shopxx.entity.NapaStores;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.FiBankbookBalanceService;
 import net.shopxx.service.FiBankbookJournalService;
 import net.shopxx.service.MemberAttributeService;
@@ -72,6 +74,8 @@ public class MemberController extends BaseController {
 	NapaStoresService napaStoresService;
 	@Inject
 	FiBankbookJournalService fiBankbookJournalService;
+	@Inject
+	CountryService countryService;
 	/**
 	 * 检查用户名是否存在
 	 */
@@ -147,7 +151,7 @@ public class MemberController extends BaseController {
 		member.setMemberRank(memberRankService.find(1L));
 		
 		member.setIsEnabled(true);
-		member.setLocale(companyCode);		
+		member.setCountry(countryService.findByName(companyCode));	
 		
 		if (!isValid(member, BaseEntity.Save.class)) {
 			map.put("errCode", "2001");
@@ -193,9 +197,9 @@ public class MemberController extends BaseController {
 			member.setInMessages(null);
 			member.setOutMessages(null);
 			member.setPointLogs(null);//n
+			
 			try {
 				if(null == memberService.findByUsercode(userCode)){
-					
 					memberService.save(member);
 					//区代账号创建
 					NapaStores napaStores = new NapaStores();
@@ -209,13 +213,13 @@ public class MemberController extends BaseController {
 					//创建会员的存折
 					FiBankbookBalance balance1 = new FiBankbookBalance();
 					balance1.setBalance(BigDecimal.ZERO);
-					balance1.setType("1");
+					balance1.setType(Type.balance);
 					balance1.setMember(member);
 					fiBankbookBalanceService.save(balance1);
 					
 					FiBankbookBalance balance2 = new FiBankbookBalance();
 					balance2.setBalance(BigDecimal.ZERO);
-					balance2.setType("2");
+					balance2.setType(Type.coupon);
 					balance2.setMember(member);
 					fiBankbookBalanceService.save(balance2);					
 					

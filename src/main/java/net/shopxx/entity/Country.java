@@ -49,6 +49,20 @@ public class Country extends OrderedEntity<Long> {
     @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
     @OrderBy("order asc")
     private Set<Area> areas = new HashSet<>();
+    
+    /**
+     * 下级地区
+     */
+    @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
+    @OrderBy("order asc")
+    private Set<ProductCategory> productCategories = new HashSet<>();
+    
+    /**
+     * 下级地品牌
+     */
+    @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
+    @OrderBy("order asc")
+    private Set<Brand> brands = new HashSet<>();
 
     public String getName() {
         return name;
@@ -82,4 +96,13 @@ public class Country extends OrderedEntity<Long> {
         this.areas = areas;
     }
 
+    public Set<Brand> getBrands() {
+        return brands;
+    }
+
+    public void setBrands(Set<Brand> brands) {
+        this.brands = brands;
+    }
+
+    
 }

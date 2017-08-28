@@ -208,7 +208,7 @@ public class ProductController extends BaseController {
 		model.addAttribute("orderType", orderType);
 		model.addAttribute("pageNumber", pageNumber);
 		model.addAttribute("pageSize", pageSize);
-		model.addAttribute("page", productService.findPage(type, productCategory, brand, promotion, productTag, attributeValueMap, startPrice, endPrice, true, true, null, null, null, null, orderType, pageable));
+		model.addAttribute("page", productService.findPage(type, productCategory,null, brand, promotion, productTag, attributeValueMap, startPrice, endPrice, true, true, null, null, null, null, orderType, pageable));
 		return "shop/product/list";
 	}
 
@@ -238,7 +238,7 @@ public class ProductController extends BaseController {
 		model.addAttribute("orderType", orderType);
 		model.addAttribute("pageNumber", pageNumber);
 		model.addAttribute("pageSize", pageSize);
-		model.addAttribute("page", productService.findPage(type, null, brand, promotion, productTag, null, startPrice, endPrice, true, true, null, null, null, null, orderType, pageable));
+		model.addAttribute("page", productService.findPage(type, null,null, brand, promotion, productTag, null, startPrice, endPrice, true, true, null, null, null, null, orderType, pageable));
 		return "shop/product/list";
 	}
 
@@ -273,7 +273,7 @@ public class ProductController extends BaseController {
 		}
 
 		Pageable pageable = new Pageable(pageNumber, pageSize);
-		return ResponseEntity.ok(productService.findPage(type, productCategory, brand, promotion, productTag, attributeValueMap, startPrice, endPrice, true, true, null, null, null, null, orderType, pageable).getContent());
+		return ResponseEntity.ok(productService.findPage(type, productCategory,null, brand, promotion, productTag, attributeValueMap, startPrice, endPrice, true, true, null, null, null, null, orderType, pageable).getContent());
 	}
 
 	/**

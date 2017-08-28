@@ -9,7 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.validator.constraints.Length;
+import com.fasterxml.jackson.annotation.JsonView;
 
 /**
  * Entity - 存折
@@ -24,10 +24,26 @@ public class FiBankbookBalance extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;
 	
 	/**
+	 * 存折类型
+	 * 
+	 */
+	public enum Type {
+		/**
+		 * 余额账户
+		 */
+		balance,
+
+		/**
+		 * 购物券账户
+		 */
+		coupon
+	}
+	
+	/**
 	 * 会员
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(nullable = false, updatable = false)
+	@JoinColumn(name="user_code", referencedColumnName="usercode")
 	private Member member;
 	
 	/**
@@ -37,17 +53,22 @@ public class FiBankbookBalance extends BaseEntity<Long> {
 	private BigDecimal balance;
 	
 	/**
-	 * 类型，type=1 为余额账户 ，type=2购物券账户
+	 * 类型，type=0为余额账户 ，type=1购物券账户
 	 */
-	@Length(max = 2)
-	@Column
-	private String type; 
+	@JsonView(BaseView.class)
+	@Column(nullable = false, updatable = false)
+	private Type type;
 	
 	/**
+
 	 * 获取会员
 	 * 
 	 * @return 会员
 	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
+	
 	public Member getMember() {
 		return member;
 	}
@@ -58,6 +79,7 @@ public class FiBankbookBalance extends BaseEntity<Long> {
 	 * @param member
 	 *            会员
 	 */
+
 	public void setMember(Member member) {
 		this.member = member;
 	}
@@ -70,12 +92,19 @@ public class FiBankbookBalance extends BaseEntity<Long> {
 		this.balance = balance;
 	}
 
-	public String getType() {
+	public Type getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(Type type) {
 		this.type = type;
 	}
 
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
 }

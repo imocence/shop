@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.DepositLog;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.PointLog;
@@ -43,14 +44,6 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	 * @return 会员，若不存在则返回null
 	 */
 	Member findByUsername(String username);
-	/**
-	 * 根据用户编码查找会员
-	 * 
-	 * @param usercode
-	 *            用户编码
-	 * @return 会员，若不存在则返回null
-	 */
-	Member findByUsercode(String usercode);
 	/**
 	 * 判断E-mail是否存在
 	 * 
@@ -119,6 +112,15 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	 * @return 会员，若不存在则返回null
 	 */
 	Member findByMobile(String mobile);
+	
+	/**
+	 * 根据usercode查找会员
+	 * 
+	 * @param usercode
+	 *            用户编号
+	 * @return 会员，若不存在则返回null
+	 */
+	Member findByUsercode(String usercode);
 
 	/**
 	 * 查找会员分页
@@ -168,5 +170,14 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	 *            值
 	 */
 	void addAmount(Member member, BigDecimal amount);
+	
+	/**
+	 * 根据编号和名称查找会员
+	 * @param keyword
+	 * @param country
+	 * @param count
+	 * @return
+	 */
+	List<Member> search(String keyword, Country country, Integer count);
 
 }

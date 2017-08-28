@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import net.shopxx.dao.ProductCategoryDao;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.ProductCategory;
 import net.shopxx.service.ProductCategoryService;
 
@@ -152,5 +153,11 @@ public class ProductCategoryServiceImpl extends BaseServiceImpl<ProductCategory,
 		}
 		productCategory.setGrade(productCategory.getParentIds().length);
 	}
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductCategory> findTree(Country country) {
+       return productCategoryDao.findChildren(null, true, null,country);
+    }
 
 }

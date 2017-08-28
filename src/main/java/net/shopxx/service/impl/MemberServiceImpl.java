@@ -31,11 +31,13 @@ import net.shopxx.dao.DepositLogDao;
 import net.shopxx.dao.MemberDao;
 import net.shopxx.dao.MemberRankDao;
 import net.shopxx.dao.PointLogDao;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.DepositLog;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberRank;
 import net.shopxx.entity.PointLog;
 import net.shopxx.entity.User;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.MailService;
 import net.shopxx.service.MemberRankService;
 import net.shopxx.service.MemberService;
@@ -43,6 +45,7 @@ import net.shopxx.service.NapaStoresService;
 import net.shopxx.service.SmsService;
 import net.shopxx.util.TimeUtil;
 import net.shopxx.util.WebUtils;
+
 
 /**
  * Service - 会员
@@ -78,6 +81,8 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	private MailService mailService;
 	@Inject
 	private SmsService smsService;
+	@Inject
+	CountryService countryService;
 
 	@Transactional(readOnly = true)
 	public Member getUser(Object principal) {
@@ -116,11 +121,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	public Member findByUsername(String username) {
 		return memberDao.find("username", StringUtils.lowerCase(username));
 	}
-	
-	@Transactional(readOnly = true)
-	public Member findByUsercode(String usercode) {
-		return memberDao.find("usercode", usercode);
-	}
+
 
 	@Transactional(readOnly = true)
 	public boolean emailExists(String email) {
@@ -150,6 +151,18 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	@Transactional(readOnly = true)
 	public Member findByMobile(String mobile) {
 		return memberDao.find("mobile", StringUtils.lowerCase(mobile));
+	}
+	
+	/**
+	 * 根据usercode查找会员
+	 * 
+	 * @param usercode
+	 *            用户编号
+	 * @return 会员，若不存在则返回null
+	 */
+	@Transactional(readOnly = true)
+	public Member findByUsercode(String usercode){
+		return memberDao.find("usercode", usercode);
 	}
 
 	@Transactional(readOnly = true)
@@ -301,7 +314,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 				Member member = findByUsercode(user_code);
 
 				member.setAddress(address);
-				member.setLocale(locale);
+				member.setCountry(countryService.findByName(locale));
 				member.setMobile(mobileMe);
 				member.setUsercode(user_code);
 				member.setUsername(user_code);
@@ -328,6 +341,17 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		mailService.sendRegisterMemberMail(pMember);
 		smsService.sendRegisterMemberSms(pMember);
 		return pMember;
+	}
+	
+	/**
+	 * 根据编号和名称查找会员
+	 * @param keyword
+	 * @param country
+	 * @param count
+	 * @return
+	 */
+	public List<Member> search(String keyword, Country country, Integer count){
+		return memberDao.search(keyword, country, count);
 	}
 
 }

@@ -98,10 +98,6 @@ public class Member extends User {
 	 * "当前用户名"Cookie名称
 	 */
 	public static final String CURRENT_USERNAME_COOKIE_NAME = "currentMemberUsername";
-	/**
-	 * "当前用户编号"Cookie名称
-	 */
-	public static final String CURRENT_USERCODE_COOKIE_NAME = "currentMemberUsercode";
 
 	/**
 	 * 会员注册项值属性个数
@@ -122,8 +118,9 @@ public class Member extends User {
 	@Pattern.List({ @Pattern(regexp = "^[0-9a-zA-Z_\\u4e00-\\u9fa5]+$"), @Pattern(regexp = "^.*[^\\d].*$") })
 	@Column(nullable = false, updatable = false, unique = true)
 	private String username;
+	
 	/**
-	 * 会员编号
+	 * 用户编码
 	 */
 	@JsonView(BaseView.class)
 	@NotEmpty(groups = Save.class)
@@ -131,14 +128,7 @@ public class Member extends User {
 	@Pattern.List({ @Pattern(regexp = "^[0-9a-zA-Z_\\u4e00-\\u9fa5]+$"), @Pattern(regexp = "^.*[^\\d].*$") })
 	@Column(nullable = false, updatable = false, unique = true)
 	private String usercode;
-	
 
-	/**
-	 * 国际化
-	 */
-	@Column(nullable = false)
-	private String locale;
-	
 	/**
 	 * 密码
 	 */
@@ -148,14 +138,13 @@ public class Member extends User {
 	private String password;
 
 	/**
-	 * 加密密码  @Length(max = 200)
+	 * 加密密码
 	 */
 	@Column(nullable = false)
 	private String encodedPassword;
 
 	/**
 	 * E-mail
-	 * 
 	 */
 	@Email
 	@Length(max = 200)
@@ -383,6 +372,15 @@ public class Member extends User {
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private Set<PointLog> pointLogs = new HashSet<>();
 
+	
+	
+	/**
+	 * 国家
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="locale", referencedColumnName="name_cn")
+	private Country country;
+	
 	/**
 	 * 获取用户名
 	 * 
@@ -859,30 +857,6 @@ public class Member extends User {
 	 */
 	public void setSafeKey(SafeKey safeKey) {
 		this.safeKey = safeKey;
-	}
-	/**
-	 * 会员编号
-	 */
-	public String getUsercode() {
-		return usercode;
-	}
-	/**
-	 * 会员编号
-	 */
-	public void setUsercode(String usercode) {
-		this.usercode = usercode;
-	}
-	/**
-	 * 国际化
-	 */
-	public String getLocale() {
-		return locale;
-	}
-	/**
-	 * 国际化
-	 */
-	public void setLocale(String locale) {
-		this.locale = locale;
 	}
 
 	/**
@@ -1370,7 +1344,6 @@ public class Member extends User {
 	@PrePersist
 	public void prePersist() {
 		setUsername(StringUtils.lowerCase(getUsername()));
-		setUsercode(getUsercode());
 		setEmail(StringUtils.lowerCase(getEmail()));
 		setMobile(StringUtils.lowerCase(getMobile()));
 	}
@@ -1382,5 +1355,21 @@ public class Member extends User {
 	public void preUpdate() {
 		setEmail(StringUtils.lowerCase(getEmail()));
 		setMobile(StringUtils.lowerCase(getMobile()));
+	}
+
+	public String getUsercode() {
+		return usercode;
+	}
+
+	public void setUsercode(String usercode) {
+		this.usercode = usercode;
+	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
 	}
 }

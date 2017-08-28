@@ -56,6 +56,8 @@ $().ready(function() {
 	var parameterIndex = 0;
 	var specificationItemEntryId = 0;
 	var hasSpecification = false;
+	var $countryId = $("#countryId");
+	var $countrySelect = $("#countrySelect");
 	
 	[@flash_message /]
 	
@@ -667,6 +669,15 @@ $().ready(function() {
 					fraction: ${setting.priceScale}
 				}
 			},
+			name: "required",
+			"sku.coupon": {
+				required: true,
+				min: 0,
+				decimal: {
+					integer: 12,
+					fraction: ${setting.priceScale}
+				}
+			},
 			"sku.cost": {
 				min: 0,
 				decimal: {
@@ -711,6 +722,18 @@ $().ready(function() {
 			form.submit();
 		}
 	});
+	
+	$countrySelect.change(function(){ 
+        $countryId.val($(this).children('option:selected').val());
+        $("#name").val("test");
+        $("#price").val(20);
+        $("#coupon").val(20);
+        $("#stock").val(20);
+        $inputForm.attr('method','get');      
+        $inputForm.attr('action','listByCountry');      
+       	
+        $inputForm.submit();
+	}) 
 
 });
 </script>
@@ -721,6 +744,14 @@ $().ready(function() {
 	</div>
 	<form id="inputForm" action="save" method="post" enctype="multipart/form-data">
 		<input type="hidden" id="isDefault" name="sku.isDefault" value="true" />
+		<input type="hidden" id="countryId" name="countryId" value="${countryId}" />
+		<ul style="padding-left: 160px;padding-top:15px">
+			<select id="countrySelect" name="country.id">
+				[#list countries as country]
+					<option value="${country.id}"[#if country.id == countryId] selected="selected"[/#if]>${country.name}</option>
+				[/#list]
+			</select>
+		</ul>
 		<ul id="tab" class="tab">
 			<li>
 				<input type="button" value="${message("admin.product.base")}" />
@@ -737,7 +768,7 @@ $().ready(function() {
 			<li>
 				<input type="button" value="${message("admin.product.attribute")}" />
 			</li>
-			<li>
+			<li class="hidden">
 				<input type="button" value="${message("admin.product.specification")}" />
 			</li>
 		</ul>
@@ -786,7 +817,7 @@ $().ready(function() {
 					<span class="requiredField">*</span>${message("Product.name")}:
 				</th>
 				<td>
-					<input type="text" name="name" class="text" maxlength="200" />
+					<input type="text" id="name" name="name" class="text" maxlength="200" />
 				</td>
 			</tr>
 			<tr>
@@ -803,6 +834,14 @@ $().ready(function() {
 				</th>
 				<td>
 					<input type="text" id="price" name="sku.price" class="text" maxlength="16" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span class="requiredField">*</span>${message("Sku.coupon")}:
+				</th>
+				<td>
+					<input type="text" id="coupon" name="sku.coupon" class="text" maxlength="16" />
 				</td>
 			</tr>
 			<tr>
@@ -870,6 +909,14 @@ $().ready(function() {
 				</th>
 				<td>
 					<input type="text" id="stock" name="sku.stock" class="text" value="1" maxlength="9" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span </span>${message("Sku.warning")}:
+				</th>
+				<td>
+					<input type="text" id="warning" name="sku.warning" class="text" value="1" maxlength="9" />
 				</td>
 			</tr>
 			<tr>

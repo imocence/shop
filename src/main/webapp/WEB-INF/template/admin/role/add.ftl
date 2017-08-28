@@ -315,6 +315,17 @@ $().ready(function() {
 						<label>
 							<input type="checkbox" name="permissions" value="admin:fiBankbookJournal" />${message("admin.role.fiBankbookJournal")}
 						</label>
+
+						<label>
+							<input type="checkbox" name="permissions" value="admin:fiBankbookJournalTemp" />${message("admin.role.fiBankbookJournalTemp")}
+						</label>
+						<label>
+							<input type="checkbox" name="permissions" value="admin:fiBankbookJournalTempConfrim" />${message("admin.role.fiBankbookJournalTempConfirm")}
+						</label>
+						<label>
+							<input type="checkbox" name="permissions" value="admin:fiBankbookJournalTempAdd" />${message("admin.role.fiBankbookJournalTempAdd")}
+						</label>
+
 					</span>
 				</td>
 			</tr>

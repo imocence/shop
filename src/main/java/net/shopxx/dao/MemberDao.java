@@ -6,9 +6,11 @@
 package net.shopxx.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
 
@@ -49,5 +51,14 @@ public interface MemberDao extends BaseDao<Member, Long> {
 	 *            会员注册项
 	 */
 	void clearAttributeValue(MemberAttribute memberAttribute);
+	
+	/**
+	 * 根据编号和名称查找会员
+	 * @param keyword
+	 * @param country
+	 * @param count
+	 * @return
+	 */
+	List<Member> search(String keyword, Country country, Integer count);
 
 }
