@@ -2,15 +2,11 @@ package net.shopxx.service;
 
 import java.util.Date;
 
-import org.springframework.ui.ModelMap;
-
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.Member;
-import net.shopxx.entity.Order;
-import net.shopxx.entity.Product;
 
 /**
  * Service - 交易记录
@@ -38,4 +34,11 @@ public interface FiBankbookJournalService extends BaseService<FiBankbookJournal,
 	 * @return 交易记录分页
 	 */
 	Page<FiBankbookJournal> findPage(Country country, FiBankbookJournal.Type type, FiBankbookJournal.MoneyType moneyType, Date beginDate, Date endDate, Pageable pageable);
+
+	/**
+	 * 获取最近的一条记录
+	 * @param member
+	 * @return
+	 */
+	FiBankbookJournal findLastByMember(Member member);
 }

@@ -6,6 +6,7 @@ import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.FiBankbookJournal;
+import net.shopxx.entity.Member;
 
 /**
  * Dao - 交易记录
@@ -33,4 +34,11 @@ public interface FiBankbookJournalDao extends BaseDao<FiBankbookJournal, Long> {
 	 * @return 交易记录分页
 	 */
 	Page<FiBankbookJournal> findPage(Country country, FiBankbookJournal.Type type, FiBankbookJournal.MoneyType moneyType, Date beginDate, Date endDate, Pageable pageable);
+
+	/**
+	 * 获取最近的一条记录
+	 * @param member
+	 * @return
+	 */
+	FiBankbookJournal findLastByMember(Member member);
 }

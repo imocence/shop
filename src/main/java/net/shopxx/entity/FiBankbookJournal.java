@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.search.annotations.Analyze;
@@ -170,8 +171,9 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	 * 上一条交易记录ID
 	 */
 	@Length(max = 20)
-	@Column(name="last_id")
-	private Long lastId; 
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="last_id", referencedColumnName="id")
+	private FiBankbookJournal lastFiBankbookJournal;
 	
 	/**
 	 * 上一条交易记录的金额
@@ -190,8 +192,10 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	/**
 	 * 交易记录线下表ID
 	 */
-	@Column(name="journal_temp_id")
-	private Integer journalTempId; 
+	@Length(max = 20)
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="journal_temp_id", referencedColumnName="id")
+	private FiBankbookJournalTemp fiBankbookJournalTemp;
 
 	public Date getDealDate() {
 		return dealDate;
@@ -257,14 +261,6 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 		this.uniqueCode = uniqueCode;
 	}
 
-	public Long getLastId() {
-		return lastId;
-	}
-
-	public void setLastId(Long lastId) {
-		this.lastId = lastId;
-	}
-
 	public BigDecimal getLastMoney() {
 		return lastMoney;
 	}
@@ -313,11 +309,19 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 		this.type = type;
 	}
 
-	public Integer getJournalTempId() {
-		return journalTempId;
+	public FiBankbookJournal getLastFiBankbookJournal() {
+		return lastFiBankbookJournal;
 	}
 
-	public void setJournalTempId(Integer journalTempId) {
-		this.journalTempId = journalTempId;
+	public void setLastFiBankbookJournal(FiBankbookJournal lastFiBankbookJournal) {
+		this.lastFiBankbookJournal = lastFiBankbookJournal;
+	}
+
+	public FiBankbookJournalTemp getFiBankbookJournalTemp() {
+		return fiBankbookJournalTemp;
+	}
+
+	public void setFiBankbookJournalTemp(FiBankbookJournalTemp fiBankbookJournalTemp) {
+		this.fiBankbookJournalTemp = fiBankbookJournalTemp;
 	}
 }

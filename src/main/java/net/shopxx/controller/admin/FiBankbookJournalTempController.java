@@ -6,19 +6,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 
 import net.shopxx.Message;
 import net.shopxx.Pageable;
-import net.shopxx.entity.Ad;
 import net.shopxx.entity.Admin;
 import net.shopxx.entity.Country;
+import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.FiBankbookJournalTemp;
 import net.shopxx.entity.Member;
-import net.shopxx.entity.Role;
-import net.shopxx.entity.Sku;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.FiBankbookJournalTempService;
@@ -59,9 +56,9 @@ public class FiBankbookJournalTempController extends BaseController {
 	 * 记录
 	 */
 	@GetMapping("/list")
-	public String list(@CurrentUser Admin currentUser, String countryName, FiBankbookJournalTemp.Type type, FiBankbookJournalTemp.MoneyType moneyType, FiBankbookJournalTemp.ConfirmStatus confirmStatus, Date beginDate, Date endDate, Pageable pageable, ModelMap model) {
-		model.addAttribute("types", FiBankbookJournalTemp.Type.values());
-		model.addAttribute("moneyTypes", FiBankbookJournalTemp.MoneyType.values());
+	public String list(@CurrentUser Admin currentUser, String countryName, FiBankbookJournal.Type type, FiBankbookJournal.MoneyType moneyType, FiBankbookJournalTemp.ConfirmStatus confirmStatus, Date beginDate, Date endDate, Pageable pageable, ModelMap model) {
+		model.addAttribute("types", FiBankbookJournal.Type.values());
+		model.addAttribute("moneyTypes", FiBankbookJournal.MoneyType.values());
 		model.addAttribute("confirmStatuss", FiBankbookJournalTemp.ConfirmStatus.values());
 		model.addAttribute("type", type);
 		model.addAttribute("moneyType", moneyType);
@@ -73,6 +70,11 @@ public class FiBankbookJournalTempController extends BaseController {
 		if (StringUtil.isNotEmpty(countryName)) {
 			country = countryService.findByName(countryName);
 		}
+		// 增加默认排序
+		if (null  == pageable.getOrderProperty()) {
+			pageable.setOrderProperty("id");
+			pageable.setOrderDirection(pageable.getOrderDirection().desc);
+		}
 		model.addAttribute("page", fiBankbookJournalTempService.findPage(country, type, moneyType, confirmStatus, beginDate, endDate, pageable));
 		model.addAttribute("countryName", countryName);
 		model.addAttribute("isconfirm", PermissionUitl.isPermission(currentUser, PermissionUitl.JOURNAL_TEMP_CONFIRM));
@@ -83,10 +85,10 @@ public class FiBankbookJournalTempController extends BaseController {
 	 * 新增
 	 */
 	@GetMapping("/add")
-	public String add(String countryName, FiBankbookJournalTemp.Type type, FiBankbookJournalTemp.MoneyType moneyType, FiBankbookJournalTemp.ConfirmStatus confirmStatus, Date beginDate, Date endDate, Pageable pageable, ModelMap model) {
-		model.addAttribute("types", FiBankbookJournalTemp.Type.values());
-		model.addAttribute("moneyTypes", FiBankbookJournalTemp.MoneyType.values());
-		model.addAttribute("dealTypes", FiBankbookJournalTemp.DealType.values());
+	public String add(String countryName, FiBankbookJournal.Type type, FiBankbookJournal.MoneyType moneyType, FiBankbookJournalTemp.ConfirmStatus confirmStatus, Date beginDate, Date endDate, Pageable pageable, ModelMap model) {
+		model.addAttribute("types", FiBankbookJournal.Type.values());
+		model.addAttribute("moneyTypes", FiBankbookJournal.MoneyType.values());
+		model.addAttribute("dealTypes", FiBankbookJournal.DealType.values());
 		return "admin/fiBankbookJournalTemp/add";
 	}
 	
@@ -94,7 +96,7 @@ public class FiBankbookJournalTempController extends BaseController {
 	 * 保存
 	 */
 	@PostMapping("/save")
-	public String save(@CurrentUser Admin currentUser, String country, String usercode, FiBankbookJournalTemp.Type type, FiBankbookJournalTemp.DealType dealType, FiBankbookJournalTemp.MoneyType moneyType, BigDecimal money, String notes, RedirectAttributes redirectAttributes) {
+	public String save(@CurrentUser Admin currentUser, String country, String usercode, FiBankbookJournal.Type type, FiBankbookJournal.DealType dealType, FiBankbookJournal.MoneyType moneyType, BigDecimal money, String notes, RedirectAttributes redirectAttributes) {
 		FiBankbookJournalTemp fiBankbookJournalTemp = new FiBankbookJournalTemp();
 		fiBankbookJournalTemp.setType(type);
 		fiBankbookJournalTemp.setDealType(dealType);
@@ -150,7 +152,12 @@ public class FiBankbookJournalTempController extends BaseController {
 	 */
 	@PostMapping("/confirm")
 	public @ResponseBody Message confirm(Long[] ids) {
-		fiBankbookJournalTempService.confirm(ids);
+		try {
+			fiBankbookJournalTempService.confirm(ids);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Message.error(ERROR_MESSAGE);
+		}
 		return Message.success(SUCCESS_MESSAGE);
 	}
 

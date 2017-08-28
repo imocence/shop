@@ -35,5 +35,5 @@ public interface FiBankbookJournalTempDao extends BaseDao<FiBankbookJournalTemp,
 	 *            分页信息
 	 * @return 交易记录分页
 	 */
-	Page<FiBankbookJournalTemp> findPage(Country country, FiBankbookJournalTemp.Type type, FiBankbookJournalTemp.MoneyType moneyType, FiBankbookJournalTemp.ConfirmStatus confirmStatus, Date beginDate, Date endDate, Pageable pageable);
+	Page<FiBankbookJournalTemp> findPage(Country country, FiBankbookJournal.Type type, FiBankbookJournal.MoneyType moneyType, FiBankbookJournalTemp.ConfirmStatus confirmStatus, Date beginDate, Date endDate, Pageable pageable);
 }

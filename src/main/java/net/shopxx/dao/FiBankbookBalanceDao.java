@@ -30,4 +30,12 @@ public interface FiBankbookBalanceDao extends BaseDao<FiBankbookBalance, Long> {
 	 * @return 实体对象分页
 	 */
 	Page<FiBankbookBalance> findPage(Member member, Country country, Pageable pageable);
+	
+	/**
+	 * 根据member和type获取FiBankbookBalance
+	 * @param member
+	 * @param type
+	 * @return
+	 */
+	FiBankbookBalance find(Member member, FiBankbookBalance.Type type);
 }
