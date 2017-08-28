@@ -211,6 +211,7 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 	 * @return 用户类型
 	 */
 	public Class<? extends User> getUserClass() {
+		System.out.println("用户信息更新");
 		return userClass;
 	}
 

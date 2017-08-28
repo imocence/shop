@@ -88,13 +88,8 @@ public class IndexController extends BaseController {
 		model.addAttribute("consultationCount", consultationService.count(currentUser, null, null));
 		model.addAttribute("newOrders", orderService.findList(null, null, currentUser, null, null, null, null, null, null, null, NEW_ORDER_SIZE, null, null));
 
-		//接口查询会员信息
-		List<Member> memberList = memberService.getListMember("'"+currentUser.getUsercode()+"'",urlPath,urlSignature);
-		currentUser = memberList.get(0);
 		//会员存折
 		model.addAttribute("fiBankbookBalanceList", fiBankbookBalanceService.findList(currentUser,null,null,null));
-		//区代类型
-		model.addAttribute("napaStores", napaStoresService.find(currentUser.getId()));
 		return "member/index";
 	}
 

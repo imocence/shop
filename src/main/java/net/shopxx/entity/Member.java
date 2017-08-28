@@ -282,6 +282,14 @@ public class Member extends User {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Area area;
+	/**
+	 * 区代信息
+	 */
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="napa_stores_id", referencedColumnName="id")
+	private NapaStores napaStores;
+	
 
 	/**
 	 * 会员等级
@@ -370,9 +378,7 @@ public class Member extends User {
 	 * 积分记录
 	 */
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-	private Set<PointLog> pointLogs = new HashSet<>();
-
-	
+	private Set<PointLog> pointLogs = new HashSet<>();	
 	
 	/**
 	 * 国家
@@ -877,7 +883,22 @@ public class Member extends User {
 	public void setArea(Area area) {
 		this.area = area;
 	}
-
+	/**
+	 * 获取区代信息
+	 * 
+	 * @return 区代信息
+	 */
+	public NapaStores getNapaStores() {
+		return napaStores;
+	}
+	/**
+	 * 设置区代信息
+	 * 
+	 * @return 区代信息
+	 */
+	public void setNapaStores(NapaStores napaStores) {
+		this.napaStores = napaStores;
+	}
 	/**
 	 * 获取会员等级
 	 * 

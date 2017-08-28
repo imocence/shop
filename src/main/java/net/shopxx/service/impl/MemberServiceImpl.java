@@ -19,6 +19,7 @@ import javax.persistence.LockModeType;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -35,6 +36,7 @@ import net.shopxx.entity.Country;
 import net.shopxx.entity.DepositLog;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberRank;
+import net.shopxx.entity.NapaStores;
 import net.shopxx.entity.PointLog;
 import net.shopxx.entity.User;
 import net.shopxx.service.CountryService;
@@ -83,6 +85,10 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	private SmsService smsService;
 	@Inject
 	CountryService countryService;
+	@Value("${url.path}")
+	private String urlPath;
+	@Value("${url.signature}")
+	private String urlSignature;
 
 	@Transactional(readOnly = true)
 	public Member getUser(Object principal) {
@@ -95,7 +101,9 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		} else if (MOBILE_PRINCIPAL_PATTERN.matcher(value).matches()) {
 			return findByMobile(value);
 		} else {
-			return findByUsername(value);
+			List<Member> memberList = getListMember("'"+value+"'",urlPath,urlSignature);
+			Member member = memberList.get(0);
+			return memberList.get(0);
 		}
 	}
 
@@ -325,7 +333,19 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 				}else{
 					member.setEmail(email);
 				}				
-				member.setMemberRank(memberRankService.find(Long.valueOf(type+1)));			    
+				member.setMemberRank(memberRankService.find(Long.valueOf(type+1)));	
+				//更新区代信息
+				NapaStores napaStores = napaStoresService.find(member.getNapaStores().getId());
+				if(type == 0){
+					napaStores.setNapaCode(null);
+				}else{
+					napaStores.setNapaCode(napaCode);
+				}
+				napaStores.setType(type);
+				napaStores.setMobile(mobile);
+				napaStoresService.update(napaStores);
+				
+				member.setNapaStores(napaStores);		
 				members.add(member);
 			  }
 			}

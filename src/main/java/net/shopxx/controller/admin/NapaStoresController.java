@@ -49,7 +49,7 @@ public class NapaStoresController extends BaseController{
 		String errCode = "\"0000\"";	
 		//区代
 		Member member = memberService.findByUsercode(userCode);	
-		napaStores = napaStoresService.findByMember(member);
+		napaStores = napaStoresService.find(member.getNapaStores().getId());
 		if(Integer.parseInt(type) == 0){
 			napaStores.setNapaCode(null);
 		}else{
@@ -58,7 +58,6 @@ public class NapaStoresController extends BaseController{
 		napaStores.setMobile(store_mobile);
 		napaStores.setType(Integer.parseInt(type));
 		if (napaStores.getId() == null) {
-			napaStores.setMember(member);
 			napaStores.setBalance(BigDecimal.ZERO);
 			try {
 				napaStoresService.save(napaStores);

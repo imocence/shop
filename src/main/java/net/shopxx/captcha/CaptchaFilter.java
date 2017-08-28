@@ -89,7 +89,7 @@ public class CaptchaFilter extends OncePerRequestFilter {
 	 */
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, NumberFormatException {
-		String userCode = request.getParameter("userCode");
+		/*String userCode = request.getParameter("userCode");
 		String signature = request.getParameter("signature");
 		String appointtrue = DigestUtils.md5Hex(userCode+TimeUtil.getFormatNowTime("yyyyMMdd")+urlSignature);
 		System.out.println("MD5:"+appointtrue);
@@ -99,20 +99,20 @@ public class CaptchaFilter extends OncePerRequestFilter {
 		if(timeT < 100 && userCode != null && appointtrue.equals(signature)){
 			filterChain.doFilter(request, response);
 		}else{
-			Setting setting = SystemUtils.getSetting();
-			String captchaId = request.getParameter(CAPTCHA_ID_PARAMETER_NAME);
-			String captcha = request.getParameter(CAPTCHA_PARAMETER_NAME);
-			if (ArrayUtils.contains(setting.getCaptchaTypes(), getCaptchaType()) && !containsIgnoreCase(getNotRequireProtectionRequestMethods(), request.getMethod()) && !captchaService.isValid(captchaId, captcha)) {
-				if (WebUtils.isAjaxRequest(request)) {
-					Results.unprocessableEntity(response, "common.message.ncorrectCaptcha");
-				} else {
-					WebUtils.sendRedirect(request, response, getNcorrectCaptchaUrl());
-				}
+			
+		}	*/
+		Setting setting = SystemUtils.getSetting();
+		String captchaId = request.getParameter(CAPTCHA_ID_PARAMETER_NAME);
+		String captcha = request.getParameter(CAPTCHA_PARAMETER_NAME);
+		if (ArrayUtils.contains(setting.getCaptchaTypes(), getCaptchaType()) && !containsIgnoreCase(getNotRequireProtectionRequestMethods(), request.getMethod()) && !captchaService.isValid(captchaId, captcha)) {
+			if (WebUtils.isAjaxRequest(request)) {
+				Results.unprocessableEntity(response, "common.message.ncorrectCaptcha");
 			} else {
-				filterChain.doFilter(request, response);
+				WebUtils.sendRedirect(request, response, getNcorrectCaptchaUrl());
 			}
-		}	
-		
+		} else {
+			filterChain.doFilter(request, response);
+		}
 	}
 
 	/**

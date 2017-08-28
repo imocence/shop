@@ -36,7 +36,7 @@ public class FiBankbookBalanceDaoImpl extends BaseDaoImpl<FiBankbookBalance, Lon
 		criteriaQuery.select(root);
 		Predicate restrictions = criteriaBuilder.conjunction();
 		if(member != null){
-			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.join("member"), member));
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("member"), member));
 		}
 		criteriaQuery.where(restrictions);
 		return super.findList(criteriaQuery, null, count, filters, orders);

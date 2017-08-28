@@ -41,7 +41,7 @@ public class AuthorizingRealm extends org.apache.shiro.realm.AuthorizingRealm {
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {
 		
 		User user = userService.getUser(authenticationToken);
-		
+		System.out.println(11);
 		return new SimpleAuthenticationInfo(user, authenticationToken.getCredentials(), getName());
 	}
 

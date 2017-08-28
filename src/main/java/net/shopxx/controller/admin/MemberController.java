@@ -128,19 +128,20 @@ public class MemberController extends BaseController {
 	 */
 	@PostMapping("/setMember")
 	public @ResponseBody JSONObject setMember(Member member,String companyCode, //国别
-												String email,
-												String mobile,
-												String store_address,//地址
-												String store_id,//区代编码
-												String store_mobile,//区代电话
-												String user_name,
-												String password,
-												String userCode,
-												String type,//类型id
+												String userCode,											
 												String signature,//验证码
 												HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		Map<String,Object> map = new HashMap<String, Object>();
 		String errCode = "\"0000\"";
+		
+		//区代账号创建
+		NapaStores napaStores = new NapaStores();
+		napaStores.setMobile(null);
+		napaStores.setNapaCode(null);
+		napaStores.setType(0);
+		napaStores.setBalance(BigDecimal.ZERO);
+		napaStoresService.save(napaStores);
+		member.setNapaStores(napaStores);
 		
 		member.setUsername(userCode);
 		member.setUsercode(userCode);
@@ -200,15 +201,8 @@ public class MemberController extends BaseController {
 			
 			try {
 				if(null == memberService.findByUsercode(userCode)){
+					
 					memberService.save(member);
-					//区代账号创建
-					NapaStores napaStores = new NapaStores();
-					napaStores.setMobile(store_mobile);
-					napaStores.setNapaCode(store_id);
-					napaStores.setMember(member);
-					napaStores.setType(0);
-					napaStores.setBalance(BigDecimal.ZERO);
-					napaStoresService.save(napaStores);
 					
 					//创建会员的存折
 					FiBankbookBalance balance1 = new FiBankbookBalance();

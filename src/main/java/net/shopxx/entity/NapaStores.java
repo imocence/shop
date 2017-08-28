@@ -42,31 +42,6 @@ public class NapaStores extends BaseEntity<Long>{
 	private int type;
 	
 	/**
-	 * 会员
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(nullable = false, updatable = false)
-	private Member member;
-	
-	/**
-	 * 获取会员
-	 * 
-	 * @return 会员
-	 */
-	public Member getMember() {
-		return member;
-	}
-
-	/**
-	 * 设置会员
-	 * 
-	 * @param member
-	 *            会员
-	 */
-	public void setMember(Member member) {
-		this.member = member;
-	}
-	/**
 	 * 区代类型
 	 * @return
 	 */
