@@ -28,6 +28,7 @@ import net.shopxx.FileType;
 import net.shopxx.Setting;
 import net.shopxx.entity.ProductImage;
 import net.shopxx.plugin.StoragePlugin;
+import net.shopxx.plugin.lyStorage.LyStoragePlugin;
 import net.shopxx.service.FileService;
 import net.shopxx.service.PluginService;
 import net.shopxx.service.ProductImageService;
@@ -107,6 +108,33 @@ public class ProductImageServiceImpl implements ProductImageService {
 			}
 		});
 	}
+	
+	private String[] addTask(StoragePlugin storagePlugin, File tempFile, String contentType) {
+	    Setting setting = SystemUtils.getSetting();
+        File watermarkFile = new File(servletContext.getRealPath(setting.getWatermarkImage()));
+        File largeTempFile = new File(FileUtils.getTempDirectory(), UUID.randomUUID() + "." + DEST_EXTENSION);
+        File mediumTempFile = new File(FileUtils.getTempDirectory(), UUID.randomUUID() + "." + DEST_EXTENSION);
+        File thumbnailTempFile = new File(FileUtils.getTempDirectory(), UUID.randomUUID() + "." + DEST_EXTENSION);
+        String[] result = new String[4];
+        try {
+            ImageUtils.zoom(tempFile, largeTempFile, setting.getLargeProductImageWidth(), setting.getLargeProductImageHeight());
+            ImageUtils.addWatermark(largeTempFile, largeTempFile, watermarkFile, setting.getWatermarkPosition(), setting.getWatermarkAlpha());
+            ImageUtils.zoom(tempFile, mediumTempFile, setting.getMediumProductImageWidth(), setting.getMediumProductImageHeight());
+            ImageUtils.addWatermark(mediumTempFile, mediumTempFile, watermarkFile, setting.getWatermarkPosition(), setting.getWatermarkAlpha());
+            ImageUtils.zoom(tempFile, thumbnailTempFile, setting.getThumbnailProductImageWidth(), setting.getThumbnailProductImageHeight());
+            result[0] = storagePlugin.upload(tempFile, contentType);
+            result[1] = storagePlugin.upload(largeTempFile, contentType);
+            result[2] = storagePlugin.upload(mediumTempFile, contentType);
+            result[3] = storagePlugin.upload(thumbnailTempFile, contentType);
+          
+        } finally {
+            FileUtils.deleteQuietly(tempFile);
+            FileUtils.deleteQuietly(largeTempFile);
+            FileUtils.deleteQuietly(mediumTempFile);
+            FileUtils.deleteQuietly(thumbnailTempFile);
+        }
+        return result;
+    }
 
 	public void filter(List<ProductImage> productImages) {
 		CollectionUtils.filter(productImages, new Predicate() {
@@ -140,9 +168,19 @@ public class ProductImageServiceImpl implements ProductImageService {
 			String mediumPath = uploadPath + uuid + "-medium." + DEST_EXTENSION;
 			String thumbnailPath = uploadPath + uuid + "-thumbnail." + DEST_EXTENSION;
 			for (StoragePlugin storagePlugin : pluginService.getStoragePlugins(true)) {
-				File tempFile = new File(FileUtils.getTempDirectory(), UUID.randomUUID() + ".tmp");
+//				File tempFile = new File(FileUtils.getTempDirectory(), UUID.randomUUID() + ".tmp");
+                File tempFile = new File(FileUtils.getTempDirectory(), UUID.randomUUID() + "."+FilenameUtils.getExtension(multipartFile.getOriginalFilename()));
+
 				multipartFile.transferTo(tempFile);
-				addTask(storagePlugin, sourcePath, largePath, mediumPath, thumbnailPath, tempFile, multipartFile.getContentType());
+				if (storagePlugin instanceof LyStoragePlugin) {
+				    String[] resultPath = addTask(storagePlugin, tempFile, multipartFile.getContentType());
+				    sourcePath = resultPath[0];
+				    largePath = resultPath[1];
+				    mediumPath = resultPath[2];
+				    thumbnailPath = resultPath[3];
+				} else {
+				    addTask(storagePlugin, sourcePath, largePath, mediumPath, thumbnailPath, tempFile, multipartFile.getContentType());
+				}
 				productImage.setSource(storagePlugin.getUrl(sourcePath));
 				productImage.setLarge(storagePlugin.getUrl(largePath));
 				productImage.setMedium(storagePlugin.getUrl(mediumPath));
@@ -156,7 +194,8 @@ public class ProductImageServiceImpl implements ProductImageService {
 		}
 	}
 
-	public void generate(List<ProductImage> productImages) {
+
+    public void generate(List<ProductImage> productImages) {
 		if (CollectionUtils.isEmpty(productImages)) {
 			return;
 		}
