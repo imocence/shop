@@ -55,6 +55,8 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 
 	@Value("${json_content_type}")
 	private String jsonContentType;
+	@Value("${url.path}")
+	private String urlPath;
 	@Value("${url.signature}")
 	private String urlSignature;
 	@Inject
@@ -63,8 +65,6 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 	private UserService userService;
 	@Inject
 	MemberService memberService;
-	@Value("${url.path}")
-	private String urlPath;
 
 	/**
 	 * 创建令牌

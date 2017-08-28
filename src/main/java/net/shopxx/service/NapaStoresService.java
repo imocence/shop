@@ -2,6 +2,7 @@ package net.shopxx.service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import net.shopxx.entity.Member;
 import net.shopxx.entity.NapaStores;
 /**
  * Service - 人员关联的店铺
@@ -20,12 +21,9 @@ public interface NapaStoresService extends BaseService<NapaStores, Long>{
 	@Transactional(readOnly = true)
 	NapaStores findByNapaCode(String napaCode);
 	/**
-	 * 根据会员编号查找区代
-	 * 
-	 * @param userCode
-	 *            会员编号
-	 * @return 区代，若不存在则返回null
+	 * 根据会员查找会员类型
+	 * @param member
+	 * @return
 	 */
-	@Transactional(readOnly = true)
-	NapaStores findByUserCode(String userCode);
+	NapaStores findByMember(Member member);
 }

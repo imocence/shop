@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.Length;
@@ -21,11 +24,11 @@ public class FiBankbookBalance extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * 用户编码
+	 * 会员
 	 */
-	@Length(max = 20)
-	@Column(name="user_code", nullable = false)
-	private String userCode;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(nullable = false, updatable = false)
+	private Member member;
 	
 	/**
 	 * 支付手续费
@@ -40,12 +43,23 @@ public class FiBankbookBalance extends BaseEntity<Long> {
 	@Column
 	private String type; 
 	
-	public String getUserCode() {
-		return userCode;
+	/**
+	 * 获取会员
+	 * 
+	 * @return 会员
+	 */
+	public Member getMember() {
+		return member;
 	}
 
-	public void setUserCode(String userCode) {
-		this.userCode = userCode;
+	/**
+	 * 设置会员
+	 * 
+	 * @param member
+	 *            会员
+	 */
+	public void setMember(Member member) {
+		this.member = member;
 	}
 
 	public BigDecimal getBalance() {

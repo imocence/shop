@@ -1,5 +1,6 @@
 package net.shopxx.controller.admin;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,7 +8,10 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
+import net.shopxx.entity.Member;
 import net.shopxx.entity.NapaStores;
+import net.shopxx.service.MemberRankService;
+import net.shopxx.service.MemberService;
 import net.shopxx.service.NapaStoresService;
 
 import org.springframework.stereotype.Controller;
@@ -27,6 +31,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class NapaStoresController extends BaseController{
 	@Inject
 	NapaStoresService napaStoresService;
+	@Inject
+	MemberService memberService;
+	@Inject
+	MemberRankService memberRankService;
 	/**
 	 * 跟新区代信息
 	 */
@@ -36,32 +44,35 @@ public class NapaStoresController extends BaseController{
 										String userCode,
 										String type,//类型id
 										String store_mobile,//电话
-										String user_code,HttpServletRequest request, RedirectAttributes redirectAttributes){
+										HttpServletRequest request, RedirectAttributes redirectAttributes){
 		Map<String,Object> map = new HashMap<String, Object>();
-		String errCode = "\"0000\"";		
+		String errCode = "\"0000\"";	
 		//区代
-		napaStores = napaStoresService.findByUserCode(user_code);	
-		if(napaStores != null){
-			if(Integer.parseInt(type) == 0){
-				napaStores.setNapaCode(null);
-			}else{
-				napaStores.setNapaCode(store_id);
-			}
-			napaStores.setType(Integer.parseInt(type));
-			napaStoresService.update(napaStores);
+		Member member = memberService.findByUsercode(userCode);	
+		napaStores = napaStoresService.findByMember(member);
+		if(Integer.parseInt(type) == 0){
+			napaStores.setNapaCode(null);
 		}else{
-			napaStores = new NapaStores();
-			napaStores.setType(Integer.parseInt(type));
 			napaStores.setNapaCode(store_id);
-			napaStores.setUserCode(user_code);
-			napaStores.setMobile(store_mobile);
+		}
+		napaStores.setMobile(store_mobile);
+		napaStores.setType(Integer.parseInt(type));
+		if (napaStores.getId() == null) {
+			napaStores.setMember(member);
+			napaStores.setBalance(BigDecimal.ZERO);
 			try {
 				napaStoresService.save(napaStores);
 			} catch (Exception e) {
 				errCode = "2001";
 			}
-		}
-		
+			
+		}else{				
+			try {
+				napaStoresService.update(napaStores);
+			} catch (Exception e) {
+				errCode = "2001";
+			}
+		}					
 		map.put("errCode", errCode);
 		JSONObject jsonObject = JSONObject.fromObject(map.toString());
 		return jsonObject;

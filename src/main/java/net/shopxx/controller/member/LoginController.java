@@ -70,9 +70,4 @@ public class LoginController extends BaseController {
 		model.addAttribute("loginPlugins", pluginService.getActiveLoginPlugins(request));
 		return currentUser != null ? "redirect:" + memberIndex : memberLoginView;
 	}
-	@PostMapping("/validate")
-	public boolean validate(Member member,@CurrentUser Member currentUser, HttpServletRequest request, HttpServletResponse response){
-		System.out.println(11111);
-		return true;
-	}
 }

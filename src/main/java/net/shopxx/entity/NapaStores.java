@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.hibernate.validator.constraints.Length;
 @Entity
@@ -32,32 +35,36 @@ public class NapaStores extends BaseEntity<Long>{
 	private String mobile;
 	
 	/**
-	 * 类型，type=0,1,2，3 ：代理商，服务中心，加盟店，中心店
+	 * 类型，type=0,1,2,3 ：代理商，服务中心，加盟店，中心店
 	 */
 	@Length(max = 2)
 	@Column
 	private int type;
 	
 	/**
-	 * 会员编号
+	 * 会员
 	 */
-	@Length(max = 200)
-	@Column(nullable = false,name="user_code")
-	private String userCode;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(nullable = false, updatable = false)
+	private Member member;
 	
 	/**
-	 * 会员编码
-	 * @return
+	 * 获取会员
+	 * 
+	 * @return 会员
 	 */
-	public String getUserCode() {
-		return userCode;
+	public Member getMember() {
+		return member;
 	}
+
 	/**
-	 * 会员编号
-	 * @param user_code
+	 * 设置会员
+	 * 
+	 * @param member
+	 *            会员
 	 */
-	public void setUserCode(String userCode) {
-		this.userCode = userCode;
+	public void setMember(Member member) {
+		this.member = member;
 	}
 	/**
 	 * 区代类型

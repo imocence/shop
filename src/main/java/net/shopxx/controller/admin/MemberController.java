@@ -143,21 +143,11 @@ public class MemberController extends BaseController {
 		
 		member.setPassword("a123456");
 		member.setEncodedPassword(DigestUtils.md5Hex("a123456"));
-		if(null == email){
-			member.setEmail("greenleaf@qq.com");
-		}
-		if(type == null){
-			member.setMemberRank(memberRankService.find(1L));
-		}else{
-			member.setMemberRank(memberRankService.find(Long.valueOf(type)));
-		}
+		member.setEmail(null);
+		member.setMemberRank(memberRankService.find(1L));
 		
 		member.setIsEnabled(true);
-		member.setLocale(companyCode);
-
-		Long memberRankId = 1L;
-		member.setMemberRank(memberRankService.find(memberRankId));
-		
+		member.setLocale(companyCode);		
 		
 		if (!isValid(member, BaseEntity.Save.class)) {
 			map.put("errCode", "2001");
@@ -205,31 +195,29 @@ public class MemberController extends BaseController {
 			member.setPointLogs(null);//n
 			try {
 				if(null == memberService.findByUsercode(userCode)){
+					
+					memberService.save(member);
 					//区代账号创建
 					NapaStores napaStores = new NapaStores();
 					napaStores.setMobile(store_mobile);
 					napaStores.setNapaCode(store_id);
-					napaStores.setUserCode(userCode);
+					napaStores.setMember(member);
 					napaStores.setType(0);
 					napaStores.setBalance(BigDecimal.ZERO);
 					napaStoresService.save(napaStores);
-					
-					memberService.save(member);
 					
 					//创建会员的存折
 					FiBankbookBalance balance1 = new FiBankbookBalance();
 					balance1.setBalance(BigDecimal.ZERO);
 					balance1.setType("1");
-					balance1.setUserCode(userCode);
+					balance1.setMember(member);
 					fiBankbookBalanceService.save(balance1);
 					
 					FiBankbookBalance balance2 = new FiBankbookBalance();
 					balance2.setBalance(BigDecimal.ZERO);
 					balance2.setType("2");
-					balance2.setUserCode(userCode);
-					fiBankbookBalanceService.save(balance2);
-					
-					
+					balance2.setMember(member);
+					fiBankbookBalanceService.save(balance2);					
 					
 				}else{
 					memberService.update(member);
@@ -364,8 +352,7 @@ public class MemberController extends BaseController {
 			}
 			userCode = userCode.substring(0,userCode.length() - 1);
 			List<Member> newMemberList = memberService.getListMember(userCode,urlPath,urlSignature);
-			
-			//memberService.verifyLogin(userCode,"888888",urlPath);
+
 			member.getContent().clear();
 			member.getContent().addAll(newMemberList);
 		}

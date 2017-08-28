@@ -27,15 +27,31 @@
 								</li>
 								<li>
 									${message("member.index.balance")}:
-									<strong>${currency(currentUser.balance, true, true)}</strong>
+									<!-- <strong>${currency(currentUser.balance, true, true)}</strong> -->
+									[#list fiBankbookBalanceList as fiBankbookBalance]
+										[#if fiBankbookBalance.type == 2]
+											<strong>${currency(fiBankbookBalance.balance, true, true)}</strong>
+										[/#if]
+									[/#list]
 								</li>
 								<li>
 									${message("member.index.amount")}:
 									<strong>${currency(currentUser.amount, true, true)}</strong>
 								</li>
-								<li>
+								<!-- <li>
 									${message("member.index.point")}:
 									<em>${currentUser.point}</em>
+									<a href="coupon_code/exchange" class="silver">${message("member.index.exchange")}</a>
+								</li> -->
+								<li>
+									${message("member.index.point")}:
+									<em>
+										[#list fiBankbookBalanceList as fiBankbookBalance]
+											[#if fiBankbookBalance.type == 1]
+											${fiBankbookBalance.balance}
+											[/#if]
+										[/#list]
+									</em>
 									<a href="coupon_code/exchange" class="silver">${message("member.index.exchange")}</a>
 								</li>
 							</ul>

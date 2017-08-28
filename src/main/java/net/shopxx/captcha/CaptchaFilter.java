@@ -13,14 +13,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import net.shopxx.Results;
 import net.shopxx.Setting;
+import net.shopxx.security.AuthenticationFilter;
 import net.shopxx.service.CaptchaService;
 import net.shopxx.util.SystemUtils;
+import net.shopxx.util.TimeUtil;
 import net.shopxx.util.WebUtils;
 
 /**
@@ -68,7 +72,11 @@ public class CaptchaFilter extends OncePerRequestFilter {
 
 	@Inject
 	private CaptchaService captchaService;
-
+	/**
+	 * MD5加密约定码
+	 */
+	@Value("${url.signature}")
+	private String urlSignature;
 	/**
 	 * 执行
 	 * 
@@ -80,19 +88,31 @@ public class CaptchaFilter extends OncePerRequestFilter {
 	 *            FilterChain
 	 */
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-		Setting setting = SystemUtils.getSetting();
-		String captchaId = request.getParameter(CAPTCHA_ID_PARAMETER_NAME);
-		String captcha = request.getParameter(CAPTCHA_PARAMETER_NAME);
-		if (ArrayUtils.contains(setting.getCaptchaTypes(), getCaptchaType()) && !containsIgnoreCase(getNotRequireProtectionRequestMethods(), request.getMethod()) && !captchaService.isValid(captchaId, captcha)) {
-			if (WebUtils.isAjaxRequest(request)) {
-				Results.unprocessableEntity(response, "common.message.ncorrectCaptcha");
-			} else {
-				WebUtils.sendRedirect(request, response, getNcorrectCaptchaUrl());
-			}
-		} else {
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, NumberFormatException {
+		String userCode = request.getParameter("userCode");
+		String signature = request.getParameter("signature");
+		String appointtrue = DigestUtils.md5Hex(userCode+TimeUtil.getFormatNowTime("yyyyMMdd")+urlSignature);
+		System.out.println("MD5:"+appointtrue);
+		System.out.println("当前时间戳："+System.currentTimeMillis() / 1000);
+		//时间差
+		Long timeT = TimeUtil.validateTimeStamp(Long.parseLong(request.getParameter("timestamp")));
+		if(timeT < 100 && userCode != null && appointtrue.equals(signature)){
 			filterChain.doFilter(request, response);
-		}
+		}else{
+			Setting setting = SystemUtils.getSetting();
+			String captchaId = request.getParameter(CAPTCHA_ID_PARAMETER_NAME);
+			String captcha = request.getParameter(CAPTCHA_PARAMETER_NAME);
+			if (ArrayUtils.contains(setting.getCaptchaTypes(), getCaptchaType()) && !containsIgnoreCase(getNotRequireProtectionRequestMethods(), request.getMethod()) && !captchaService.isValid(captchaId, captcha)) {
+				if (WebUtils.isAjaxRequest(request)) {
+					Results.unprocessableEntity(response, "common.message.ncorrectCaptcha");
+				} else {
+					WebUtils.sendRedirect(request, response, getNcorrectCaptchaUrl());
+				}
+			} else {
+				filterChain.doFilter(request, response);
+			}
+		}	
+		
 	}
 
 	/**

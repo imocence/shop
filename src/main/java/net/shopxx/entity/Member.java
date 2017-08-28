@@ -156,13 +156,10 @@ public class Member extends User {
 	/**
 	 * E-mail
 	 * 
-	 * 
-	 * 
 	 */
-	@NotEmpty
 	@Email
 	@Length(max = 200)
-	@Column(nullable = false, unique = true)
+	@Column(nullable = true, unique = true)
 	private String email;
 
 	/**

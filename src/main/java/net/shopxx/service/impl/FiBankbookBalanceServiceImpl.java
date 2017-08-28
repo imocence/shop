@@ -4,12 +4,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import net.shopxx.Filter;
+import net.shopxx.Order;
 import net.shopxx.dao.FiBankbookBalanceDao;
-import net.shopxx.dao.MemberRankDao;
 import net.shopxx.entity.FiBankbookBalance;
+import net.shopxx.entity.Member;
 import net.shopxx.service.FiBankbookBalanceService;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +24,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class FiBankbookBalanceServiceImpl extends BaseServiceImpl<FiBankbookBalance, Long> implements FiBankbookBalanceService {
 	@Inject
 	private FiBankbookBalanceDao fiBankbookBalanceDao;
-	@Override
-	@Transactional
-	public List<FiBankbookBalance> findByUserCode(String userCode){
-		return (List<FiBankbookBalance>) fiBankbookBalanceDao.find("user_cede", userCode);
+	@Inject
+	FiBankbookBalanceService fiBankbookBalanceService;
+	
+	@Transactional(readOnly = true)
+	public List<FiBankbookBalance> findList(Member member,Integer count, List<Filter> filters, List<Order> orders){		
+		return fiBankbookBalanceDao.findList(member,count, filters, orders);
+	}
+	
+
+	@Transactional(readOnly = true)
+	public FiBankbookBalance findByKey(String usercodekey,String usercode) {
+		return fiBankbookBalanceDao.find(usercodekey, usercode);
 	}
 	@Override
 	@Transactional

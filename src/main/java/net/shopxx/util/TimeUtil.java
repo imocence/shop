@@ -11,7 +11,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TimeUtil { 
-	
+	/**
+	 * 传递的时间戳与当前时间的差
+	 * @param TimeStamp
+	 * @return
+	 * @throws Long
+	 */
+	public static Long validateTimeStamp(Long TimeStamp){
+		Long difference = (System.currentTimeMillis() - TimeStamp*1000) / (1000 * 60);
+		return difference;
+	}
 	/**
 	 * 获取当前时间
 	 * @return

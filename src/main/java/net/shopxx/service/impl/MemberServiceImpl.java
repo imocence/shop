@@ -34,7 +34,6 @@ import net.shopxx.dao.PointLogDao;
 import net.shopxx.entity.DepositLog;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberRank;
-import net.shopxx.entity.NapaStores;
 import net.shopxx.entity.PointLog;
 import net.shopxx.entity.User;
 import net.shopxx.service.MailService;
@@ -308,11 +307,13 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 				member.setUsername(user_code);
 				member.setPhone(mobileMe);
 				member.setName(user_name);
-				member.setEmail(email);
-				member.setMemberRank(memberRankService.find(Long.valueOf(type+1)));
-
-				
-			    members.add(member);
+				if(email.isEmpty()){
+					member.setEmail(null);
+				}else{
+					member.setEmail(email);
+				}				
+				member.setMemberRank(memberRankService.find(Long.valueOf(type+1)));			    
+				members.add(member);
 			  }
 			}
 		}
