@@ -11,6 +11,7 @@ import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.dao.FiBankbookJournalTempDao;
 import net.shopxx.entity.Country;
+import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.FiBankbookJournalTemp;
 
 import org.springframework.stereotype.Repository;
@@ -43,7 +44,7 @@ public class FiBankbookJournalTempDaoImpl extends BaseDaoImpl<FiBankbookJournalT
 	 *            分页信息
 	 * @return 交易记录分页
 	 */
-	public Page<FiBankbookJournalTemp> findPage(Country country, FiBankbookJournalTemp.Type type, FiBankbookJournalTemp.MoneyType moneyType, FiBankbookJournalTemp.ConfirmStatus confirmStatus, Date beginDate, Date endDate, Pageable pageable){
+	public Page<FiBankbookJournalTemp> findPage(Country country, FiBankbookJournal.Type type, FiBankbookJournal.MoneyType moneyType, FiBankbookJournalTemp.ConfirmStatus confirmStatus, Date beginDate, Date endDate, Pageable pageable){
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<FiBankbookJournalTemp> criteriaQuery = criteriaBuilder.createQuery(FiBankbookJournalTemp.class);
 		Root<FiBankbookJournalTemp> root = criteriaQuery.from(FiBankbookJournalTemp.class);

@@ -7,11 +7,8 @@ import javax.inject.Inject;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.FiBankbookJournal;
-import net.shopxx.entity.Member;
-import net.shopxx.entity.Order;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.FiBankbookJournalService;
-import net.shopxx.service.MemberService;
 import net.shopxx.util.StringUtil;
 
 import org.springframework.stereotype.Controller;
@@ -50,6 +47,11 @@ public class FiBankbookJournalController extends BaseController {
 		Country country = null;
 		if (StringUtil.isNotEmpty(countryName)) {
 			country = countryService.findByName(countryName);
+		}
+		// 增加默认排序
+		if (null  == pageable.getOrderProperty()) {
+			pageable.setOrderProperty("id");
+			pageable.setOrderDirection(pageable.getOrderDirection().desc);
 		}
 		model.addAttribute("page", fiBankbookJournalService.findPage(country, type, moneyType, beginDate, endDate, pageable));
 		model.addAttribute("countryName", countryName);

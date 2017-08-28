@@ -9,6 +9,7 @@ import net.shopxx.Pageable;
 import net.shopxx.dao.FiBankbookJournalDao;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.FiBankbookJournal;
+import net.shopxx.entity.Member;
 import net.shopxx.service.FiBankbookJournalService;
 
 import org.springframework.stereotype.Service;
@@ -45,6 +46,15 @@ public class FiBankbookJournalServiceImpl extends BaseServiceImpl<FiBankbookJour
 	 */
 	public Page<FiBankbookJournal> findPage(Country country, FiBankbookJournal.Type type, FiBankbookJournal.MoneyType moneyType, Date beginDate, Date endDate, Pageable pageable){
 		return fiBankbookJournalDao.findPage(country, type, moneyType, beginDate, endDate, pageable);
+	}
+	
+	/**
+	 * 获取最近的一条记录
+	 * @param member
+	 * @return
+	 */
+	public FiBankbookJournal findLastByMember(Member member){
+		return fiBankbookJournalDao.findLastByMember(member);
 	}
 	
 	@Override
