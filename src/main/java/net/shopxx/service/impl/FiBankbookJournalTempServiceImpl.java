@@ -77,7 +77,7 @@ public class FiBankbookJournalTempServiceImpl extends BaseServiceImpl<FiBankbook
 	 * @param ids
 	 *            ID
 	 */
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public String confirm(Long... ids) throws Exception{
 		if (ids != null) {
 			for (Long id : ids) {
