@@ -248,7 +248,7 @@ public class ProductController extends BaseController {
 		model.addAttribute("productCategoryTree", productCategoryService.findTree( pro.getProductCategory().getCountry()));
 		model.addAttribute("brands", pro.getProductCategory().getCountry().getBrands());
 //		model.addAttribute("promotions", promotionService.findAll());
-//		model.addAttribute("productTags", productTagService.findAll());
+		model.addAttribute("productTags", productTagService.findAll());
 //		model.addAttribute("specifications", specificationService.findAll());
 		model.addAttribute("product", pro);
 		model.addAttribute("countries", countryService.findRoots());
