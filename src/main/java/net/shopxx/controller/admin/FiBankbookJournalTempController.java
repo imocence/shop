@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import net.shopxx.Message;
+import net.shopxx.Order;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Admin;
 import net.shopxx.entity.Country;
@@ -73,7 +74,7 @@ public class FiBankbookJournalTempController extends BaseController {
 		// 增加默认排序
 		if (null  == pageable.getOrderProperty()) {
 			pageable.setOrderProperty("id");
-			pageable.setOrderDirection(pageable.getOrderDirection().desc);
+			pageable.setOrderDirection(Order.Direction.desc);
 		}
 		model.addAttribute("page", fiBankbookJournalTempService.findPage(country, type, moneyType, confirmStatus, beginDate, endDate, pageable));
 		model.addAttribute("countryName", countryName);
@@ -156,7 +157,7 @@ public class FiBankbookJournalTempController extends BaseController {
 			fiBankbookJournalTempService.confirm(ids);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Message.error(ERROR_MESSAGE);
+			return new Message(Message.Type.error, e.getMessage());
 		}
 		return Message.success(SUCCESS_MESSAGE);
 	}

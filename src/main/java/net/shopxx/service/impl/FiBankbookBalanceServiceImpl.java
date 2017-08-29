@@ -59,6 +59,7 @@ public class FiBankbookBalanceServiceImpl extends BaseServiceImpl<FiBankbookBala
 	 * @param fiBankbookBalance
 	 * @param amount
 	 */
+	@Transactional
 	public void addBalance(FiBankbookBalance fiBankbookBalance, BigDecimal amount){
 		if (!LockModeType.PESSIMISTIC_WRITE.equals(fiBankbookBalanceDao.getLockMode(fiBankbookBalance))) {
 			fiBankbookBalanceDao.flush();

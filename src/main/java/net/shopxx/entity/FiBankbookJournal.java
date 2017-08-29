@@ -129,7 +129,7 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	/**
 	 * 余额
 	 */
-	@Column(precision = 21, scale = 6)
+	@Column(nullable = false, precision = 21, scale = 6)
 	private BigDecimal balance;
 	
 	/**

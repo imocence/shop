@@ -43,5 +43,5 @@ public interface FiBankbookJournalTempService extends BaseService<FiBankbookJour
 	 * @param ids
 	 *            ID
 	 */
-	void confirm(Long... ids);
+	String confirm(Long... ids) throws Exception;
 }
