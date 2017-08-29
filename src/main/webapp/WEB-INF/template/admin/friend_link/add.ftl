@@ -12,6 +12,7 @@
 <script type="text/javascript" src="${base}/resources/admin/js/webuploader.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/common.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/input.js"></script>
+<script type="text/javascript" src="${base}/resources/admin/js/simpleuploader.js"></script>
 <script type="text/javascript">
 $().ready(function() {
 
@@ -22,16 +23,17 @@ $().ready(function() {
 	
 	[@flash_message /]
 	
-	$filePicker.uploader();
+	$filePicker.initUploader("logo");
 	
 	$type.change(function() {
 		if ($(this).val() == "text") {
 			$logo.prop("disabled", true).closest("tr").hide();
 		} else {
 			$logo.prop("disabled", false).closest("tr").show();
+			$filePicker.initUploader("logo");
 		}
 	});
-	
+
 	// 表单验证
 	$inputForm.validate({
 		rules: {
@@ -98,7 +100,7 @@ $().ready(function() {
 				<td>
 					<span class="fieldSet">
 						<input type="text" id="logo" name="logo" class="text" maxlength="200" disabled="disabled" />
-						<a href="javascript:;" id="filePicker" class="button">${message("admin.upload.filePicker")}</a>
+						<a id="filePicker" class="button">${message("admin.upload.filePicker")}</a>
 					</span>
 				</td>
 			</tr>

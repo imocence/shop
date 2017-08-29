@@ -12,6 +12,7 @@
 <script type="text/javascript" src="${base}/resources/admin/js/webuploader.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/common.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/input.js"></script>
+<script type="text/javascript" src="${base}/resources/admin/js/simpleuploader.js"></script>
 <script type="text/javascript">
 $().ready(function() {
 
@@ -20,7 +21,7 @@ $().ready(function() {
 	
 	[@flash_message /]
 	
-	$filePicker.uploader();
+	$filePicker.initUploader("icon");
 	
 	// 表单验证
 	$inputForm.validate({
@@ -70,7 +71,7 @@ $().ready(function() {
 				</th>
 				<td>
 					<span class="fieldSet">
-						<input type="text" name="icon" class="text" maxlength="200" />
+						<input type="text" id="icon" name="icon" class="text" maxlength="200" />
 						<a href="javascript:;" id="filePicker" class="button">${message("admin.upload.filePicker")}</a>
 					</span>
 				</td>

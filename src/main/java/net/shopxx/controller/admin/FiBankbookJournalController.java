@@ -4,9 +4,11 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import net.shopxx.Order;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.FiBankbookJournal;
+import net.shopxx.entity.Product.OrderType;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.FiBankbookJournalService;
 import net.shopxx.util.StringUtil;
@@ -50,8 +52,8 @@ public class FiBankbookJournalController extends BaseController {
 		}
 		// 增加默认排序
 		if (null  == pageable.getOrderProperty()) {
-			pageable.setOrderProperty("id");
-			pageable.setOrderDirection(pageable.getOrderDirection().desc);
+			pageable.setOrderProperty("dealDate");
+			pageable.setOrderDirection(Order.Direction.desc);
 		}
 		model.addAttribute("page", fiBankbookJournalService.findPage(country, type, moneyType, beginDate, endDate, pageable));
 		model.addAttribute("countryName", countryName);

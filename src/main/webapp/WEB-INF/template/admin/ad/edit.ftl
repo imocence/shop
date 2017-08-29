@@ -14,6 +14,7 @@
 <script type="text/javascript" src="${base}/resources/admin/js/common.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/input.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/datePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="${base}/resources/admin/js/simpleuploader.js"></script>
 <script type="text/javascript">
 $().ready(function() {
 
@@ -25,7 +26,7 @@ $().ready(function() {
 	
 	[@flash_message /]
 	
-	$filePicker.uploader();
+	$filePicker.initUploader("path");
 	
 	$content.editor();
 	
@@ -36,6 +37,7 @@ $().ready(function() {
 		} else {
 			$content.prop("disabled", true).closest("tr").hide();
 			$path.prop("disabled", false).closest("tr").show();
+			$filePicker.initUploader("logo");
 		}
 	});
 	

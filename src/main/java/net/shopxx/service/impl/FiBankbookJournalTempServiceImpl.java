@@ -79,6 +79,12 @@ public class FiBankbookJournalTempServiceImpl extends BaseServiceImpl<FiBankbook
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public String confirm(Long... ids) throws Exception{
+		// 获取当前用户
+		Admin currentUser = userService.getCurrent(Admin.class, LockModeType.PESSIMISTIC_WRITE);
+		if (null == currentUser) {
+			throw new Exception(SpringUtils.getMessage("admin.common.session.lost"));
+		}
+		
 		if (ids != null) {
 			for (Long id : ids) {
 				// 更新核实状态为核实、处理时间为当前时间
@@ -88,7 +94,8 @@ public class FiBankbookJournalTempServiceImpl extends BaseServiceImpl<FiBankbook
 				if (fiBankbookJournalTemp.getConfirmStatus() == FiBankbookJournalTemp.ConfirmStatus.confirmed) {
 					throw new Exception(SpringUtils.getMessage("admin.fiBankbookJournalTemp.error.confirmed", member.getUsercode(), DateUtil.dateTimeFormat(fiBankbookJournalTemp.getCreatedDate())));
 				}
-				
+				fiBankbookJournalTemp.setConfirmCode(String.valueOf(currentUser.getId()));
+				fiBankbookJournalTemp.setConfirmName(currentUser.getUsername());
 				fiBankbookJournalTemp.setConfirmStatus(FiBankbookJournalTemp.ConfirmStatus.confirmed);
 				fiBankbookJournalTemp.setDealDate(new Date());
 				update(fiBankbookJournalTemp);
@@ -150,12 +157,6 @@ public class FiBankbookJournalTempServiceImpl extends BaseServiceImpl<FiBankbook
 				}
 				
 				// 新增一条记录到fiBankbookJournal表
-				// 获取当前用户
-				Admin currentUser = userService.getCurrent(Admin.class, LockModeType.PESSIMISTIC_WRITE);
-				if (null == currentUser) {
-					throw new Exception(SpringUtils.getMessage("admin.common.session.lost"));
-				}
-				
 				FiBankbookJournal fiBankbookJournal = new FiBankbookJournal();
 				fiBankbookJournal.setBalance(fiBankbookBalance.getBalance());
 				fiBankbookJournal.setCountry(fiBankbookJournalTemp.getCountry());
@@ -213,11 +214,5 @@ public class FiBankbookJournalTempServiceImpl extends BaseServiceImpl<FiBankbook
 	@Transactional
 	public void delete(FiBankbookJournalTemp fiBankbookJournalTemp) {
 		super.delete(fiBankbookJournalTemp);
-	}
-	
-	public static void main(String[] args) {
-		BigDecimal zero = new BigDecimal(0);
-		BigDecimal amount = new BigDecimal(1111111.11);
-		System.out.println(zero.subtract(amount, new MathContext(6, RoundingMode.FLOOR)));
 	}
 }
