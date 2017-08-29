@@ -5,8 +5,6 @@
  */
 package net.shopxx.controller.member;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -15,22 +13,18 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.Order;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.service.ConsultationService;
 import net.shopxx.service.CouponCodeService;
 import net.shopxx.service.FiBankbookBalanceService;
-import net.shopxx.service.FiBankbookJournalService;
-import net.shopxx.service.MemberService;
 import net.shopxx.service.MessageService;
 import net.shopxx.service.NapaStoresService;
 import net.shopxx.service.OrderService;
 import net.shopxx.service.ProductFavoriteService;
 import net.shopxx.service.ProductNotifyService;
 import net.shopxx.service.ReviewService;
-import net.shopxx.util.TimeUtil;
 
 /**
  * Controller - 首页
@@ -65,8 +59,6 @@ public class IndexController extends BaseController {
 	private String urlPath;
 	@Value("${url.signature}")
 	private String urlSignature;
-	@Inject
-	private MemberService memberService;
 	@Inject
 	FiBankbookBalanceService fiBankbookBalanceService;
 	@Inject

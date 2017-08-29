@@ -1356,6 +1356,7 @@ public class Member extends User {
 	@Override
 	@Transient
 	public boolean isValidCredentials(Object credentials) {
+		
 		return credentials != null && DigestUtils.md5Hex(credentials instanceof char[] ? new String((char[]) credentials) : credentials.toString()).equals(getEncodedPassword());
 	}
 
