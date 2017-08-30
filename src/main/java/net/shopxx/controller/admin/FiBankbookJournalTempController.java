@@ -21,7 +21,6 @@ import net.shopxx.security.CurrentUser;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.FiBankbookJournalTempService;
 import net.shopxx.service.MemberService;
-import net.shopxx.util.PermissionUitl;
 import net.shopxx.util.StringUtil;
 
 import org.apache.commons.lang.StringUtils;
@@ -78,7 +77,6 @@ public class FiBankbookJournalTempController extends BaseController {
 		}
 		model.addAttribute("page", fiBankbookJournalTempService.findPage(country, type, moneyType, confirmStatus, beginDate, endDate, pageable));
 		model.addAttribute("countryName", countryName);
-		model.addAttribute("isconfirm", PermissionUitl.isPermission(currentUser, PermissionUitl.JOURNAL_TEMP_CONFIRM));
 		return "admin/fiBankbookJournalTemp/list";
 	}
 	

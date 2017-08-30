@@ -126,6 +126,10 @@ public class FiBankbookJournalTempServiceImpl extends BaseServiceImpl<FiBankbook
 				}
 				// 用户余额为空则新增一条记录
 				if (null == fiBankbookBalance) {
+					// 用户的账户余额不足
+					if (amount.doubleValue() < 0) {
+						throw new Exception(SpringUtils.getMessage("admin.fiBankbookJournalTemp.error.balance.insufficient", member.getUsercode()));
+					}
 					fiBankbookBalance = new FiBankbookBalance();
 					fiBankbookBalance.setBalance(amount);
 					fiBankbookBalance.setCountry(country);
