@@ -57,12 +57,6 @@ public class FiBankbookJournalController extends BaseController {
 		}
 		model.addAttribute("page", fiBankbookJournalService.findPage(country, type, moneyType, beginDate, endDate, pageable));
 		model.addAttribute("countryName", countryName);
-		
-		try {
-			System.out.println(fiBankbookJournalService.recharge("1", new BigDecimal(100.100), null, 1, 1, 1, "中国"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		return "admin/fiBankbookJournal/list";
 	}
 
