@@ -38,7 +38,8 @@ public interface FiBankbookJournalDao extends BaseDao<FiBankbookJournal, Long> {
 	/**
 	 * 获取最近的一条记录
 	 * @param member
+	 * @type type
 	 * @return
 	 */
-	FiBankbookJournal findLastByMember(Member member);
+	FiBankbookJournal findLastByMember(Member member, FiBankbookJournal.Type type);
 }

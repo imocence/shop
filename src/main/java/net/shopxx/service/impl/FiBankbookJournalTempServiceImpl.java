@@ -1,12 +1,9 @@
 package net.shopxx.service.impl;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.Date;
 
 import javax.inject.Inject;
-import javax.persistence.LockModeType;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
@@ -80,7 +77,7 @@ public class FiBankbookJournalTempServiceImpl extends BaseServiceImpl<FiBankbook
 	@Transactional(rollbackFor = Exception.class)
 	public String confirm(Long... ids) throws Exception{
 		// 获取当前用户
-		Admin currentUser = userService.getCurrent(Admin.class, LockModeType.PESSIMISTIC_WRITE);
+		Admin currentUser = userService.getCurrent(Admin.class);
 		if (null == currentUser) {
 			throw new Exception(SpringUtils.getMessage("admin.common.session.lost"));
 		}
@@ -121,7 +118,7 @@ public class FiBankbookJournalTempServiceImpl extends BaseServiceImpl<FiBankbook
 				// 获取用户余额
 				FiBankbookBalance fiBankbookBalance = fiBankbookBalanceService.find(member, balanceType);
 				// 获取最近的fiBankbookJournal记录
-				FiBankbookJournal lastFiBankbookJournal = fiBankbookJournalService.findLastByMember(member);
+				FiBankbookJournal lastFiBankbookJournal = fiBankbookJournalService.findLastByMember(member, fiBankbookJournalTemp.getType());
 				// 最近一笔交易费用的钱
 				BigDecimal lastMoney = null;
 				if (null != lastFiBankbookJournal) {

@@ -72,12 +72,14 @@ public class FiBankbookJournalDaoImpl extends BaseDaoImpl<FiBankbookJournal, Lon
 	/**
 	 * 获取最近的一条记录
 	 * @param member
+	 * @type type
 	 * @return
 	 */
-	public FiBankbookJournal findLastByMember(Member member){
-		String jpql = "SELECT fiBankbookJournal FROM FiBankbookJournal fiBankbookJournal WHERE fiBankbookJournal.member=:member order by id desc";
+	public FiBankbookJournal findLastByMember(Member member, FiBankbookJournal.Type type){
+		String jpql = "SELECT fiBankbookJournal FROM FiBankbookJournal fiBankbookJournal WHERE fiBankbookJournal.member=:member AND type=:type order by id desc";
 		TypedQuery<FiBankbookJournal> query = entityManager.createQuery(jpql, FiBankbookJournal.class);
 		query.setParameter("member", member);
+		query.setParameter("type", type);
 		query.setMaxResults(1);
 		List<FiBankbookJournal> list= query.getResultList();
 		if (null != list && !list.isEmpty()) {

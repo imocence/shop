@@ -164,7 +164,7 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	 * 唯一标示
 	 */
 	@Length(max = 200)
-	@Column(name="unique_code")
+	@Column(name="unique_code", unique=true)
 	private String uniqueCode; 
 	
 	/**
@@ -324,4 +324,5 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	public void setFiBankbookJournalTemp(FiBankbookJournalTemp fiBankbookJournalTemp) {
 		this.fiBankbookJournalTemp = fiBankbookJournalTemp;
 	}
+	
 }
