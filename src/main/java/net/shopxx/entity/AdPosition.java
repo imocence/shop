@@ -15,7 +15,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
@@ -85,11 +87,11 @@ public class AdPosition extends BaseEntity<Long> {
 	private Set<Ad> ads = new HashSet<>();
 	
 	/**
-	 * 国家code
+	 * 国家
 	 */
-	@Length(max = 255)
-	@Column
-	private String country;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
 	
 	/**
 	 * 获取名称
@@ -205,11 +207,11 @@ public class AdPosition extends BaseEntity<Long> {
 		this.ads = ads;
 	}
 	
-	public String getCountry() {
+	public Country getCountry() {
 		return country;
 	}
 
-	public void setCountry(String country) {
+	public void setCountry(Country country) {
 		this.country = country;
 	}
 

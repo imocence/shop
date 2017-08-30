@@ -5,9 +5,12 @@
  */
 package net.shopxx.service;
 
+import java.io.File;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import net.shopxx.FileType;
+import net.shopxx.plugin.StoragePlugin;
 
 /**
  * Service - 文件
@@ -62,5 +65,6 @@ public interface FileService {
 	 * @return 路径
 	 */
 	String uploadLocal(FileType fileType, MultipartFile multipartFile);
+
 
 }

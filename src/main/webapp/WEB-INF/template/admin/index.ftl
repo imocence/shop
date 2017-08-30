@@ -42,7 +42,6 @@ $().ready(function() {
 
 function changeLanguage(){
 	var language = $("#language").val();
-	console.log(language);
 	$.ajax({
 		url: "${base}/common/language/change",
 		type: "POST",
@@ -72,7 +71,7 @@ function changeLanguage(){
 			<th>
 				<div id="nav" class="nav">
 					<ul>
-						[#list ["admin:product", "admin:stock", "admin:productCategory", "admin:productTag", "admin:parameter", "admin:attribute", "admin:specification", "admin:brand", "admin:productNotify"] as permission]
+						[#list ["admin:product", "admin:stock","admin:warehouse", "admin:productCategory", "admin:productTag", "admin:parameter", "admin:attribute", "admin:specification", "admin:brand", "admin:productNotify"] as permission]
 							[@shiro.hasPermission name = permission]
 								<li>
 									<a href="#product">${message("admin.index.productNav")}</a>
@@ -170,6 +169,11 @@ function changeLanguage(){
 					[@shiro.hasPermission name="admin:stock"]
 						<dd>
 							<a href="stock/log" target="iframe">${message("admin.index.stock")}</a>
+						</dd>
+					[/@shiro.hasPermission]
+					[@shiro.hasPermission name="admin:warehouse"]
+						<dd>
+							<a href="warehouse/list" target="iframe">${message("admin.index.warehouse")}</a>
 						</dd>
 					[/@shiro.hasPermission]
 					[@shiro.hasPermission name="admin:productCategory"]

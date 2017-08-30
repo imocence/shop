@@ -16,10 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import net.shopxx.Filter;
 import net.shopxx.Message;
 import net.shopxx.Pageable;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.FriendLink;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.FriendLinkService;
+import net.shopxx.util.StringUtil;
 
 /**
  * Controller - 友情链接
@@ -33,7 +37,9 @@ public class FriendLinkController extends BaseController {
 
 	@Inject
 	private FriendLinkService friendLinkService;
-
+	@Inject
+	private CountryService countryService;
+	
 	/**
 	 * 添加
 	 */
@@ -47,7 +53,7 @@ public class FriendLinkController extends BaseController {
 	 * 保存
 	 */
 	@PostMapping("/save")
-	public String save(FriendLink friendLink, RedirectAttributes redirectAttributes) {
+	public String save(FriendLink friendLink, String countryName, RedirectAttributes redirectAttributes) {
 		if (!isValid(friendLink)) {
 			return ERROR_VIEW;
 		}
@@ -56,6 +62,7 @@ public class FriendLinkController extends BaseController {
 		} else if (StringUtils.isEmpty(friendLink.getLogo())) {
 			return ERROR_VIEW;
 		}
+		friendLink.setCountry(countryService.findByName(countryName));
 		friendLinkService.save(friendLink);
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -75,7 +82,7 @@ public class FriendLinkController extends BaseController {
 	 * 更新
 	 */
 	@PostMapping("/update")
-	public String update(FriendLink friendLink, RedirectAttributes redirectAttributes) {
+	public String update(FriendLink friendLink, String countryName, RedirectAttributes redirectAttributes) {
 		if (!isValid(friendLink)) {
 			return ERROR_VIEW;
 		}
@@ -84,6 +91,7 @@ public class FriendLinkController extends BaseController {
 		} else if (StringUtils.isEmpty(friendLink.getLogo())) {
 			return ERROR_VIEW;
 		}
+		friendLink.setCountry(countryService.findByName(countryName));
 		friendLinkService.update(friendLink);
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -93,7 +101,19 @@ public class FriendLinkController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Pageable pageable, ModelMap model) {
+	public String list(String countryName, Pageable pageable, ModelMap model) {
+		Country country = null;
+		if (StringUtil.isNotEmpty(countryName)) {
+			country = countryService.findByName(countryName);
+		}
+		model.addAttribute("countryName", countryName);
+		if (null != country) {
+			Filter filter = new Filter();
+			filter.setProperty("country");
+			filter.setValue(country);
+			filter.setOperator(Filter.Operator.eq);
+			pageable.getFilters().add(filter);
+		}
 		model.addAttribute("page", friendLinkService.findPage(pageable));
 		return "admin/friend_link/list";
 	}

@@ -8,6 +8,7 @@ package net.shopxx.service;
 import java.util.List;
 
 import net.shopxx.entity.ArticleCategory;
+import net.shopxx.entity.Country;
 
 /**
  * Service - 文章分类
@@ -78,6 +79,14 @@ public interface ArticleCategoryService extends BaseService<ArticleCategory, Lon
 	 * @return 文章分类树
 	 */
 	List<ArticleCategory> findTree();
+	
+	/**
+	 * 查找文章分类树
+	 * @param country
+	 *            国家
+	 * @return 文章分类树
+	 */
+	List<ArticleCategory> findTree(Country country);
 
 	/**
 	 * 查找下级文章分类

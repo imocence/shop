@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import net.shopxx.FileType;
 import net.shopxx.Setting;
 import net.shopxx.plugin.StoragePlugin;
+import net.shopxx.plugin.lyStorage.LyStoragePlugin;
 import net.shopxx.service.FileService;
 import net.shopxx.service.PluginService;
 import net.shopxx.util.SystemUtils;
@@ -90,6 +91,8 @@ public class FileServiceImpl implements FileService {
 			FileUtils.deleteQuietly(file);
 		}
 	}
+	
+  
 
 	public boolean isValid(FileType fileType, MultipartFile multipartFile) {
 		Assert.notNull(fileType);
@@ -141,13 +144,16 @@ public class FileServiceImpl implements FileService {
 		try {
 			String destPath = uploadPath + UUID.randomUUID() + "." + FilenameUtils.getExtension(multipartFile.getOriginalFilename());
 			for (StoragePlugin storagePlugin : pluginService.getStoragePlugins(true)) {
-				File tempFile = new File(FileUtils.getTempDirectory(), UUID.randomUUID() + ".tmp");
+//				File tempFile = new File(FileUtils.getTempDirectory(), UUID.randomUUID() + ".tmp");
+				File tempFile = new File(FileUtils.getTempDirectory(), UUID.randomUUID() +"."+ FilenameUtils.getExtension(multipartFile.getOriginalFilename()));
 				multipartFile.transferTo(tempFile);
 				String contentType = multipartFile.getContentType();
 				if (async) {
 					addUploadTask(storagePlugin, destPath, tempFile, contentType);
+				} else if (storagePlugin instanceof LyStoragePlugin)  {
+				    destPath =  storagePlugin.upload(tempFile, contentType);
 				} else {
-					upload(storagePlugin, destPath, tempFile, contentType);
+	                upload(storagePlugin, destPath, tempFile, contentType);
 				}
 				return storagePlugin.getUrl(destPath);
 			}
@@ -198,5 +204,7 @@ public class FileServiceImpl implements FileService {
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
+
+  
 
 }

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
 
 import net.shopxx.dao.ArticleCategoryDao;
 import net.shopxx.entity.ArticleCategory;
+import net.shopxx.entity.Country;
 
 /**
  * Dao - 文章分类
@@ -78,6 +79,46 @@ public class ArticleCategoryDaoImpl extends BaseDaoImpl<ArticleCategory, Long> i
 		} else {
 			String jpql = "select articleCategory from ArticleCategory articleCategory where articleCategory.parent = :parent order by articleCategory.order asc";
 			query = entityManager.createQuery(jpql, ArticleCategory.class).setParameter("parent", articleCategory);
+			if (count != null) {
+				query.setMaxResults(count);
+			}
+			return query.getResultList();
+		}
+	}
+	
+	public List<ArticleCategory> findChildren(ArticleCategory articleCategory, boolean recursive, Integer count, Country country) {
+		TypedQuery<ArticleCategory> query;
+		if (recursive) {
+			String jpql = "select articleCategory from ArticleCategory articleCategory where 1=1";
+			if (articleCategory != null) {
+				jpql += " and articleCategory.treePath like :treePath ";
+			} 
+			if (country != null) {
+				jpql += " and country=:country ";
+			}
+			jpql += " order by articleCategory.grade asc, articleCategory.order asc";
+			query = entityManager.createQuery(jpql, ArticleCategory.class);
+			if (articleCategory != null) {
+				query.setParameter("treePath", "%" + ArticleCategory.TREE_PATH_SEPARATOR + articleCategory.getId() + ArticleCategory.TREE_PATH_SEPARATOR + "%");
+			}
+			if (country != null) {
+				query.setParameter("country", country);
+			}
+			if (count != null) {
+				query.setMaxResults(count);
+			}
+			List<ArticleCategory> result = query.getResultList();
+			sort(result);
+			return result;
+		} else {
+			String jpql = "";
+			if (country != null) {
+				jpql = "select articleCategory from ArticleCategory articleCategory where articleCategory.parent = :parent and country=:country order by articleCategory.order asc";
+				query = entityManager.createQuery(jpql, ArticleCategory.class).setParameter("parent", articleCategory).setParameter("country", country);
+			}else {
+				jpql = "select articleCategory from ArticleCategory articleCategory where articleCategory.parent = :parent order by articleCategory.order asc";
+				query = entityManager.createQuery(jpql, ArticleCategory.class).setParameter("parent", articleCategory);
+			}
 			if (count != null) {
 				query.setMaxResults(count);
 			}

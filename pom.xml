@@ -23,20 +23,20 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.3</version>
 				<configuration>
-				  <warName>globalilife</warName>
-				  <!-- 激活spring profile -->
-				  <webResources>
-					  <resource>
-						  <filtering>true</filtering>
-						  <directory>src/main/webapp</directory>
-						  <includes>
-							  <include>**/web.xml</include>
-						  </includes>
-					  </resource>
-				  </webResources>
-				  <warSourceDirectory>src/main/webapp</warSourceDirectory>
-				  <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
-			  </configuration>
+					<warName>globalilife</warName>
+					<!-- 激活spring profile -->
+					<webResources>
+						<resource>
+							<filtering>true</filtering>
+							<directory>src/main/webapp</directory>
+							<includes>
+								<include>**/web.xml</include>
+							</includes>
+						</resource>
+					</webResources>
+					<warSourceDirectory>src/main/webapp</warSourceDirectory>
+					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -441,5 +441,21 @@
 			<version>3.0.1</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.31</version>
+		</dependency>
+
 	</dependencies>
 </project>

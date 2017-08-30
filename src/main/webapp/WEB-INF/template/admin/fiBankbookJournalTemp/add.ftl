@@ -52,7 +52,6 @@ $().ready(function() {
 		rules: {
 			money: {
 				required: true,
-				min: 0,
 				decimal: {
 					integer: 21,
 					fraction: ${setting.priceScale}
@@ -162,7 +161,7 @@ function countryChange(){
 					${message("admin.fiBankbookJournal.notes")}:
 				</th>
 				<td>
-					<input type="textarea" name="notes" class="text" maxlength="200" />
+					<input type="text" name="notes" class="text" maxlength="200" />
 				</td>
 			</tr>
 			<tr>

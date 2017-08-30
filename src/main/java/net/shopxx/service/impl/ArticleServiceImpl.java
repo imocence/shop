@@ -40,6 +40,7 @@ import net.shopxx.dao.ArticleTagDao;
 import net.shopxx.entity.Article;
 import net.shopxx.entity.ArticleCategory;
 import net.shopxx.entity.ArticleTag;
+import net.shopxx.entity.Country;
 import net.shopxx.service.ArticleService;
 
 /**
@@ -84,6 +85,20 @@ public class ArticleServiceImpl extends BaseServiceImpl<Article, Long> implement
 	@Transactional(readOnly = true)
 	public Page<Article> findPage(ArticleCategory articleCategory, ArticleTag articleTag, Boolean isPublication, Pageable pageable) {
 		return articleDao.findPage(articleCategory, articleTag, isPublication, pageable);
+	}
+	
+	/**
+	 * 搜索文章分页
+	 * 
+	 * @param country
+	 *            国家
+	 * @param pageable
+	 *            分页信息
+	 * @return 文章分页
+	 */
+	@Transactional(readOnly = true)
+	public Page<Article> findPage(Country country, Pageable pageable){
+		return articleDao.findPage(country, pageable);
 	}
 
 	@SuppressWarnings("unchecked")

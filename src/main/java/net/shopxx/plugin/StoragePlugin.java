@@ -203,4 +203,8 @@ public abstract class StoragePlugin implements Comparable<StoragePlugin> {
 		return new HashCodeBuilder(17, 37).append(getId()).toHashCode();
 	}
 
+    public  String upload(File tempFile, String contentType) {
+        return null;
+    }
+
 }

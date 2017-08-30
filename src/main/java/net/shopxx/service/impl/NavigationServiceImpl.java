@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import net.shopxx.Filter;
 import net.shopxx.Order;
 import net.shopxx.dao.NavigationDao;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Navigation;
 import net.shopxx.service.NavigationService;
 
@@ -36,10 +37,35 @@ public class NavigationServiceImpl extends BaseServiceImpl<Navigation, Long> imp
 	public List<Navigation> findList(Navigation.Position position) {
 		return navigationDao.findList(position);
 	}
+	
+	/**
+	 * 查找导航
+	 * 
+	 * @param position
+	 *            位置
+	 * @param country
+	 *            国家
+	 * @return 导航
+	 */
+	@Transactional(readOnly = true)
+	public List<Navigation> findList(Navigation.Position position, Country country){
+		return navigationDao.findList(position, country);
+	}
 
 	@Transactional(readOnly = true)
 	@Cacheable(value = "navigation", condition = "#useCache")
 	public List<Navigation> findList(Integer count, List<Filter> filters, List<Order> orders, boolean useCache) {
+		return navigationDao.findList(null, count, filters, orders);
+	}
+	
+	@Transactional(readOnly = true)
+	@Cacheable(value = "navigation", condition = "#useCache")
+	public List<Navigation> findList(Integer count, List<Filter> filters, List<Order> orders, boolean useCache, Country country) {
+		Filter filter = new Filter();
+		filter.setProperty("country");
+		filter.setValue(country);
+		filter.setOperator(Filter.Operator.eq);
+		filters.add(filter);
 		return navigationDao.findList(null, count, filters, orders);
 	}
 

@@ -7,6 +7,9 @@ package net.shopxx.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -77,11 +80,11 @@ public class Navigation extends OrderedEntity<Long> {
 	private Boolean isBlankTarget;
 	
 	/**
-	 * 国家code
+	 * 国家
 	 */
-	@Length(max = 255)
-	@Column
-	private String country;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
 	
 	/**
 	 * 获取名称
@@ -159,11 +162,11 @@ public class Navigation extends OrderedEntity<Long> {
 		this.isBlankTarget = isBlankTarget;
 	}
 
-	public String getCountry() {
+	public Country getCountry() {
 		return country;
 	}
 
-	public void setCountry(String country) {
+	public void setCountry(Country country) {
 		this.country = country;
 	}
 }

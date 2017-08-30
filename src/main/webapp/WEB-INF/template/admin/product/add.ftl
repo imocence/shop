@@ -768,7 +768,7 @@ $().ready(function() {
 			<li>
 				<input type="button" value="${message("admin.product.attribute")}" />
 			</li>
-			<li class="hidden">
+			<li >
 				<input type="button" value="${message("admin.product.specification")}" />
 			</li>
 		</ul>

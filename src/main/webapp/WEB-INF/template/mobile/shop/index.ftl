@@ -84,7 +84,6 @@
 	
 	function changeLanguage(){
 		var language = $("#language").val();
-		console.log(language);
 		$.ajax({
 			url: "${base}/common/language/change",
 			type: "POST",

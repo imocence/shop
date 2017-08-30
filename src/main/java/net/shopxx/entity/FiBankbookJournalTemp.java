@@ -33,57 +33,6 @@ public class FiBankbookJournalTemp extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * 处理类型
-	 * @author gaoxiang
-	 *
-	 */
-	public enum DealType {
-		/**
-		 * 存入
-		 */
-		deposit,
-		
-		/**
-		 * 取出
-		 */
-		takeout;
-	}
-	
-	/**
-	 * 账户类型
-	 * @author gaoxiang
-	 *
-	 */
-	public enum Type {
-		/**
-		 * 电子币账户
-		 */
-		balance,
-		
-		/**
-		 * 购物券账户
-		 */
-		coupon;
-	}
-	
-	/**
-	 * 资金类别
-	 * @author gaoxiang
-	 *
-	 */
-	public enum MoneyType {
-		/**
-		 * 现金
-		 */
-		cash,
-		
-		/**
-		 * 在线充值
-		 */
-		recharge;
-	}
-	
-	/**
 	 * 核实状态
 	 * @author gaoxiang
 	 *
@@ -119,7 +68,7 @@ public class FiBankbookJournalTemp extends BaseEntity<Long> {
 	 */
 	@JsonView(BaseView.class)
 	@Column(name="deal_type")
-	private FiBankbookJournalTemp.DealType dealType;
+	private FiBankbookJournal.DealType dealType;
 	
 	/**
 	 * 处理日期
@@ -168,13 +117,13 @@ public class FiBankbookJournalTemp extends BaseEntity<Long> {
 	 */
 	@JsonView(BaseView.class)
 	@Column(name="money_type")
-	private FiBankbookJournalTemp.MoneyType moneyType;
+	private FiBankbookJournal.MoneyType moneyType;
 	
 	/**
 	 * 唯一标示
 	 */
 	@Length(max = 200)
-	@Column(name="unique_code")
+	@Column(name="unique_code", unique=true)
 	private String uniqueCode; 
 	
 	/**
@@ -182,7 +131,7 @@ public class FiBankbookJournalTemp extends BaseEntity<Long> {
 	 */
 	@JsonView(BaseView.class)
 	@Column(name="type")
-	private FiBankbookJournalTemp.Type type;
+	private FiBankbookJournal.Type type;
 	
 	/**
 	 * 核实人标示
@@ -277,27 +226,27 @@ public class FiBankbookJournalTemp extends BaseEntity<Long> {
 		this.member = member;
 	}
 
-	public FiBankbookJournalTemp.DealType getDealType() {
+	public FiBankbookJournal.DealType getDealType() {
 		return dealType;
 	}
 
-	public void setDealType(FiBankbookJournalTemp.DealType dealType) {
+	public void setDealType(FiBankbookJournal.DealType dealType) {
 		this.dealType = dealType;
 	}
 
-	public FiBankbookJournalTemp.MoneyType getMoneyType() {
+	public FiBankbookJournal.MoneyType getMoneyType() {
 		return moneyType;
 	}
 
-	public void setMoneyType(FiBankbookJournalTemp.MoneyType moneyType) {
+	public void setMoneyType(FiBankbookJournal.MoneyType moneyType) {
 		this.moneyType = moneyType;
 	}
 
-	public FiBankbookJournalTemp.Type getType() {
+	public FiBankbookJournal.Type getType() {
 		return type;
 	}
 
-	public void setType(FiBankbookJournalTemp.Type type) {
+	public void setType(FiBankbookJournal.Type type) {
 		this.type = type;
 	}
 
