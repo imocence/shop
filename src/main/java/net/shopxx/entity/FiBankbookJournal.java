@@ -172,7 +172,7 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	 */
 	@Length(max = 20)
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="last_id", referencedColumnName="id")
+	@JoinColumn(name="last_id", referencedColumnName="id", unique=true)
 	private FiBankbookJournal lastFiBankbookJournal;
 	
 	/**
@@ -194,7 +194,7 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	 */
 	@Length(max = 20)
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="journal_temp_id", referencedColumnName="id")
+	@JoinColumn(name="journal_temp_id", referencedColumnName="id", unique=true)
 	private FiBankbookJournalTemp fiBankbookJournalTemp;
 
 	public Date getDealDate() {

@@ -123,7 +123,7 @@ public class FiBankbookJournalTemp extends BaseEntity<Long> {
 	 * 唯一标示
 	 */
 	@Length(max = 200)
-	@Column(name="unique_code")
+	@Column(name="unique_code", unique=true)
 	private String uniqueCode; 
 	
 	/**
