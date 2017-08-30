@@ -387,6 +387,13 @@ public class Order extends BaseEntity<Long> {
 	 */
 	@OneToOne(fetch = FetchType.LAZY)
 	private CouponCode couponCode;
+	
+	/**
+	 * 国家
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
 
 	/**
 	 * 促销名称
@@ -1362,6 +1369,14 @@ public class Order extends BaseEntity<Long> {
 	public void setOrderLogs(Set<OrderLog> orderLogs) {
 		this.orderLogs = orderLogs;
 	}
+	
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
 
 	/**
 	 * 获取是否需要物流
@@ -1518,7 +1533,7 @@ public class Order extends BaseEntity<Long> {
 			setShippingMethodName(getShippingMethod().getName());
 		}
 	}
-
+	
 	/**
 	 * 类型转换 - 促销名称
 	 * 

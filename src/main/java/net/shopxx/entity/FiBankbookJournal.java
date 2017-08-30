@@ -110,7 +110,7 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	 */
 	@Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
 	@DateBridge(resolution = Resolution.SECOND)
-	@Column(name="deal_date")
+	@Column(name="deal_date", nullable = false)
 	private Date dealDate;
 	
 	/**

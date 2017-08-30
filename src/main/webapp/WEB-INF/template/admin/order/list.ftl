@@ -11,6 +11,7 @@
 <script type="text/javascript" src="${base}/resources/admin/js/jquery.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/common.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/list.js"></script>
+<script type="text/javascript" src="${base}/resources/admin/js/country.js"></script>
 <style type="text/css">
 .moreTable th {
 	width: 80px;
@@ -134,6 +135,7 @@ $().ready(function() {
 		${message("admin.order.list")} <span>(${message("admin.page.total", page.total)})</span>
 	</div>
 	<form id="listForm" action="list" method="get">
+		<input type="hidden" id="countryName" name="countryName" value="${countryName}" />
 		<input type="hidden" id="type" name="type" value="${type}" />
 		<input type="hidden" id="status" name="status" value="${status}" />
 		<input type="hidden" id="memberUsername" name="memberUsername" value="${memberUsername}" />
@@ -177,6 +179,19 @@ $().ready(function() {
 						<li[#if page.pageSize == 20] class="current"[/#if] val="20">20</li>
 						<li[#if page.pageSize == 50] class="current"[/#if] val="50">50</li>
 						<li[#if page.pageSize == 100] class="current"[/#if] val="100">100</li>
+					</ul>
+				</div>
+				<div id="countryMenu" class="dropdownMenu">
+					<a href="javascript:;" class="button">
+						${message("common.country")}<span class="arrow">&nbsp;</span>
+					</a>
+					<ul>
+						<li[#if country.name == null] class="current"[/#if] val="">${message("common.country.all")}</li>
+						[@country_list]
+							[#list countrys as country]
+								<li[#if country.name == countryName] class="current"[/#if] val="${country.name}">${message("${country.nameLocal}")}</li>
+							[/#list]
+						[/@country_list]
 					</ul>
 				</div>
 			</div>
@@ -225,6 +240,9 @@ $().ready(function() {
 				<th>
 					<a href="javascript:;" class="sort" name="createdDate">${message("admin.common.createdDate")}</a>
 				</th>
+				<th>
+					<span>${message("common.country")}</span>
+				</th>
 				[@shiro.hasPermission name = "admin:print"]
 					<th>
 						<span>${message("admin.order.print")}</span>
@@ -265,6 +283,9 @@ $().ready(function() {
 					</td>
 					<td>
 						<span title="${order.createdDate?string("yyyy-MM-dd HH:mm:ss")}">${order.createdDate}</span>
+					</td>
+					<td>
+						${message("${order.country.nameLocal}")}
 					</td>
 					[@shiro.hasPermission name = "admin:print"]
 						<td>

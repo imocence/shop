@@ -41,6 +41,7 @@ public interface FiBankbookBalanceService extends BaseService<FiBankbookBalance,
 	 * 余额更新
 	 * @param fiBankbookBalance
 	 * @param amount
+	 * @throws Exception 
 	 */
-	void addBalance(FiBankbookBalance fiBankbookBalance, BigDecimal amount);
+	void addBalance(FiBankbookBalance fiBankbookBalance, BigDecimal amount) throws Exception;
 }

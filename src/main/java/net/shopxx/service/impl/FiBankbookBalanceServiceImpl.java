@@ -12,6 +12,7 @@ import net.shopxx.entity.Country;
 import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.Member;
 import net.shopxx.service.FiBankbookBalanceService;
+import net.shopxx.util.SpringUtils;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,15 +59,20 @@ public class FiBankbookBalanceServiceImpl extends BaseServiceImpl<FiBankbookBala
 	 * 余额更新
 	 * @param fiBankbookBalance
 	 * @param amount
+	 * @throws Exception 
 	 */
 	@Transactional
-	public void addBalance(FiBankbookBalance fiBankbookBalance, BigDecimal amount){
+	public void addBalance(FiBankbookBalance fiBankbookBalance, BigDecimal amount) throws Exception{
 		if (!LockModeType.PESSIMISTIC_WRITE.equals(fiBankbookBalanceDao.getLockMode(fiBankbookBalance))) {
 			fiBankbookBalanceDao.flush();
 			fiBankbookBalanceDao.refresh(fiBankbookBalance, LockModeType.PESSIMISTIC_WRITE);
 		}
 		Assert.notNull(fiBankbookBalance.getBalance());
 		fiBankbookBalance.setBalance(fiBankbookBalance.getBalance().add(amount));
+		// 用户余额不能小于0
+		if (fiBankbookBalance.getBalance().doubleValue() < 0) {
+			throw new Exception(SpringUtils.getMessage("admin.fiBankbookJournalTemp.error.balance.insufficient", fiBankbookBalance.getMember().getUsercode()));
+		}
 		fiBankbookBalanceDao.flush();
 	}
 	

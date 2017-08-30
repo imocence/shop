@@ -89,7 +89,12 @@
 				<entry key="/admin/role/**" value="adminAuthc,perms[admin:role]" />
 				<entry key="/admin/message/**" value="adminAuthc,perms[admin:message]" />
 				<entry key="/admin/audit_log/**" value="adminAuthc,perms[admin:auditLog]" />
-
+				<entry key="/admin/fiBankbookJournalTemp/add" value="adminAuthc,perms[admin:fiBankbookJournalTempAdd]" />
+				<entry key="/admin/fiBankbookJournalTemp/save" value="adminAuthc,perms[admin:fiBankbookJournalTempAdd]" />
+				<entry key="/admin/fiBankbookJournalTemp/confirm" value="adminAuthc,perms[admin:fiBankbookJournalTempConfirm]" />
+				<entry key="/admin/fiBankbookJournalTemp/**" value="adminAuthc,perms[admin:fiBankbookJournalTemp]" />
+				<entry key="/admin/fiBankbookJournal/**" value="adminAuthc,perms[admin:fiBankbookJournal]" />
+				<entry key="/admin/fiBankbookBalance/**" value="adminAuthc,perms[admin:fiBankbookBalance]" />
 				<entry key="/admin/**" value="adminAuthc" />
 			</map>
 		</property>
