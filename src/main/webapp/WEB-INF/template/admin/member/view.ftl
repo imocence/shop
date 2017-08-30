@@ -86,7 +86,7 @@
 				</td>
 			</tr>
 		[/#if]
-		<tr>
+		<!-- <tr>
 			<th>
 				${message("Member.point")}:
 			</th>
@@ -94,13 +94,30 @@
 				${member.point}
 				<a href="../point/log?memberId=${member.id}">[${message("admin.common.view")}]</a>
 			</td>
-		</tr>
+		</tr> -->
 		<tr>
 			<th>
 				${message("Member.balance")}:
 			</th>
+			<td>				
+				[#list fiBankbookBalanceList as fiBankbookBalance]
+					[#if fiBankbookBalance.type == 'balance']
+					${currency(fiBankbookBalance.balance, true)}
+					[/#if]
+				[/#list]
+				<a href="../deposit/log?memberId=${member.id}">[${message("admin.common.view")}]</a>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				${message("Member.coupon")}:
+			</th>
 			<td>
-				${currency(member.balance, true)}
+				[#list fiBankbookBalanceList as fiBankbookBalance]
+					[#if fiBankbookBalance.type == 'coupon']
+					${currency(fiBankbookBalance.balance, true)}
+					[/#if]
+				[/#list]
 				<a href="../deposit/log?memberId=${member.id}">[${message("admin.common.view")}]</a>
 			</td>
 		</tr>

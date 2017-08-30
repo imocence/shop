@@ -164,7 +164,6 @@ public abstract class BaseDaoImpl<T extends BaseEntity<ID>, ID extends Serializa
 
 	public T find(String attributeName, Object attributeValue) {
 		Assert.hasText(attributeName);
-
 		return find(attributeName, attributeValue, null);
 	}
 
@@ -176,7 +175,6 @@ public abstract class BaseDaoImpl<T extends BaseEntity<ID>, ID extends Serializa
 
 	public T find(String attributeName, Object attributeValue, LockModeType lockModeType) {
 		Assert.hasText(attributeName);
-
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
 		Root<T> root = criteriaQuery.from(entityClass);

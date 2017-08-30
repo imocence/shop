@@ -56,12 +56,18 @@ $().ready(function() {
 					<span class="requiredField">*</span>${message("common.country")}:
 				</th>
 				<td>
+<<<<<<< HEAD
+					<select name="country">
+
+						[@country]
+=======
 					<select name="countryName">
 						[@country_list]
+>>>>>>> refs/heads/develop
 							[#list countrys as country]
 								<option value="${country.name}">${message("${country.nameLocal}")}</option>
 							[/#list]
-						[/@country_list]
+						[/@country]
 					</select>
 				</td>
 			</tr>

@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2005-2017 shopxx.net. All rights reserved.
  * Support: http://www.shopxx.net
@@ -101,5 +102,4 @@ public class BrandServiceImpl extends BaseServiceImpl<Brand, Long> implements Br
     public Page<Brand> findPage(Country country, Pageable pageable) {
         return brandDao.findPage(country,pageable);
     }
-
 }

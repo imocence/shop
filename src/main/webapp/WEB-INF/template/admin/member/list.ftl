@@ -14,7 +14,7 @@
 $().ready(function() {
 
 	[@flash_message /]
-
+	
 });
 </script>
 </head>
@@ -24,13 +24,13 @@ $().ready(function() {
 	</div>
 	<form id="listForm" action="list" method="get">
 		<div class="bar">
-			<a href="add" class="iconButton">
+			<!-- <a href="add" class="iconButton">
 				<span class="addIcon">&nbsp;</span>${message("admin.common.add")}
-			</a>
+			</a> -->
 			<div class="buttonGroup">
-				<a href="javascript:;" id="deleteButton" class="iconButton disabled">
+				<!--<a href="javascript:;" id="deleteButton" class="iconButton disabled">
 					<span class="deleteIcon">&nbsp;</span>${message("admin.common.delete")}
-				</a>
+				</a>-->
 				<a href="javascript:;" id="refreshButton" class="iconButton">
 					<span class="refreshIcon">&nbsp;</span>${message("admin.common.refresh")}
 				</a>
@@ -53,8 +53,11 @@ $().ready(function() {
 					<button type="submit">&nbsp;</button>
 				</div>
 				<ul>
-					<li[#if page.searchProperty == "username"] class="current"[/#if] val="username">${message("Member.username")}</li>
+					<li[#if page.searchProperty == "usercode"] class="current"[/#if] val="usercode">${message("Member.usercode")}</li>
 					<li[#if page.searchProperty == "email"] class="current"[/#if] val="email">${message("Member.email")}</li>
+					<li[#if page.searchProperty == "country"] class="current"[/#if] val="country.name">${message("Member.country")}</li>
+					<li[#if page.searchProperty == "mobile"] class="current"[/#if] val="mobile">${message("Member.mobile")}</li>
+					<li[#if page.searchProperty == "napaStores"] class="current"[/#if] val="napaStores.napaCode">${message("Member.napaCode")}</li>
 				</ul>
 			</div>
 		</div>
@@ -68,6 +71,15 @@ $().ready(function() {
 				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="memberRank">${message("Member.memberRank")}</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="country">${message("Member.country")}</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="mobile">${message("Member.mobile")}</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="napaCode">${message("Member.napaCode")}</a>
 				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="email">${message("Member.email")}</a>
@@ -94,6 +106,15 @@ $().ready(function() {
 						${member.memberRank.name}
 					</td>
 					<td>
+						${message("${member.country.nameLocal}")}-${member.country.name}
+					</td>
+					<td>
+						${member.mobile}
+					</td>
+					<td>
+						${member.napaStores.napaCode}
+					</td>
+					<td>
 						${member.email}
 					</td>
 					<td>
@@ -110,7 +131,7 @@ $().ready(function() {
 					</td>
 					<td>
 						<a href="view?id=${member.id}">[${message("admin.common.view")}]</a>
-						<a href="edit?id=${member.id}">[${message("admin.common.edit")}]</a>
+						<!-- <a href="edit?id=${member.id}">[${message("admin.common.edit")}]</a> -->
 					</td>
 				</tr>
 			[/#list]

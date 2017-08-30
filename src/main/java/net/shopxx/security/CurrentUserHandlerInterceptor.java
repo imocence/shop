@@ -55,7 +55,8 @@ public class CurrentUserHandlerInterceptor extends HandlerInterceptorAdapter {
 	 */
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-		request.setAttribute(getCurrentUserAttributeName(), userService.getCurrent(getUserClass()));
+		User user = userService.getCurrent(getUserClass());
+		request.setAttribute(getCurrentUserAttributeName(), user);
 	}
 
 	/**

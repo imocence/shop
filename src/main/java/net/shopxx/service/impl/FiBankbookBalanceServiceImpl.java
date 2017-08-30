@@ -1,13 +1,18 @@
 package net.shopxx.service.impl;
 
+import java.util.List;
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
+
+import net.shopxx.Filter;
+import net.shopxx.Order;
+import net.shopxx.dao.FiBankbookBalanceDao;
+
 import javax.persistence.LockModeType;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
-import net.shopxx.dao.FiBankbookBalanceDao;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.Member;
@@ -25,9 +30,22 @@ import org.springframework.util.Assert;
  */
 @Service
 public class FiBankbookBalanceServiceImpl extends BaseServiceImpl<FiBankbookBalance, Long> implements FiBankbookBalanceService {
-	
+
 	@Inject
 	private FiBankbookBalanceDao fiBankbookBalanceDao;
+	@Inject
+	FiBankbookBalanceService fiBankbookBalanceService;
+	
+	@Transactional(readOnly = true)
+	public List<FiBankbookBalance> findList(Member member,Integer count, List<Filter> filters, List<Order> orders){		
+		return fiBankbookBalanceDao.findList(member,count, filters, orders);
+	}
+	
+
+	@Transactional(readOnly = true)
+	public FiBankbookBalance findByKey(String usercodekey,String usercode) {
+		return fiBankbookBalanceDao.find(usercodekey, usercode);
+	}
 	
 	/**
 	 * 查找实体对象分页
@@ -70,6 +88,7 @@ public class FiBankbookBalanceServiceImpl extends BaseServiceImpl<FiBankbookBala
 		fiBankbookBalanceDao.flush();
 	}
 	
+
 	@Override
 	@Transactional
 	public FiBankbookBalance save(FiBankbookBalance fiBankbookBalance) {

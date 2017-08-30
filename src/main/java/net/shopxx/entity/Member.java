@@ -118,6 +118,16 @@ public class Member extends User {
 	@Pattern.List({ @Pattern(regexp = "^[0-9a-zA-Z_\\u4e00-\\u9fa5]+$"), @Pattern(regexp = "^.*[^\\d].*$") })
 	@Column(nullable = false, updatable = false, unique = true)
 	private String username;
+	
+	/**
+	 * 用户编码
+	 */
+	@JsonView(BaseView.class)
+	@NotEmpty(groups = Save.class)
+	@Length(min = 4, max = 20)
+	@Pattern.List({ @Pattern(regexp = "^[0-9a-zA-Z_\\u4e00-\\u9fa5]+$"), @Pattern(regexp = "^.*[^\\d].*$") })
+	@Column(nullable = false, updatable = false, unique = true)
+	private String usercode;
 
 	/**
 	 * 密码
@@ -136,10 +146,9 @@ public class Member extends User {
 	/**
 	 * E-mail
 	 */
-	@NotEmpty
 	@Email
 	@Length(max = 200)
-	@Column(nullable = false, unique = true)
+	@Column(nullable = true, unique = true)
 	private String email;
 
 	/**
@@ -273,6 +282,14 @@ public class Member extends User {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Area area;
+	/**
+	 * 区代信息
+	 */
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="napa_stores_id", referencedColumnName="id",updatable = false, unique = true)
+	private NapaStores napaStores;
+	
 
 	/**
 	 * 会员等级
@@ -361,13 +378,7 @@ public class Member extends User {
 	 * 积分记录
 	 */
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-	private Set<PointLog> pointLogs = new HashSet<>();
-
-	/**
-	 * 用户编码
-	 */
-	@Length(max = 255)
-	private String usercode;
+	private Set<PointLog> pointLogs = new HashSet<>();	
 	
 	/**
 	 * 国家
@@ -872,7 +883,22 @@ public class Member extends User {
 	public void setArea(Area area) {
 		this.area = area;
 	}
-
+	/**
+	 * 获取区代信息
+	 * 
+	 * @return 区代信息
+	 */
+	public NapaStores getNapaStores() {
+		return napaStores;
+	}
+	/**
+	 * 设置区代信息
+	 * 
+	 * @return 区代信息
+	 */
+	public void setNapaStores(NapaStores napaStores) {
+		this.napaStores = napaStores;
+	}
 	/**
 	 * 获取会员等级
 	 * 
@@ -1330,6 +1356,7 @@ public class Member extends User {
 	@Override
 	@Transient
 	public boolean isValidCredentials(Object credentials) {
+		
 		return credentials != null && DigestUtils.md5Hex(credentials instanceof char[] ? new String((char[]) credentials) : credentials.toString()).equals(getEncodedPassword());
 	}
 
@@ -1338,7 +1365,7 @@ public class Member extends User {
 	 */
 	@PrePersist
 	public void prePersist() {
-		setUsername(StringUtils.lowerCase(getUsername()));
+		setUsername(StringUtils.upperCase(getUsername()));
 		setEmail(StringUtils.lowerCase(getEmail()));
 		setMobile(StringUtils.lowerCase(getMobile()));
 	}

@@ -39,7 +39,9 @@ public class AuthorizingRealm extends org.apache.shiro.realm.AuthorizingRealm {
 	 */
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {
+		
 		User user = userService.getUser(authenticationToken);
+		
 		return new SimpleAuthenticationInfo(user, authenticationToken.getCredentials(), getName());
 	}
 

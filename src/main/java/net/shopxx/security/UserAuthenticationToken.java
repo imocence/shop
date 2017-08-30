@@ -40,6 +40,7 @@ public class UserAuthenticationToken extends UsernamePasswordToken {
 	 */
 	public UserAuthenticationToken(Class<? extends User> userClass, String username, String password, boolean rememberMe, String host) {
 		super(username, password, rememberMe, host);
+		System.out.println("username:"+username+"password:"+password+"rememberMe:"+rememberMe+"host:"+host);
 		this.userClass = userClass;
 	}
 

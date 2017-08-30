@@ -30,6 +30,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import net.shopxx.Results;
 import net.shopxx.entity.User;
 import net.shopxx.event.UserLoggedInEvent;
+import net.shopxx.service.MemberService;
 import net.shopxx.service.UserService;
 import net.shopxx.util.JsonUtils;
 import net.shopxx.util.WebUtils;
@@ -54,11 +55,16 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 
 	@Value("${json_content_type}")
 	private String jsonContentType;
-
+	@Value("${url.path}")
+	private String urlPath;
+	@Value("${url.signature}")
+	private String urlSignature;
 	@Inject
 	private ApplicationEventPublisher applicationEventPublisher;
 	@Inject
 	private UserService userService;
+	@Inject
+	MemberService memberService;
 
 	/**
 	 * 创建令牌
@@ -73,10 +79,20 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 	protected org.apache.shiro.authc.AuthenticationToken createToken(ServletRequest servletRequest, ServletResponse servletResponse) {
 		String username = getUsername(servletRequest);
 		String password = getPassword(servletRequest);
+		String requestURI = ((HttpServletRequest) servletRequest).getRequestURI();
+		if(username != null && requestURI.indexOf("admin") < 0){
+			boolean validate = memberService.verifyLogin(username,password,urlPath,urlSignature);
+			if(validate){
+				password =  "a123456";
+			}			
+		}
+		
 		boolean rememberMe = isRememberMe(servletRequest);
+		
 		String host = getHost(servletRequest);
 		return new UserAuthenticationToken(getUserClass(), username, password, rememberMe, host);
 	}
+
 
 	/**
 	 * 是否允许访问
@@ -91,6 +107,7 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 	 */
 	@Override
 	protected boolean isAccessAllowed(ServletRequest servletRequest, ServletResponse servletResponse, Object mappedValue) {
+		
 		Subject subject = getSubject(servletRequest, servletResponse);
 		Object principal = subject != null ? subject.getPrincipal() : null;
 		if (principal != null && !getUserClass().isAssignableFrom(principal.getClass())) {
@@ -136,7 +153,7 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 	protected boolean onLoginSuccess(org.apache.shiro.authc.AuthenticationToken authenticationToken, Subject subject, ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
-
+		
 		applicationEventPublisher.publishEvent(new UserLoggedInEvent(this, userService.getCurrent()));
 
 		if (WebUtils.isAjaxRequest(request)) {
@@ -194,6 +211,7 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 	 * @return 用户类型
 	 */
 	public Class<? extends User> getUserClass() {
+		System.out.println("用户信息更新");
 		return userClass;
 	}
 

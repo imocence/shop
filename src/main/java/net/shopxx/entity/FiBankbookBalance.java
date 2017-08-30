@@ -24,7 +24,8 @@ public class FiBankbookBalance extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * 类型
+	 * 存折类型
+	 * 
 	 */
 	public enum Type {
 		/**
@@ -59,7 +60,10 @@ public class FiBankbookBalance extends BaseEntity<Long> {
 	private Type type;
 	
 	/**
-	 * 国家
+
+	 * 获取会员
+	 * 
+	 * @return 会员
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="country", referencedColumnName="name_cn")
@@ -68,6 +72,13 @@ public class FiBankbookBalance extends BaseEntity<Long> {
 	public Member getMember() {
 		return member;
 	}
+
+	/**
+	 * 设置会员
+	 * 
+	 * @param member
+	 *            会员
+	 */
 
 	public void setMember(Member member) {
 		this.member = member;

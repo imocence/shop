@@ -8,6 +8,8 @@ package net.shopxx.service;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Country;
@@ -22,6 +24,7 @@ import net.shopxx.security.AuthenticationProvider;
  * @author SHOP++ Team
  * @version 5.0.3
  */
+@Repository
 public interface MemberService extends BaseService<Member, Long>, AuthenticationProvider {
 
 	/**
@@ -41,7 +44,6 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	 * @return 会员，若不存在则返回null
 	 */
 	Member findByUsername(String username);
-
 	/**
 	 * 判断E-mail是否存在
 	 * 
@@ -50,7 +52,18 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	 * @return E-mail是否存在
 	 */
 	boolean emailExists(String email);
-
+	/**
+	 * 登录验证
+	 * @param 用户的编码
+	 * 			usercode(大写)
+	 * return Member
+	 */
+	boolean verifyLogin(String usercode,String password,String urlPath,String urlSignature);
+	/**
+	 * 获取多会员信息接口
+	 * @return
+	 */
+	List<Member> getListMember(String userCodes,String urlPath,String urlSignature);
 	/**
 	 * 判断E-mail是否唯一
 	 * 

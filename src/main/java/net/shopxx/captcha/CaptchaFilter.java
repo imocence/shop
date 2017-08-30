@@ -68,7 +68,6 @@ public class CaptchaFilter extends OncePerRequestFilter {
 
 	@Inject
 	private CaptchaService captchaService;
-
 	/**
 	 * 执行
 	 * 
@@ -80,7 +79,7 @@ public class CaptchaFilter extends OncePerRequestFilter {
 	 *            FilterChain
 	 */
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, NumberFormatException {
 		Setting setting = SystemUtils.getSetting();
 		String captchaId = request.getParameter(CAPTCHA_ID_PARAMETER_NAME);
 		String captcha = request.getParameter(CAPTCHA_PARAMETER_NAME);

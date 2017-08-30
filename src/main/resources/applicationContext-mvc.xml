@@ -26,8 +26,8 @@
 			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
 				<property name="supportedMediaTypes">
 					<list>
-						<value>${json_content_type}</value>
 						<value>${html_content_type}</value>
+						<value>${json_content_type}</value>
 					</list>
 				</property>
 			</bean>
@@ -64,6 +64,14 @@
 			</bean>
 		</mvc:interceptor>
 		<mvc:interceptor>
+			<mvc:mapping path="/cart/**" />
+			<mvc:mapping path="/order/**" />
+			<mvc:mapping path="/member/**" />
+			<bean class="net.shopxx.security.CurrentUserHandlerInterceptor">
+				<property name="userClass" value="net.shopxx.entity.NapaStores" />
+			</bean>
+		</mvc:interceptor>
+		<mvc:interceptor>
 			<mvc:mapping path="/admin/**" />
 			<bean class="net.shopxx.security.CurrentUserHandlerInterceptor">
 				<property name="userClass" value="net.shopxx.entity.Admin" />
@@ -77,7 +85,8 @@
 		<mvc:interceptor>
 			<mvc:mapping path="/**" />
 			<mvc:exclude-mapping path="/payment/**" />
-			<mvc:exclude-mapping path="/common/language/**" />
+			<mvc:exclude-mapping path="/admin/member/setMember" />
+			<mvc:exclude-mapping path="/admin/store/setStore" />
 			<bean class="net.shopxx.security.CsrfInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>
@@ -124,10 +133,6 @@
 			<mvc:mapping path="/admin/**" />
 			<bean class="net.shopxx.audit.AuditLogInterceptor" />
 		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/**" />
-			<bean class="net.shopxx.interceptor.LanguageInterceptor" />
-		</mvc:interceptor>
 	</mvc:interceptors>
 
 	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
@@ -149,5 +154,4 @@
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="defaultEncoding" value="UTF-8" />
 	</bean>
-
 </beans>

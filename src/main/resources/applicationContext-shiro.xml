@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd"
 	default-lazy-init="true">
-
+	<!-- 安全认证过滤器 -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager" />
 		<property name="unauthorizedUrl" value="/common/error/unauthorized" />
+		<!-- 定义权限 -->
 		<property name="filterChainDefinitionMap">
 			<map>
 				<entry key="/member/register" value="anon" />
 				<entry key="/member/register/**" value="anon" />
 				<entry key="/member/login" value="memberAuthc" />
 				<entry key="/member/logout" value="logout" />
-
+				<!--  -->
+				<entry key="/admin/member" value="anon" />
+				<entry key="/admin/member/setMember" value="anon" />
+				<entry key="/admin/napaStores" value="anon" />
+				<entry key="/admin/store/setStore" value="anon" />
+				
 				<entry key="/order/**" value="memberAuthc,perms[member]" />
 
 				<entry key="/consultation/add/*" value="memberAuthc,perms[member]" />
@@ -21,7 +27,8 @@
 				<entry key="/review/save" value="memberAuthc,perms[member]" />
 
 				<entry key="/member/**" value="memberAuthc,perms[member]" />
-
+				
+				
 				<entry key="/admin" value="anon" />
 				<entry key="/admin/" value="anon" />
 				<entry key="/admin/login" value="adminAuthc" />
@@ -89,7 +96,6 @@
 				<entry key="/admin/role/**" value="adminAuthc,perms[admin:role]" />
 				<entry key="/admin/message/**" value="adminAuthc,perms[admin:message]" />
 				<entry key="/admin/audit_log/**" value="adminAuthc,perms[admin:auditLog]" />
-
 				<entry key="/admin/**" value="adminAuthc" />
 			</map>
 		</property>
@@ -115,16 +121,16 @@
 			</map>
 		</property>
 	</bean>
-
+	<!--多个realm 的集中管理,  -->
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<property name="realm" ref="authorizingRealm" />
 		<property name="cacheManager" ref="shiroCacheManager" />
 	</bean>
-
+	
 	<bean id="authorizingRealm" class="net.shopxx.security.AuthorizingRealm">
 		<property name="authorizationCacheName" value="authorization" />
 	</bean>
-
+	<!-- 定义授权缓存管理器 -->
 	<bean id="shiroCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
 		<property name="cacheManager" ref="ehCacheManager" />
 	</bean>

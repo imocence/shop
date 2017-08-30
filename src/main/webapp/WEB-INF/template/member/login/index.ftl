@@ -42,6 +42,7 @@ $().ready(function() {
 			password: "required",
 			captcha: "required"
 		},
+		
 		submitHandler: function(form) {
 			$.ajax({
 				url: $loginForm.attr("action"),

@@ -93,7 +93,7 @@ public class Brand extends OrderedEntity<Long> {
 	@Lob
 	private String introduction;
 	
-	/**
+	   /**
      * 国家
      */
     @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.REFRESH)
@@ -286,7 +286,4 @@ public class Brand extends OrderedEntity<Long> {
     public static long getSerialversionuid() {
         return serialVersionUID;
     }
-	
-	
-
 }
