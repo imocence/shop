@@ -20,9 +20,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import net.shopxx.Message;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Article;
+import net.shopxx.entity.Country;
 import net.shopxx.service.ArticleCategoryService;
 import net.shopxx.service.ArticleService;
 import net.shopxx.service.ArticleTagService;
+import net.shopxx.service.CountryService;
+import net.shopxx.util.StringUtil;
 
 /**
  * Controller - 文章
@@ -40,7 +43,9 @@ public class ArticleController extends BaseController {
 	private ArticleCategoryService articleCategoryService;
 	@Inject
 	private ArticleTagService articleTagService;
-
+	@Inject
+	private CountryService countryService;
+	
 	/**
 	 * 添加
 	 */
@@ -55,13 +60,14 @@ public class ArticleController extends BaseController {
 	 * 保存
 	 */
 	@PostMapping("/save")
-	public String save(Article article, Long articleCategoryId, Long[] articleTagIds, RedirectAttributes redirectAttributes) {
+	public String save(Article article, Long articleCategoryId, Long[] articleTagIds, String countryName, RedirectAttributes redirectAttributes) {
 		article.setArticleCategory(articleCategoryService.find(articleCategoryId));
 		article.setArticleTags(new HashSet<>(articleTagService.findList(articleTagIds)));
 		if (!isValid(article)) {
 			return ERROR_VIEW;
 		}
 		article.setHits(0L);
+		article.setCountry(countryService.findByName(countryName));
 		articleService.save(article);
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -82,12 +88,13 @@ public class ArticleController extends BaseController {
 	 * 更新
 	 */
 	@PostMapping("/update")
-	public String update(Article article, Long articleCategoryId, Long[] articleTagIds, RedirectAttributes redirectAttributes) {
+	public String update(Article article, Long articleCategoryId, Long[] articleTagIds, String countryName, RedirectAttributes redirectAttributes) {
 		article.setArticleCategory(articleCategoryService.find(articleCategoryId));
 		article.setArticleTags(new HashSet<>(articleTagService.findList(articleTagIds)));
 		if (!isValid(article)) {
 			return ERROR_VIEW;
 		}
+		article.setCountry(countryService.findByName(countryName));
 		articleService.update(article, "hits");
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -97,8 +104,13 @@ public class ArticleController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Pageable pageable, ModelMap model) {
-		model.addAttribute("page", articleService.findPage(pageable));
+	public String list(String countryName, Pageable pageable, ModelMap model) {
+		Country country = null;
+		if (StringUtil.isNotEmpty(countryName)) {
+			country = countryService.findByName(countryName);
+		}
+		model.addAttribute("countryName", countryName);
+		model.addAttribute("page", articleService.findPage(country, pageable));
 		return "admin/article/list";
 	}
 

@@ -4,6 +4,8 @@ import java.util.List;
 
 import net.shopxx.Filter;
 import net.shopxx.Order;
+import java.math.BigDecimal;
+
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Country;
@@ -42,4 +44,19 @@ public interface FiBankbookBalanceService extends BaseService<FiBankbookBalance,
 	 * @return 实体对象分页
 	 */
 	Page<FiBankbookBalance> findPage(Member member, Country country, Pageable pageable);
+	
+	/**
+	 * 根据usercode和type获取FiBankbookBalance
+	 * @param usercode
+	 * @param type
+	 * @return
+	 */
+	FiBankbookBalance find(Member member, FiBankbookBalance.Type type);
+	
+	/**
+	 * 余额更新
+	 * @param fiBankbookBalance
+	 * @param amount
+	 */
+	void addBalance(FiBankbookBalance fiBankbookBalance, BigDecimal amount);
 }

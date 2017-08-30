@@ -5,6 +5,7 @@ import java.util.Date;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Country;
+import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.FiBankbookJournalTemp;
 
 /**
@@ -34,7 +35,7 @@ public interface FiBankbookJournalTempService extends BaseService<FiBankbookJour
 	 *            分页信息
 	 * @return 交易记录分页
 	 */
-	Page<FiBankbookJournalTemp> findPage(Country country, FiBankbookJournalTemp.Type type, FiBankbookJournalTemp.MoneyType moneyType, FiBankbookJournalTemp.ConfirmStatus confirmStatus, Date beginDate, Date endDate, Pageable pageable);
+	Page<FiBankbookJournalTemp> findPage(Country country, FiBankbookJournal.Type type, FiBankbookJournal.MoneyType moneyType, FiBankbookJournalTemp.ConfirmStatus confirmStatus, Date beginDate, Date endDate, Pageable pageable);
 	
 	/**
 	 * 核实实体对象
@@ -42,6 +43,5 @@ public interface FiBankbookJournalTempService extends BaseService<FiBankbookJour
 	 * @param ids
 	 *            ID
 	 */
-	@SuppressWarnings("unchecked")
-	void confirm(Long... ids);
+	String confirm(Long... ids) throws Exception;
 }

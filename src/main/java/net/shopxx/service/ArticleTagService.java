@@ -9,7 +9,10 @@ import java.util.List;
 
 import net.shopxx.Filter;
 import net.shopxx.Order;
+import net.shopxx.Page;
+import net.shopxx.Pageable;
 import net.shopxx.entity.ArticleTag;
+import net.shopxx.entity.Country;
 
 /**
  * Service - 文章标签
@@ -33,5 +36,16 @@ public interface ArticleTagService extends BaseService<ArticleTag, Long> {
 	 * @return 文章标签
 	 */
 	List<ArticleTag> findList(Integer count, List<Filter> filters, List<Order> orders, boolean useCache);
+	
+	/**
+	 * 搜索文章标签分页
+	 * 
+	 * @param country
+	 *            国家
+	 * @param pageable
+	 *            分页信息
+	 * @return 文章分页
+	 */
+	Page<ArticleTag> findPage(Country country, Pageable pageable);
 
 }

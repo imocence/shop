@@ -10,6 +10,7 @@
 <script type="text/javascript" src="${base}/resources/admin/js/jquery.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/common.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/list.js"></script>
+<script type="text/javascript" src="${base}/resources/admin/js/country.js"></script>
 <script type="text/javascript">
 $().ready(function() {
 
@@ -23,6 +24,7 @@ $().ready(function() {
 		${message("admin.navigation.list")}
 	</div>
 	<form id="listForm" action="list" method="get">
+		<input type="hidden" id="countryName" name="countryName" value="${countryName}" />
 		<div class="bar">
 			<a href="add" class="iconButton">
 				<span class="addIcon">&nbsp;</span>${message("admin.common.add")}
@@ -34,6 +36,19 @@ $().ready(function() {
 				<a href="javascript:;" id="refreshButton" class="iconButton">
 					<span class="refreshIcon">&nbsp;</span>${message("admin.common.refresh")}
 				</a>
+				<div id="countryMenu" class="dropdownMenu">
+					<a href="javascript:;" class="button">
+						${message("common.country")}<span class="arrow">&nbsp;</span>
+					</a>
+					<ul>
+						<li[#if country.name == null] class="current"[/#if] val="">${message("common.country.all")}</li>
+						[@country_list]
+							[#list countrys as country]
+								<li[#if country.name == countryName] class="current"[/#if] val="${country.name}">${message("${country.nameLocal}")}</li>
+							[/#list]
+						[/@country_list]
+					</ul>
+				</div>
 			</div>
 		</div>
 		<table id="listTable" class="list">
@@ -52,6 +67,9 @@ $().ready(function() {
 				</th>
 				<th>
 					<span>${message("admin.common.order")}</span>
+				</th>
+				<th>
+					<span>${message("common.country")}</span>
 				</th>
 				<th>
 					<span>${message("admin.common.action")}</span>
@@ -73,6 +91,9 @@ $().ready(function() {
 					</td>
 					<td>
 						${navigation.order}
+					</td>
+					<td>
+						${message("${navigation.country.nameLocal}")}
 					</td>
 					<td>
 						<a href="edit?id=${navigation.id}">[${message("admin.common.edit")}]</a>
@@ -102,6 +123,9 @@ $().ready(function() {
 						${navigation.order}
 					</td>
 					<td>
+						${message("${navigation.country.nameLocal}")}
+					</td>
+					<td>
 						<a href="edit?id=${navigation.id}">[${message("admin.common.edit")}]</a>
 					</td>
 				</tr>
@@ -127,6 +151,9 @@ $().ready(function() {
 					</td>
 					<td>
 						${navigation.order}
+					</td>
+					<td>
+						${message("${navigation.country.nameLocal}")}
 					</td>
 					<td>
 						<a href="edit?id=${navigation.id}">[${message("admin.common.edit")}]</a>

@@ -8,24 +8,17 @@ package net.shopxx.controller.member;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import net.shopxx.entity.Member;
 import net.shopxx.entity.SocialUser;
-import net.shopxx.entity.User;
-import net.shopxx.event.UserLoggedOutEvent;
-import net.shopxx.security.AuthenticationFilter;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.security.UserAuthenticationToken;
 import net.shopxx.service.MemberService;
@@ -65,8 +58,6 @@ public class LoginController extends BaseController {
 	@Value("${url.signature}")
 	private String urlSignature;
 	@Inject
-	private MemberService memberService;
-	@Inject
 	private UserService userService;
 	/**
 	 * 登录页面
@@ -94,12 +85,16 @@ public class LoginController extends BaseController {
 		if(userCode != null){
 			String signature = request.getParameter("signature");
 			String appointtrue = DigestUtils.md5Hex(userCode+TimeUtil.getFormatNowTime("yyyyMMdd")+urlSignature);
-			//System.out.println("MD5:"+appointtrue);
-			//System.out.println("当前时间戳："+System.currentTimeMillis() / 1000);
+			System.out.println("MD5:"+appointtrue);
+			System.out.println("当前时间戳："+System.currentTimeMillis() / 1000);
 			//时间差
 			Long timeT = TimeUtil.validateTimeStamp(Long.parseLong(request.getParameter("timestamp")));
 			if(timeT < 101 && appointtrue.equals(signature)){
-				userService.login(new UserAuthenticationToken(Member.class,userCode , "a123456", false, request.getRemoteAddr()));
+				try {
+					userService.login(new UserAuthenticationToken(Member.class,userCode , "a123456", false, request.getRemoteAddr()));					
+				} catch (Exception e) {
+					System.out.println("数据库没有"+userCode+"这个会员编号");
+				}
 			}
 			return "redirect:/";
 		}else{

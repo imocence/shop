@@ -1,7 +1,9 @@
 package net.shopxx.dao.impl;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -12,6 +14,7 @@ import net.shopxx.Pageable;
 import net.shopxx.dao.FiBankbookJournalDao;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.FiBankbookJournal;
+import net.shopxx.entity.Member;
 
 import org.springframework.stereotype.Repository;
 
@@ -64,5 +67,24 @@ public class FiBankbookJournalDaoImpl extends BaseDaoImpl<FiBankbookJournal, Lon
 		}
 		criteriaQuery.where(restrictions);
 		return super.findPage(criteriaQuery, pageable);
+	}
+	
+	/**
+	 * 获取最近的一条记录
+	 * @param member
+	 * @type type
+	 * @return
+	 */
+	public FiBankbookJournal findLastByMember(Member member, FiBankbookJournal.Type type){
+		String jpql = "SELECT fiBankbookJournal FROM FiBankbookJournal fiBankbookJournal WHERE fiBankbookJournal.member=:member AND type=:type order by dealDate desc, id desc";
+		TypedQuery<FiBankbookJournal> query = entityManager.createQuery(jpql, FiBankbookJournal.class);
+		query.setParameter("member", member);
+		query.setParameter("type", type);
+		query.setMaxResults(1);
+		List<FiBankbookJournal> list= query.getResultList();
+		if (null != list && !list.isEmpty()) {
+			return list.get(0);
+		}
+		return null;
 	}
 }

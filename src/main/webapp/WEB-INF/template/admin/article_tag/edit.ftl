@@ -12,6 +12,7 @@
 <script type="text/javascript" src="${base}/resources/admin/js/webuploader.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/common.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/input.js"></script>
+<script type="text/javascript" src="${base}/resources/admin/js/simpleuploader.js"></script>
 <script type="text/javascript">
 $().ready(function() {
 
@@ -20,7 +21,7 @@ $().ready(function() {
 	
 	[@flash_message /]
 	
-	$filePicker.uploader();
+	$filePicker.initUploader("icon");
 	
 	// 表单验证
 	$inputForm.validate({
@@ -45,6 +46,20 @@ $().ready(function() {
 		<table class="input">
 			<tr>
 				<th>
+					<span class="requiredField">*</span>${message("common.country")}:
+				</th>
+				<td>
+					<select name="countryName">
+						[@country_list]
+							[#list countrys as country]
+								<option value="${country.name}"[#if country.name == articleTag.country.name] selected="selected"[/#if]>${message("${country.nameLocal}")}</option>
+							[/#list]
+						[/@country_list]
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>
 					<span class="requiredField">*</span>${message("ArticleTag.name")}:
 				</th>
 				<td>
@@ -57,7 +72,7 @@ $().ready(function() {
 				</th>
 				<td>
 					<span class="fieldSet">
-						<input type="text" name="icon" class="text" value="${articleTag.icon}" maxlength="200" />
+						<input type="text" id="icon" name="icon" class="text" value="${articleTag.icon}" maxlength="200" />
 						<a href="javascript:;" id="filePicker" class="button">${message("admin.upload.filePicker")}</a>
 						[#if articleTag.icon??]
 							<a href="${articleTag.icon}" target="_blank">${message("admin.common.view")}</a>

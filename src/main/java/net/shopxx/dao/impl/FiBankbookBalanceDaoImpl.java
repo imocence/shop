@@ -1,6 +1,7 @@
 package net.shopxx.dao.impl;
 import java.util.List;
 
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -65,5 +66,24 @@ public class FiBankbookBalanceDaoImpl extends BaseDaoImpl<FiBankbookBalance, Lon
 		}
 		criteriaQuery.where(restrictions);
 		return super.findPage(criteriaQuery, pageable);
+	}
+	
+	/**
+	 * 根据member和type获取FiBankbookBalance
+	 * @param member
+	 * @param type
+	 * @return
+	 */
+	public FiBankbookBalance find(Member member, FiBankbookBalance.Type type){
+		String jpql = "SELECT fiBankbookBalance FROM FiBankbookBalance fiBankbookBalance WHERE fiBankbookBalance.member=:member AND fiBankbookBalance.type=:type";
+		TypedQuery<FiBankbookBalance> query = entityManager.createQuery(jpql, FiBankbookBalance.class);
+		query.setParameter("member", member);
+		query.setParameter("type", type);
+		query.setMaxResults(1);
+		List<FiBankbookBalance> list= query.getResultList();
+		if (null != list && !list.isEmpty()) {
+			return list.get(0);
+		}
+		return null;
 	}
 }

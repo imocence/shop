@@ -287,7 +287,7 @@ public class Member extends User {
 	 */
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="napa_stores_id", referencedColumnName="id")
+	@JoinColumn(name="napa_stores_id", referencedColumnName="id",updatable = false, unique = true)
 	private NapaStores napaStores;
 	
 

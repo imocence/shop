@@ -11,7 +11,9 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.PreRemove;
 import javax.validation.constraints.Pattern;
 
@@ -57,11 +59,11 @@ public class ArticleTag extends OrderedEntity<Long> {
 	private Set<Article> articles = new HashSet<>();
 	
 	/**
-	 * 国家code
+	 * 国家
 	 */
-	@Length(max = 255)
-	@Column
-	private String country;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
 	
 	/**
 	 * 获取名称
@@ -139,11 +141,11 @@ public class ArticleTag extends OrderedEntity<Long> {
 		this.articles = articles;
 	}
 	
-	public String getCountry() {
+	public Country getCountry() {
 		return country;
 	}
 
-	public void setCountry(String country) {
+	public void setCountry(Country country) {
 		this.country = country;
 	}
 

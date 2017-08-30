@@ -53,25 +53,30 @@ $().ready(function() {
 		<table class="input">
 			<tr>
 				<th>
-					<span class="requiredField">*</span>${message("Navigation.name")}:
-				</th>
-				<td>
-					<input type="text" id="name" name="name" class="text" maxlength="200" />
-				</td>
-			</tr>
-			<tr>
-				<th>
 					<span class="requiredField">*</span>${message("common.country")}:
 				</th>
 				<td>
+<<<<<<< HEAD
 					<select name="country">
 
 						[@country]
+=======
+					<select name="countryName">
+						[@country_list]
+>>>>>>> refs/heads/develop
 							[#list countrys as country]
 								<option value="${country.name}">${message("${country.nameLocal}")}</option>
 							[/#list]
 						[/@country]
 					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span class="requiredField">*</span>${message("Navigation.name")}:
+				</th>
+				<td>
+					<input type="text" id="name" name="name" class="text" maxlength="200" />
 				</td>
 			</tr>
 			<tr>

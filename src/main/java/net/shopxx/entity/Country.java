@@ -22,6 +22,11 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class Country extends OrderedEntity<Long> {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
      * 名称
      */
     @NotEmpty

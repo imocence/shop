@@ -19,7 +19,10 @@ import net.shopxx.Message;
 import net.shopxx.Pageable;
 import net.shopxx.entity.ArticleTag;
 import net.shopxx.entity.BaseEntity;
+import net.shopxx.entity.Country;
 import net.shopxx.service.ArticleTagService;
+import net.shopxx.service.CountryService;
+import net.shopxx.util.StringUtil;
 
 /**
  * Controller - 文章标签
@@ -33,7 +36,9 @@ public class ArticleTagController extends BaseController {
 
 	@Inject
 	private ArticleTagService articleTagService;
-
+	@Inject
+	private CountryService countryService;
+	
 	/**
 	 * 添加
 	 */
@@ -46,11 +51,12 @@ public class ArticleTagController extends BaseController {
 	 * 保存
 	 */
 	@PostMapping("/save")
-	public String save(ArticleTag articleTag, RedirectAttributes redirectAttributes) {
+	public String save(ArticleTag articleTag, String countryName, RedirectAttributes redirectAttributes) {
 		if (!isValid(articleTag, BaseEntity.Save.class)) {
 			return ERROR_VIEW;
 		}
 		articleTag.setArticles(null);
+		articleTag.setCountry(countryService.findByName(countryName));
 		articleTagService.save(articleTag);
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -69,10 +75,11 @@ public class ArticleTagController extends BaseController {
 	 * 更新
 	 */
 	@PostMapping("/update")
-	public String update(ArticleTag articleTag, RedirectAttributes redirectAttributes) {
+	public String update(ArticleTag articleTag, String countryName, RedirectAttributes redirectAttributes) {
 		if (!isValid(articleTag)) {
 			return ERROR_VIEW;
 		}
+		articleTag.setCountry(countryService.findByName(countryName));
 		articleTagService.update(articleTag, "articles");
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -82,8 +89,13 @@ public class ArticleTagController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Pageable pageable, ModelMap model) {
-		model.addAttribute("page", articleTagService.findPage(pageable));
+	public String list(String countryName, Pageable pageable, ModelMap model) {
+		Country country = null;
+		if (StringUtil.isNotEmpty(countryName)) {
+			country = countryService.findByName(countryName);
+		}
+		model.addAttribute("countryName", countryName);
+		model.addAttribute("page", articleTagService.findPage(country, pageable));
 		return "admin/article_tag/list";
 	}
 

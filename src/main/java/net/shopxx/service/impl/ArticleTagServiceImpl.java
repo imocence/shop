@@ -16,8 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.shopxx.Filter;
 import net.shopxx.Order;
+import net.shopxx.Page;
+import net.shopxx.Pageable;
 import net.shopxx.dao.ArticleTagDao;
 import net.shopxx.entity.ArticleTag;
+import net.shopxx.entity.Country;
 import net.shopxx.service.ArticleTagService;
 
 /**
@@ -37,7 +40,21 @@ public class ArticleTagServiceImpl extends BaseServiceImpl<ArticleTag, Long> imp
 	public List<ArticleTag> findList(Integer count, List<Filter> filters, List<Order> orders, boolean useCache) {
 		return articleTagDao.findList(null, count, filters, orders);
 	}
-
+	
+	/**
+	 * 搜索文章标签分页
+	 * 
+	 * @param country
+	 *            国家
+	 * @param pageable
+	 *            分页信息
+	 * @return 文章分页
+	 */
+	@Transactional(readOnly = true)
+	public Page<ArticleTag> findPage(Country country, Pageable pageable){
+		return articleTagDao.findPage(country, pageable);
+	}
+	
 	@Override
 	@Transactional
 	@CacheEvict(value = "articleTag", allEntries = true)

@@ -132,50 +132,49 @@ public class MemberController extends BaseController {
 												String signature,//验证码
 												HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		Map<String,Object> map = new HashMap<String, Object>();
-		String errCode = "\"0000\"";
-		
-		//区代账号创建
-		NapaStores napaStores = new NapaStores();
-		napaStores.setMobile(null);
-		napaStores.setNapaCode(null);
-		napaStores.setType(0);
-		napaStores.setBalance(BigDecimal.ZERO);
-		napaStoresService.save(napaStores);
-		member.setNapaStores(napaStores);
-		
-		member.setUsername(userCode);
-		member.setUsercode(userCode);
-		
-		member.setPassword("a123456");
-		member.setEncodedPassword(DigestUtils.md5Hex("a123456"));
-		member.setEmail(null);
-		member.setMemberRank(memberRankService.find(1L));
-		
-		member.setIsEnabled(true);
-		member.setCountry(countryService.findByName(companyCode));	
-		
-		if (!isValid(member, BaseEntity.Save.class)) {
-			map.put("errCode", "2001");
-			JSONObject jsonObject = JSONObject.fromObject(map.toString());
-			return jsonObject;
-		}
-
-		member.removeAttributeValue();
-		for (MemberAttribute memberAttribute : memberAttributeService.findList(true, true)) {
-			String[] values = request.getParameterValues("memberAttribute_" + memberAttribute.getId());
-			if (!memberAttributeService.isValid(memberAttribute, values)) {
-				map.put("errCode", "2001");
-				JSONObject jsonObject = JSONObject.fromObject(map.toString());
-				return jsonObject;
-			}
-			Object memberAttributeValue = memberAttributeService.toMemberAttributeValue(memberAttribute, values);
-			member.setAttributeValue(memberAttribute, memberAttributeValue);
-		}
+		String errCode = "\"0000\"";		
 		
 		String signature0 = DigestUtils.md5Hex(FORATNOWTIME+urlSignature);
 		if (!signature0.equals(signature)) {			
 			errCode = "1001";
-		}else{			
+		}else{		
+			//区代账号创建
+			NapaStores napaStores = new NapaStores();
+			napaStores.setMobile(null);
+			napaStores.setNapaCode(null);
+			napaStores.setType(0);
+			napaStores.setBalance(BigDecimal.ZERO);
+			napaStoresService.save(napaStores);
+			member.setNapaStores(napaStores);
+			
+			member.setUsername(userCode);
+			member.setUsercode(userCode);
+			
+			member.setPassword("a123456");
+			member.setEncodedPassword(DigestUtils.md5Hex("a123456"));
+			member.setEmail(null);
+			member.setMemberRank(memberRankService.find(1L));
+			
+			member.setIsEnabled(true);
+			member.setCountry(countryService.findByName(companyCode));	
+			
+			if (!isValid(member, BaseEntity.Save.class)) {
+				map.put("errCode", "2001");
+				JSONObject jsonObject = JSONObject.fromObject(map.toString());
+				return jsonObject;
+			}
+
+			member.removeAttributeValue();
+			for (MemberAttribute memberAttribute : memberAttributeService.findList(true, true)) {
+				String[] values = request.getParameterValues("memberAttribute_" + memberAttribute.getId());
+				if (!memberAttributeService.isValid(memberAttribute, values)) {
+					map.put("errCode", "2001");
+					JSONObject jsonObject = JSONObject.fromObject(map.toString());
+					return jsonObject;
+				}
+				Object memberAttributeValue = memberAttributeService.toMemberAttributeValue(memberAttribute, values);
+				member.setAttributeValue(memberAttribute, memberAttributeValue);
+			}
 			
 			member.setPoint(0L);
 			member.setBalance(BigDecimal.ZERO);
@@ -215,8 +214,31 @@ public class MemberController extends BaseController {
 					balance2.setBalance(BigDecimal.ZERO);
 					balance2.setType(Type.coupon);
 					balance2.setMember(member);
-					fiBankbookBalanceService.save(balance2);					
+					fiBankbookBalanceService.save(balance2);
 					
+					//流水号格式：类型首字母+时间
+					String uniqueCode = "ZCZS"+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
+					/**
+					 * 根据会员编号充值购物券接口
+					 * 
+					 * @param usercode 会员编号
+					 * @param money 资金
+					 * @param uniqueCode 交易单号
+					 * @param type 0:电子币账户  1:购物券账户
+					 * @param dealType 0:存入  1取出
+					 * @param moneyType 0:现金  1:在线充值
+					 * @param notes 摘要
+					 * @return
+					 * @throws Exception
+					 */
+					try {
+						String success = fiBankbookJournalService.recharge(userCode, new BigDecimal("10000"), uniqueCode, 1, 0, 1, "用户注册赠送");
+						if(!"success".equals(success)){
+							System.out.println("注册赠送券未成功，提醒手动添加，会员编码为："+userCode);
+						}
+					} catch (Exception e) {
+						System.out.println("注册赠送券未成功，提醒手动添加，会员编码为："+userCode);
+					}
 				}else{
 					memberService.update(member);
 				}

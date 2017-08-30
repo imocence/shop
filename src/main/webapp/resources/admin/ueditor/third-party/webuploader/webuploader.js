@@ -3225,7 +3225,7 @@
     
                 owner.on( 'uploadComplete', function( file ) {
                     // 把其他块取消了。
-                    file.blocks && $.each( file.blocks, function( _, v ) {
+					file.blocks && $.each( file.blocks, function( _, v ) {
                         v.transport && (v.transport.abort(), v.transport.destroy());
                         delete v.transport;
                     });

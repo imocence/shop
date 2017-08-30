@@ -101,11 +101,11 @@ public class Ad extends OrderedEntity<Long> {
 	private AdPosition adPosition;
 	
 	/**
-	 * 国家code
+	 * 国家
 	 */
-	@Length(max = 255)
-	@Column
-	private String country;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
 	
 	/**
 	 * 获取标题
@@ -259,11 +259,11 @@ public class Ad extends OrderedEntity<Long> {
 		this.adPosition = adPosition;
 	}
 	
-	public String getCountry() {
+	public Country getCountry() {
 		return country;
 	}
 
-	public void setCountry(String country) {
+	public void setCountry(Country country) {
 		this.country = country;
 	}
 

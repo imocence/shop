@@ -1,6 +1,7 @@
 package net.shopxx.service.impl;
 
 import java.util.List;
+import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
@@ -8,6 +9,7 @@ import net.shopxx.Filter;
 import net.shopxx.Order;
 import net.shopxx.dao.FiBankbookBalanceDao;
 
+import javax.persistence.LockModeType;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
@@ -18,6 +20,7 @@ import net.shopxx.service.FiBankbookBalanceService;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 /**
  * Service - 存折
@@ -43,10 +46,6 @@ public class FiBankbookBalanceServiceImpl extends BaseServiceImpl<FiBankbookBala
 	public FiBankbookBalance findByKey(String usercodekey,String usercode) {
 		return fiBankbookBalanceDao.find(usercodekey, usercode);
 	}
-
-	
-	@Inject
-	private FiBankbookBalanceDao bankbookBalanceDao;
 	
 	/**
 	 * 查找实体对象分页
@@ -60,7 +59,33 @@ public class FiBankbookBalanceServiceImpl extends BaseServiceImpl<FiBankbookBala
 	 * @return 实体对象分页
 	 */
 	public Page<FiBankbookBalance> findPage(Member member, Country country, Pageable pageable){
-		return bankbookBalanceDao.findPage(member, country, pageable);
+		return fiBankbookBalanceDao.findPage(member, country, pageable);
+	}
+	
+	/**
+	 * 根据member和type获取FiBankbookBalance
+	 * @param member
+	 * @param type
+	 * @return
+	 */
+	public FiBankbookBalance find(Member member, FiBankbookBalance.Type type){
+		return fiBankbookBalanceDao.find(member, type);
+	}
+	
+	/**
+	 * 余额更新
+	 * @param fiBankbookBalance
+	 * @param amount
+	 */
+	@Transactional
+	public void addBalance(FiBankbookBalance fiBankbookBalance, BigDecimal amount){
+		if (!LockModeType.PESSIMISTIC_WRITE.equals(fiBankbookBalanceDao.getLockMode(fiBankbookBalance))) {
+			fiBankbookBalanceDao.flush();
+			fiBankbookBalanceDao.refresh(fiBankbookBalance, LockModeType.PESSIMISTIC_WRITE);
+		}
+		Assert.notNull(fiBankbookBalance.getBalance());
+		fiBankbookBalance.setBalance(fiBankbookBalance.getBalance().add(amount));
+		fiBankbookBalanceDao.flush();
 	}
 	
 

@@ -28,6 +28,22 @@ $().ready( function() {
 	var $orderDirection = $("#orderDirection");
 	var $pageNumber = $("#pageNumber");
 	
+	// 获取国际化
+	function getMessage(code){
+		$.ajax({
+			url: shopxx.base + "/common/language/getMessage",
+			type: "POST",
+			data: {code: code},
+			async: false,
+			dataType: "json",
+			cache: false,
+			success: function(message) {
+				code = message;
+			}
+		});
+		return code;
+	}
+	
 	// 删除
 	$deleteButton.click( function() {
 		var $this = $(this);
@@ -35,11 +51,12 @@ $().ready( function() {
 			return false;
 		}
 		var $checkedIds = $("#listTable input[name='ids']:enabled:checked");
+		// 获取content、ok、cancel的国际化
 		$.dialog({
 			type: "warn",
-			content: message("admin.dialog.deleteConfirm"),
-			ok: message("admin.dialog.ok"),
-			cancel: message("admin.dialog.cancel"),
+			content: getMessage("admin.dialog.deleteConfirm"),
+			ok: getMessage("admin.dialog.ok"),
+			cancel: getMessage("admin.dialog.cancel"),
 			onOk: function() {
 				$.ajax({
 					url: "delete",

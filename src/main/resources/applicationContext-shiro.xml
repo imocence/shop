@@ -36,6 +36,7 @@
 
 				<entry key="/admin/product/**" value="adminAuthc,perms[admin:product]" />
 				<entry key="/admin/stock/**" value="adminAuthc,perms[admin:stock]" />
+				<entry key="/admin/warehouse/**" value="adminAuthc,perms[admin:warehouse]" />
 				<entry key="/admin/product_category/**" value="adminAuthc,perms[admin:productCategory]" />
 				<entry key="/admin/product_tag/**" value="adminAuthc,perms[admin:productTag]" />
 				<entry key="/admin/parameter/**" value="adminAuthc,perms[admin:parameter]" />
