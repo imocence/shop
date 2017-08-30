@@ -21,7 +21,6 @@ import net.shopxx.entity.Member;
 import net.shopxx.entity.SocialUser;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.security.UserAuthenticationToken;
-import net.shopxx.service.MemberService;
 import net.shopxx.service.PluginService;
 import net.shopxx.service.SocialUserService;
 import net.shopxx.service.UserService;

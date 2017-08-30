@@ -1365,7 +1365,7 @@ public class Member extends User {
 	 */
 	@PrePersist
 	public void prePersist() {
-		setUsername(StringUtils.lowerCase(getUsername()));
+		setUsername(StringUtils.upperCase(getUsername()));
 		setEmail(StringUtils.lowerCase(getEmail()));
 		setMobile(StringUtils.lowerCase(getMobile()));
 	}

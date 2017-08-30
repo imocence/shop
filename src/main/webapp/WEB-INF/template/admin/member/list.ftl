@@ -55,6 +55,9 @@ $().ready(function() {
 				<ul>
 					<li[#if page.searchProperty == "usercode"] class="current"[/#if] val="usercode">${message("Member.usercode")}</li>
 					<li[#if page.searchProperty == "email"] class="current"[/#if] val="email">${message("Member.email")}</li>
+					<li[#if page.searchProperty == "country"] class="current"[/#if] val="country.name">${message("Member.country")}</li>
+					<li[#if page.searchProperty == "email"] class="current"[/#if] val="email">${message("Member.email")}</li>
+					<li[#if page.searchProperty == "email"] class="current"[/#if] val="email">${message("Member.email")}</li>
 				</ul>
 			</div>
 		</div>
