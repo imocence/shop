@@ -29,7 +29,7 @@
 									${message("member.index.balance")}:
 									<!-- <strong>${currency(currentUser.balance, true, true)}</strong> -->
 									[#list fiBankbookBalanceList as fiBankbookBalance]
-										[#if fiBankbookBalance.type == 'coupon']
+										[#if fiBankbookBalance.type == 'balance']
 											<strong>${currency(fiBankbookBalance.balance, true, true)}</strong>
 										[/#if]
 									[/#list]
@@ -47,7 +47,7 @@
 									${message("member.index.point")}:
 									<em>
 										[#list fiBankbookBalanceList as fiBankbookBalance]
-											[#if fiBankbookBalance.type == 'balance']
+											[#if fiBankbookBalance.type == 'coupon']
 											${fiBankbookBalance.balance}
 											[/#if]
 										[/#list]

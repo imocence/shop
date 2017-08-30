@@ -110,6 +110,8 @@ public class MemberController extends BaseController {
 		member = memberList.get(0);
 		model.addAttribute("genders", Member.Gender.values());
 		model.addAttribute("memberAttributes", memberAttributeService.findList(true, true));
+		//会员存折
+		model.addAttribute("fiBankbookBalanceList", fiBankbookBalanceService.findList(member,null,null,null));
 		model.addAttribute("member", member);
 		return "admin/member/view";
 	}
@@ -379,6 +381,7 @@ public class MemberController extends BaseController {
 
 		model.addAttribute("memberRanks", memberRankService.findAll());
 		model.addAttribute("memberAttributes", memberAttributeService.findAll());
+
 		model.addAttribute("page", member);
 		return "admin/member/list";
 	}
