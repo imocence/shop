@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="emayclient-4.3.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/emayclient-4.3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/kaptcha-2.3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ojdbc6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/sqljdbc4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
