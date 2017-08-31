@@ -21,13 +21,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import net.shopxx.Filter;
 import net.shopxx.Message;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.Setting;
 import net.shopxx.entity.Area;
-import net.shopxx.entity.Country;
 import net.shopxx.entity.Invoice;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.Order;
@@ -42,14 +40,12 @@ import net.shopxx.entity.PaymentMethod;
 import net.shopxx.entity.ShippingMethod;
 import net.shopxx.entity.Sku;
 import net.shopxx.service.AreaService;
-import net.shopxx.service.CountryService;
 import net.shopxx.service.DeliveryCorpService;
 import net.shopxx.service.MemberService;
 import net.shopxx.service.OrderService;
 import net.shopxx.service.OrderShippingService;
 import net.shopxx.service.PaymentMethodService;
 import net.shopxx.service.ShippingMethodService;
-import net.shopxx.util.StringUtil;
 import net.shopxx.util.SystemUtils;
 
 /**
@@ -76,9 +72,7 @@ public class OrderController extends BaseController {
 	private OrderShippingService orderShippingService;
 	@Inject
 	private MemberService memberService;
-	@Inject
-	private CountryService countryService;
-	
+
 	/**
 	 * 获取订单锁
 	 */
@@ -432,7 +426,7 @@ public class OrderController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(String countryName, Order.Type type, Order.Status status, String memberUsername, Boolean isPendingReceive, Boolean isPendingRefunds, Boolean isAllocatedStock, Boolean hasExpired, Pageable pageable, ModelMap model) {
+	public String list(Order.Type type, Order.Status status, String memberUsername, Boolean isPendingReceive, Boolean isPendingRefunds, Boolean isAllocatedStock, Boolean hasExpired, Pageable pageable, ModelMap model) {
 		model.addAttribute("types", Order.Type.values());
 		model.addAttribute("statuses", Order.Status.values());
 		model.addAttribute("type", type);
@@ -442,20 +436,7 @@ public class OrderController extends BaseController {
 		model.addAttribute("isPendingRefunds", isPendingRefunds);
 		model.addAttribute("isAllocatedStock", isAllocatedStock);
 		model.addAttribute("hasExpired", hasExpired);
-		
-		Country country = null;
-		if (StringUtil.isNotEmpty(countryName)) {
-			country = countryService.findByName(countryName);
-		}
-		model.addAttribute("countryName", countryName);
-		if (null != country) {
-			Filter filter = new Filter();
-			filter.setProperty("country");
-			filter.setValue(country);
-			filter.setOperator(Filter.Operator.eq);
-			pageable.getFilters().add(filter);
-		}
-		
+
 		Member member = memberService.findByUsername(memberUsername);
 		if (StringUtils.isNotEmpty(memberUsername) && member == null) {
 			model.addAttribute("page", Page.emptyPage(pageable));

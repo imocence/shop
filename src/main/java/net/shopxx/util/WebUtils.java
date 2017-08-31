@@ -477,8 +477,10 @@ public final class WebUtils {
 		} catch (ClientProtocolException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		} catch (ParseException e) {
+			System.out.println("你做的没有任何意义，冷静下来，再试一次。");
 			throw new RuntimeException(e.getMessage(), e);
 		} catch (IOException e) {
+			System.out.println("连接超时了，和你代码没有任何关系");
 			throw new RuntimeException(e.getMessage(), e);
 		}
 		return result;

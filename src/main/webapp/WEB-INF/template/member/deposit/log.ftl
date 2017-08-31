@@ -36,25 +36,39 @@
 								${message("DepositLog.balance")}
 							</th>
 							<th>
+								${message("DepositLog.memo")}
+							</th>
+							<th>
 								${message("shop.common.createdDate")}
 							</th>
 						</tr>
 						[#list page.content as depositLog]
 							<tr[#if !depositLog_has_next] class="last"[/#if]>
 								<td>
-									${message("DepositLog.Type." + depositLog.type)}
+									${message("DepositLog.Type." + fiBankbookJournal.moneyType)}
 								</td>
 								<td>
-									${currency(depositLog.credit)}
+									[#if fiBankbookJournal.deal_type == '0']
+										${currency(fiBankbookJournal.money)}
+									[#else]
+										-
+									[/#if]
 								</td>
 								<td>
-									${currency(depositLog.debit)}
+									[#if fiBankbookJournal.deal_type == '1']
+										${currency(fiBankbookJournal.money)}
+									[#else]
+										-
+									[/#if]
 								</td>
 								<td>
-									${currency(depositLog.balance)}
+									${currency(fiBankbookJournal.balance)}
 								</td>
 								<td>
-									<span title="${depositLog.createdDate?string("yyyy-MM-dd HH:mm:ss")}">${depositLog.createdDate}</span>
+									${currency(fiBankbookJournal.notes)}
+								</td>
+								<td>
+									<span title="${fiBankbookJournal.createdDate?string("yyyy-MM-dd HH:mm:ss")}">${depositLog.createdDate}</span>
 								</td>
 							</tr>
 						[/#list]

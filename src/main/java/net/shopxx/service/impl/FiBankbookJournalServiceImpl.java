@@ -58,7 +58,18 @@ public class FiBankbookJournalServiceImpl extends BaseServiceImpl<FiBankbookJour
 	public Page<FiBankbookJournal> findPage(Country country, FiBankbookJournal.Type type, FiBankbookJournal.MoneyType moneyType, Date beginDate, Date endDate, Pageable pageable){
 		return fiBankbookJournalDao.findPage(country, type, moneyType, beginDate, endDate, pageable);
 	}
-	
+	/**
+	 * 查找个人交易记录分页
+	 * 
+	 * @param currentUser
+	 *            会员信息
+	 * @param pageable
+	 *            分页信息
+	 * @return 交易记录分页
+	 */
+	public Page<FiBankbookJournal> findPageByMemberId(Member currentUser, Pageable pageNumber){
+		return fiBankbookJournalDao.findPageByMemberId(currentUser, pageNumber);
+	}
 	/**
 	 * 获取最近的一条记录
 	 * @param member
@@ -127,10 +138,6 @@ public class FiBankbookJournalServiceImpl extends BaseServiceImpl<FiBankbookJour
 		}
 		// 用户余额为空则新增一条记录
 		if (null == fiBankbookBalance) {
-			// 用户的账户余额不足
-			if (amount.doubleValue() < 0) {
-				throw new Exception(SpringUtils.getMessage("admin.fiBankbookJournalTemp.error.balance.insufficient", member.getUsercode()));
-			}
 			fiBankbookBalance = new FiBankbookBalance();
 			fiBankbookBalance.setBalance(amount);
 			fiBankbookBalance.setCountry(country);

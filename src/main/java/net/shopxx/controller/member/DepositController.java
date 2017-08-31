@@ -25,10 +25,12 @@ import com.fasterxml.jackson.annotation.JsonView;
 import net.shopxx.Pageable;
 import net.shopxx.Results;
 import net.shopxx.entity.BaseEntity;
+import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.Member;
 import net.shopxx.plugin.PaymentPlugin;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.service.DepositLogService;
+import net.shopxx.service.FiBankbookJournalService;
 import net.shopxx.service.PluginService;
 import net.shopxx.util.WebUtils;
 
@@ -51,7 +53,8 @@ public class DepositController extends BaseController {
 	private DepositLogService depositLogService;
 	@Inject
 	private PluginService pluginService;
-
+	@Inject
+	FiBankbookJournalService fiBankbookJournalService;
 	/**
 	 * 计算支付手续费
 	 */
@@ -98,7 +101,8 @@ public class DepositController extends BaseController {
 	@GetMapping("/log")
 	public String log(Integer pageNumber, @CurrentUser Member currentUser, ModelMap model) {
 		Pageable pageable = new Pageable(pageNumber, PAGE_SIZE);
-		model.addAttribute("page", depositLogService.findPage(currentUser, pageable));
+		//model.addAttribute("page", depositLogService.findPage(currentUser, pageable));
+		model.addAttribute("page", fiBankbookJournalService.findPageByMemberId(currentUser, pageable));
 		return "member/deposit/log";
 	}
 
