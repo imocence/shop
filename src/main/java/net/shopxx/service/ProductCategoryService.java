@@ -24,7 +24,15 @@ public interface ProductCategoryService extends BaseService<ProductCategory, Lon
 	 * @return 顶级商品分类
 	 */
 	List<ProductCategory> findRoots();
-
+	
+	/**
+	 * 查找顶级商品分类
+	 * @param country 国家
+	 * @param count
+	 * @return
+	 */
+	List<ProductCategory> findRoots(Country country, Integer count);
+	
 	/**
 	 * 查找顶级商品分类
 	 * 

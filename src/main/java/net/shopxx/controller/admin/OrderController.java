@@ -6,20 +6,13 @@
 package net.shopxx.controller.admin;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.shopxx.Filter;
 import net.shopxx.Message;
@@ -39,6 +32,8 @@ import net.shopxx.entity.OrderReturnsItem;
 import net.shopxx.entity.OrderShipping;
 import net.shopxx.entity.OrderShippingItem;
 import net.shopxx.entity.PaymentMethod;
+import net.shopxx.entity.Product;
+import net.shopxx.entity.ProductCategory;
 import net.shopxx.entity.ShippingMethod;
 import net.shopxx.entity.Sku;
 import net.shopxx.service.AreaService;
@@ -48,9 +43,23 @@ import net.shopxx.service.MemberService;
 import net.shopxx.service.OrderService;
 import net.shopxx.service.OrderShippingService;
 import net.shopxx.service.PaymentMethodService;
+import net.shopxx.service.ProductCategoryService;
+import net.shopxx.service.ProductService;
 import net.shopxx.service.ShippingMethodService;
 import net.shopxx.util.StringUtil;
 import net.shopxx.util.SystemUtils;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * Controller - 订单
@@ -78,6 +87,10 @@ public class OrderController extends BaseController {
 	private MemberService memberService;
 	@Inject
 	private CountryService countryService;
+	@Inject
+	private ProductCategoryService productCategoryService;
+	@Inject
+	private ProductService productService;
 	
 	/**
 	 * 获取订单锁
@@ -124,7 +137,24 @@ public class OrderController extends BaseController {
 		data.put("transitSteps", orderShippingService.getTransitSteps(orderShipping));
 		return data;
 	}
-
+	
+	/**
+	 * 新增
+	 */
+	@GetMapping("/add")
+	public String add() {
+		return "admin/order/add";
+	}
+	
+	/**
+	 * 更新
+	 */
+	@PostMapping("/save")
+	public String save(RedirectAttributes redirectAttributes){
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
+		return "redirect:list";
+	}
+	
 	/**
 	 * 编辑
 	 */
@@ -480,6 +510,74 @@ public class OrderController extends BaseController {
 			orderService.delete(ids);
 		}
 		return Message.success(SUCCESS_MESSAGE);
+	}
+	
+	
+	/**
+	 * 获取所有的二级分类以及分类下的商品列表
+	 * [{"name":"1级分类名称", products:[{product},{product}]}]
+	 */
+	@GetMapping("/getProducts")
+	public @ResponseBody String getProducts(String countryName) {
+		Country country = null;
+		if (StringUtil.isNotEmpty(countryName)) {
+			country = countryService.findByName(countryName);
+		}
+		// 根据国家获取国家下的1级分类
+		List<ProductCategory> categorys = productCategoryService.findRoots(country, null);
+		// key:下级分类ID value:1级分类ID 
+		Map<Long, Long> childrenCategoryIdMap = new HashMap<Long, Long>();
+		// key:1级分类ID value:产品集合 
+		Map<Long, List<Product>> productMap = new HashMap<Long, List<Product>>();
+		// 获取1级分类下的所有的子分类id
+		for (ProductCategory productCategory : categorys) {
+			List<ProductCategory> childrenCategorys = productCategoryService.findChildren(productCategory, true, null);
+			for (ProductCategory childCategory : childrenCategorys) {
+				childrenCategoryIdMap.put(childCategory.getId(), productCategory.getId());
+			}
+		}
+		// 根据国家获取国家下的所有的商品，并放入分类下的商品中
+		List<Product> products = productService.findList(country);
+		for (Product product : products) {
+			Long categoryId = product.getProductCategory().getId();
+			// 获取1级分类
+			Long parentCategoryId = childrenCategoryIdMap.get(categoryId);
+			if (null != parentCategoryId) {
+				// 1级分类以及所有子分类下的商品集合
+				List<Product> productList = productMap.get(parentCategoryId);
+				if (null == productList) {
+					productList = new ArrayList<Product>();
+					productMap.put(parentCategoryId, productList);
+				}
+				productList.add(product);
+			}
+		}
+		
+		// 构建json
+		JSONArray array = new JSONArray();
+		for (ProductCategory productCategory : categorys) {
+			JSONObject categoryObj = new JSONObject();
+			Long categoryId = productCategory.getId();
+			JSONArray productArray = new JSONArray();
+			List<Product> productList = productMap.get(categoryId);
+			if (null != productList) {
+				for (Product product : productList) {
+					JSONObject productObj = new JSONObject();
+					productObj.put("sn", product.getSn());
+					productObj.put("name", product.getName());
+					productObj.put("price", product.getPrice());
+					productObj.put("image", product.getImage());
+					// 缺少库存参数
+					productArray.add(productObj);
+				}
+			}
+			categoryObj.put("name", productCategory.getName());
+			categoryObj.put("products", productArray);
+//			if (productArray.size() > 0) {
+				array.add(categoryObj);
+//			}
+		}
+		return array.toJSONString();
 	}
 
 }

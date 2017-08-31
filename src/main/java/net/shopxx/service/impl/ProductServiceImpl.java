@@ -161,7 +161,16 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 		}
 		return productDao.findList(type, productCategory, brand, promotion, productTag, map, startPrice, endPrice, isMarketable, isList, isTop, isOutOfStock, isStockAlert, hasPromotion, orderType, count, filters, orders);
 	}
-
+	
+	/**
+	 * 获取国家下所有的商品
+	 * @param country
+	 * @return
+	 */
+	public List<Product> findList(Country country){
+		return productDao.findList(country);
+	}
+	
 	@Transactional(readOnly = true)
 	public Page<Product> findPage(Product.Type type, ProductCategory productCategory,Country country, Brand brand, Promotion promotion, ProductTag productTag, Map<Attribute, String> attributeValueMap, BigDecimal startPrice, BigDecimal endPrice, Boolean isMarketable, Boolean isList, Boolean isTop,
 			Boolean isOutOfStock, Boolean isStockAlert, Boolean hasPromotion, Product.OrderType orderType, Pageable pageable) {

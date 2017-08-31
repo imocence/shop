@@ -26,6 +26,14 @@ public interface ProductCategoryDao extends BaseDao<ProductCategory, Long> {
 	 * @return 顶级商品分类
 	 */
 	List<ProductCategory> findRoots(Integer count);
+	
+	/**
+	 * 查找顶级商品分类
+	 * @param country 国家
+	 * @param count
+	 * @return
+	 */
+	List<ProductCategory> findRoots(Country country, Integer count);
 
 	/**
 	 * 查找上级商品分类
