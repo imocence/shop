@@ -16,7 +16,6 @@ import net.shopxx.entity.Area;
  * @version 5.0.3
  */
 public interface AreaService extends BaseService<Area, Long> {
-
 	/**
 	 * 查找顶级地区
 	 * 

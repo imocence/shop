@@ -8,14 +8,18 @@ package net.shopxx.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -35,6 +39,7 @@ import net.shopxx.dao.OrderRefundsDao;
 import net.shopxx.dao.OrderReturnsDao;
 import net.shopxx.dao.OrderShippingDao;
 import net.shopxx.dao.SnDao;
+import net.shopxx.entity.Area;
 import net.shopxx.entity.Cart;
 import net.shopxx.entity.CartItem;
 import net.shopxx.entity.Coupon;
@@ -60,9 +65,11 @@ import net.shopxx.entity.Sku;
 import net.shopxx.entity.Sn;
 import net.shopxx.entity.StockLog;
 import net.shopxx.entity.User;
+import net.shopxx.service.AreaService;
 import net.shopxx.service.CouponCodeService;
 import net.shopxx.service.MailService;
 import net.shopxx.service.MemberService;
+import net.shopxx.service.OrderItemService;
 import net.shopxx.service.OrderService;
 import net.shopxx.service.ProductService;
 import net.shopxx.service.ShippingMethodService;
@@ -70,6 +77,8 @@ import net.shopxx.service.SkuService;
 import net.shopxx.service.SmsService;
 import net.shopxx.service.UserService;
 import net.shopxx.util.SystemUtils;
+import net.shopxx.util.TimeUtil;
+import net.shopxx.util.WebUtils;
 
 /**
  * Service - 订单
@@ -114,7 +123,14 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	private MailService mailService;
 	@Inject
 	private SmsService smsService;
-
+	@Inject
+	private OrderItemService orderItemService;
+	@Inject 
+	private AreaService areaService;
+	@Value("${url.signature}")
+	private String urlSignature;
+	@Value("${url.path}")
+	private String urlPath;
 	@Transactional(readOnly = true)
 	public Order findBySn(String sn) {
 		return orderDao.find("sn", StringUtils.lowerCase(sn));
@@ -298,7 +314,122 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 		}
 	}
+	/**
+	 * 属性字段参考
+	 *  usercode 区代编号
+		ordersn 订单号
+		status 订单状态
+		price 订单价格
+		jifen 订单购物券
+		payTime 支付时间
+		realname 收货人姓名
+		mobile 收货人电话
+		address 联系地址
+		province 收货省
+		city 收货市
+		area 收货地区
+		expresscom 快递公司
+		expresssn 快递单号
+		expressTime 快递时间
+		WarehouseName 发货仓库
+	 * goods_data
+		title 商品名
+		unit 计量单位
+		optiontitle 规格
+		goodssn 商品编码
+		price 单价
+		jifen 单券
+		total 数量
+		weight 重量
+		volume 体积
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	public String orderInterface(Order order){
+		Map<String,Object> parameterMap = new HashMap<>();
+		Map<String,Object> goods = new HashMap<String,Object>();
+		List<Object> data = new ArrayList<>();
+		List<OrderItem> orderItems = orderItemService.findByOrderId(order);
+		if(orderItems.size() > 0){
+			for(OrderItem orderItem :orderItems){
+				goods.put("title", orderItem.getName());
+				Sku sku = skuService.find(orderItem.getSku().getId());
+				//List<SpecificationValue> specificationValue  = sku.getSpecificationValues();
+				goods.put("unit", sku.getUnit());
+				goods.put("optiontitle", "");//规格
+				goods.put("goodssn", sku.getProduct().getSn());
+				goods.put("price", orderItem.getPrice());
+				goods.put("total", orderItem.getQuantity());//数量
+				goods.put("weight", orderItem.getWeight());
+				goods.put("volume", orderItem.getVersion());
+				//String jsonObject = JSON.toJSONString(goods);
+				data.add(goods);
+			}
+		}
+		
+		parameterMap.put("usercode", order.getMember().getNapaStores().getNapaCode());
+		parameterMap.put("ordersn", order.getSn());		
+		
+		if("pendingPayment".equals(order.getStatus())){
+			parameterMap.put("status", "等待付款");//等待付款
+		}else if("pendingReview".equals(order.getStatus())){
+			parameterMap.put("status", "等待审核");//等待审核
+		}else if("pendingShipment".equals(order.getStatus())){
+			parameterMap.put("status", "等待发货");//等待发货
+		}else if("shipped".equals(order.getStatus())){
+			parameterMap.put("status", "已发货");//已发货
+		}else if("received".equals(order.getStatus())){
+			parameterMap.put("status", "已收货");//已收货
+		}else if("completed".equals(order.getStatus())){
+			parameterMap.put("status", "已完成");//已完成
+		}else if("failed".equals(order.getStatus())){
+			parameterMap.put("status", "已失败");//已失败
+		}else if("canceled".equals(order.getStatus())){
+			parameterMap.put("status", "已取消");//已取消
+		}else if("denied".equals(order.getStatus())){
+			parameterMap.put("status", "已拒绝");//已拒绝
+		}
 
+		parameterMap.put("price", calculateAmount(order));
+		parameterMap.put("jifen", calculateAmount(order));//券金额
+		parameterMap.put("payTime", TimeUtil.getNowTime());//支付时间
+		parameterMap.put("realname", order.getConsignee());//收货人
+		parameterMap.put("mobile", order.getPhone());//收货人电话
+		parameterMap.put("address", order.getAreaName()+order.getAddress());//收货人地址
+		Area area1 = order.getArea();
+		if(area1.getGrade() == 0){
+			parameterMap.put("province", area1.getName());//收货人省
+		}else{
+			List<Area> area = areaService.findParents(order.getArea(), true, null);
+			parameterMap.put("province", area.get(0).getName());//收货人省
+		}
+		
+		parameterMap.put("city", "");//收货人市
+		parameterMap.put("area", "");//收货人区
+		parameterMap.put("expresscom", "");//快递公司
+		parameterMap.put("expresssn", "");//快递单号
+		parameterMap.put("expressTime", "");//发货时间
+		parameterMap.put("WarehouseName", "");//发货仓库
+
+		parameterMap.put("goods_data", data);//商品信息
+		
+		
+		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getFormatNowTime("yyyyMMdd")+urlSignature));
+		System.out.println(parameterMap.toString());
+		String orderMap = WebUtils.postJson(urlPath+"/shopMemberOrderCreate.html",parameterMap);
+		System.out.println(orderMap);
+		/**
+		 * errCode         msg
+		 * 0000 		成功：success
+		 * 1001 		验签错误
+		 * 1002 		会员编号已存在
+		 * 1003 		区代编号已存在
+		 * 1004 		链接超过有效时间
+		 * 1005                           商品编码不存在
+		 * 2001 		异常:xxx
+		 */
+		return orderMap;
+	}
+	
 	@Transactional(readOnly = true)
 	public Order generate(Order.Type type, Cart cart, Receiver receiver, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, String memo) {
 		Assert.notNull(type);

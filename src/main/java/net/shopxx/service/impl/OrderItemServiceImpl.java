@@ -5,8 +5,14 @@
  */
 package net.shopxx.service.impl;
 
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.springframework.stereotype.Service;
 
+import net.shopxx.dao.OrderItemDao;
+import net.shopxx.entity.Order;
 import net.shopxx.entity.OrderItem;
 import net.shopxx.service.OrderItemService;
 
@@ -18,5 +24,12 @@ import net.shopxx.service.OrderItemService;
  */
 @Service
 public class OrderItemServiceImpl extends BaseServiceImpl<OrderItem, Long> implements OrderItemService {
-
+	@Inject
+	OrderItemDao orderItemDao;
+	/**
+	 * 根据订单号查找商品信息
+	 */
+	public List<OrderItem> findByOrderId(Order order){
+		return orderItemDao.findByOrderId(order);
+	}
 }

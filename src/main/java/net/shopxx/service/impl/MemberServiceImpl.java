@@ -37,7 +37,9 @@ import net.shopxx.entity.DepositLog;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberRank;
 import net.shopxx.entity.NapaStores;
+import net.shopxx.entity.OrderItem;
 import net.shopxx.entity.PointLog;
+import net.shopxx.entity.Sku;
 import net.shopxx.entity.User;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.MailService;
@@ -89,7 +91,9 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	private String urlPath;
 	@Value("${url.signature}")
 	private String urlSignature;
-
+	/**
+	 * 根据会员邮箱、手机、会员编码查找会员信息
+	 */
 	@Transactional(readOnly = true)
 	public Member getUser(Object principal) {
 		Assert.notNull(principal);
@@ -101,8 +105,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		} else if (MOBILE_PRINCIPAL_PATTERN.matcher(value).matches()) {
 			return findByMobile(value);
 		} else {
-			List<Member> memberList = getListMember("'"+value+"'",urlPath,urlSignature);
-			Member member = memberList.get(0);
+			List<Member> memberList = getListMember("'"+value+"'");
 			return memberList.get(0);
 		}
 	}
@@ -269,7 +272,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	 */
 	@Override
 	@Transactional
-	public boolean verifyLogin(String usercode,String password,String urlPath,String urlSignature){
+	public boolean verifyLogin(String usercode,String password){
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("userCode", StringUtils.upperCase(usercode));
 		parameterMap.put("password", DigestUtils.md5Hex("a"+password));
@@ -285,15 +288,17 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	}
 	/**
 	 * 获取多会员信息接口
+	 * usercodes
+	 * 	会员编码：'CN01505718','CN05787105','CN06181471','CN01165146','CN07281530','LD05376130','LD01906504'
 	 * @return
 	 */
 	@Override
 	@Transactional
-	public List<Member> getListMember(String userCodes,String urlPath,String urlSignature){		
+	public List<Member> getListMember(String userCodes){		
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getFormatNowTime("yyyyMMdd")+urlSignature));
 		parameterMap.put("userCode", userCodes);
-		System.out.println(parameterMap.toString());
+		System.out.println(parameterMap);
 		
 		String userCodeMap = WebUtils.postJson(urlPath+"/getMemberInfoToShop.html",parameterMap);
 		List<Member> members = new ArrayList<Member>();
@@ -342,6 +347,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 					napaStores.setNapaCode(napaCode);
 				}
 				napaStores.setType(type);
+				napaStores.setNapaAddress(address);
 				napaStores.setMobile(mobile);
 				napaStoresService.update(napaStores);
 				
@@ -370,6 +376,8 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	 * @param count
 	 * @return
 	 */
+	@Override
+	@Transactional
 	public List<Member> search(String keyword, Country country, Integer count){
 		return memberDao.search(keyword, country, count);
 	}

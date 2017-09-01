@@ -1,6 +1,5 @@
 package net.shopxx.controller.admin;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +12,10 @@ import net.shopxx.entity.NapaStores;
 import net.shopxx.service.MemberRankService;
 import net.shopxx.service.MemberService;
 import net.shopxx.service.NapaStoresService;
+import net.shopxx.util.TimeUtil;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +37,9 @@ public class NapaStoresController extends BaseController{
 	MemberService memberService;
 	@Inject
 	MemberRankService memberRankService;
+	@Value("${url.signature}")
+	private String urlSignature;
+	private static String FORATNOWTIME = TimeUtil.getFormatNowTime("yyyyMMdd");
 	/**
 	 * 跟新区代信息
 	 */
@@ -44,34 +49,34 @@ public class NapaStoresController extends BaseController{
 										String userCode,
 										String type,//类型id
 										String store_mobile,//电话
+										String store_address,//电话
+										String signature,//约定验证码
 										HttpServletRequest request, RedirectAttributes redirectAttributes){
 		Map<String,Object> map = new HashMap<String, Object>();
 		String errCode = "\"0000\"";	
-		//区代
-		Member member = memberService.findByUsercode(userCode);	
-		napaStores = napaStoresService.find(member.getNapaStores().getId());
-		if(Integer.parseInt(type) == 0){
-			napaStores.setNapaCode(null);
+		String signature0 = DigestUtils.md5Hex(FORATNOWTIME+urlSignature);
+		if (!signature0.equals(signature)) {			
+			errCode = "1001";
 		}else{
-			napaStores.setNapaCode(store_id);
-		}
-		napaStores.setMobile(store_mobile);
-		napaStores.setType(Integer.parseInt(type));
-		if (napaStores.getId() == null) {
-			napaStores.setBalance(BigDecimal.ZERO);
-			try {
-				napaStoresService.save(napaStores);
-			} catch (Exception e) {
-				errCode = "2001";
+			//区代
+			Member member = memberService.findByUsercode(userCode);	
+			napaStores = member.getNapaStores();
+			if(Integer.parseInt(type) == 0){
+				napaStores.setNapaCode(null);
+			}else{
+				napaStores.setNapaCode(store_id);
 			}
-			
-		}else{				
+			napaStores.setMobile(store_mobile);
+			napaStores.setNapaAddress(store_address);
+			napaStores.setType(Integer.parseInt(type));
 			try {
 				napaStoresService.update(napaStores);
+				member.setNapaStores(napaStores);
+				memberService.update(member);
 			} catch (Exception e) {
 				errCode = "2001";
-			}
-		}					
+			}			
+		}
 		map.put("errCode", errCode);
 		JSONObject jsonObject = JSONObject.fromObject(map.toString());
 		return jsonObject;

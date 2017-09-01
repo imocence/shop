@@ -5,6 +5,9 @@
  */
 package net.shopxx.dao;
 
+import java.util.List;
+
+import net.shopxx.entity.Order;
 import net.shopxx.entity.OrderItem;
 
 /**
@@ -14,5 +17,11 @@ import net.shopxx.entity.OrderItem;
  * @version 5.0.3
  */
 public interface OrderItemDao extends BaseDao<OrderItem, Long> {
+	/**
+	 * 根据订单id查找商品信息
+	 * @param order
+	 * @return
+	 */
+	List<OrderItem> findByOrderId(Order order);
 
 }

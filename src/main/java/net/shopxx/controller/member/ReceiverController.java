@@ -65,6 +65,7 @@ public class ReceiverController extends BaseController {
 	public String list(Integer pageNumber, @CurrentUser Member currentUser, ModelMap model) {
 		Pageable pageable = new Pageable(pageNumber, PAGE_SIZE);
 		model.addAttribute("page", receiverService.findPage(currentUser, pageable));
+		
 		return "member/receiver/list";
 	}
 

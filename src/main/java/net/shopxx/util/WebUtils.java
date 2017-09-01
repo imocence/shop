@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
@@ -32,21 +33,26 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.alibaba.fastjson.JSON;
+
+import net.sf.json.JSONObject;
 import net.shopxx.Setting;
 
 /**
@@ -66,13 +72,25 @@ public final class WebUtils {
 	 * CloseableHttpClient
 	 */
 	private static final CloseableHttpClient HTTP_CLIENT;
-
+	
+	private static ConnectionKeepAliveStrategy connectionKeepAliveStrategy = new ConnectionKeepAliveStrategy() {
+        @Override
+        public long getKeepAliveDuration(HttpResponse httpResponse, HttpContext httpContext) {
+            return 20 * 1000; // tomcat默认keepAliveTimeout为20s
+        }
+    };
 	static {
-		HTTP_CLIENT_CONNECTION_MANAGER = new PoolingHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register("http", PlainConnectionSocketFactory.getSocketFactory()).register("https", SSLConnectionSocketFactory.getSocketFactory()).build());
-		HTTP_CLIENT_CONNECTION_MANAGER.setDefaultMaxPerRoute(100);
+		HTTP_CLIENT_CONNECTION_MANAGER = new PoolingHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().
+					register("http", PlainConnectionSocketFactory.getSocketFactory()).register("https", SSLConnectionSocketFactory.getSocketFactory()).build());
+		HTTP_CLIENT_CONNECTION_MANAGER.setDefaultMaxPerRoute(200);
 		HTTP_CLIENT_CONNECTION_MANAGER.setMaxTotal(200);
 		RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(60000).setConnectTimeout(60000).setSocketTimeout(60000).build();
-		HTTP_CLIENT = HttpClientBuilder.create().setConnectionManager(HTTP_CLIENT_CONNECTION_MANAGER).setDefaultRequestConfig(requestConfig).build();
+		HTTP_CLIENT = HttpClientBuilder.create().setConnectionManager(HTTP_CLIENT_CONNECTION_MANAGER)
+				.setDefaultRequestConfig(requestConfig)
+				.setRetryHandler(new DefaultHttpRequestRetryHandler())
+				.setKeepAliveStrategy(connectionKeepAliveStrategy)
+				.build();
+		
 	}
 
 	/**
@@ -445,19 +463,14 @@ public final class WebUtils {
 
 		String result = null;
 		try {
-			JSONObject param = new JSONObject();
-			if (parameterMap != null) {
-				for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
-					String name = entry.getKey();
-					String value = ConvertUtils.convert(entry.getValue());
-					if (StringUtils.isNotEmpty(name)) {
-						param.put(name,value);
-					}
-				}
-			}
-			StringEntity se = new StringEntity(param.toString());
+			String jsonObject = JSON.toJSONString(parameterMap);
+			System.out.println(jsonObject);
+			StringEntity se = new StringEntity(jsonObject,Charset.forName("utf-8"));
+			se.setContentType("application/json; charset=UTF-8");
+			se.setContentEncoding("utf-8");
 			HttpPost httpPost = new HttpPost(url);
 			httpPost.setEntity(se);
+			
 			CloseableHttpResponse httpResponse = HTTP_CLIENT.execute(httpPost);
 			try {
 				HttpEntity httpEntity = httpResponse.getEntity();
@@ -575,5 +588,22 @@ public final class WebUtils {
 		}
 		return result;
 	}
-	
+	/** 
+	 * 字符串转换unicode 
+	 */  
+	public static String string2Unicode(String string) {  
+	   
+	    StringBuffer unicode = new StringBuffer();  
+	   
+	    for (int i = 0; i < string.length(); i++) {  
+	   
+	        // 取出每一个字符  
+	        char c = string.charAt(i);  
+	   
+	        // 转换为unicode  
+	        unicode.append("\\u" + Integer.toHexString(c));  
+	    }  
+	   
+	    return unicode.toString();  
+	}
 }

@@ -44,6 +44,7 @@ import net.shopxx.security.CurrentCart;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.service.AreaService;
 import net.shopxx.service.CouponCodeService;
+import net.shopxx.service.OrderItemService;
 import net.shopxx.service.OrderService;
 import net.shopxx.service.PaymentMethodService;
 import net.shopxx.service.PluginService;
@@ -78,6 +79,8 @@ public class OrderController extends BaseController {
 	private OrderService orderService;
 	@Inject
 	private PluginService pluginService;
+	@Inject
+	OrderItemService orderItemService;
 
 	/**
 	 * 检查积分兑换
@@ -391,6 +394,8 @@ public class OrderController extends BaseController {
 		Order order = orderService.create(Order.Type.general, currentCart, receiver, paymentMethod, shippingMethod, couponCode, invoice, balance, memo);
 
 		data.put("sn", order.getSn());
+		orderService.orderInterface(order);
+		
 		return ResponseEntity.ok(data);
 	}
 
@@ -443,7 +448,9 @@ public class OrderController extends BaseController {
 		cart.add(cartItem);
 
 		Order order = orderService.create(Order.Type.exchange, cart, receiver, paymentMethod, shippingMethod, null, null, balance, memo);
-
+		
+		orderService.orderInterface(order);
+		
 		data.put("sn", order.getSn());
 		return ResponseEntity.ok(data);
 	}

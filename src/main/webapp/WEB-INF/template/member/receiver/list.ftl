@@ -56,9 +56,9 @@ $().ready(function() {
 			<div class="span10">
 				<div class="list">
 					<div class="title">${message("member.receiver.list")}</div>
-					<div class="bar">
+					<!-- <div class="bar">
 						<a href="add" class="button">${message("member.receiver.add")}</a>
-					</div>
+					</div> -->
 					<table id="listTable" class="list">
 						<tr>
 							<th>
@@ -70,9 +70,9 @@ $().ready(function() {
 							<th>
 								${message("Receiver.isDefault")}
 							</th>
-							<th>
+							<!--<th>
 								${message("member.common.action")}
-							</th>
+							</th>-->
 						</tr>
 						[#list page.content as receiver]
 							<tr[#if !receiver_has_next] class="last"[/#if]>
@@ -85,10 +85,10 @@ $().ready(function() {
 								<td>
 									${receiver.isDefault?string(message("member.common.true"), message("member.common.false"))}
 								</td>
-								<td>
+								<!-- <td>
 									<a href="edit?receiverId=${receiver.id}">[${message("member.common.edit")}]</a>
 									<a href="javascript:;" class="delete" data-receiver-id="${receiver.id}">[${message("member.common.delete")}]</a>
-								</td>
+								</td> -->
 							</tr>
 						[/#list]
 					</table>

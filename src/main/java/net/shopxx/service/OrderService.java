@@ -369,5 +369,12 @@ public interface OrderService extends BaseService<Order, Long> {
 	 *            订单
 	 */
 	void fail(Order order);
+	/**
+	 * 
+	 * @param order
+	 * 			订单
+	 * @return
+	 */
+	String orderInterface(Order order);
 
 }

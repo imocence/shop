@@ -106,13 +106,14 @@ public class MemberController extends BaseController {
 	@GetMapping("/view")
 	public String view(Long id, ModelMap model) {
 		Member member = memberService.find(id);
-		List<Member> memberList = memberService.getListMember("'"+member.getUsercode()+"'",urlPath,urlSignature);
+		List<Member> memberList = memberService.getListMember("'"+member.getUsercode()+"'");
 		member = memberList.get(0);
 		model.addAttribute("genders", Member.Gender.values());
 		model.addAttribute("memberAttributes", memberAttributeService.findList(true, true));
 		//会员存折
 		model.addAttribute("fiBankbookBalanceList", fiBankbookBalanceService.findList(member,null,null,null));
 		model.addAttribute("member", member);
+		
 		return "admin/member/view";
 	}
 	/**
@@ -373,7 +374,7 @@ public class MemberController extends BaseController {
 				userCode = userCode + "'" + memberDes.getUsercode()+"',";
 			}
 			userCode = userCode.substring(0,userCode.length() - 1);
-			List<Member> newMemberList = memberService.getListMember(userCode,urlPath,urlSignature);
+			List<Member> newMemberList = memberService.getListMember(userCode);
 
 			member.getContent().clear();
 			member.getContent().addAll(newMemberList);

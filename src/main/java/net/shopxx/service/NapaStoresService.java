@@ -21,7 +21,7 @@ public interface NapaStoresService extends BaseService<NapaStores, Long>{
 	@Transactional(readOnly = true)
 	NapaStores findByNapaCode(String napaCode);
 	/**
-	 * 根据会员查找会员类型
+	 * 根据会员查找区代
 	 * @param member
 	 * @return
 	 */
