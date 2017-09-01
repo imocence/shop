@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.Results;
 import net.shopxx.entity.BaseEntity;
@@ -102,6 +103,7 @@ public class DepositController extends BaseController {
 	public String log(Integer pageNumber, @CurrentUser Member currentUser, ModelMap model) {
 		Pageable pageable = new Pageable(pageNumber, PAGE_SIZE);
 		//model.addAttribute("page", depositLogService.findPage(currentUser, pageable));
+		//Page<FiBankbookJournal> FiBankbookJournal = fiBankbookJournalService.findPageByMemberId(currentUser, pageable);
 		model.addAttribute("page", fiBankbookJournalService.findPageByMemberId(currentUser, pageable));
 		return "member/deposit/log";
 	}

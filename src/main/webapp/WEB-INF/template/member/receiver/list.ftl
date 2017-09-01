@@ -74,7 +74,18 @@ $().ready(function() {
 								${message("member.common.action")}
 							</th>-->
 						</tr>
-						[#list page.content as receiver]
+						<tr class="last">
+							<td>
+								${member.name}
+							</td>
+							<td>
+								<span title="${member.napaStores.napaAddress}">${abbreviate(member.napaStores.napaAddress, 30, "...")}</span>
+							</td>
+							<td>
+								${message("member.common.true")}
+							</td>
+						</tr>
+						<!-- [#list page.content as receiver]
 							<tr[#if !receiver_has_next] class="last"[/#if]>
 								<td>
 									${receiver.consignee}
@@ -85,20 +96,18 @@ $().ready(function() {
 								<td>
 									${receiver.isDefault?string(message("member.common.true"), message("member.common.false"))}
 								</td>
-								<!-- <td>
+								<td>
 									<a href="edit?receiverId=${receiver.id}">[${message("member.common.edit")}]</a>
 									<a href="javascript:;" class="delete" data-receiver-id="${receiver.id}">[${message("member.common.delete")}]</a>
-								</td> -->
+								</td>
 							</tr>
-						[/#list]
+						[/#list] -->
 					</table>
-					[#if !page.content?has_content]
+					<!-- [#if !page.content?has_content]
 						<p>${message("member.common.noResult")}</p>
-					[/#if]
+					[/#if] -->
 				</div>
-				[@pagination pageNumber = page.pageNumber totalPages = page.totalPages pattern = "?pageNumber={pageNumber}"]
-					[#include "/member/include/pagination.ftl"]
-				[/@pagination]
+				
 			</div>
 		</div>
 	</div>

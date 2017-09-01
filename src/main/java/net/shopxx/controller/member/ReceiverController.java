@@ -24,6 +24,7 @@ import net.shopxx.entity.Receiver;
 import net.shopxx.exception.UnauthorizedException;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.service.AreaService;
+import net.shopxx.service.MemberService;
 import net.shopxx.service.ReceiverService;
 
 /**
@@ -45,7 +46,8 @@ public class ReceiverController extends BaseController {
 	private AreaService areaService;
 	@Inject
 	private ReceiverService receiverService;
-
+	@Inject
+	private MemberService memberService;
 	/**
 	 * 添加属性
 	 */
@@ -63,9 +65,9 @@ public class ReceiverController extends BaseController {
 	 */
 	@GetMapping("/list")
 	public String list(Integer pageNumber, @CurrentUser Member currentUser, ModelMap model) {
-		Pageable pageable = new Pageable(pageNumber, PAGE_SIZE);
-		model.addAttribute("page", receiverService.findPage(currentUser, pageable));
-		
+		//Pageable pageable = new Pageable(pageNumber, PAGE_SIZE);
+		//model.addAttribute("page", receiverService.findPage(currentUser, pageable));
+		model.addAttribute("member", memberService.getUser(currentUser.getUsercode()));
 		return "member/receiver/list";
 	}
 

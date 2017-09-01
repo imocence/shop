@@ -97,6 +97,14 @@ $().ready(function() {
 							</tr>
 							<tr>
 								<th>
+									${message("Member.napaCode")}:
+								</th>
+								<td>
+									${currentUser.napaStores.napaCode}
+								</td>
+							</tr>
+							<tr>
+								<th>
 									<span class="requiredField">*</span>${message("Member.email")}:
 								</th>
 								<td>
@@ -171,7 +179,7 @@ $().ready(function() {
 									&nbsp;
 								</th>
 								<td>
-									<input type="submit" class="button" value="${message("member.common.submit")}" />
+									<!-- <input type="submit" class="button" value="${message("member.common.submit")}" /> -->
 									<input type="button" class="button" value="${message("member.common.back")}" onclick="history.back(); return false;" />
 								</td>
 							</tr>
