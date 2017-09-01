@@ -79,7 +79,7 @@ function changeLanguage(){
 								[#break /]
 							[/@shiro.hasPermission]
 						[/#list]
-						[#list ["admin:order", "admin:orderPayment", "admin:orderRefunds", "admin:orderShipping", "admin:orderReturns", "admin:deliveryCenter", "admin:deliveryTemplate"] as permission]
+						[#list ["admin:order", "admin:orderPayment", "admin:orderRefunds", "admin:orderShipping", "admin:orderReturns", "admin:deliveryCenter", "admin:deliveryTemplate", "admin:orderAdd"] as permission]
 							[@shiro.hasPermission name = permission]
 								<li>
 									<a href="#order">${message("admin.index.orderNav")}</a>
@@ -248,6 +248,11 @@ function changeLanguage(){
 					[@shiro.hasPermission name="admin:deliveryTemplate"]
 						<dd>
 							<a href="delivery_template/list" target="iframe">${message("admin.index.deliveryTemplate")}</a>
+						</dd>
+					[/@shiro.hasPermission]
+					[@shiro.hasPermission name="admin:orderAdd"]
+						<dd>
+							<a href="order/add" target="iframe">${message("admin.index.orderAdd")}</a>
 						</dd>
 					[/@shiro.hasPermission]
 				</dl>

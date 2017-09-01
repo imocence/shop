@@ -148,6 +148,12 @@ $().ready(function() {
 						<label>
 							<input type="checkbox" name="permissions" value="admin:deliveryTemplate"[#if role.permissions?seq_contains("admin:deliveryTemplate")] checked="checked"[/#if] />${message("admin.role.deliveryTemplate")}
 						</label>
+						<label>
+							<input type="checkbox" name="permissions" value="admin:orderAdd"[#if role.permissions?seq_contains("admin:orderAdd")] checked="checked"[/#if] />${message("admin.role.orderAdd")}
+						</label>
+						<label>
+							<input type="checkbox" name="permissions" value="admin:orderAdd"[#if role.permissions?seq_contains("admin:orderReview")] checked="checked"[/#if] />${message("admin.role.orderReview")}
+						</label>
 					</span>
 				</td>
 			</tr>

@@ -133,7 +133,14 @@ public interface ProductDao extends BaseDao<Product, Long> {
 	 */
 	Page<Product> findPage(Product.Type type, ProductCategory productCategory, Country country, Brand brand, Promotion promotion, ProductTag productTag, Map<Attribute, String> attributeValueMap, BigDecimal startPrice, BigDecimal endPrice, Boolean isMarketable, Boolean isList, Boolean isTop, Boolean isOutOfStock,
 			Boolean isStockAlert, Boolean hasPromotion, Product.OrderType orderType, Pageable pageable);
-
+	
+	/**
+	 * 获取国家下所有的商品
+	 * @param country
+	 * @return
+	 */
+	List<Product> findList(Country country);
+	
 	/**
 	 * 查找商品分页
 	 * 

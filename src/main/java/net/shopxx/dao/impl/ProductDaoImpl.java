@@ -299,6 +299,30 @@ public class ProductDaoImpl extends BaseDaoImpl<Product, Long> implements Produc
 		}
 		return super.findPage(criteriaQuery, pageable);
 	}
+	
+	/**
+	 * 获取国家下所有的商品
+	 * 根据分类排序
+	 * @param country
+	 * @return
+	 */
+	public List<Product> findList(Country country){
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
+		Root<Product> root = criteriaQuery.from(Product.class);
+		criteriaQuery.select(root);
+		Predicate restrictions = criteriaBuilder.conjunction();
+		if (country != null) {
+            Subquery<ProductCategory> subquery = criteriaQuery.subquery(ProductCategory.class);
+            Root<ProductCategory> subqueryRoot = subquery.from(ProductCategory.class);
+            subquery.select(subqueryRoot);
+            subquery.where(criteriaBuilder.equal(subqueryRoot.get("country"), country));
+            restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.in(root.get("productCategory")).value(subquery));
+        }
+		criteriaQuery.where(restrictions);
+		criteriaQuery.orderBy(criteriaBuilder.asc(root.get("productCategory")), criteriaBuilder.desc(root.get("createdDate")));
+		return super.findList(criteriaQuery);
+	}
 
 	public Page<Product> findPage(Product.RankingType rankingType, Pageable pageable) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

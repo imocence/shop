@@ -45,6 +45,8 @@
 				<entry key="/admin/brand/**" value="adminAuthc,perms[admin:brand]" />
 				<entry key="/admin/product_notify/**" value="adminAuthc,perms[admin:productNotify]" />
 
+				<entry key="/admin/order/save" value="adminAuthc,perms[admin:orderAdd]" />
+				<entry key="/admin/order/add" value="adminAuthc,perms[admin:orderAdd]" />
 				<entry key="/admin/order/**" value="adminAuthc,perms[admin:order]" />
 				<entry key="/admin/print/**" value="adminAuthc,perms[admin:print]" />
 				<entry key="/admin/order_payment/**" value="adminAuthc,perms[admin:orderPayment]" />

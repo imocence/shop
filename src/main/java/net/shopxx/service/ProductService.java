@@ -139,6 +139,13 @@ public interface ProductService extends BaseService<Product, Long> {
 			Boolean hasPromotion, Product.OrderType orderType, Integer count, List<Filter> filters, List<Order> orders, boolean useCache);
 
 	/**
+	 * 获取国家下所有的商品
+	 * @param country
+	 * @return
+	 */
+	List<Product> findList(Country country);
+	
+	/**
 	 * 查找商品分页
 	 * 
 	 * @param type
