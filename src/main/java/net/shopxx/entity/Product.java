@@ -234,21 +234,13 @@ public class Product extends BaseEntity<Long> {
 	/**
 	 * 券
 	 */
-	@JsonView(BaseView.class)
-	@Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
-	@NumericField
-	@FieldBridge(impl = BigDecimalNumericFieldBridge.class)
-	@Column(nullable = false, precision = 21, scale = 6)
+	@Column(precision = 21, scale = 6)
 	private BigDecimal coupon;
 	
 	   /**
      * 销售价
      */
-    @JsonView(BaseView.class)
-    @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
-    @NumericField
-    @FieldBridge(impl = BigDecimalNumericFieldBridge.class)
-    @Column(nullable = false, precision = 21, scale = 6)
+	@Column(precision = 21, scale = 6)
     private BigDecimal price;
 
 	/**
@@ -644,6 +636,12 @@ public class Product extends BaseEntity<Long> {
 	 */
 	@OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private Set<Sku> skus = new HashSet<>();
+	
+	/**
+     * SKU
+     */
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<ProductGrade> productGrades = new HashSet<>();
 
 	/**
 	 * 获取编号
@@ -2215,6 +2213,14 @@ public class Product extends BaseEntity<Long> {
 
     public void setCoupon(BigDecimal coupon) {
         this.coupon = coupon;
+    }
+
+    public Set<ProductGrade> getProductGrades() {
+        return productGrades;
+    }
+
+    public void setProductGrades(Set<ProductGrade> productGrades) {
+        this.productGrades = productGrades;
     }
 	
 	

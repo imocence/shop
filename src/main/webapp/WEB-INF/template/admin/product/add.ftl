@@ -30,6 +30,7 @@
 <script type="text/javascript">
 $().ready(function() {
 
+
 	var $inputForm = $("#inputForm");
 	var $isDefault = $("#isDefault");
 	var $productCategoryId = $("#productCategoryId");
@@ -614,14 +615,6 @@ $().ready(function() {
 		parameterGroup: {
 			required: true
 		},
-		price: {
-			required: true,
-			min: 0,
-			decimal: {
-				integer: 12,
-				fraction: ${setting.priceScale}
-			}
-		},
 		cost: {
 			min: 0,
 			decimal: {
@@ -661,7 +654,7 @@ $().ready(function() {
 				}
 			},
 			name: "required",
-			"sku.price": {
+			"gradePrices": {
 				required: true,
 				min: 0,
 				decimal: {
@@ -669,8 +662,7 @@ $().ready(function() {
 					fraction: ${setting.priceScale}
 				}
 			},
-			name: "required",
-			"sku.coupon": {
+			"coupons": {
 				required: true,
 				min: 0,
 				decimal: {
@@ -726,14 +718,40 @@ $().ready(function() {
 	$countrySelect.change(function(){ 
         $countryId.val($(this).children('option:selected').val());
         $("#name").val("test");
-        $("#price").val(20);
-        $("#coupon").val(20);
         $("#stock").val(20);
         $inputForm.attr('method','get');      
         $inputForm.attr('action','listByCountry');      
        	
         $inputForm.submit();
 	}) 
+	
+	if ($.validator) {
+           $.validator.prototype.elements = function () {
+               var validator = this,
+                 rulesCache = {};
+ 
+               // select all valid inputs inside the form (no submit or reset buttons)
+               return $(this.currentForm)
+               .find("input, select, textarea")
+               .not(":submit, :reset, :image, [disabled]")
+               .not(this.settings.ignore)
+               .filter(function () {
+                   if (!this.name && validator.settings.debug && window.console) {
+                       console.error("%o has no name assigned", this);
+                   }
+                   //注释这行代码
+                   // select only the first element for each name, and only those with rules specified
+                   //if ( this.name in rulesCache || !validator.objectLength($(this).rules()) ) {
+                   //    return false;
+                   //}
+                   rulesCache[this.name] = true;
+                   return true;
+               });
+           }
+       }
+       
+        $("#price").val(0);
+        $("#coupon").val(0);
 
 });
 </script>
@@ -769,6 +787,9 @@ $().ready(function() {
 				<input type="button" value="${message("admin.product.attribute")}" />
 			</li>
 			<li >
+				<input type="button" value="${message("admin.grade.level")}" />
+			</li>
+			<li class="hidden">
 				<input type="button" value="${message("admin.product.specification")}" />
 			</li>
 		</ul>
@@ -828,7 +849,7 @@ $().ready(function() {
 					<input type="text" name="caption" class="text" maxlength="200" />
 				</td>
 			</tr>
-			<tr>
+			<tr class="hidden">
 				<th>
 					<span class="requiredField">*</span>${message("Sku.price")}:
 				</th>
@@ -836,7 +857,7 @@ $().ready(function() {
 					<input type="text" id="price" name="sku.price" class="text" maxlength="16" />
 				</td>
 			</tr>
-			<tr>
+			<tr class="hidden">
 				<th>
 					<span class="requiredField">*</span>${message("Sku.coupon")}:
 				</th>
@@ -1066,6 +1087,32 @@ $().ready(function() {
 			</tr>
 		</table>
 		<table id="attributeTable" class="input tabContent"></table>
+		<table id="gradeTable" class="input tabContent">
+			[#list grades as grade]
+				<tr>
+					<th>
+						${grade.name}
+						<input type="hidden" name="gradeIds"  value="${grade.id}"/>
+					</th>
+					<td>
+						<span>${message("Sku.price")}：<input type="text" name="gradePrices" id="gradePrices" class="text"/></span>
+						<span>${message("Sku.coupon")}：<input type="text" name="coupons" id="coupons" class="text"/></span>
+						<span>${message("admin.grade.buy")}：
+							<select name="buys">
+							  <option value ="1">${message("admin.common.true")}</option>
+							  <option value ="0">${message("admin.common.false")}</option>
+							</select>
+						</span>
+						<span>${message("admin.grade.see")}：
+							<select name="sees">
+							  <option value ="1">${message("admin.common.true")}</option>
+							  <option value ="0">${message("admin.common.false")}</option>
+							</select>
+						</span>
+					</td>
+				</tr>
+			[/#list]
+		</table>
 		<div class="tabContent">
 			<table id="specificationTable" class="specificationTable input">
 				<tr>

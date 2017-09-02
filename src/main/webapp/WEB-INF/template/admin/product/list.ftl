@@ -303,12 +303,12 @@ $().ready(function() {
 				<th>
 					<a href="javascript:;" class="sort" name="productCategory">${message("Product.productCategory")}</a>
 				</th>
-				<th>
+				<!-- th>
 					<span>${message("Product.price")}</span>
 				</th>
 				<th>
 					<span>${message("Product.coupon")}</span>
-				</th>
+				</th>-->
 				<th>
 					<a href="javascript:;" class="sort" name="isMarketable">${message("Product.isMarketable")}</a>
 				</th>
@@ -346,12 +346,12 @@ $().ready(function() {
 					<td>
 						${product.productCategory.name}
 					</td>
-					<td>
+					<!--td>
 						${currency(product.price, true)}
 					</td>
 					<td>
 						${product.coupon}
-					</td>
+					</td -->
 					<td>
 						<span class="${product.isMarketable?string("true", "false")}Icon">&nbsp;</span>
 					</td>
