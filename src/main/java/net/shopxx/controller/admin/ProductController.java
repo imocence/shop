@@ -45,9 +45,9 @@ import net.shopxx.service.AttributeService;
 import net.shopxx.service.BrandService;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.GradeService;
+import net.shopxx.service.MemberRankService;
 import net.shopxx.service.ParameterValueService;
 import net.shopxx.service.ProductCategoryService;
-import net.shopxx.service.ProductGradeService;
 import net.shopxx.service.ProductImageService;
 import net.shopxx.service.ProductService;
 import net.shopxx.service.ProductTagService;
@@ -92,11 +92,9 @@ public class ProductController extends BaseController {
 	@Inject
 	private CountryService countryService;
 	
-//	@Inject
-    private ProductGradeService productGradeService;
-	
 	@Inject
-	private GradeService gradeService;
+    private MemberRankService memberRankService;
+	
 
 	/**
 	 * 检查编号是否存在
@@ -245,7 +243,7 @@ public class ProductController extends BaseController {
 			Set<ProductGrade> productGrades = new HashSet<ProductGrade>(); 
 			for (int i = 0; i < gradeIds.length; i++) {
 			    ProductGrade productGrade =  new ProductGrade();
-			    productGrade.setGrade( gradeService.find(gradeIds[i]));
+			    productGrade.setGrade(memberRankService.find(gradeIds[i]));
 			    productGrade.setBuy(buys[i]);
 			    productGrade.setSee(sees[i]);
 			    productGrade.setProduct(product);

@@ -9,10 +9,13 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.validation.constraints.Digits;
@@ -71,6 +74,15 @@ public class MemberRank extends BaseEntity<Long> {
 	@NotNull
 	@Column(nullable = false)
 	private Boolean isSpecial;
+	
+	
+	 /**
+     * 国家
+     */
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @JoinColumn(nullable = true)
+    private Country           country;
+    
 
 	/**
 	 * 会员

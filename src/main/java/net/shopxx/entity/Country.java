@@ -67,8 +67,7 @@ public class Country extends OrderedEntity<Long> {
      * 等级
      */
     @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
-    @OrderBy("order asc")
-    private Set<Grade> grades = new HashSet<>();
+    private Set<MemberRank> grades = new HashSet<>();
     
     /**
      * 下级地品牌
@@ -117,11 +116,11 @@ public class Country extends OrderedEntity<Long> {
         this.brands = brands;
     }
 
-    public Set<Grade> getGrades() {
+    public Set<MemberRank> getGrades() {
         return grades;
     }
 
-    public void setGrades(Set<Grade> grades) {
+    public void setGrades(Set<MemberRank> grades) {
         this.grades = grades;
     }
 

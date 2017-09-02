@@ -42,7 +42,7 @@ public class ProductGrade extends BaseEntity<Long> {
      */
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(nullable = true)
-    private Grade           grade;
+    private MemberRank           grade;
     
     /**
      * 产品
@@ -86,11 +86,11 @@ public class ProductGrade extends BaseEntity<Long> {
     
 
 
-    public Grade getGrade() {
+    public MemberRank getGrade() {
         return grade;
     }
 
-    public void setGrade(Grade grade) {
+    public void setGrade(MemberRank grade) {
         this.grade = grade;
     }
 
