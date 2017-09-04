@@ -106,7 +106,12 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 			return findByMobile(value);
 		} else {
 			List<Member> memberList = getListMember("'"+value+"'");
-			return memberList.get(0);
+			if(memberList.size() > 0){
+				return memberList.get(0);
+			}else{
+				return null;
+			}
+			
 		}
 	}
 
@@ -279,12 +284,16 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getFormatNowTime("yyyyMMdd")+urlSignature));
 		//登录
 		String userCodeMap = WebUtils.postJson(urlPath+"/verifyLoginToShop.html",parameterMap);
-		JSONObject jsStr = JSONObject.fromObject(userCodeMap); 
-		String errKey = jsStr.getString("errCode");
-		if(!"0000".equals(errKey)){
-			return false;
-		}
+		try {
+			JSONObject jsStr = JSONObject.fromObject(userCodeMap);
+			String errKey = jsStr.getString("errCode");
+			if(!"0000".equals(errKey)){
+				return false;
+			}
 			return true;
+		} catch (Exception e) {
+			return false;
+		} 
 	}
 	/**
 	 * 获取多会员信息接口
@@ -297,7 +306,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	public List<Member> getListMember(String userCodes){		
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getFormatNowTime("yyyyMMdd")+urlSignature));
-		parameterMap.put("userCode", userCodes);
+		parameterMap.put("userCode", StringUtils.upperCase(userCodes));
 		System.out.println(parameterMap);
 		
 		String userCodeMap = WebUtils.postJson(urlPath+"/getMemberInfoToShop.html",parameterMap);

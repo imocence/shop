@@ -46,7 +46,7 @@ $().ready(function() {
 						${message("common.country")}<span class="arrow">&nbsp;</span>
 					</a>
 					<ul>
-						<li[#if country.name == null] class="current"[/#if] val="">${message("common.country.all")}</li>
+						<li[#if country.name == null] class="current" [/#if] val="">${message("common.country.all")}</li>
 						[@country_list]
 							[#list countrys as country]
 								<li[#if country.name == countryName] class="current"[/#if] val="${country.name}">${message("${country.nameLocal}")}</li>

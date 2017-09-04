@@ -23,42 +23,57 @@
 	<script src="${base}/resources/mobile/member/js/underscore.js"></script>
 	<script src="${base}/resources/mobile/member/js/moment.js"></script>
 	<script src="${base}/resources/mobile/member/js/common.js"></script>
-	<script id="depositLogTemplate" type="text/template">
+	<script id="fiBankbookJournalTemplate" type="text/template">
 		<%
 			function depositText(type) {
 				switch(type) {
-					case "recharge":
-						return "${message("DepositLog.Type.recharge")}";
-					case "adjustment":
-						return "${message("DepositLog.Type.adjustment")}";
-					case "payment":
-						return "${message("DepositLog.Type.orderPayment")}";
-					case "refunds":
-						return "${message("DepositLog.Type.orderRefunds")}";
+					case "balance":
+						return "${message("DepositLog.Type.balance")}";
+					case "coupon":
+						return "${message("DepositLog.Type.coupon")}";
 				}
 			}
 		%>
-		<%_.each(depositLogs, function(depositLog, i) {%>
+		<!-- <%_.each(fiBankbookJournals[0], alert)%> -->
+		<%_.each(fiBankbookJournals, function(fiBankbookJournal, i) {%>
 			<div class="list-group list-group-flat">
 				<div class="list-group-item small">
 					${message("member.common.createdDate")}:
-					<span title="<%-moment(new Date(depositLog.createdDate)).format('YYYY-MM-DD HH:mm:ss')%>"><%-moment(new Date(depositLog.createdDate)).format('YYYY-MM-DD')%></span>
+					<span class="pull-right" title="<%-moment(new Date(fiBankbookJournal.createdDate)).format('YYYY-MM-DD HH:mm:ss')%>"><%-moment(new Date(fiBankbookJournal.createdDate)).format('YYYY-MM-DD')%></span>
 				</div>
 				<div class="list-group-item small">
 					${message("DepositLog.type")}
-					<span class="pull-right"><%-depositText(depositLog.type)%></span>
+					<span class="pull-right"><%-depositText(fiBankbookJournal.type)%></span>
 				</div>
 				<div class="list-group-item small">
 					${message("DepositLog.credit")}
-					<span class="pull-right"><%-currency(depositLog.credit, true)%></span>
+					<span class="pull-right">
+						<%if (fiBankbookJournal.dealType == "deposit") {%>
+							<%-currency(fiBankbookJournal.money,true)%>
+						<%} else {%>
+							-
+						<%}%>	
+					</span>
 				</div>
 				<div class="list-group-item small">
 					${message("DepositLog.debit")}
-					<span class="pull-right"><%-currency(depositLog.debit, true)%></span>
+					<span class="pull-right">
+						<%if (fiBankbookJournal.dealType == "takeout") {%>
+							<%-currency(fiBankbookJournal.money,true)%>
+						<%} else {%>
+							-
+						<%}%>						
+					</span>
 				</div>
 				<div class="list-group-item small">
 					${message("DepositLog.balance")}
-					<em class="pull-right orange"><%-currency(depositLog.balance, true)%></em>
+					<em class="pull-right orange"><%-currency(fiBankbookJournal.balance, true)%></em>
+				</div>
+				<div class="list-group-item small">
+					${message("DepositLog.memo")}
+					<span class="pull-right">
+						<%-fiBankbookJournal.notes%>
+					</span>
 				</div>
 			</div>
 		<%})%>
@@ -66,18 +81,18 @@
 	<script type="text/javascript">
 	$().ready(function() {
 		
-		var $depositLogItems = $("#depositLogItems");
-		var depositLogTemplate = _.template($("#depositLogTemplate").html());
+		var $fiBankbookJournalItems = $("#fiBankbookJournalItems");
+		var fiBankbookJournalTemplate = _.template($("#fiBankbookJournalTemplate").html());
 		
 		// 无限滚动加载
-		$depositLogItems.infiniteScroll({
+		$fiBankbookJournalItems.infiniteScroll({
 			url: function(pageNumber) {
 				return "${base}/member/deposit/log?pageNumber=" + pageNumber;
 			},
 			pageSize: 10,
 			template: function(pageNumber, data) {
-				return depositLogTemplate({
-					depositLogs: data
+				return fiBankbookJournalTemplate({
+					fiBankbookJournals: data
 				});
 			}
 		});
@@ -94,7 +109,7 @@
 	</header>
 	<main>
 		<div class="container-fluid">
-			<div id="depositLogItems"></div>
+			<div id="fiBankbookJournalItems"></div>
 		</div>
 	</main>
 </body>
