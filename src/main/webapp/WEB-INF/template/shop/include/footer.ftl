@@ -3,7 +3,7 @@
 		<dl>
 			<dt class="icon1">新手指南</dt>
 			<dd>
-				<a href="#">购物流程</a>
+				<a href="${base}/article/detail/1_1">购物流程</a>
 			</dd>
 			<dd>
 				<a href="#">会员注册</a>
