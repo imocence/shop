@@ -67,6 +67,7 @@ public class FiBankbookJournalServiceImpl extends BaseServiceImpl<FiBankbookJour
 	 *            分页信息
 	 * @return 交易记录分页
 	 */
+	@Transactional(readOnly = true)
 	public Page<FiBankbookJournal> findPageByMemberId(Member currentUser, Pageable pageNumber){
 		return fiBankbookJournalDao.findPageByMemberId(currentUser, pageNumber);
 	}
@@ -180,7 +181,7 @@ public class FiBankbookJournalServiceImpl extends BaseServiceImpl<FiBankbookJour
 		fiBankbookJournal.setMoney(money);
 		fiBankbookJournal.setMoneyType(eMoneyType);
 		fiBankbookJournal.setNotes(notes);
-		fiBankbookJournal.setRemark(null);
+		fiBankbookJournal.setRemark(notes);
 		fiBankbookJournal.setType(eType);
 		fiBankbookJournal.setUniqueCode(uniqueCode);
 		save(fiBankbookJournal);

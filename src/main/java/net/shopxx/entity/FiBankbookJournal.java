@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import net.shopxx.entity.BaseEntity.BaseView;
+
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.DateBridge;
 import org.hibernate.search.annotations.Field;
@@ -30,9 +32,11 @@ import com.fasterxml.jackson.annotation.JsonView;
 @Entity
 @Table(name="fi_bankbook_journal")
 public class FiBankbookJournal extends BaseEntity<Long> {
-	
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * 处理类型
 	 * @author gaoxiang
@@ -116,12 +120,14 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	/**
 	 * 费用
 	 */
+	@JsonView(BaseView.class)
 	@Column(precision = 21, scale = 6)
 	private BigDecimal money;
 	
 	/**
 	 * 日志
 	 */
+	@JsonView(BaseView.class)
 	@Length(max = 255)
 	@Column
 	private String notes; 
@@ -129,12 +135,14 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	/**
 	 * 余额
 	 */
+	@JsonView(BaseView.class)
 	@Column(nullable = false, precision = 21, scale = 6)
 	private BigDecimal balance;
 	
 	/**
 	 * 备注
 	 */
+	@JsonView(BaseView.class)
 	@Length(max = 255)
 	@Column
 	private String remark; 

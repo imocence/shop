@@ -62,7 +62,7 @@
 									[/#if]
 								</td>
 								<td>
-									${currency(fiBankbookJournal.balance)}
+									${currency(fiBankbookJournal.balance,true)}
 								</td>
 								<td>
 									${fiBankbookJournal.notes}
