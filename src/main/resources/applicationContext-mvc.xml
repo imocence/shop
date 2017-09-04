@@ -85,6 +85,7 @@
 		<mvc:interceptor>
 			<mvc:mapping path="/**" />
 			<mvc:exclude-mapping path="/payment/**" />
+				<mvc:exclude-mapping path="/common/language/**" />
 			<mvc:exclude-mapping path="/admin/member/setMember" />
 			<mvc:exclude-mapping path="/admin/store/setStore" />
 			<bean class="net.shopxx.security.CsrfInterceptor" />
@@ -132,6 +133,10 @@
 		<mvc:interceptor>
 			<mvc:mapping path="/admin/**" />
 			<bean class="net.shopxx.audit.AuditLogInterceptor" />
+		</mvc:interceptor>
+			<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="net.shopxx.interceptor.LanguageInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>
 
