@@ -46,7 +46,6 @@ public class LoginController extends BaseController {
 	private String memberIndex;
 	@Value("${member_login_view}")
 	private String memberLoginView;
-
 	@Inject
 	private PluginService pluginService;
 	@Inject
@@ -83,17 +82,22 @@ public class LoginController extends BaseController {
 		String userCode = request.getParameter("userCode");
 		if(userCode != null){
 			String signature = request.getParameter("signature");
-			String appointtrue = DigestUtils.md5Hex(userCode+TimeUtil.getFormatNowTime("yyyyMMdd")+urlSignature);
+			String timestamp = request.getParameter("timestamp").toString();
+			System.out.println();
+			String appointtrue = DigestUtils.md5Hex(timestamp+urlSignature);
 			System.out.println("MD5:"+appointtrue);
-			System.out.println("当前时间戳："+System.currentTimeMillis() / 1000);
+			System.out.println("接口传过来的时间戳："+timestamp+"当前时间戳"+System.currentTimeMillis() / 1000);
 			//时间差
-			Long timeT = TimeUtil.validateTimeStamp(Long.parseLong(request.getParameter("tt")));
+			Long timeT = TimeUtil.validateTimeStamp(Long.parseLong(timestamp));
+			System.out.println(timeT);
 			if(timeT < 3 && appointtrue.equals(signature)){
 				try {
 					userService.login(new UserAuthenticationToken(Member.class,userCode , "a123456", false, request.getRemoteAddr()));					
 				} catch (Exception e) {
 					System.out.println("数据库没有"+userCode+"这个会员编号");
 				}
+			}else if(!(timeT < 3) && appointtrue.equals(signature)){
+				userService.logout();
 			}
 			return "redirect:/";
 		}else{

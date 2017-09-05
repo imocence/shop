@@ -1,5 +1,8 @@
 package net.shopxx.controller.admin;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * Controller - 区代
  * 
@@ -39,45 +44,68 @@ public class NapaStoresController extends BaseController{
 	MemberRankService memberRankService;
 	@Value("${url.signature}")
 	private String urlSignature;
-	private static String FORATNOWTIME = TimeUtil.getFormatNowTime("yyyyMMdd");
 	/**
 	 * 跟新区代信息
 	 */
-	@PostMapping("/setStore")
-	public @ResponseBody JSONObject setStore(NapaStores napaStores,
-										String store_id,//区代编码
-										String userCode,
-										String type,//类型id
-										String store_mobile,//电话
-										String store_address,//电话
-										String signature,//约定验证码
-										HttpServletRequest request, RedirectAttributes redirectAttributes){
+	@PostMapping(value="/setStore",produces = {"application/json;charset=utf-8"})
+	public @ResponseBody JSONObject setStore(NapaStores napaStores,HttpServletRequest request, RedirectAttributes redirectAttributes){
 		Map<String,Object> map = new HashMap<String, Object>();
-		String errCode = "\"0000\"";	
-		String signature0 = DigestUtils.md5Hex(FORATNOWTIME+urlSignature);
+		String errCode = "\"0000\"";
+		String state = "\"success\"";
+
+		StringBuilder sb = new StringBuilder();
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+	        String line = null;
+	        while((line = br.readLine())!=null){
+	            sb.append(line);
+	        }
+		} catch (Exception e) {
+			 System.out.println("获取post参数请求出现异常！" + e);
+	         e.printStackTrace();
+		}finally{
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		Map map1 = (Map) JSON.parse(sb.toString());
+		String store_id = map1.get("storeId").toString();//区代编码
+		String userCode = map1.get("userCode").toString();
+		String type = map1.get("type").toString();//类型id
+		String signature = map1.get("signature").toString();//约定验证码
+		String timestamp = map1.get("timestamp").toString();//时间戳
+		
+		
+		String signature0 = DigestUtils.md5Hex(timestamp+urlSignature);
 		if (!signature0.equals(signature)) {			
-			errCode = "1001";
+			errCode = "\"1001\"";
+			state = "\"验签错误\"";
 		}else{
 			//区代
-			Member member = memberService.findByUsercode(userCode);	
-			napaStores = member.getNapaStores();
-			if(Integer.parseInt(type) == 0){
-				napaStores.setNapaCode(null);
-			}else{
-				napaStores.setNapaCode(store_id);
-			}
-			napaStores.setMobile(store_mobile);
-			napaStores.setNapaAddress(store_address);
-			napaStores.setType(Integer.parseInt(type));
 			try {
+				Member member = memberService.findByUsercode(userCode);	
+				napaStores = member.getNapaStores();
+				if(Integer.parseInt(type) == 0){
+					napaStores.setNapaCode(null);
+				}else{
+					napaStores.setNapaCode(store_id);
+				}
+				napaStores.setMobile(null);
+				napaStores.setNapaAddress(null);
+				napaStores.setType(Integer.parseInt(type));
 				napaStoresService.update(napaStores);
 				member.setNapaStores(napaStores);
 				memberService.update(member);
 			} catch (Exception e) {
-				errCode = "2001";
+				errCode = "\"2001\"";
+				state = "\"异常:\"";
 			}			
 		}
 		map.put("errCode", errCode);
+		map.put("state", state);
 		JSONObject jsonObject = JSONObject.fromObject(map.toString());
 		return jsonObject;
 	}

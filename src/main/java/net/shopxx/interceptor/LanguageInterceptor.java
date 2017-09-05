@@ -14,7 +14,6 @@ import net.shopxx.util.WebUtils;
 
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 /**
  * Interceptor - 语言拦截器

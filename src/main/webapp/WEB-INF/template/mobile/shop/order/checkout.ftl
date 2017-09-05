@@ -455,7 +455,8 @@
 				<input name="quantity" type="hidden" value="${quantity}">
 			[/#if]
 			[#if order.isDelivery]
-				<input id="receiverId" name="receiverId" type="hidden"[#if defaultReceiver??] value="${defaultReceiver.id}"[/#if]>
+				<!-- <input id="receiverId" name="receiverId" type="hidden"[#if defaultReceiver??] value="${defaultReceiver.id}"[/#if]> -->
+				<input id="napaStoresId" name="napaStoresId" type="hidden"[#if currentUser.napaStores??] value="${currentUser.napaStores.id}"[/#if]>
 			[/#if]
 			<input id="paymentMethodId" name="paymentMethodId" type="hidden"[#if defaultPaymentMethod??] value="${defaultPaymentMethod.id}"[/#if]>
 			<input id="shippingMethodId" name="shippingMethodId" type="hidden"[#if defaultShippingMethod??] value="${defaultShippingMethod.id}"[/#if]>
@@ -474,13 +475,24 @@
 								<div class="media-left media-middle">
 									<span class="glyphicon glyphicon-map-marker"></span>
 								</div>
-								<div class="media-body media-middle">
+								<!-- <div class="media-body media-middle">
 									[#if defaultReceiver??]
 										<h4 class="media-heading">
 											${defaultReceiver.consignee}
 											<span class="pull-right">${defaultReceiver.phone}</span>
 										</h4>
 										<span class="small">${defaultReceiver.areaName}${defaultReceiver.address}</span>
+									[#else]
+										<strong class="red">${message("shop.order.addReceiver")}</strong>
+									[/#if]
+								</div> -->
+								<div class="media-body media-middle">
+									[#if napaStores.napaAddress?has_content]
+										<h4 class="media-heading">
+											${currentUser.name}
+											<span class="pull-right">${napaStores.mobile}</span>
+										</h4>
+										<span class="small">${napaStores.napaAddress}</span>
 									[#else]
 										<strong class="red">${message("shop.order.addReceiver")}</strong>
 									[/#if]
@@ -599,10 +611,10 @@
 					<div class="list-group list-group-flat">
 						[#if order.type == "general"]
 							[#if order.rewardPoint > 0]
-								<div class="list-group-item small">
+								<!-- <div class="list-group-item small">
 									${message("Order.rewardPoint")}
 									<strong class="pull-right red">${order.rewardPoint}</strong>
-								</div>
+								</div> -->
 							[/#if]
 							<div class="list-group-item small">
 								${message("Order.promotionDiscount")}

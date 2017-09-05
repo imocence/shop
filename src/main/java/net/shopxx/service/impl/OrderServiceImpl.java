@@ -47,6 +47,7 @@ import net.shopxx.entity.CouponCode;
 import net.shopxx.entity.DepositLog;
 import net.shopxx.entity.Invoice;
 import net.shopxx.entity.Member;
+import net.shopxx.entity.NapaStores;
 import net.shopxx.entity.Order;
 import net.shopxx.entity.OrderItem;
 import net.shopxx.entity.OrderLog;
@@ -389,24 +390,20 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			parameterMap.put("status", "已拒绝");//已拒绝
 		}
 
-		parameterMap.put("price", calculateAmount(order));
+		parameterMap.put("price", calculateAmount(order));//总金额+运费
 		parameterMap.put("jifen", calculateAmount(order));//券金额
 		parameterMap.put("payTime", TimeUtil.getNowTime());//支付时间
-		parameterMap.put("realname", order.getConsignee());//收货人
-		parameterMap.put("mobile", order.getPhone());//收货人电话
-		parameterMap.put("address", order.getAreaName()+order.getAddress());//收货人地址
-		Area area1 = order.getArea();
-		if(area1.getGrade() == 0){
-			parameterMap.put("province", area1.getName());//收货人省
-		}else{
-			List<Area> area = areaService.findParents(order.getArea(), true, null);
-			parameterMap.put("province", area.get(0).getName());//收货人省
-		}
 		
+		parameterMap.put("realname", "");//收货人
+		parameterMap.put("mobile", "");//收货人电话
+		parameterMap.put("address", "");//收货人地址
+		parameterMap.put("province", "");//收货人省
 		parameterMap.put("city", "");//收货人市
 		parameterMap.put("area", "");//收货人区
+		
 		parameterMap.put("expresscom", "");//快递公司
 		parameterMap.put("expresssn", "");//快递单号
+		parameterMap.put("shipFee", "");//运费
 		parameterMap.put("expressTime", "");//发货时间
 		parameterMap.put("WarehouseName", "");//发货仓库
 
@@ -541,17 +538,20 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		return order;
 	}
 
-	public Order create(Order.Type type, Cart cart, Receiver receiver, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, String memo) {
+	public Order create(Order.Type type, Cart cart, Receiver receiver,NapaStores napaStores, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, String memo) {
 		Assert.notNull(type);
 		Assert.notNull(cart);
+		Assert.notNull(napaStores);
 		Assert.notNull(cart.getMember());
 		Assert.state(!cart.isEmpty());
 		if (cart.getIsDelivery()) {
-			Assert.notNull(receiver);
+			//收货地址
+			//Assert.notNull(receiver);
 			Assert.notNull(shippingMethod);
 			Assert.state(shippingMethod.isSupported(paymentMethod));
 		} else {
-			Assert.isNull(receiver);
+			//收货地址
+			//Assert.isNull(receiver);
 			Assert.isNull(shippingMethod);
 		}
 
@@ -588,12 +588,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		order.setShippedQuantity(0);
 		order.setReturnedQuantity(0);
 		if (cart.getIsDelivery()) {
-			order.setConsignee(receiver.getConsignee());
-			order.setAreaName(receiver.getAreaName());
-			order.setAddress(receiver.getAddress());
-			order.setZipCode(receiver.getZipCode());
-			order.setPhone(receiver.getPhone());
-			order.setArea(receiver.getArea());
+			order.setConsignee(member.getName());
+			order.setAreaName(napaStores.getNapaAddress());
+			order.setAddress(napaStores.getNapaAddress());
+			order.setZipCode(null);
+			order.setPhone(napaStores.getMobile());
+			order.setArea(null);
 		}
 		order.setMemo(memo);
 		order.setIsUseCouponCode(false);

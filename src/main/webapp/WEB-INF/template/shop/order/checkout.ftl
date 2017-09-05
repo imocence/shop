@@ -387,7 +387,7 @@ $().ready(function() {
 					<form id="receiverForm" action="save_receiver" method="post">
 						<div id="receiver" class="receiver">
 							<div class="title">${message("shop.order.receiver")}</div>
-							<ul class="clearfix[#if !currentUser.receivers?has_content] hidden[/#if]">
+							<!-- <ul class="clearfix[#if !currentUser.receivers?has_content] hidden[/#if]">
 								[#list currentUser.receivers as receiver]
 									<li[#if receiver == defaultReceiver] class="selected"[/#if] receiverId="${receiver.id}">
 										<span>
@@ -398,15 +398,29 @@ $().ready(function() {
 										<span>${receiver.phone}</span>
 									</li>
 								[/#list]
+							</ul> -->
+							[#if currentUser.napaStores.napaAddress?has_content]
+							<ul class="clearfix">
+								<li class="selected" receiverId="${currentUser.napaStores.id}">
+									<span>
+										<strong>${currentUser.name}</strong>
+										${message("shop.order.receive")}
+									</span>
+									<span>${currentUser.napaStores.napaAddress}</span>
+									<span>${currentUser.napaStores.mobile}</span>
+								</li>
 							</ul>
-							<div>
+							[#else]
+								${message("shop.order.receiverRequired")}
+							[/#if]
+							<!-- <div>
 								[#if currentUser.receivers?size > 5]
 									<a href="javascript:;" id="otherReceiverButton" class="button">${message("shop.order.otherReceiver")}</a>
 								[/#if]
 								<a href="javascript:;" id="newReceiverButton" class="button[#if currentUser.receivers?size > 5] hidden[/#if]">${message("shop.order.newReceiver")}</a>
-							</div>
+							</div> -->
 						</div>
-						<div id="newReceiver" class="newReceiver[#if currentUser.receivers?has_content] hidden[/#if]">
+						<!-- <div id="newReceiver" class="newReceiver[#if currentUser.receivers?has_content] hidden[/#if]">
 							<table>
 								<tr>
 									<th width="100">
@@ -469,7 +483,7 @@ $().ready(function() {
 									</td>
 								</tr>
 							</table>
-						</div>
+						</div> -->
 					</form>
 				</div>
 			</div>
@@ -483,7 +497,8 @@ $().ready(function() {
 			<div class="row">
 				<div class="span12">
 					[#if order.isDelivery]
-						<input type="hidden" id="receiverId" name="receiverId"[#if defaultReceiver??] value="${defaultReceiver.id}"[/#if] />
+						<!-- <input type="hidden" id="receiverId" name="receiverId"[#if defaultReceiver??] value="${defaultReceiver.id}"[/#if] /> -->
+						<input type="hidden" id="napaStoresId" name="napaStoresId"[#if currentUser.napaStores??] value="${currentUser.napaStores.id}"[/#if] />
 					[/#if]
 					[#if order.type == "general"]
 						<input type="hidden" name="cartTag" value="${cartTag}" />
@@ -628,9 +643,9 @@ $().ready(function() {
 										${message("Order.tax")}: <em id="tax">${currency(order.tax, true)}</em>
 									</span>
 								[/#if]
-								<span>
+								<!-- <span>
 									${message("Order.rewardPoint")}: <em>${order.rewardPoint}</em>
-								</span>
+								</span> -->
 							[/#if]
 						</li>
 						[#if order.type == "general"]

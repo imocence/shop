@@ -15,6 +15,7 @@ import net.shopxx.entity.Cart;
 import net.shopxx.entity.CouponCode;
 import net.shopxx.entity.Invoice;
 import net.shopxx.entity.Member;
+import net.shopxx.entity.NapaStores;
 import net.shopxx.entity.Order;
 import net.shopxx.entity.OrderPayment;
 import net.shopxx.entity.OrderRefunds;
@@ -264,6 +265,7 @@ public interface OrderService extends BaseService<Order, Long> {
 	 *            购物车
 	 * @param receiver
 	 *            收货地址
+	 * @param napaStores 
 	 * @param paymentMethod
 	 *            支付方式
 	 * @param shippingMethod
@@ -278,7 +280,7 @@ public interface OrderService extends BaseService<Order, Long> {
 	 *            附言
 	 * @return 订单
 	 */
-	Order create(Order.Type type, Cart cart, Receiver receiver, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, String memo);
+	Order create(Order.Type type, Cart cart, Receiver receiver, NapaStores napaStores, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, String memo);
 
 	/**
 	 * 订单修改

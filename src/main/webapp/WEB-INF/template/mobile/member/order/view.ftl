@@ -322,10 +322,10 @@
 					</div>
 				[/#if]
 				[#if order.rewardPoint > 0]
-					<div class="list-group-item">
+					<!-- <div class="list-group-item">
 						${message("Order.rewardPoint")}
 						<span class="pull-right red">${order.rewardPoint}</span>
-					</div>
+					</div> -->
 				[/#if]
 				[#if order.exchangePoint > 0]
 					<div class="list-group-item">

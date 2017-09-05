@@ -37,9 +37,7 @@ import net.shopxx.entity.DepositLog;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberRank;
 import net.shopxx.entity.NapaStores;
-import net.shopxx.entity.OrderItem;
 import net.shopxx.entity.PointLog;
-import net.shopxx.entity.Sku;
 import net.shopxx.entity.User;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.MailService;
@@ -281,7 +279,9 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("userCode", StringUtils.upperCase(usercode));
 		parameterMap.put("password", DigestUtils.md5Hex("a"+password));
-		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getFormatNowTime("yyyyMMdd")+urlSignature));
+		parameterMap.put("timestamp", TimeUtil.getTimestamp());
+		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getTimestamp()+urlSignature));
+
 		//登录
 		String userCodeMap = WebUtils.postJson(urlPath+"/verifyLoginToShop.html",parameterMap);
 		try {
@@ -305,7 +305,8 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	@Transactional
 	public List<Member> getListMember(String userCodes){		
 		Map<String, Object> parameterMap = new HashMap<>();
-		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getFormatNowTime("yyyyMMdd")+urlSignature));
+		parameterMap.put("timestamp", TimeUtil.getTimestamp());
+		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getTimestamp()+urlSignature));
 		parameterMap.put("userCode", StringUtils.upperCase(userCodes));
 		System.out.println(parameterMap);
 		
