@@ -44,7 +44,6 @@ import net.shopxx.entity.Specification;
 import net.shopxx.service.AttributeService;
 import net.shopxx.service.BrandService;
 import net.shopxx.service.CountryService;
-import net.shopxx.service.GradeService;
 import net.shopxx.service.MemberRankService;
 import net.shopxx.service.ParameterValueService;
 import net.shopxx.service.ProductCategoryService;
