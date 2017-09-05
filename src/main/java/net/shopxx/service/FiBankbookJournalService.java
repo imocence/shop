@@ -58,4 +58,12 @@ public interface FiBankbookJournalService extends BaseService<FiBankbookJournal,
 	 * @throws Exception
 	 */
 	String recharge(String usercode, BigDecimal money, String uniqueCode, int type, int dealType, int moneyType, String notes) throws Exception;
+	/**
+	 * 根据会员编号查找充值记录接口
+	 * 
+	 * @param usercode 会员编号
+	 * @return
+	 * @throws Exception
+	 */
+	Page<FiBankbookJournal> findPageByMemberId(Member currentUser, Pageable pageNumber);
 }

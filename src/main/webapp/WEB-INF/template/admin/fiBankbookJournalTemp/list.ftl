@@ -1,4 +1,3 @@
-[#assign shiro = JspTaglibs["/WEB-INF/tld/shiro.tld"] /]
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -235,11 +234,11 @@ $().ready(function() {
 			-
 			<input type="text" id="endDate" name="endDate" class="text Wdate" value="[#if endDate??]${endDate?string("yyyy-MM-dd HH:mm:ss")}[/#if]" style="width: 140px;" onfocus="WdatePicker({lang:'${message("Setting.locale.lang")}', minDate: '#F{$dp.$D(\'beginDate\')}', dateFmt:'yyyy-MM-dd HH:mm:ss'});" />
 			<input type="submit" class="button" value="${message("common.button.search")}" />
-			[@shiro.hasPermission name = "admin:fiBankbookJournalTempConfirm"]
-				<div class="buttonGroup">
-					<input id="confirmButton" type="button" class="button disabled" value="${message("admin.fiBankbookJournalTemp.button.confirm")}" />
-				</div>
-			[/@shiro.hasPermission]
+			[#if isconfirm]
+			<div class="buttonGroup">
+				<input id="confirmButton" type="button" class="button disabled" value="${message("admin.fiBankbookJournalTemp.button.confirm")}" />
+			</div>
+			[/#if]
 		</div>
 		<table id="listTable" class="list">
 			<tr>

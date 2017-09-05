@@ -22,13 +22,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.Results;
 import net.shopxx.entity.BaseEntity;
+import net.shopxx.entity.DepositLog;
+import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.Member;
 import net.shopxx.plugin.PaymentPlugin;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.service.DepositLogService;
+import net.shopxx.service.FiBankbookJournalService;
 import net.shopxx.service.PluginService;
 import net.shopxx.util.WebUtils;
 
@@ -51,7 +55,8 @@ public class DepositController extends BaseController {
 	private DepositLogService depositLogService;
 	@Inject
 	private PluginService pluginService;
-
+	@Inject
+	FiBankbookJournalService fiBankbookJournalService;
 	/**
 	 * 计算支付手续费
 	 */
@@ -98,7 +103,10 @@ public class DepositController extends BaseController {
 	@GetMapping("/log")
 	public String log(Integer pageNumber, @CurrentUser Member currentUser, ModelMap model) {
 		Pageable pageable = new Pageable(pageNumber, PAGE_SIZE);
-		model.addAttribute("page", depositLogService.findPage(currentUser, pageable));
+		//Page<DepositLog> depositLog = depositLogService.findPage(currentUser, pageable);
+		//model.addAttribute("page", depositLogService.findPage(currentUser, pageable));
+		//Page<FiBankbookJournal> FiBankbookJournal = fiBankbookJournalService.findPageByMemberId(currentUser, pageable);
+		model.addAttribute("page", fiBankbookJournalService.findPageByMemberId(currentUser, pageable));
 		return "member/deposit/log";
 	}
 
@@ -109,7 +117,10 @@ public class DepositController extends BaseController {
 	@JsonView(BaseEntity.BaseView.class)
 	public ResponseEntity<?> log(Integer pageNumber, @CurrentUser Member currentUser) {
 		Pageable pageable = new Pageable(pageNumber, PAGE_SIZE);
-		return ResponseEntity.ok(depositLogService.findPage(currentUser, pageable).getContent());
+		//List<DepositLog> depositLog = depositLogService.findPage(currentUser, pageable).getContent();
+		//return ResponseEntity.ok(depositLog);
+		//List<FiBankbookJournal> fiBankbookJournal = fiBankbookJournalService.findPageByMemberId(currentUser, pageable).getContent();
+		return ResponseEntity.ok(fiBankbookJournalService.findPageByMemberId(currentUser, pageable).getContent());
 	}
 
 }

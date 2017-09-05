@@ -56,9 +56,9 @@ $().ready(function() {
 			<div class="span10">
 				<div class="list">
 					<div class="title">${message("member.receiver.list")}</div>
-					<div class="bar">
+					<!-- <div class="bar">
 						<a href="add" class="button">${message("member.receiver.add")}</a>
-					</div>
+					</div> -->
 					<table id="listTable" class="list">
 						<tr>
 							<th>
@@ -70,11 +70,22 @@ $().ready(function() {
 							<th>
 								${message("Receiver.isDefault")}
 							</th>
-							<th>
+							<!--<th>
 								${message("member.common.action")}
-							</th>
+							</th>-->
 						</tr>
-						[#list page.content as receiver]
+						<tr class="last">
+							<td>
+								${member.name}
+							</td>
+							<td>
+								<span title="${member.napaStores.napaAddress}">${abbreviate(member.napaStores.napaAddress, 30, "...")}</span>
+							</td>
+							<td>
+								${message("member.common.true")}
+							</td>
+						</tr>
+						<!-- [#list page.content as receiver]
 							<tr[#if !receiver_has_next] class="last"[/#if]>
 								<td>
 									${receiver.consignee}
@@ -90,15 +101,13 @@ $().ready(function() {
 									<a href="javascript:;" class="delete" data-receiver-id="${receiver.id}">[${message("member.common.delete")}]</a>
 								</td>
 							</tr>
-						[/#list]
+						[/#list] -->
 					</table>
-					[#if !page.content?has_content]
+					<!-- [#if !page.content?has_content]
 						<p>${message("member.common.noResult")}</p>
-					[/#if]
+					[/#if] -->
 				</div>
-				[@pagination pageNumber = page.pageNumber totalPages = page.totalPages pattern = "?pageNumber={pageNumber}"]
-					[#include "/member/include/pagination.ftl"]
-				[/@pagination]
+				
 			</div>
 		</div>
 	</div>

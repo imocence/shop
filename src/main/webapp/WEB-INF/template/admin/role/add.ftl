@@ -147,6 +147,12 @@ $().ready(function() {
 						<label>
 							<input type="checkbox" name="permissions" value="admin:deliveryTemplate" />${message("admin.role.deliveryTemplate")}
 						</label>
+						<label>
+							<input type="checkbox" name="permissions" value="admin:orderAdd" />${message("admin.role.orderAdd")}
+						</label>
+						<label>
+							<input type="checkbox" name="permissions" value="admin:orderReview" />${message("admin.role.orderReview")}
+						</label>
 					</span>
 				</td>
 			</tr>

@@ -692,6 +692,22 @@ $().ready(function() {
 					fraction: ${setting.priceScale}
 				}
 			},
+			"gradePrices": {
+				required: true,
+				min: 0,
+				decimal: {
+					integer: 12,
+					fraction: ${setting.priceScale}
+				}
+			},
+			"coupons": {
+				required: true,
+				min: 0,
+				decimal: {
+					integer: 12,
+					fraction: ${setting.priceScale}
+				}
+			},
 			"sku.cost": {
 				min: 0,
 				decimal: {
@@ -736,6 +752,34 @@ $().ready(function() {
 			form.submit();
 		}
 	});
+	
+		if ($.validator) {
+           $.validator.prototype.elements = function () {
+               var validator = this,
+                 rulesCache = {};
+ 
+               // select all valid inputs inside the form (no submit or reset buttons)
+               return $(this.currentForm)
+               .find("input, select, textarea")
+               .not(":submit, :reset, :image, [disabled]")
+               .not(this.settings.ignore)
+               .filter(function () {
+                   if (!this.name && validator.settings.debug && window.console) {
+                       console.error("%o has no name assigned", this);
+                   }
+                   //注释这行代码
+                   // select only the first element for each name, and only those with rules specified
+                   //if ( this.name in rulesCache || !validator.objectLength($(this).rules()) ) {
+                   //    return false;
+                   //}
+                   rulesCache[this.name] = true;
+                   return true;
+               });
+           }
+       }
+       
+        $("#price").val(0);
+        $("#coupon").val(0);
 
 });
 </script>
@@ -763,6 +807,9 @@ $().ready(function() {
 			</li>
 			<li>
 				<input type="button" value="${message("admin.product.attribute")}" />
+			</li>
+			<li>
+				<input type="button" value="${message("admin.grade.level")}" />
 			</li>
 			<li class="hidden">
 				<input type="button" value="${message("admin.product.specification")}" />
@@ -821,7 +868,7 @@ $().ready(function() {
 				</td>
 			</tr>
 			[#if product.type == "general"]
-				<tr[#if product.hasSpecification()] class="hidden"[/#if]>
+				<tr class="hidden">
 					<th>
 						<span class="requiredField">*</span>${message("Sku.price")}:
 					</th>
@@ -829,7 +876,7 @@ $().ready(function() {
 						<input type="text" id="price" name="sku.price" class="text" value="${product.defaultSku.price}" maxlength="16"[#if product.hasSpecification()] disabled="disabled"[/#if] />
 					</td>
 				</tr>
-				<tr[#if product.hasSpecification()] class="hidden"[/#if]>
+				<tr class="hidden">
 					<th>
 						<span class="requiredField">*</span>${message("Sku.coupon")}:
 					</th>
@@ -1144,6 +1191,32 @@ $().ready(function() {
 								<option value="${option}"[#if option == product.getAttributeValue(attribute)] selected="selected"[/#if]>${option}</option>
 							[/#list]
 						</select>
+					</td>
+				</tr>
+			[/#list]
+		</table>
+		<table id="gradeTable" class="input tabContent">
+			[#list grades as productGrade]
+				<tr>
+					<th>
+						${productGrade.grade.name}
+						<input type="hidden" name="gradeIds"  value="${productGrade.grade.id}"/>
+					</th>
+					<td>
+						<span>${message("Sku.price")}：<input type="text" name="gradePrices" id="gradePrices" class="text" value="${productGrade.price}"/></span>
+						<span>${message("Sku.coupon")}：<input type="text" name="coupons" id="coupons" class="text" value="${productGrade.coupon}"/></span>
+						<span>${message("admin.grade.buy")}：
+							<select name="buys">
+							  <option value ="1" [#if 1 == productGrade.buy] selected="selected"[/#if]>${message("admin.common.true")}</option>
+							  <option value ="0" [#if 0 == productGrade.buy] selected="selected"[/#if]>${message("admin.common.false")}</option>
+							</select>
+						</span>
+						<span>${message("admin.grade.see")}：
+							<select name="sees">
+							  <option value ="1" [#if 1 == productGrade.see] selected="selected"[/#if]>${message("admin.common.true")}</option>
+							  <option value ="0" [#if 0 == productGrade.see] selected="selected"[/#if]>${message("admin.common.false")}</option>
+							</select>
+						</span>
 					</td>
 				</tr>
 			[/#list]

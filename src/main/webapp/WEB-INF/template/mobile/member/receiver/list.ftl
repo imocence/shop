@@ -75,7 +75,25 @@
 	</header>
 	<main>
 		<div class="container-fluid">
-			[#if page.content?has_content]
+			<div class="panel panel-flat">
+				<div class="panel-body">
+					<div class="list-group list-group-flat">
+						<div class="list-group-item">
+							<div class="media">
+								<h4 class="media-heading">
+									${abbreviate(member.name, 10, "...")}
+									<span class="pull-right">${member.napaStores.mobile}</span>
+								</h4>
+								<span class="small" title="${member.napaStores.napaAddress}">${abbreviate(member.napaStores.napaAddress, 30, "...")}</span>
+							</div>
+						</div>
+						<div class="list-group-item">
+							<em class="small orange">${message("Receiver.isDefault")}: ${message("member.common.true")}</em>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- [#if page.content?has_content]
 				[#list page.content as receiver]
 					<div class="panel panel-flat">
 						<div class="panel-body">
@@ -102,13 +120,13 @@
 				[/#list]
 			[#else]
 				<p class="no-result">${message("member.common.noResult")}</p>
-			[/#if]
+			[/#if] -->
 		</div>
 	</main>
-	<footer class="add footer-fixed">
+	<!-- <footer class="add footer-fixed">
 		<div class="container-fluid">
 			<a class="btn btn-primary btn-flat btn-block" href="add">${message("member.receiver.add")}</a>
 		</div>
-	</footer>
+	</footer>-->
 </body>
 </html>

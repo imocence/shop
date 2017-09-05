@@ -69,9 +69,9 @@
 				<dd>
 					<a href="${base}/member/profile/edit"[#if current == "profileEdit"] class="current"[/#if]>${message("member.profile.edit")}</a>
 				</dd>
-				<dd>
+				<!-- <dd>
 					<a href="${base}/member/password/edit"[#if current == "passwordEdit"] class="current"[/#if]>${message("member.password.edit")}</a>
-				</dd>
+				</dd> -->
 				<dd>
 					<a href="${base}/member/receiver/list"[#if current == "receiverList"] class="current"[/#if]>${message("member.receiver.list")}</a>
 				</dd>

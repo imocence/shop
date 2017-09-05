@@ -216,7 +216,7 @@
 					</a>
 				</div>
 			</div>
-			<div class="list-group list-group-flat">
+			<!-- <div class="list-group list-group-flat">
 				<div class="list-group-item">
 					${message("member.password.edit")}
 					<a class="pull-right gray-darker" href="password/edit">
@@ -224,7 +224,7 @@
 						<span class="glyphicon glyphicon-menu-right"></span>
 					</a>
 				</div>
-			</div>
+			</div> -->
 			<div class="list-group list-group-flat">
 				<div class="list-group-item">
 					${message("member.socialUser.list")}

@@ -101,6 +101,14 @@
 				<div class="panel panel-flat">
 					<div class="panel-body">
 						<div class="form-group">
+							<label for="username">${message("Member.username")}</label>
+							<input id="username" name="username" class="form-control" type="text" value="${currentUser.username}" maxlength="200">
+						</div>
+						<div class="form-group">
+							<label for="napaCode">${message("Member.napaCode")}</label>
+							<input id="napaCode" name="napaCode" class="form-control" type="text" value="${currentUser.napaStores.napaCode}" maxlength="200">
+						</div>
+						<div class="form-group">
 							<label for="email">${message("Member.email")}</label>
 							<input id="email" name="email" class="form-control" type="text" value="${currentUser.email}" maxlength="200">
 						</div>
@@ -159,7 +167,7 @@
 						[/@member_attribute_list]
 					</div>
 					<div class="panel-footer text-center">
-						<button class="btn btn-primary" type="submit">${message("member.common.submit")}</button>
+						<!-- <button class="btn btn-primary" type="submit">${message("member.common.submit")}</button>-->
 						<a class="btn btn-default" href="${base}/member/index">${message("member.common.back")}</a>
 					</div>
 				</div>

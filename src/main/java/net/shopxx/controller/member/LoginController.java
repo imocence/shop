@@ -87,8 +87,8 @@ public class LoginController extends BaseController {
 			System.out.println("MD5:"+appointtrue);
 			System.out.println("当前时间戳："+System.currentTimeMillis() / 1000);
 			//时间差
-			Long timeT = TimeUtil.validateTimeStamp(Long.parseLong(request.getParameter("timestamp")));
-			if(timeT < 101 && appointtrue.equals(signature)){
+			Long timeT = TimeUtil.validateTimeStamp(Long.parseLong(request.getParameter("tt")));
+			if(timeT < 3 && appointtrue.equals(signature)){
 				try {
 					userService.login(new UserAuthenticationToken(Member.class,userCode , "a123456", false, request.getRemoteAddr()));					
 				} catch (Exception e) {

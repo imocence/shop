@@ -5,11 +5,13 @@
  */
 package net.shopxx.controller.admin;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +36,7 @@ import net.shopxx.entity.Country;
 import net.shopxx.entity.Parameter;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.ProductCategory;
+import net.shopxx.entity.ProductGrade;
 import net.shopxx.entity.ProductTag;
 import net.shopxx.entity.Promotion;
 import net.shopxx.entity.Sku;
@@ -41,6 +44,8 @@ import net.shopxx.entity.Specification;
 import net.shopxx.service.AttributeService;
 import net.shopxx.service.BrandService;
 import net.shopxx.service.CountryService;
+import net.shopxx.service.GradeService;
+import net.shopxx.service.MemberRankService;
 import net.shopxx.service.ParameterValueService;
 import net.shopxx.service.ProductCategoryService;
 import net.shopxx.service.ProductImageService;
@@ -86,6 +91,10 @@ public class ProductController extends BaseController {
 	
 	@Inject
 	private CountryService countryService;
+	
+	@Inject
+    private MemberRankService memberRankService;
+	
 
 	/**
 	 * 检查编号是否存在
@@ -183,10 +192,11 @@ public class ProductController extends BaseController {
         model.addAttribute("productCategoryTree", productCategoryService.findTree(country));
         model.addAttribute("countries", countryService.findRoots());
         model.addAttribute("brands", country.getBrands());
+        model.addAttribute("grades", country.getGrades());
         model.addAttribute("types", Product.Type.values());
 //        model.addAttribute("promotions", promotionService.findAll());
 //        model.addAttribute("productTags", productTagService.findAll());
-        model.addAttribute("specifications", specificationService.findAll());
+//        model.addAttribute("specifications", specificationService.findAll());
         return "admin/product/add";
     }
 
@@ -194,7 +204,7 @@ public class ProductController extends BaseController {
 	 * 保存
 	 */
 	@PostMapping("/save")
-	public String save(Product product, SkuForm skuForm, SkuListForm skuListForm, Long productCategoryId, Long brandId, Long[] promotionIds, Long[] productTagIds, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+	public String save(Product product, SkuForm skuForm, SkuListForm skuListForm, Long productCategoryId, Long brandId, Long[] promotionIds, Long[] productTagIds,Long[] gradeIds,Float[] gradePrices,Float[] coupons,Integer[] buys,Integer[] sees, HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		productImageService.filter(product.getProductImages());
 		parameterValueService.filter(product.getParameterValues());
 		specificationItemService.filter(product.getSpecificationItems());
@@ -230,6 +240,18 @@ public class ProductController extends BaseController {
 			if (sku == null || !isValid(sku, getValidationGroup(product.getType()), BaseEntity.Save.class)) {
 				return ERROR_VIEW;
 			}
+			Set<ProductGrade> productGrades = new HashSet<ProductGrade>(); 
+			for (int i = 0; i < gradeIds.length; i++) {
+			    ProductGrade productGrade =  new ProductGrade();
+			    productGrade.setGrade(memberRankService.find(gradeIds[i]));
+			    productGrade.setBuy(buys[i]);
+			    productGrade.setSee(sees[i]);
+			    productGrade.setProduct(product);
+			    productGrade.setCoupon(new BigDecimal(coupons[i]));
+			    productGrade.setPrice(new BigDecimal(gradePrices[i]));
+			    productGrades.add(productGrade);
+			}
+			product.setProductGrades(productGrades);
 			productService.create(product, sku);
 		}
 
@@ -248,9 +270,10 @@ public class ProductController extends BaseController {
 		model.addAttribute("productCategoryTree", productCategoryService.findTree( pro.getProductCategory().getCountry()));
 		model.addAttribute("brands", pro.getProductCategory().getCountry().getBrands());
 //		model.addAttribute("promotions", promotionService.findAll());
-		model.addAttribute("productTags", productTagService.findAll());
+//		model.addAttribute("productTags", productTagService.findAll());
 //		model.addAttribute("specifications", specificationService.findAll());
 		model.addAttribute("product", pro);
+		model.addAttribute("grades", pro.getProductGrades());
 		model.addAttribute("countries", countryService.findRoots());
 		return "admin/product/edit";
 	}
@@ -259,7 +282,7 @@ public class ProductController extends BaseController {
 	 * 更新
 	 */
 	@PostMapping("/update")
-	public String update(Product product, SkuForm skuForm, SkuListForm skuListForm, Long id, Long productCategoryId, Long brandId, Long[] promotionIds, Long[] productTagIds, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+	public String update(Product product, SkuForm skuForm, SkuListForm skuListForm, Long id, Long productCategoryId, Long brandId, Long[] promotionIds, Long[] productTagIds, Long[] gradeIds,Float[] gradePrices,Float[] coupons,Integer[] buys,Integer[] sees,HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		productImageService.filter(product.getProductImages());
 		parameterValueService.filter(product.getParameterValues());
 		specificationItemService.filter(product.getSpecificationItems());
@@ -294,7 +317,23 @@ public class ProductController extends BaseController {
 			if (sku == null || !isValid(sku, getValidationGroup(product.getType()), BaseEntity.Update.class)) {
 				return ERROR_VIEW;
 			}
+			
+			//修改规格价格
+			Set<ProductGrade> productGrades = pProduct.getProductGrades();
+			for (ProductGrade pg : productGrades) {
+			    for (int i = 0; i < gradeIds.length; i++) {
+			        if (gradeIds[i] == pg.getGrade().getId().intValue() ) {
+			            pg.setBuy(buys[i]);
+			            pg.setSee(sees[i]);
+			            pg.setCoupon(new BigDecimal(coupons[i]));
+			            pg.setPrice(new BigDecimal(gradePrices[i]));
+			            break;
+			        }
+			    }
+			    
+			}
 			productService.modify(product, sku);
+			
 		}
 
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));

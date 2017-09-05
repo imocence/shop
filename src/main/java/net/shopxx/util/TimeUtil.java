@@ -166,7 +166,7 @@ public class TimeUtil {
 		}
 		return strs.toString();
 	}
-	
+	  
 	/**
 	 * 计算两个时间之间的秒数
 	 * @param date1

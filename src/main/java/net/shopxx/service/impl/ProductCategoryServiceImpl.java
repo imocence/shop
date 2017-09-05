@@ -37,7 +37,17 @@ public class ProductCategoryServiceImpl extends BaseServiceImpl<ProductCategory,
 	public List<ProductCategory> findRoots() {
 		return productCategoryDao.findRoots(null);
 	}
-
+	
+	/**
+	 * 查找顶级商品分类
+	 * @param country 国家
+	 * @param count
+	 * @return
+	 */
+	public List<ProductCategory> findRoots(Country country, Integer count){
+		return productCategoryDao.findRoots(country, null);
+	}
+	
 	@Transactional(readOnly = true)
 	public List<ProductCategory> findRoots(Integer count) {
 		return productCategoryDao.findRoots(count);

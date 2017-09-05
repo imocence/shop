@@ -41,6 +41,22 @@ public class ProductCategoryDaoImpl extends BaseDaoImpl<ProductCategory, Long> i
 		}
 		return query.getResultList();
 	}
+	
+	/**
+	 * 查找顶级商品分类
+	 * @param country 国家
+	 * @param count
+	 * @return
+	 */
+	public List<ProductCategory> findRoots(Country country, Integer count) {
+		String jpql = "select productCategory from ProductCategory productCategory where productCategory.parent is null and productCategory.country=:country order by productCategory.order asc";
+		TypedQuery<ProductCategory> query = entityManager.createQuery(jpql, ProductCategory.class);
+		query.setParameter("country", country);
+		if (count != null) {
+			query.setMaxResults(count);
+		}
+		return query.getResultList();
+	}
 
 	public List<ProductCategory> findParents(ProductCategory productCategory, boolean recursive, Integer count) {
 		if (productCategory == null || productCategory.getParent() == null) {

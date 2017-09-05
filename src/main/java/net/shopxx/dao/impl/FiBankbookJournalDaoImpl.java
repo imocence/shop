@@ -68,6 +68,26 @@ public class FiBankbookJournalDaoImpl extends BaseDaoImpl<FiBankbookJournal, Lon
 		criteriaQuery.where(restrictions);
 		return super.findPage(criteriaQuery, pageable);
 	}
+	/**
+	 * 查找交易记录分页
+	 * 
+	 * @param currentUser
+	 *            会员信息
+	 * @param pageable
+	 *            分页信息
+	 * @return 交易记录分页
+	 */
+	public Page<FiBankbookJournal> findPageByMemberId(Member currentUser,Pageable pageNumber){
+		if (currentUser == null) {
+			return Page.emptyPage(pageNumber);
+		}
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<FiBankbookJournal> criteriaQuery = criteriaBuilder.createQuery(FiBankbookJournal.class);
+		Root<FiBankbookJournal> root = criteriaQuery.from(FiBankbookJournal.class);
+		criteriaQuery.select(root);
+		criteriaQuery.where(criteriaBuilder.equal(root.get("member"), currentUser));
+		return super.findPage(criteriaQuery, pageNumber);
+	}
 	
 	/**
 	 * 获取最近的一条记录

@@ -20,7 +20,7 @@ public class NapaStores extends BaseEntity<Long>{
 	 * 区代编号
 	 */
 	@Length(max = 200)
-	@Column(nullable = true)
+	@Column(nullable = true,name="napa_code")
 	private String napaCode;
 	
 	/**
@@ -33,6 +33,12 @@ public class NapaStores extends BaseEntity<Long>{
 	 */
 	@Length(max = 200)
 	private String mobile;
+	/**
+	 * 地址
+	 */
+	@Length(max = 200)
+	@Column(nullable = true,name="napa_address")
+	private String napaAddress;
 	
 	/**
 	 * 类型，type=0,1,2,3 ：代理商，服务中心，加盟店，中心店
@@ -78,6 +84,20 @@ public class NapaStores extends BaseEntity<Long>{
 	 */
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
+	}
+	/**
+	 * 获取地址
+	 * @return
+	 */
+	public String getNapaAddress() {
+		return napaAddress;
+	}
+	/**
+	 * 设置地址
+	 * @param napaAddress
+	 */
+	public void setNapaAddress(String napaAddress) {
+		this.napaAddress = napaAddress;
 	}
 	/**
 	 * 电话
