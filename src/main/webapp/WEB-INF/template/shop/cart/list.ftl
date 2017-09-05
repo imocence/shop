@@ -263,7 +263,7 @@ $().ready(function() {
 						[#if !currentUser??]
 							<em>${message("shop.cart.promotionTips")}</em>
 						[/#if]
-						${message("shop.cart.effectiveRewardPoint")}: <em id="effectiveRewardPoint">${currentCart.effectiveRewardPoint}</em>
+						<!-- ${message("shop.cart.effectiveRewardPoint")}: <em id="effectiveRewardPoint">${currentCart.effectiveRewardPoint}</em> -->
 						${message("shop.cart.effectivePrice")}: <strong id="effectivePrice">${currency(currentCart.effectivePrice, true, true)}</strong>
 					</div>
 				</div>

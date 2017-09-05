@@ -33,6 +33,7 @@ import net.shopxx.entity.Coupon;
 import net.shopxx.entity.CouponCode;
 import net.shopxx.entity.Invoice;
 import net.shopxx.entity.Member;
+import net.shopxx.entity.NapaStores;
 import net.shopxx.entity.Order;
 import net.shopxx.entity.PaymentMethod;
 import net.shopxx.entity.Product;
@@ -44,6 +45,7 @@ import net.shopxx.security.CurrentCart;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.service.AreaService;
 import net.shopxx.service.CouponCodeService;
+import net.shopxx.service.NapaStoresService;
 import net.shopxx.service.OrderItemService;
 import net.shopxx.service.OrderService;
 import net.shopxx.service.PaymentMethodService;
@@ -81,7 +83,8 @@ public class OrderController extends BaseController {
 	private PluginService pluginService;
 	@Inject
 	OrderItemService orderItemService;
-
+	@Inject
+	NapaStoresService napaStoresService;
 	/**
 	 * 检查积分兑换
 	 */
@@ -216,12 +219,17 @@ public class OrderController extends BaseController {
 			}
 		}
 		Receiver defaultReceiver = receiverService.findDefault(currentUser);
+		
+		//区代
+		NapaStores napaStores = currentUser.getNapaStores();
+		
 		Order order = orderService.generate(Order.Type.general, currentCart, defaultReceiver, defaultPaymentMethod, defaultShippingMethod, null, null, null, null);
 		model.addAttribute("order", order);
 		model.addAttribute("defaultReceiver", defaultReceiver);
+		model.addAttribute("napaStores", napaStores);
 		model.addAttribute("cartTag", currentCart.getTag());
-		model.addAttribute("paymentMethods", paymentMethods);
-		model.addAttribute("shippingMethods", shippingMethods);
+		model.addAttribute("paymentMethods", paymentMethods);//支付方式
+		model.addAttribute("shippingMethods", shippingMethods);//快递方式
 		model.addAttribute("defaultPaymentMethod", defaultPaymentMethod);
 		model.addAttribute("defaultShippingMethod", defaultShippingMethod);
 		return "shop/order/checkout";
@@ -353,7 +361,17 @@ public class OrderController extends BaseController {
 	 * 创建
 	 */
 	@PostMapping("/create")
-	public ResponseEntity<?> create(String cartTag, Long receiverId, Long paymentMethodId, Long shippingMethodId, String code, String invoiceTitle, BigDecimal balance, String memo, @CurrentUser Member currentUser, @CurrentCart Cart currentCart) {
+	public ResponseEntity<?> create(String cartTag, 
+									Long receiverId, 
+									Long napaStoresId,
+									Long paymentMethodId, 
+									Long shippingMethodId, 
+									String code, 
+									String invoiceTitle, 
+									BigDecimal balance, 
+									String memo, 
+									@CurrentUser Member currentUser, 
+									@CurrentCart Cart currentCart) {
 		Map<String, Object> data = new HashMap<>();
 		if (currentCart == null || currentCart.isEmpty()) {
 			return Results.UNPROCESSABLE_ENTITY;
@@ -368,13 +386,19 @@ public class OrderController extends BaseController {
 			return Results.unprocessableEntity("shop.order.cartLowStock");
 		}
 		Receiver receiver = null;
+		//区代
+		NapaStores napaStores = napaStoresService.find(napaStoresId);
+		if(napaStores == null || !currentUser.getNapaStores().equals(napaStores)){
+			return Results.UNPROCESSABLE_ENTITY;
+		}
+		
 		ShippingMethod shippingMethod = null;
 		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
 		if (currentCart.getIsDelivery()) {
-			receiver = receiverService.find(receiverId);
+			/*receiver = receiverService.find(receiverId);
 			if (receiver == null || !currentUser.equals(receiver.getMember())) {
 				return Results.UNPROCESSABLE_ENTITY;
-			}
+			}*/
 			shippingMethod = shippingMethodService.find(shippingMethodId);
 			if (shippingMethod == null) {
 				return Results.UNPROCESSABLE_ENTITY;
@@ -391,10 +415,11 @@ public class OrderController extends BaseController {
 			return Results.unprocessableEntity("shop.order.insufficientBalance");
 		}
 		Invoice invoice = StringUtils.isNotEmpty(invoiceTitle) ? new Invoice(invoiceTitle, null) : null;
-		Order order = orderService.create(Order.Type.general, currentCart, receiver, paymentMethod, shippingMethod, couponCode, invoice, balance, memo);
+		Order order = orderService.create(Order.Type.general, currentCart, receiver,napaStores, paymentMethod, shippingMethod, couponCode, invoice, balance, memo);
 
 		data.put("sn", order.getSn());
-		orderService.orderInterface(order);
+		
+		//orderService.orderInterface(order);
 		
 		return ResponseEntity.ok(data);
 	}
@@ -403,7 +428,7 @@ public class OrderController extends BaseController {
 	 * 创建
 	 */
 	@PostMapping(path = "/create", params = "type=exchange")
-	public ResponseEntity<?> create(Long skuId, Integer quantity, Long receiverId, Long paymentMethodId, Long shippingMethodId, BigDecimal balance, String memo, @CurrentUser Member currentUser) {
+	public ResponseEntity<?> create(Long skuId, Integer quantity, Long receiverId,Long napaStoresId, Long paymentMethodId, Long shippingMethodId, BigDecimal balance, String memo, @CurrentUser Member currentUser) {
 		Map<String, Object> data = new HashMap<>();
 		if (quantity == null || quantity < 1) {
 			return Results.UNPROCESSABLE_ENTITY;
@@ -422,13 +447,20 @@ public class OrderController extends BaseController {
 			return Results.unprocessableEntity("shop.order.skuLowStock");
 		}
 		Receiver receiver = null;
+		
+		//区代
+		NapaStores napaStores = napaStoresService.find(napaStoresId);
+		if(napaStores == null || !currentUser.getNapaStores().equals(napaStores)){
+			return Results.UNPROCESSABLE_ENTITY;
+		}
+		
 		ShippingMethod shippingMethod = null;
 		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
 		if (sku.getIsDelivery()) {
-			receiver = receiverService.find(receiverId);
+			/*receiver = receiverService.find(receiverId);
 			if (receiver == null || !currentUser.equals(receiver.getMember())) {
 				return Results.UNPROCESSABLE_ENTITY;
-			}
+			}*/
 			shippingMethod = shippingMethodService.find(shippingMethodId);
 			if (shippingMethod == null) {
 				return Results.UNPROCESSABLE_ENTITY;
@@ -447,9 +479,9 @@ public class OrderController extends BaseController {
 		cart.setMember(currentUser);
 		cart.add(cartItem);
 
-		Order order = orderService.create(Order.Type.exchange, cart, receiver, paymentMethod, shippingMethod, null, null, balance, memo);
+		Order order = orderService.create(Order.Type.exchange, cart, receiver,napaStores, paymentMethod, shippingMethod, null, null, balance, memo);
 		
-		orderService.orderInterface(order);
+		//String orderMap = orderService.orderInterface(order);
 		
 		data.put("sn", order.getSn());
 		return ResponseEntity.ok(data);

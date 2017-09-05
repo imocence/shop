@@ -309,14 +309,14 @@ $().ready(function() {
 							</tr>
 						[/#if]
 						[#if order.rewardPoint > 0]
-							<tr>
+							<!-- <tr>
 								<th>
 									${message("Order.rewardPoint")}:
 								</th>
 								<td>
 									${order.rewardPoint}
 								</td>
-							</tr>
+							</tr> -->
 						[/#if]
 						[#if order.exchangePoint > 0]
 							<tr>

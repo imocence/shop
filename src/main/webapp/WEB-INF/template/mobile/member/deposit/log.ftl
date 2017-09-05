@@ -34,7 +34,6 @@
 				}
 			}
 		%>
-		<!-- <%_.each(fiBankbookJournals[0], alert)%> -->
 		<%_.each(fiBankbookJournals, function(fiBankbookJournal, i) {%>
 			<div class="list-group list-group-flat">
 				<div class="list-group-item small">

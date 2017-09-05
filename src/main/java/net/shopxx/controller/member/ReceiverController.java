@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import net.shopxx.Pageable;
 import net.shopxx.Results;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.Receiver;
@@ -36,11 +35,6 @@ import net.shopxx.service.ReceiverService;
 @Controller("memberReceiverController")
 @RequestMapping("/member/receiver")
 public class ReceiverController extends BaseController {
-
-	/**
-	 * 每页记录数
-	 */
-	private static final int PAGE_SIZE = 10;
 
 	@Inject
 	private AreaService areaService;
