@@ -540,7 +540,7 @@
 									</div>
 								</div> -->
 							[/#if]
-							<div class="list-group-item">
+							<!-- <div class="list-group-item">
 								<div class="row">
 									<div class="col-xs-3">${message("shop.order.coupon")}</div>
 									<div class="col-xs-9">
@@ -548,7 +548,7 @@
 										<input id="couponCode" name="code" type="text" maxlength="200" placeholder="${message("shop.order.couponCodePlaceholder")}">
 									</div>
 								</div>
-							</div>
+							</div> -->
 						[/#if]
 						[#if currentUser.balance > 0]
 							<div id="useBalanceItem" class="[#if order.amountPayable <= 0 ]hidden-element [/#if]list-group-item">

@@ -618,7 +618,7 @@ $().ready(function() {
 						</dd>
 					</dl>
 					[#if order.type == "general"]
-						<dl class="coupon">
+						<!--<dl class="coupon">
 							<dt>${message("shop.order.coupon")}:</dt>
 							<dd>
 								<input type="hidden" id="code" name="code" maxlength="200" />
@@ -626,7 +626,7 @@ $().ready(function() {
 								<span id="couponName">&nbsp;</span>
 								<button type="button" id="couponButton">${message("shop.order.codeConfirm")}</button>
 							</dd>
-						</dl>
+						</dl>-->
 					[/#if]
 				</div>
 				<div class="span6">
