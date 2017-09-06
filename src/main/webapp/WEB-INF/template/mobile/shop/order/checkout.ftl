@@ -518,7 +518,7 @@
 						[/#if]
 						[#if order.type == "general"]
 							[#if setting.isInvoiceEnabled]
-								<div class="list-group-item">
+								<!-- <div class="list-group-item">
 									<div class="row">
 										<div class="col-xs-3">${message("shop.order.isInvoice")}</div>
 										<div class="col-xs-7">
@@ -538,7 +538,7 @@
 											<input id="invoiceTitle" name="invoiceTitle" type="text" value="${message("shop.order.defaultInvoiceTitle")}" maxlength="200" disabled>
 										</div>
 									</div>
-								</div>
+								</div> -->
 							[/#if]
 							<div class="list-group-item">
 								<div class="row">

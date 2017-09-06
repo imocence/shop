@@ -60,7 +60,7 @@ $().ready(function() {
 	
 	[#if order.isDelivery]
 		[#if !currentUser.receivers?has_content]
-			$dialogOverlay.show();
+			<!-- $dialogOverlay.show(); -->
 		[/#if]
 		
 		// 地区选择
@@ -540,7 +540,7 @@ $().ready(function() {
 						</dl>
 					[/#if]
 					[#if order.type == "general" && setting.isInvoiceEnabled]
-						<table>
+						<!-- <table>
 							<tr>
 								<th colspan="2">${message("shop.order.invoiceInfo")}</th>
 							</tr>
@@ -563,7 +563,7 @@ $().ready(function() {
 									<input type="text" id="invoiceTitle" name="invoiceTitle" class="text" value="${message("shop.order.defaultInvoiceTitle")}" maxlength="200" disabled="disabled" />
 								</td>
 							</tr>
-						</table>
+						</table> -->
 					[/#if]
 					<table class="sku">
 						<tr>
