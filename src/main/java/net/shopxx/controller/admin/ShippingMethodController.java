@@ -9,6 +9,13 @@ import java.util.HashSet;
 
 import javax.inject.Inject;
 
+import net.shopxx.Message;
+import net.shopxx.Pageable;
+import net.shopxx.entity.ShippingMethod;
+import net.shopxx.service.DeliveryCorpService;
+import net.shopxx.service.PaymentMethodService;
+import net.shopxx.service.ShippingMethodService;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,13 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import net.shopxx.Message;
-import net.shopxx.Pageable;
-import net.shopxx.entity.ShippingMethod;
-import net.shopxx.service.DeliveryCorpService;
-import net.shopxx.service.PaymentMethodService;
-import net.shopxx.service.ShippingMethodService;
 
 /**
  * Controller - 配送方式
@@ -114,5 +114,4 @@ public class ShippingMethodController extends BaseController {
 		shippingMethodService.delete(ids);
 		return Message.success(SUCCESS_MESSAGE);
 	}
-
 }
