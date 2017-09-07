@@ -363,7 +363,6 @@
 			
 			// 订单提交
 			$submit.click(function() {
-				alert(11);
 				[#if order.isDelivery]
 					if ($receiverId.val() == "") {
 						$.alert("${message("shop.order.receiverRequired")}");
