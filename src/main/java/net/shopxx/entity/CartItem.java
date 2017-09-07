@@ -186,7 +186,37 @@ public class CartItem extends BaseEntity<Long> {
 			return BigDecimal.ZERO;
 		}
 	}
-
+	/**
+	 * 获取券单价
+	 * 
+	 * @return 券单价
+	 */
+	@Transient
+	public BigDecimal getCouponPrice() {
+		if (getSku() != null && getSku().getCoupon() != null) {
+			Setting setting = SystemUtils.getSetting();
+			if (getCart() != null && getCart().getMember() != null && getCart().getMember().getMemberRank() != null) {
+				MemberRank memberRank = getCart().getMember().getMemberRank();
+				if (memberRank.getScale() != null) {					
+					return setting.setScale(getSku().getCoupon().multiply(new BigDecimal(String.valueOf(memberRank.getScale()))));
+				}
+			}
+			return setting.setScale(getSku().getCoupon());
+		} else {
+			return BigDecimal.ZERO;
+		}
+	}
+	/**
+	 * 获取券总计
+	 */	
+	@Transient
+	public BigDecimal getTotalCoupon() {
+		if (getQuantity() != null) {
+			return getCouponPrice().multiply(new BigDecimal(getQuantity()));
+		} else {
+			return BigDecimal.ZERO;
+		}
+	}
 	/**
 	 * 获取是否上架
 	 * 

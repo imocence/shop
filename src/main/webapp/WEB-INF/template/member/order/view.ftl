@@ -278,6 +278,7 @@ $().ready(function() {
 								${currency(order.amount, true)}
 							</td>
 						</tr>
+						<!-- 已付金额  -->
 						[#if order.amountPaid > 0]
 							<tr>
 								<th>
@@ -285,6 +286,24 @@ $().ready(function() {
 								</th>
 								<td>
 									${currency(order.amountPaid, true)}
+								</td>
+							</tr>
+						[/#if]
+						<tr>
+							<th>
+								${message("Order.coupon")}:
+							</th>
+							<td>
+								${currency(order.couponPrice, true)}
+							</td>
+						</tr>
+						[#if order.couponPricePaid > 0]
+							<tr>
+								<th>
+									${message("Order.couponPricePaid")}:
+								</th>
+								<td>
+									${currency(order.couponPricePaid, true)}
 								</td>
 							</tr>
 						[/#if]
@@ -308,25 +327,27 @@ $().ready(function() {
 								</td>
 							</tr>
 						[/#if]
+						
 						[#if order.rewardPoint > 0]
-							<tr>
+							<!-- 赠送积分 -->
+							<!-- <tr>
 								<th>
 									${message("Order.rewardPoint")}:
 								</th>
 								<td>
 									${order.rewardPoint}
 								</td>
-							</tr>
+							</tr> -->
 						[/#if]
 						[#if order.exchangePoint > 0]
-							<tr>
+							<!-- <tr>
 								<th>
 									${message("Order.exchangePoint")}:
 								</th>
 								<td>
 									${order.exchangePoint}
 								</td>
-							</tr>
+							</tr> -->
 						[/#if]
 						[#if order.couponCode??]
 							<tr>
@@ -458,10 +479,16 @@ $().ready(function() {
 								${message("OrderItem.price")}
 							</th>
 							<th>
+								${message("shop.cart.coupon")}
+							</th>
+							<th>
 								${message("OrderItem.quantity")}
 							</th>
 							<th>
 								${message("OrderItem.subtotal")}
+							</th>
+							<th>
+								${message("shop.cart.totalCoupon")}
 							</th>
 						</tr>
 						[#list order.orderItems as orderItem]
@@ -490,11 +517,25 @@ $().ready(function() {
 									[/#if]
 								</td>
 								<td>
+									[#if orderItem.type == "general"]
+										${currency(orderItem.couponPrice, true)}
+									[#else]
+										-
+									[/#if]
+								</td>
+								<td>
 									${orderItem.quantity}
 								</td>
 								<td>
 									[#if orderItem.type == "general"]
 										${currency(orderItem.subtotal, true)}
+									[#else]
+										-
+									[/#if]
+								</td>
+								<td>
+									[#if orderItem.type == "general"]
+										${currency(orderItem.totalCoupon, true)}
 									[#else]
 										-
 									[/#if]

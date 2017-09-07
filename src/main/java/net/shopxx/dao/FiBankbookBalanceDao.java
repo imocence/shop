@@ -11,7 +11,6 @@ import net.shopxx.Order;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Country;
-
 import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.Member;
 
@@ -35,7 +34,7 @@ public interface FiBankbookBalanceDao extends BaseDao<FiBankbookBalance, Long> {
 	 * 		排序
 	 * @return
 	 */
-	List<FiBankbookBalance> findList(Member member,Integer count,List<Filter> filters, List<Order> orders);
+	List<FiBankbookBalance> findList(Member member,String type,Integer count,List<Filter> filters, List<Order> orders);
 
 
 	 /* 查找实体对象分页

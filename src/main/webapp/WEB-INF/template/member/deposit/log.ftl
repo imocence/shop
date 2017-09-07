@@ -13,7 +13,7 @@
 <script type="text/javascript" src="${base}/resources/member/js/common.js"></script>
 </head>
 <body>
-	[#assign current = "depositLog" /]
+	[#assign current = "fiBankbookJournal" /]
 	[#include "/shop/include/header.ftl" /]
 	<div class="container member">
 		<div class="row">

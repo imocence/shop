@@ -42,8 +42,11 @@ $().ready(function() {
 	var $promotionDiscount = $("#promotionDiscount");
 	var $couponDiscount = $("#couponDiscount");
 	var $amount = $("#amount");
+	var $couponPrice = $("#couponPrice");
 	var $useBalance = $("#useBalance");
+	var $useCoupon = $("#useCoupon");
 	var $balance = $("#balance");
+	var $coupon = $("#coupon");
 	var $submit = $("#submit");
 	var amount = ${order.amount};
 	var amountPayable = ${order.amountPayable};
@@ -60,7 +63,7 @@ $().ready(function() {
 	
 	[#if order.isDelivery]
 		[#if !currentUser.receivers?has_content]
-			$dialogOverlay.show();
+			<!-- $dialogOverlay.show(); -->
 		[/#if]
 		
 		// 地区选择
@@ -110,7 +113,7 @@ $().ready(function() {
 			data: $orderForm.serialize(),
 			dataType: "json",
 			success: function(data) {
-				$freight.text(currency(data.freight, true));
+				$freight.text(currency(data.freight, true));//运费
 				if (data.tax > 0) {
 					$tax.text(currency(data.tax, true)).parent().show();
 				} else {
@@ -126,6 +129,7 @@ $().ready(function() {
 				} else {
 					$couponDiscount.parent().hide();
 				}
+				//总费用
 				if (data.amount != amount) {
 					$balance.val("0");
 					amountPayable = data.amount;
@@ -139,11 +143,19 @@ $().ready(function() {
 				} else {
 					$useBalance.parent().hide();
 				}
-				if (amountPayable > 0) {
-					$paymentMethod.show();
+				//总券				
+				couponPrice = data.couponPrice;
+				$couponPrice.text(currency(couponPrice, true, true));
+				if (couponPrice > 0) {
+					$useCoupon.parent().show();
 				} else {
-					$paymentMethod.hide();
+					$useCoupon.parent().hide();
 				}
+				//if (amountPayable > 0) {
+				//	$paymentMethod.show();
+				//} else {
+				//	$paymentMethod.hide();
+				//}
 			}
 		});
 	}
@@ -158,6 +170,7 @@ $().ready(function() {
 		var paymentMethodId = $this.val();
 		$shippingMethodId.each(function() {
 			var $this = $(this);
+			
 			if ($.inArray(paymentMethodId, paymentMethodIds[$this.val()]) >= 0) {
 				$this.prop("disabled", false);
 			} else {
@@ -266,7 +279,36 @@ $().ready(function() {
 	$balance.change(function() {
 		var $this = $(this);
 		if (/^\d+(\.\d{0,${setting.priceScale}})?$/.test($this.val())) {
-			var max = ${currentUser.balance} >= amount ? amount : ${currentUser.balance};
+			var max = ${fiBankbookBalance.balance} >= amount ? amount : ${fiBankbookBalance.balance};
+			if (parseFloat($this.val()) > max) {
+				$this.val(max);
+			}
+		} else {
+			$this.val("0");
+		}
+		calculate();
+	});
+	// 使用券
+	$useCoupon.click(function() {
+		var $this = $(this);
+		if ($this.prop("checked")) {
+			$coupon.prop("disabled", false).parent().show();
+		} else {
+			$coupon.prop("disabled", true).parent().hide();
+		}
+		calculate();
+	});
+	
+	// 券
+	$coupon.keypress(function(event) {
+		return (event.which >= 48 && event.which <= 57) || (event.which == 46 && $(this).val().indexOf(".") < 0) || event.which == 8;
+	});
+	
+	// 券
+	$coupon.change(function() {
+		var $this = $(this);
+		if (/^\d+(\.\d{0,${setting.priceScale}})?$/.test($this.val())) {
+			var max = ${fiBankbookCoupon.balance} >= amount ? amount : ${fiBankbookCoupon.balance};
 			if (parseFloat($this.val()) > max) {
 				$this.val(max);
 			}
@@ -280,7 +322,8 @@ $().ready(function() {
 	$submit.click(function() {
 		if (amountPayable > 0) {
 			if ($paymentMethodId.filter(":checked").size() <= 0) {
-				$.alert("${message("shop.order.paymentMethodRequired")}");
+				//$.alert("${message("shop.order.paymentMethodRequired")}");
+				$.alert("${message("shop.order.credit")}");
 				return false;
 			}
 		} else {
@@ -387,7 +430,7 @@ $().ready(function() {
 					<form id="receiverForm" action="save_receiver" method="post">
 						<div id="receiver" class="receiver">
 							<div class="title">${message("shop.order.receiver")}</div>
-							<ul class="clearfix[#if !currentUser.receivers?has_content] hidden[/#if]">
+							<!-- <ul class="clearfix[#if !currentUser.receivers?has_content] hidden[/#if]">
 								[#list currentUser.receivers as receiver]
 									<li[#if receiver == defaultReceiver] class="selected"[/#if] receiverId="${receiver.id}">
 										<span>
@@ -398,15 +441,33 @@ $().ready(function() {
 										<span>${receiver.phone}</span>
 									</li>
 								[/#list]
+							</ul> -->
+							[#if currentUser.napaStores.napaAddress?has_content]
+							<ul class="clearfix">
+								<li class="selected" receiverId="${currentUser.napaStores.id}">
+									<span>
+										<strong>${currentUser.name}</strong>
+										${message("shop.order.receive")}
+									</span>
+									<span>
+										<strong>${message("${currentUser.country.nameLocal}")} - ${currentUser.country.name}</strong>
+										${message("shop.order.locale")}
+									</span>
+									<span>${currentUser.napaStores.napaAddress}</span>
+									<span>${currentUser.napaStores.mobile}</span>
+								</li>
 							</ul>
-							<div>
+							[#else]
+								${message("shop.order.receiverRequired")}
+							[/#if]
+							<!-- <div>
 								[#if currentUser.receivers?size > 5]
 									<a href="javascript:;" id="otherReceiverButton" class="button">${message("shop.order.otherReceiver")}</a>
 								[/#if]
 								<a href="javascript:;" id="newReceiverButton" class="button[#if currentUser.receivers?size > 5] hidden[/#if]">${message("shop.order.newReceiver")}</a>
-							</div>
+							</div> -->
 						</div>
-						<div id="newReceiver" class="newReceiver[#if currentUser.receivers?has_content] hidden[/#if]">
+						<!-- <div id="newReceiver" class="newReceiver[#if currentUser.receivers?has_content] hidden[/#if]">
 							<table>
 								<tr>
 									<th width="100">
@@ -469,7 +530,7 @@ $().ready(function() {
 									</td>
 								</tr>
 							</table>
-						</div>
+						</div> -->
 					</form>
 				</div>
 			</div>
@@ -483,14 +544,17 @@ $().ready(function() {
 			<div class="row">
 				<div class="span12">
 					[#if order.isDelivery]
-						<input type="hidden" id="receiverId" name="receiverId"[#if defaultReceiver??] value="${defaultReceiver.id}"[/#if] />
+						<!-- <input type="hidden" id="receiverId" name="receiverId"[#if defaultReceiver??] value="${defaultReceiver.id}"[/#if] /> -->
+						<input type="hidden" id="napaStoresId" name="napaStoresId"[#if currentUser.napaStores??] value="${currentUser.napaStores.id}"[/#if] />
 					[/#if]
 					[#if order.type == "general"]
 						<input type="hidden" name="cartTag" value="${cartTag}" />
 					[/#if]
-					<dl id="paymentMethod" class="select[#if order.amountPayable <= 0] hidden[/#if]">
+					<!-- 支付方式 -->
+					<!-- <dl id="paymentMethod" class="select [#if order.amountPayable <= 0] hidden[/#if]">
 						<dt>${message("Order.paymentMethod")}</dt>
 						[#list paymentMethods as paymentMethod]
+							[#if paymentMethod.country == currentUser.country]
 							<dd>
 								<label for="paymentMethod_${paymentMethod.id}">
 									<input type="radio" id="paymentMethod_${paymentMethod.id}" name="paymentMethodId" value="${paymentMethod.id}"[#if paymentMethod == defaultPaymentMethod] checked="checked"[/#if] />
@@ -503,8 +567,10 @@ $().ready(function() {
 									<span>${abbreviate(paymentMethod.description, 100, "...")}</span>
 								</label>
 							</dd>
+							[/#if]
 						[/#list]
-					</dl>
+					</dl> -->
+					<!-- 配送方式 -->
 					[#if order.isDelivery]
 						<dl id="shippingMethod" class="select">
 							<dt>${message("Order.shippingMethod")}</dt>
@@ -524,8 +590,9 @@ $().ready(function() {
 							[/#list]
 						</dl>
 					[/#if]
+					<!-- 税金 -->
 					[#if order.type == "general" && setting.isInvoiceEnabled]
-						<table>
+						<!-- <table>
 							<tr>
 								<th colspan="2">${message("shop.order.invoiceInfo")}</th>
 							</tr>
@@ -548,15 +615,17 @@ $().ready(function() {
 									<input type="text" id="invoiceTitle" name="invoiceTitle" class="text" value="${message("shop.order.defaultInvoiceTitle")}" maxlength="200" disabled="disabled" />
 								</td>
 							</tr>
-						</table>
+						</table> -->
 					[/#if]
 					<table class="sku">
 						<tr>
 							<th width="60">${message("shop.order.image")}</th>
 							<th>${message("shop.order.sku")}</th>
 							<th>${message("shop.order.price")}</th>
+							<th>${message("shop.cart.coupon")}</th>
 							<th>${message("shop.order.quantity")}</th>
 							<th>${message("shop.order.subTotal")}</th>
+							<th>${message("shop.cart.totalCoupon")}</th>
 						</tr>
 						[#list order.orderItems as orderItem]
 							<tr>
@@ -580,11 +649,25 @@ $().ready(function() {
 									[/#if]
 								</td>
 								<td>
+									[#if orderItem.type == "general"]
+										${currency(orderItem.couponPrice, true)}
+									[#else]
+										-
+									[/#if]
+								</td>
+								<td>
 									${orderItem.quantity}
 								</td>
 								<td>
 									[#if orderItem.type == "general"]
 										${currency(orderItem.subtotal, true)}
+									[#else]
+										-
+									[/#if]
+								</td>
+								<td>
+									[#if orderItem.type == "general"]
+										${currency(orderItem.totalCoupon, true)}
 									[#else]
 										-
 									[/#if]
@@ -603,7 +686,7 @@ $().ready(function() {
 						</dd>
 					</dl>
 					[#if order.type == "general"]
-						<dl class="coupon">
+						<!--<dl class="coupon">
 							<dt>${message("shop.order.coupon")}:</dt>
 							<dd>
 								<input type="hidden" id="code" name="code" maxlength="200" />
@@ -611,7 +694,7 @@ $().ready(function() {
 								<span id="couponName">&nbsp;</span>
 								<button type="button" id="couponButton">${message("shop.order.codeConfirm")}</button>
 							</dd>
-						</dl>
+						</dl>-->
 					[/#if]
 				</div>
 				<div class="span6">
@@ -628,9 +711,10 @@ $().ready(function() {
 										${message("Order.tax")}: <em id="tax">${currency(order.tax, true)}</em>
 									</span>
 								[/#if]
-								<span>
+								<!-- <span>
 									${message("Order.rewardPoint")}: <em>${order.rewardPoint}</em>
-								</span>
+								</span> -->
+								
 							[/#if]
 						</li>
 						[#if order.type == "general"]
@@ -652,10 +736,44 @@ $().ready(function() {
 						[/#if]
 						<li>
 							<span>
+								${message("shop.order.couponPrice")}: <em id="couponPrice">${currency(order.couponPrice, true)}</em>
+							</span>
+							<span>
 								${message("Order.amount")}: <strong id="amount">${currency(order.amount, true, true)}</strong>
 							</span>
 						</li>
-						[#if currentUser.balance > 0]
+						<!-- 使用账户余额 -->
+						[#if fiBankbookBalance.type == "balance"]
+							<li[#if order.amount <= 0] class="hidden"[/#if]>
+								<input type="checkbox" id="useBalance" name="useBalance" value="true" />
+								<label for="useBalance">
+									${message("shop.order.useBalance")}
+								</label>
+								<span class="hidden">
+									<input type="text" id="balance" name="balance" class="balance" value="0" maxlength="16" onpaste="return false;" />
+									<p>
+										${message("shop.order.balance")}: 
+										${currency(fiBankbookBalance.balance, true)}
+									</p>
+								</span>
+							</li>
+						[/#if]
+						[#if fiBankbookCoupon.type == "coupon"]
+							<li[#if order.couponPrice <= 0] class="hidden"[/#if]>
+								<input type="checkbox" id="useCoupon" name="useCoupon" value="true" />
+								<label for="useCoupon">
+									${message("shop.order.useCoupon")}
+								</label>
+								<span class="hidden">
+									<input type="text" id="coupon" name="coupon" class="coupon" value="0" maxlength="16" onpaste="return false;" />
+									<p>
+										${message("shop.order.coupon")}: 
+										${currency(fiBankbookCoupon.balance, true)}
+									</p>
+								</span>
+							</li>
+						[/#if]
+						<!-- [#if currentUser.balance > 0]
 							<li[#if order.amount <= 0] class="hidden"[/#if]>
 								<input type="checkbox" id="useBalance" name="useBalance" value="true" />
 								<label for="useBalance">
@@ -666,7 +784,7 @@ $().ready(function() {
 									<p>${message("shop.order.balance")}: ${currency(currentUser.balance, true)}</p>
 								</span>
 							</li>
-						[/#if]
+						[/#if] -->
 					</ul>
 				</div>
 			</div>

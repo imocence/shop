@@ -22,6 +22,7 @@ $().ready(function() {
 	var $promotion = $("#promotion");
 	var $effectiveRewardPoint = $("#effectiveRewardPoint");
 	var $effectivePrice = $("#effectivePrice");
+	var $effectiveCoupon = $("#effectiveCoupon");
 	var $clear = $("#clear");
 	var $checkout = $("#checkout");
 	var timeouts = {};
@@ -87,6 +88,7 @@ $().ready(function() {
 					success: function(data) {
 						$quantity.data("value", quantity);
 						$tr.find("span.subtotal").text(currency(data.subtotal, true));
+						$tr.find("span.totalCoupon").text(currency(data.totalCoupon, true));
 						if (data.giftNames != null && data.giftNames.length > 0) {
 							$gift.html('<dt>${message("Cart.gifts")}:<\/dt>');
 							$.each(data.giftNames, function(i, giftName) {
@@ -102,6 +104,7 @@ $().ready(function() {
 						}
 						$effectiveRewardPoint.text(data.effectiveRewardPoint);
 						$effectivePrice.text(currency(data.effectivePrice, true, true));
+						$effectiveCoupon.text(currency(data.effectiveCoupon, true, true));
 					},
 					error: function() {
 						$quantity.val($quantity.data("value"));
@@ -197,8 +200,10 @@ $().ready(function() {
 							<th>${message("shop.cart.image")}</th>
 							<th>${message("shop.cart.sku")}</th>
 							<th>${message("shop.cart.price")}</th>
+							<th>${message("shop.cart.coupon")}</th>
 							<th>${message("shop.cart.quantity")}</th>
 							<th>${message("shop.cart.subtotal")}</th>
+							<th>${message("shop.cart.totalCoupon")}</th>
 							<th>${message("shop.cart.action")}</th>
 						</tr>
 						[#list currentCart.cartItems as cartItem]
@@ -222,6 +227,9 @@ $().ready(function() {
 								<td>
 									${currency(cartItem.price, true)}
 								</td>
+								<td>
+									${currency(cartItem.couponPrice, true)}
+								</td>
 								<td class="quantity" width="60">
 									<input type="text" name="quantity" value="${cartItem.quantity}" maxlength="4" onpaste="return false;" />
 									<div>
@@ -229,8 +237,11 @@ $().ready(function() {
 										<span class="decrease">&nbsp;</span>
 									</div>
 								</td>
-								<td width="140">
+								<td width="100">
 									<span class="subtotal">${currency(cartItem.subtotal, true)}</span>
+								</td>
+								<td width="100">
+									<span class="totalCoupon">${currency(cartItem.totalCoupon, true)}</span>
 								</td>
 								<td>
 									<a href="javascript:;" class="remove">${message("shop.cart.remove")}</a>
@@ -263,7 +274,8 @@ $().ready(function() {
 						[#if !currentUser??]
 							<em>${message("shop.cart.promotionTips")}</em>
 						[/#if]
-						${message("shop.cart.effectiveRewardPoint")}: <em id="effectiveRewardPoint">${currentCart.effectiveRewardPoint}</em>
+						<!-- ${message("shop.cart.effectiveRewardPoint")}: <em id="effectiveRewardPoint">${currentCart.effectiveRewardPoint}</em> -->
+						${message("shop.cart.effectiveCoupon")}: <em id="effectiveCoupon">${currency(currentCart.effectiveCoupon, true, true)}</em>
 						${message("shop.cart.effectivePrice")}: <strong id="effectivePrice">${currency(currentCart.effectivePrice, true, true)}</strong>
 					</div>
 				</div>

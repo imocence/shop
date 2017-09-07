@@ -50,7 +50,11 @@ public class OrderPayment extends BaseEntity<Long> {
 		/**
 		 * 预存款支付
 		 */
-		deposit
+		deposit,
+		/**
+		 * 预存券支付
+		 */
+		couponBalance
 	}
 
 	/**

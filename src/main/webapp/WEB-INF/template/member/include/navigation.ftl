@@ -23,19 +23,15 @@
 				<dd>
 					<a href="${base}/member/order/list"[#if current == "orderList"] class="current"[/#if]>${message("member.order.list")}</a>
 				</dd>
-				<dd>
+				<!-- <dd>
 					<a href="${base}/member/coupon_code/list"[#if current == "couponCodeList"] class="current"[/#if]>${message("member.couponCode.list")}</a>
 				</dd>
-				[#--<dd>--]
-					[#--<a href="${base}/member/coupon_code/exchange"[#if current == "couponCodeExchange"] class="current"[/#if]>${message("member.couponCode.exchange")}</a>--]
-				[#--</dd>--]
+				<dd>
+					<a href="${base}/member/coupon_code/exchange"[#if current == "couponCodeExchange"] class="current"[/#if]>${message("member.couponCode.exchange")}</a>
+				</dd>
 				<dd>
 					<a href="${base}/member/point_log/list"[#if current == "pointLogList"] class="current"[/#if]>${message("member.pointLog.list")}</a>
-				</dd>
-                <dd>
-                    <a href="${base}/member/coupon_code/transfer_record"[#if current == "couponCodeTransferRecord"] class="current"[/#if]>${message("member.couponCode.transfer")}</a>
-                </dd>
-
+				</dd> -->
 			</dl>
 			<dl>
 				<dt>${message("member.navigation.productFavorite")}</dt>

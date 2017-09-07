@@ -46,18 +46,14 @@
 						<div class="col-xs-3 text-center">
 							<a class="icon" href="product_favorite/list">
 								<span class="fa fa-heart-o gray"></span>
-								[#if productFavoriteCount !=0]
 								<span class="badge">${productFavoriteCount}</span>
-                                [/#if]
 								${message("member.index.productFavoriteCount")}
 							</a>
 						</div>
 						<div class="col-xs-3 text-center">
 							<a class="icon" href="product_notify/list">
 								<span class="fa fa-envelope-o gray"></span>
-								[#if productNotifyCount !=0]
 								<span class="badge">${productNotifyCount}</span>
-								[/#if]
 								${message("member.index.productNotifyCount")}
 							</a>
 						</div>
@@ -144,29 +140,6 @@
 						<div class="list-group-item">
 							<div class="row">
 								<div class="col-xs-4 text-center">
-									<a class="icon" href="coupon_code/list">
-										<span class="fa fa-ticket orange-lighter"></span>
-										${message("member.couponCode.list")}
-									</a>
-								</div>
-								<div class="col-xs-4 text-center">
-									<a class="icon" href="coupon_code/exchange">
-										<span class="fa fa-exchange green-darker"></span>
-										${message("member.couponCode.exchange")}
-									</a>
-								</div>
-
-								<div class="col-xs-4 text-center">
-									<a class="icon" href="point_log/list">
-										<span class="fa fa-gift purple-lighter"></span>
-										${message("member.pointLog.list")}
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="list-group-item">
-							<div class="row">
-								<div class="col-xs-4 text-center">
 									<a class="icon" href="deposit/recharge">
 										<span class="fa fa-money magenta"></span>
 										${message("member.deposit.recharge")}
@@ -178,14 +151,31 @@
 										${message("member.deposit.log")}
 									</a>
 								</div>
-                                <div class="col-xs-4 text-center">
-                                    <a class="icon" href="coupon_code/transfer_record">
-                                        <span class="fa fa-exchange green-darker"></span>
-									${message("member.couponCode.transfer")}
-                                    </a>
-                                </div>
 							</div>
 						</div>
+						<!-- 我的积分，我的优惠券，兑换优惠券 -->
+						<!-- <div class="list-group-item">
+							<div class="row">
+								<!-- <div class="col-xs-4 text-center">
+									<a class="icon" href="point_log/list">
+										<span class="fa fa-gift purple-lighter"></span>
+										${message("member.pointLog.list")}
+									</a>
+								</div>
+								<div class="col-xs-4 text-center">
+									<a class="icon" href="coupon_code/list">
+										<span class="fa fa-ticket orange-lighter"></span>
+										${message("member.couponCode.list")}
+									</a>
+								</div>
+								<div class="col-xs-4 text-center">
+									<a class="icon" href="coupon_code/exchange">
+										<span class="fa fa-exchange green-darker"></span>
+										${message("member.couponCode.exchange")}
+									</a>
+								</div>
+							</div>
+						</div> -->
 					</div>
 				</div>
 			</div>
@@ -198,15 +188,6 @@
 					</a>
 				</div>
 			</div>
-            <div class="list-group list-group-flat">
-                <div class="list-group-item">
-				${message("member.navigation.languageSetting")}
-                    <a class="pull-right gray-darker" href="receiver/language">
-					${message("member.navigation.languageSetting")}
-                        <span class="glyphicon glyphicon-menu-right"></span>
-                    </a>
-                </div>
-            </div>
 			<div class="list-group list-group-flat">
 				<div class="list-group-item">
 					${message("member.profile.edit")}
