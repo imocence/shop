@@ -5,19 +5,13 @@
  */
 package net.shopxx.controller.admin;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.shopxx.Message;
 import net.shopxx.entity.Country;
@@ -27,6 +21,17 @@ import net.shopxx.service.BrandService;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.ProductCategoryService;
 import net.shopxx.service.PromotionService;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.alibaba.fastjson.JSONArray;
 
 /**
  * Controller - 商品分类
@@ -179,6 +184,28 @@ public class ProductCategoryController extends BaseController {
 		}
 		productCategoryService.delete(id);
 		return Message.success(SUCCESS_MESSAGE);
+	}
+	
+	/**
+	 * 根据国家选择分类
+	 */
+	@GetMapping("/findTree")
+	public @ResponseBody JSONArray findTree(@RequestParam("country") String country) {
+		JSONArray data = new JSONArray();
+		// 获取国家
+		Country countryBean = countryService.findByName(country);
+		List<ProductCategory> list = productCategoryService.findTree(countryBean);
+		if (null != list) {
+			for (ProductCategory category : list) {
+				// 会员编号、姓名、余额、收货地址、手机号、会员角色
+				Map<String, Object> item = new HashMap<>();
+				item.put("id", category.getId());
+				item.put("name", category.getName());
+				item.put("grade", category.getGrade());
+				data.add(item);
+			}
+		}
+		return data;
 	}
 
 }

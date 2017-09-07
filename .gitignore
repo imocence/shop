@@ -1,5 +1,6 @@
 .project
 .classpath
 .settings
+shopxx.properties
 /target/
 doc/**
