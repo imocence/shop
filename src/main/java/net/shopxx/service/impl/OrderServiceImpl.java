@@ -11,18 +11,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
@@ -45,6 +36,8 @@ import net.shopxx.entity.CartItem;
 import net.shopxx.entity.Coupon;
 import net.shopxx.entity.CouponCode;
 import net.shopxx.entity.DepositLog;
+import net.shopxx.entity.FiBankbookBalance;
+import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.Invoice;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.Order;
@@ -67,6 +60,7 @@ import net.shopxx.entity.StockLog;
 import net.shopxx.entity.User;
 import net.shopxx.service.AreaService;
 import net.shopxx.service.CouponCodeService;
+import net.shopxx.service.FiBankbookJournalService;
 import net.shopxx.service.MailService;
 import net.shopxx.service.MemberService;
 import net.shopxx.service.OrderItemService;
@@ -76,9 +70,20 @@ import net.shopxx.service.ShippingMethodService;
 import net.shopxx.service.SkuService;
 import net.shopxx.service.SmsService;
 import net.shopxx.service.UserService;
+import net.shopxx.util.NumberUtil;
 import net.shopxx.util.SystemUtils;
 import net.shopxx.util.TimeUtil;
 import net.shopxx.util.WebUtils;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 /**
  * Service - 订单
@@ -127,6 +132,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	private OrderItemService orderItemService;
 	@Inject 
 	private AreaService areaService;
+	@Inject
+	private FiBankbookJournalService fiBankbookJournalService;
+	
 	@Value("${url.signature}")
 	private String urlSignature;
 	@Value("${url.path}")
@@ -695,7 +703,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			orderPayment.setAmount(balance);
 			orderPayment.setFee(BigDecimal.ZERO);
 			orderPayment.setOrder(order);
-			payment(order, orderPayment);
+			try {
+				payment(order, orderPayment);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		mailService.sendCreateOrderMail(order);
@@ -706,6 +718,155 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		}
 
 		return order;
+	}
+	
+	/**
+	 * 后台订单创建
+	 * 
+	 * @param order
+	 *            订单
+	 * @param paymentMethod
+	 *            支付方式
+	 * @param shippingMethod
+	 *            配送方式
+	 * @return 订单
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	public boolean create(Order order, Member member, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice) throws Exception{
+		// 校验库存
+		Setting setting = SystemUtils.getSetting();
+		
+		order.setSn(snDao.generate(Sn.Type.order));
+		order.setType(Order.Type.general);
+		order.setFee(BigDecimal.ZERO);
+		order.setOffsetAmount(BigDecimal.ZERO);
+		order.setOffsetCouponAmount(BigDecimal.ZERO);
+		order.setAmountPaid(BigDecimal.ZERO);
+		order.setCouponAmountPaid(BigDecimal.ZERO);
+		order.setRefundAmount(BigDecimal.ZERO);
+		order.setCouponRefundAmount(BigDecimal.ZERO);
+		order.setRewardPoint(BigDecimal.ZERO.longValue());
+		order.setExchangePoint(BigDecimal.ZERO.longValue());
+		order.setShippedQuantity(0);
+		order.setReturnedQuantity(0);
+//		order.setConsignee(receiver.getConsignee());
+//		order.setAreaName(receiver.getAreaName());
+//		order.setAddress(receiver.getAddress());
+		order.setZipCode("123456");
+//		order.setPhone(receiver.getPhone());
+//		order.setArea(receiver.getArea());
+		order.setIsUseCouponCode(false);
+		order.setIsExchangePoint(false);
+		order.setIsAllocatedStock(false);
+		order.setInvoice(null);
+		order.setShippingMethod(shippingMethod);
+		order.setMember(member);
+		order.setPromotionNames(null);
+		order.setCoupons(null);
+		order.setTax(calculateTax(order));
+//		order.setAmount(calculateAmount(order));
+		order.setSource(Order.Source.system);
+		order.setCouponDiscount(BigDecimal.ZERO);
+//		order.setCouponPrice(order.getCouponAmount());
+//		order.setPrice(order.getAmount());
+		order.setPromotionDiscount(BigDecimal.ZERO);
+		order.setCouponPricePaid(BigDecimal.ZERO);
+		BigDecimal amount = order.getAmount();
+		BigDecimal couponAmount = order.getCouponAmount();
+		// 获取用户余额
+		BigDecimal userBalance = new BigDecimal("0.00");
+		BigDecimal userCouponbalance = new BigDecimal("0.00");
+		Set<FiBankbookBalance> set = member.getFiBankbookBalances();
+		if (null != set) {
+			for (FiBankbookBalance fiBankbookBalance : set) {
+				if (FiBankbookBalance.Type.balance == fiBankbookBalance.getType()) {
+					userBalance = fiBankbookBalance.getBalance();
+				}else if (FiBankbookBalance.Type.coupon == fiBankbookBalance.getType()) {
+					userCouponbalance = fiBankbookBalance.getBalance();
+				}
+			}
+		}
+		// 校验余额
+		if (userBalance.compareTo(order.getAmount()) < 0 || userCouponbalance.compareTo(order.getCouponAmount()) < 0) {
+			throw new IllegalArgumentException("余额不足");
+		}
+		BigDecimal amountPayable = order.getAmount();
+		if (amountPayable.compareTo(BigDecimal.ZERO) > 0) {
+			if (paymentMethod == null) {
+				throw new IllegalArgumentException("支付方式不存在");
+			}
+			order.setStatus(PaymentMethod.Type.deliveryAgainstPayment.equals(paymentMethod.getType()) ? Order.Status.pendingPayment : Order.Status.pendingReview);
+			order.setPaymentMethod(paymentMethod);
+			if (paymentMethod.getTimeout() != null && Order.Status.pendingPayment.equals(order.getStatus())) {
+				order.setExpire(DateUtils.addMinutes(new Date(), paymentMethod.getTimeout()));
+			}
+		} else {
+			order.setStatus(Order.Status.pendingReview);
+			order.setPaymentMethod(null);
+		}
+		
+		List<OrderItem> orderItems = new ArrayList<OrderItem>();
+		List<OrderItem> curOrderItems = order.getOrderItems();
+		// 获取重量和数量
+		Integer totalQuantity = BigDecimal.ZERO.intValue();
+		Integer totalWeight = BigDecimal.ZERO.intValue();
+		if (null != curOrderItems) {
+			for (OrderItem curOrderItem : curOrderItems) {
+				OrderItem orderItem = new OrderItem();
+				String sn = curOrderItem.getSn();
+				Product product = productService.findBySn(sn);
+				Sku sku = skuService.findBySn(sn);
+				orderItem.setSn(curOrderItem.getSn());
+				orderItem.setName(product.getName());
+				orderItem.setType(product.getType());
+				orderItem.setPrice(curOrderItem.getPrice());
+				orderItem.setCouponPrice(curOrderItem.getCouponPrice());
+				Integer weight = NumberUtil.getInt(product.getWeight()) * curOrderItem.getQuantity();
+				totalWeight += weight;
+				totalQuantity += curOrderItem.getQuantity();
+				orderItem.setWeight(weight);
+				orderItem.setIsDelivery(sku.getIsDelivery());
+				orderItem.setThumbnail(product.getThumbnail());
+				orderItem.setQuantity(curOrderItem.getQuantity());
+				orderItem.setShippedQuantity(0);
+				orderItem.setReturnedQuantity(0);
+				orderItem.setSku(sku);
+				orderItem.setOrder(order);
+				orderItem.setSpecifications(sku.getSpecifications());
+				orderItems.add(orderItem);
+			}
+		}
+		order.setOrderItems(orderItems);
+		order.setWeight(totalWeight);
+		order.setQuantity(totalQuantity);
+		if (totalQuantity <= 0) {
+			throw new IllegalArgumentException("订单商品数为0");
+		}
+		orderDao.persist(order);
+
+		OrderLog orderLog = new OrderLog();
+		orderLog.setType(OrderLog.Type.create);
+		orderLog.setOrder(order);
+		orderLogDao.persist(orderLog);
+
+		exchangePoint(order);
+		if (Setting.StockAllocationTime.order.equals(setting.getStockAllocationTime())
+				|| (Setting.StockAllocationTime.payment.equals(setting.getStockAllocationTime()) && (order.getAmountPaid().compareTo(BigDecimal.ZERO) > 0 || order.getExchangePoint() > 0 || order.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0))) {
+			allocateStock(order);
+		}
+		
+		// 余额支付
+		OrderPayment orderPayment = new OrderPayment();
+		orderPayment.setMethod(OrderPayment.Method.deposit);
+		orderPayment.setAmount(amount);
+		orderPayment.setCouponAmount(couponAmount);
+		orderPayment.setFee(BigDecimal.ZERO);
+		orderPayment.setOrder(order);
+		payment(order, orderPayment);
+		
+		mailService.sendCreateOrderMail(order);
+		smsService.sendCreateOrderSms(order);
+		return true;
 	}
 
 	public void modify(Order order) {
@@ -780,7 +941,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		smsService.sendReviewOrderSms(order);
 	}
 
-	public void payment(Order order, OrderPayment orderPayment) {
+	public void payment(Order order, OrderPayment orderPayment) throws Exception {
 		Assert.notNull(order);
 		Assert.isTrue(!order.isNew());
 		Assert.notNull(orderPayment);
@@ -791,11 +952,16 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		orderPayment.setSn(snDao.generate(Sn.Type.orderPayment));
 		orderPayment.setOrder(order);
 		orderPaymentDao.persist(orderPayment);
-
-		if (order.getMember() != null && OrderPayment.Method.deposit.equals(orderPayment.getMethod())) {
-			memberService.addBalance(order.getMember(), orderPayment.getEffectiveAmount().negate(), DepositLog.Type.orderPayment, null);
+		Member member = order.getMember();
+		if (member != null && OrderPayment.Method.deposit.equals(orderPayment.getMethod())) {
+//			memberService.addBalance(order.getMember(), orderPayment.getEffectiveAmount().negate(), DepositLog.Type.orderPayment, null);
+			String notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 电子币账户消费" + orderPayment.getAmount();
+			fiBankbookJournalService.recharge(member.getUsercode(), orderPayment.getAmount(), null, 
+					FiBankbookJournal.Type.balance.ordinal(), FiBankbookJournal.DealType.takeout.ordinal(), FiBankbookJournal.MoneyType.cash.ordinal(), notes);
+			notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 购物券账户消费" + orderPayment.getCouponAmount();
+			fiBankbookJournalService.recharge(member.getUsercode(), orderPayment.getCouponAmount(), null, 
+					FiBankbookJournal.Type.coupon.ordinal(), FiBankbookJournal.DealType.takeout.ordinal(), FiBankbookJournal.MoneyType.cash.ordinal(), notes);
 		}
-
 		Setting setting = SystemUtils.getSetting();
 		if (Setting.StockAllocationTime.payment.equals(setting.getStockAllocationTime())) {
 			allocateStock(order);
@@ -816,7 +982,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		mailService.sendPaymentOrderMail(order);
 		smsService.sendPaymentOrderSms(order);
 	}
-
+	
 	public void refunds(Order order, OrderRefunds orderRefunds) {
 		Assert.notNull(order);
 		Assert.isTrue(!order.isNew());

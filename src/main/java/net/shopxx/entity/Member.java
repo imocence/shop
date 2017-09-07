@@ -388,6 +388,13 @@ public class Member extends User {
 	private Country country;
 	
 	/**
+	 * 余额
+	 */
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+	private Set<FiBankbookBalance> fiBankbookBalances = new HashSet<>();	
+	
+	
+	/**
 	 * 获取用户名
 	 * 
 	 * @return 用户名
@@ -1393,5 +1400,13 @@ public class Member extends User {
 
 	public void setCountry(Country country) {
 		this.country = country;
+	}
+
+	public Set<FiBankbookBalance> getFiBankbookBalances() {
+		return fiBankbookBalances;
+	}
+
+	public void setFiBankbookBalances(Set<FiBankbookBalance> fiBankbookBalances) {
+		this.fiBankbookBalances = fiBankbookBalances;
 	}
 }

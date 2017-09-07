@@ -21,6 +21,7 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import net.shopxx.BaseAttributeConverter;
+import net.shopxx.entity.BaseEntity.BaseView;
 
 /**
  * Entity - 订单项
@@ -57,7 +58,14 @@ public class OrderItem extends BaseEntity<Long> {
 	 */
 	@Column(nullable = false, updatable = false, precision = 21, scale = 6)
 	private BigDecimal price;
-
+	
+	/**
+	 * 购物券
+	 */
+	@JsonView(BaseView.class)
+	@Column(name="coupon_price", nullable = false, updatable = false, precision = 21, scale = 6)
+	private BigDecimal couponPrice;
+	
 	/**
 	 * 重量
 	 */
@@ -361,6 +369,14 @@ public class OrderItem extends BaseEntity<Long> {
 	 */
 	public void setSpecifications(List<String> specifications) {
 		this.specifications = specifications;
+	}
+	
+	public BigDecimal getCouponPrice() {
+		return couponPrice;
+	}
+
+	public void setCouponPrice(BigDecimal couponPrice) {
+		this.couponPrice = couponPrice;
 	}
 
 	/**

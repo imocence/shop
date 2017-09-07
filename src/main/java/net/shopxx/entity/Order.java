@@ -86,6 +86,21 @@ public class Order extends BaseEntity<Long> {
 		 */
 		exchange
 	}
+	
+	/**
+	 * 来源
+	 */
+	public enum Source {
+		/**
+		 * 用户订单
+		 */
+		member,
+
+		/**
+		 * 系统订单
+		 */
+		system
+	}
 
 	/**
 	 * 状态
@@ -151,6 +166,13 @@ public class Order extends BaseEntity<Long> {
 	@JsonView(BaseView.class)
 	@Column(nullable = false, updatable = false)
 	private Order.Type type;
+	
+	/**
+	 * 来源
+	 */
+	@JsonView(BaseView.class)
+	@Column(nullable = false, columnDefinition="INT default 0", updatable = false)
+	private Order.Source source;
 
 	/**
 	 * 状态
@@ -165,6 +187,13 @@ public class Order extends BaseEntity<Long> {
 	@JsonView(BaseView.class)
 	@Column(nullable = false, updatable = false, precision = 21, scale = 6)
 	private BigDecimal price;
+	
+	/**
+	 * 购物券
+	 */
+	@JsonView(BaseView.class)
+	@Column(name="coupon_price", nullable = false, updatable = false, precision = 21, scale = 6)
+	private BigDecimal couponPrice;
 
 	/**
 	 * 支付手续费
@@ -208,6 +237,14 @@ public class Order extends BaseEntity<Long> {
 	@Digits(integer = 12, fraction = 3)
 	@Column(nullable = false, precision = 21, scale = 6)
 	private BigDecimal offsetAmount;
+	
+	/**
+	 * 调整购物券金额
+	 */
+	@NotNull
+	@Digits(integer = 12, fraction = 3)
+	@Column(nullable = false, precision = 21, scale = 6)
+	private BigDecimal offsetCouponAmount;
 
 	/**
 	 * 订单金额
@@ -215,18 +252,43 @@ public class Order extends BaseEntity<Long> {
 	@JsonView(BaseView.class)
 	@Column(nullable = false, precision = 21, scale = 6)
 	private BigDecimal amount;
+	
+	/**
+	 * 订单购物券金额
+	 */
+	@JsonView(BaseView.class)
+	@Column(nullable = false, precision = 21, scale = 6)
+	private BigDecimal couponAmount;
 
 	/**
 	 * 已付金额
 	 */
 	@Column(nullable = false, precision = 21, scale = 6)
 	private BigDecimal amountPaid;
+	
+	/**
+	 * 购物券已付金额
+	 */
+	@Column(nullable = false, precision = 21, scale = 6)
+	private BigDecimal couponAmountPaid;
 
 	/**
 	 * 退款金额
 	 */
 	@Column(nullable = false, precision = 21, scale = 6)
 	private BigDecimal refundAmount;
+	
+	/**
+	 * 购物券退款金额
+	 */
+	@Column(nullable = false, precision = 21, scale = 6)
+	private BigDecimal couponRefundAmount;
+	
+	/**
+	 * 购物券已付价格
+	 */
+	@Column(nullable = false, precision = 21, scale = 6)
+	private BigDecimal couponPricePaid;
 
 	/**
 	 * 赠送积分
@@ -1361,6 +1423,62 @@ public class Order extends BaseEntity<Long> {
 	 */
 	public void setOrderLogs(Set<OrderLog> orderLogs) {
 		this.orderLogs = orderLogs;
+	}
+	
+	public Order.Source getSource() {
+		return source;
+	}
+
+	public void setSource(Order.Source source) {
+		this.source = source;
+	}
+	
+	public BigDecimal getCouponPrice() {
+		return couponPrice;
+	}
+
+	public void setCouponPrice(BigDecimal couponPrice) {
+		this.couponPrice = couponPrice;
+	}
+	
+	public BigDecimal getOffsetCouponAmount() {
+		return offsetCouponAmount;
+	}
+
+	public void setOffsetCouponAmount(BigDecimal offsetCouponAmount) {
+		this.offsetCouponAmount = offsetCouponAmount;
+	}
+
+	public BigDecimal getCouponAmount() {
+		return couponAmount;
+	}
+
+	public void setCouponAmount(BigDecimal couponAmount) {
+		this.couponAmount = couponAmount;
+	}
+
+	public BigDecimal getCouponAmountPaid() {
+		return couponAmountPaid;
+	}
+
+	public void setCouponAmountPaid(BigDecimal couponAmountPaid) {
+		this.couponAmountPaid = couponAmountPaid;
+	}
+
+	public BigDecimal getCouponRefundAmount() {
+		return couponRefundAmount;
+	}
+
+	public void setCouponRefundAmount(BigDecimal couponRefundAmount) {
+		this.couponRefundAmount = couponRefundAmount;
+	}
+	
+	public BigDecimal getCouponPricePaid() {
+		return couponPricePaid;
+	}
+
+	public void setCouponPricePaid(BigDecimal couponPricePaid) {
+		this.couponPricePaid = couponPricePaid;
 	}
 
 	/**
