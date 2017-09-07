@@ -596,7 +596,7 @@ $().ready(function() {
 				</td>
 			</tr>
 			<tr>
-				<td colspan="10">
+				<td colspan="11">
 					<a href="javascript:;" id="addProduct" class="button">新增商品</a>
 				</td>
 			</tr>
@@ -642,7 +642,7 @@ $().ready(function() {
 					&nbsp;
 				</th>
 				<td>
-					<input id="submit" type="submit" class="button" value="${message("admin.common.submit")}" />
+					<input type="submit" class="button" value="${message("admin.common.submit")}" />
 					<input type="button" class="button" value="${message("admin.common.back")}" onclick="history.back(); return false;" />
 				</td>
 			</tr>

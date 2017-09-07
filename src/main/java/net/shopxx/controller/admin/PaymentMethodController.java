@@ -59,12 +59,13 @@ public class PaymentMethodController extends BaseController {
 	 * 保存
 	 */
 	@PostMapping("/save")
-	public String save(PaymentMethod paymentMethod, RedirectAttributes redirectAttributes) {
+	public String save(PaymentMethod paymentMethod, String countryName, RedirectAttributes redirectAttributes) {
 		if (!isValid(paymentMethod)) {
 			return ERROR_VIEW;
 		}
 		paymentMethod.setShippingMethods(null);
 		paymentMethod.setOrders(null);
+		paymentMethod.setCountry(countryService.findByName(countryName));
 		paymentMethodService.save(paymentMethod);
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -85,10 +86,11 @@ public class PaymentMethodController extends BaseController {
 	 * 更新
 	 */
 	@PostMapping("/update")
-	public String update(PaymentMethod paymentMethod, RedirectAttributes redirectAttributes) {
+	public String update(PaymentMethod paymentMethod, String countryName, RedirectAttributes redirectAttributes) {
 		if (!isValid(paymentMethod)) {
 			return ERROR_VIEW;
 		}
+		paymentMethod.setCountry(countryService.findByName(countryName));
 		paymentMethodService.update(paymentMethod, "shippingMethods", "orders");
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -98,7 +100,8 @@ public class PaymentMethodController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Pageable pageable, ModelMap model) {
+	public String list(String countryName, Pageable pageable, ModelMap model) {
+		countrySelect(countryName, pageable, model, countryService);
 		model.addAttribute("page", paymentMethodService.findPage(pageable));
 		return "admin/payment_method/list";
 	}

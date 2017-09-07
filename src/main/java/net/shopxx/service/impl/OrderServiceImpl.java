@@ -862,6 +862,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		orderPayment.setCouponAmount(couponAmount);
 		orderPayment.setFee(BigDecimal.ZERO);
 		orderPayment.setOrder(order);
+		orderPayment.setCountry(order.getCountry());
 		payment(order, orderPayment);
 		
 		mailService.sendCreateOrderMail(order);

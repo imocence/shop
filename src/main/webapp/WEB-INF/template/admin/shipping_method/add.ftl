@@ -13,6 +13,7 @@
 <script type="text/javascript" src="${base}/resources/admin/js/webuploader.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/common.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/input.js"></script>
+<script type="text/javascript" src="${base}/resources/admin/js/simpleuploader.js"></script>
 <style type="text/css">
 .paymentMethods label {
 	width: 150px;
@@ -26,11 +27,30 @@ $().ready(function() {
 
 	var $inputForm = $("#inputForm");
 	var $filePicker = $("#filePicker");
+	var $country = $("#country");
+	var $paymentMethodTd = $("#paymentMethodTd");
 	
 	[@flash_message /]
 	
-	$filePicker.uploader();
+	$filePicker.initUploader("icon");
 	
+	$country.change(function(){
+		// ajax获取paymentMethod
+		$.ajax({
+			url: "${base}/admin/payment_method/listByCountry",
+			type: "GET",
+			data: {countryName: $country.val()},
+			dataType: "json",
+			cache: false,
+			success: function(message) {
+				$paymentMethodTd.empty();
+			 	var obj = eval('(' + message + ')');
+				$.each(obj, function (index,item){
+					$paymentMethodTd.append('<label><input type="checkbox" name="paymentMethodIds" value="' + item.id + '" />' + item.name + '</label>');
+				});
+			}
+		});
+	});	
 	// 表单验证
 	$inputForm.validate({
 		rules: {
@@ -76,6 +96,20 @@ $().ready(function() {
 	</div>
 	<form id="inputForm" action="save" method="post">
 		<table class="input">
+			<tr>
+				<th>
+					<span class="requiredField">*</span>${message("common.country")}:
+				</th>
+				<td>
+					<select id="country" name="countryName">
+						[@country_list]
+							[#list countrys as country]
+								<option value="${country.name}">${message("${country.nameLocal}")}</option>
+							[/#list]
+						[/@country_list]
+					</select>
+				</td>
+			</tr>
 			<tr>
 				<th>
 					<span class="requiredField">*</span>${message("ShippingMethod.name")}:
@@ -137,7 +171,7 @@ $().ready(function() {
 				</th>
 				<td>
 					<span class="fieldSet">
-						<input type="text" name="icon" class="text" maxlength="200" />
+						<input type="text" id="icon" name="icon" class="text" maxlength="200" />
 						<a href="javascript:;" id="filePicker" class="button">${message("admin.upload.filePicker")}</a>
 					</span>
 				</td>
@@ -146,7 +180,7 @@ $().ready(function() {
 				<th>
 					${message("ShippingMethod.paymentMethods")}:
 				</th>
-				<td>
+				<td id="paymentMethodTd">
 					[#list paymentMethods as paymentMethod]
 						<label>
 							<input type="checkbox" name="paymentMethodIds" value="${paymentMethod.id}" />${paymentMethod.name}

@@ -131,7 +131,14 @@ public class OrderPayment extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "orders", nullable = false, updatable = false)
 	private Order order;
-
+	
+	/**
+	 * 国家
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
+	
 	/**
 	 * 获取编号
 	 * 
@@ -328,6 +335,14 @@ public class OrderPayment extends BaseEntity<Long> {
 
 	public void setCouponAmount(BigDecimal couponAmount) {
 		this.couponAmount = couponAmount;
+	}
+	
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
 	}
 
 	/**

@@ -174,6 +174,7 @@ public class OrderController extends BaseController {
 	/**
 	 * 添加订单
 	 * @param order 订单
+	 * @param countryName 国家
 	 * @param usercode 会员usercode
 	 * @param consignee 收货人
 	 * @param phone 收货电话
@@ -190,7 +191,7 @@ public class OrderController extends BaseController {
 	 * @return
 	 */
 	@PostMapping("/save")
-	public String save(Order order, String usercode, String consignee, String phone, String address, Long paymentMethodId, Long shippingMethodId, String memo, BigDecimal freight, BigDecimal amount, BigDecimal couponAmount, @CurrentUser Admin currentUser, RedirectAttributes redirectAttributes){
+	public String save(Order order, String countryName, String usercode, String consignee, String phone, String address, Long paymentMethodId, Long shippingMethodId, String memo, BigDecimal freight, BigDecimal amount, BigDecimal couponAmount, @CurrentUser Admin currentUser, RedirectAttributes redirectAttributes){
 		ShippingMethod shippingMethod = shippingMethodService.find(shippingMethodId);
 		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
 		Member member = memberService.findByUsercode(usercode);
@@ -207,6 +208,7 @@ public class OrderController extends BaseController {
 			return "redirect:list";
 		}
 		try {
+			order.setCountry(countryService.findByName(countryName));
 			orderService.create(order, member, paymentMethod, shippingMethod, null, null);
 		} catch (Exception e) {
 			e.printStackTrace();

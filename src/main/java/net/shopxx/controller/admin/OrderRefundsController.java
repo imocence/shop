@@ -14,9 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import net.shopxx.Filter;
 import net.shopxx.Message;
 import net.shopxx.Pageable;
+import net.shopxx.entity.Country;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.OrderRefundsService;
+import net.shopxx.util.StringUtil;
 
 /**
  * Controller - 订单退款
@@ -30,7 +34,10 @@ public class OrderRefundsController extends BaseController {
 
 	@Inject
 	private OrderRefundsService orderRefundsService;
-
+	
+	@Inject
+	private CountryService countryService;
+	
 	/**
 	 * 查看
 	 */
@@ -44,7 +51,8 @@ public class OrderRefundsController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Pageable pageable, ModelMap model) {
+	public String list(String countryName, Pageable pageable, ModelMap model) {
+		countrySelect(countryName, pageable, model, countryService);
 		model.addAttribute("page", orderRefundsService.findPage(pageable));
 		return "admin/order_refunds/list";
 	}

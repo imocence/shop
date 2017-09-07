@@ -512,7 +512,14 @@ public class Order extends BaseEntity<Long> {
 	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@OrderBy("createdDate asc")
 	private Set<OrderLog> orderLogs = new HashSet<>();
-
+	
+	/**
+	 * 国家
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
+	
 	/**
 	 * 获取编号
 	 * 
@@ -1479,6 +1486,14 @@ public class Order extends BaseEntity<Long> {
 
 	public void setCouponPricePaid(BigDecimal couponPricePaid) {
 		this.couponPricePaid = couponPricePaid;
+	}
+	
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
 	}
 
 	/**

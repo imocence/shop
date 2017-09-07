@@ -14,6 +14,7 @@
 <script type="text/javascript" src="${base}/resources/admin/ueditor/ueditor.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/common.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/input.js"></script>
+<script type="text/javascript" src="${base}/resources/admin/js/simpleuploader.js"></script>
 <script type="text/javascript">
 $().ready(function() {
 
@@ -23,7 +24,7 @@ $().ready(function() {
 	
 	[@flash_message /]
 	
-	$filePicker.uploader();
+	$filePicker.initUploader("icon");
 	
 	$content.editor();
 	
@@ -52,6 +53,20 @@ $().ready(function() {
 	<form id="inputForm" action="update" method="post">
 		<input type="hidden" name="id" value="${paymentMethod.id}" />
 		<table class="input">
+			<tr>
+				<th>
+					<span class="requiredField">*</span>${message("common.country")}:
+				</th>
+				<td>
+					<select name="countryName">
+						[@country_list]
+							[#list countrys as country]
+								<option value="${country.name}"[#if country.name == paymentMethod.country.name] selected="selected"[/#if]>${message("${country.nameLocal}")}</option>
+							[/#list]
+						[/@country_list]
+					</select>
+				</td>
+			</tr>
 			<tr>
 				<th>
 					<span class="requiredField">*</span>${message("PaymentMethod.name")}:
@@ -98,7 +113,7 @@ $().ready(function() {
 				</th>
 				<td>
 					<span class="fieldSet">
-						<input type="text" name="icon" class="text" value="${paymentMethod.icon}" maxlength="200" />
+						<input type="text" id="icon" name="icon" class="text" value="${paymentMethod.icon}" maxlength="200" />
 						<a href="javascript:;" id="filePicker" class="button">${message("admin.upload.filePicker")}</a>
 						[#if paymentMethod.icon??]
 							<a href="${paymentMethod.icon}" target="_blank">${message("admin.common.view")}</a>
