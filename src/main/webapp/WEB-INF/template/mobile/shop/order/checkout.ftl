@@ -93,6 +93,8 @@
 			var receiverListTemplate = _.template($("#receiverListTemplate").html());
 			var amount = ${order.amount};
 			var couponPrice = ${order.couponPrice};
+			var fiBankbookCoupon = ${fiBankbookCoupon.balance};
+			var fiBankbookBalance = ${fiBankbookBalance.balance};
 			var amountPayable = ${order.amountPayable};
 			var paymentMethodIds = {};
 			[@compress single_line = true]
@@ -369,6 +371,10 @@
 						return false;
 					}
 				[/#if]
+				if((fiBankbookBalance-amount) < 0 || (fiBankbookCoupon - amount) < 0){
+					$.alert("${message("shop.order.credit")}");
+					return false;
+				}
 				if (amountPayable > 0) {
 					if ($paymentMethodId.val() == "") {
 						//$.alert("${message("shop.order.paymentMethodRequired")}");
