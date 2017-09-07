@@ -113,13 +113,6 @@ public class PaymentMethod extends OrderedEntity<Long> {
 	@Lob
 	private String content;
 	
-	/**
-	 * 国籍
-	 * @return 国籍
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="country", referencedColumnName="name_cn")
-	private Country country;
 	
 
 	/**
@@ -133,7 +126,16 @@ public class PaymentMethod extends OrderedEntity<Long> {
 	 */
 	@OneToMany(mappedBy = "paymentMethod", fetch = FetchType.LAZY)
 	private Set<Order> orders = new HashSet<>();
-
+	
+	/**
+	 * 获取国家
+	 * 
+	 * @return 国家
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
+	
 	/**
 	 * 获取名称
 	 * 
@@ -304,6 +306,7 @@ public class PaymentMethod extends OrderedEntity<Long> {
 	public void setOrders(Set<Order> orders) {
 		this.orders = orders;
 	}
+
 	/**
 	 * 获得国籍
 	 * @return
@@ -318,6 +321,7 @@ public class PaymentMethod extends OrderedEntity<Long> {
 	public void setCountry(Country country) {
 		this.country = country;
 	}
+
 	/**
 	 * 删除前处理
 	 */
