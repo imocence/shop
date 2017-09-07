@@ -8,11 +8,19 @@ package net.shopxx.dao.impl;
 import java.math.BigDecimal;
 
 import javax.persistence.NoResultException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import net.shopxx.Page;
+import net.shopxx.Pageable;
 import net.shopxx.dao.MemberRankDao;
+import net.shopxx.entity.Brand;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.MemberRank;
 
 /**
@@ -49,5 +57,19 @@ public class MemberRankDaoImpl extends BaseDaoImpl<MemberRank, Long> implements 
 		String jpql = "update MemberRank memberRank set memberRank.isDefault = false where memberRank.isDefault = true and memberRank != :exclude";
 		entityManager.createQuery(jpql).setParameter("exclude", exclude).executeUpdate();
 	}
+
+    @Override
+    public Page<MemberRank> findPage(Country country, Pageable pageable) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<MemberRank> criteriaQuery = criteriaBuilder.createQuery(MemberRank.class);
+        Root<MemberRank> root = criteriaQuery.from(MemberRank.class);
+        criteriaQuery.select(root);
+        Predicate restrictions = criteriaBuilder.conjunction();
+        if (country != null) {
+            restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("country"), country));
+        }
+        criteriaQuery.where(restrictions);
+        return super.findPage(criteriaQuery, pageable);
+    }
 
 }

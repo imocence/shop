@@ -19,7 +19,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.shopxx.Message;
 import net.shopxx.Pageable;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.MemberRank;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.MemberRankService;
 
 /**
@@ -31,6 +33,9 @@ import net.shopxx.service.MemberRankService;
 @Controller("adminMemberRankController")
 @RequestMapping("/admin/member_rank")
 public class MemberRankController extends BaseController {
+    
+    @Inject
+    private CountryService countryService;
 
 	@Inject
 	private MemberRankService memberRankService;
@@ -48,6 +53,7 @@ public class MemberRankController extends BaseController {
 	 */
 	@GetMapping("/add")
 	public String add(ModelMap model) {
+	    model.addAttribute("countries", countryService.findRoots());
 		return "admin/member_rank/add";
 	}
 
@@ -64,6 +70,7 @@ public class MemberRankController extends BaseController {
 		} else if (memberRank.getAmount() == null || memberRankService.amountExists(memberRank.getAmount())) {
 			return ERROR_VIEW;
 		}
+		memberRank.setCountry(countryService.find(memberRank.getCountry().getId()));
 		memberRank.setMembers(null);
 		memberRank.setPromotions(null);
 		memberRankService.save(memberRank);
@@ -76,6 +83,7 @@ public class MemberRankController extends BaseController {
 	 */
 	@GetMapping("/edit")
 	public String edit(Long id, ModelMap model) {
+	    model.addAttribute("countries", countryService.findRoots());
 		model.addAttribute("memberRank", memberRankService.find(id));
 		return "admin/member_rank/edit";
 	}
@@ -100,6 +108,7 @@ public class MemberRankController extends BaseController {
 		} else if (memberRank.getAmount() == null || !memberRankService.amountUnique(id, memberRank.getAmount())) {
 			return ERROR_VIEW;
 		}
+		memberRank.setCountry(countryService.find(memberRank.getCountry().getId()));
 		memberRankService.update(memberRank, "members", "promotions");
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -109,8 +118,11 @@ public class MemberRankController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Pageable pageable, ModelMap model) {
-		model.addAttribute("page", memberRankService.findPage(pageable));
+	public String list(Pageable pageable,Long countryId, ModelMap model) {
+	    model.addAttribute("countries", countryService.findRoots());
+        model.addAttribute("countryId", countryId);
+        Country country = countryService.find(countryId);
+		model.addAttribute("page", memberRankService.findPage(country,pageable));
 		return "admin/member_rank/list";
 	}
 

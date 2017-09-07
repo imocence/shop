@@ -232,6 +232,13 @@
 						<span class="red">${currency(order.amount, true)}</span>
 					</span>
 				</div>
+				<div class="list-group-item">
+					${message("member.order.quantity", order.quantity)}
+					<span class="pull-right">
+						${message("Order.coupon")}:
+						<span class="red">${currency(order.couponPrice, true)}</span>
+					</span>
+				</div>
 				[#if order.paymentMethodName?has_content || order.shippingMethodName?has_content]
 					<div class="list-group-item">
 						${message("Order.paymentMethod")}: ${(order.paymentMethodName)!"-"}
@@ -307,6 +314,12 @@
 					<div class="list-group-item">
 						${message("Order.amountPaid")}
 						<span class="pull-right">${currency(order.amountPaid, true)}</span>
+					</div>
+				[/#if]
+				[#if order.couponPricePaid > 0]
+					<div class="list-group-item">
+						${message("Order.couponPricePaid")}
+						<span class="pull-right">${currency(order.couponPricePaid, true)}</span>
 					</div>
 				[/#if]
 				[#if order.refundAmount > 0]

@@ -7,6 +7,9 @@ package net.shopxx.dao;
 
 import java.math.BigDecimal;
 
+import net.shopxx.Page;
+import net.shopxx.Pageable;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.MemberRank;
 
 /**
@@ -45,5 +48,7 @@ public interface MemberRankDao extends BaseDao<MemberRank, Long> {
 	 *            排除会员等级
 	 */
 	void clearDefault(MemberRank exclude);
+
+    Page<MemberRank> findPage(Country country, Pageable pageable);
 
 }
