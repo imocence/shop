@@ -79,7 +79,9 @@
 			var $couponName = $("#couponName");
 			var $couponCode = $("#couponCode");
 			var $useBalanceItem = $("#useBalanceItem");
+			var $useCouponItem = $("#useCouponItem");
 			var $balance = $("#balance");
+			var $coupon = $("#coupon");
 			var $receiverList = $("#receiverPage div.list-group");
 			var $addReceiverForm = $("#addReceiverForm");
 			var $areaId = $("#areaId");
@@ -90,6 +92,7 @@
 			var currentReceiverTemplate = _.template($("#currentReceiverTemplate").html());
 			var receiverListTemplate = _.template($("#receiverListTemplate").html());
 			var amount = ${order.amount};
+			var couponPrice = ${order.couponPrice};
 			var amountPayable = ${order.amountPayable};
 			var paymentMethodIds = {};
 			[@compress single_line = true]
@@ -209,7 +212,20 @@
 			$balance.change(function() {
 				var $element = $(this);
 				if (/^\d+(\.\d{0,${setting.priceScale}})?$/.test($element.val())) {
-					var max = ${currentUser.balance} >= amount ? amount : ${currentUser.balance};
+					var max = ${fiBankbookBalance.balance} >= amount ? amount : ${fiBankbookBalance.balance};
+					if (parseFloat($element.val()) > max) {
+						$element.val(max);
+					}
+				} else {
+					$element.val("0");
+				}
+				calculate();
+			});
+			// 券
+			$coupon.change(function() {
+				var $element = $(this);
+				if (/^\d+(\.\d{0,${setting.priceScale}})?$/.test($element.val())) {
+					var max = ${fiBankbookCoupon.balance} >= couponPrice ? couponPrice : ${fiBankbookCoupon.balance};
 					if (parseFloat($element.val()) > max) {
 						$element.val(max);
 					}
@@ -347,6 +363,7 @@
 			
 			// 订单提交
 			$submit.click(function() {
+				alert(11);
 				[#if order.isDelivery]
 					if ($receiverId.val() == "") {
 						$.alert("${message("shop.order.receiverRequired")}");
@@ -355,7 +372,8 @@
 				[/#if]
 				if (amountPayable > 0) {
 					if ($paymentMethodId.val() == "") {
-						$.alert("${message("shop.order.paymentMethodRequired")}");
+						//$.alert("${message("shop.order.paymentMethodRequired")}");
+						$.alert("${message("shop.order.credit")}");
 						return false;
 					}
 				} else {
@@ -422,6 +440,9 @@
 							if ($useBalanceItem.is(":hidden")) {
 								$useBalanceItem.velocity("slideDown");
 							}
+							if ($useCouponItem.is(":hidden")) {
+								$useCouponItem.velocity("slideDown");
+							}
 						} else {
 							if ($currentPaymentMethod.is(":visible")) {
 								$currentPaymentMethod.velocity("slideUp");
@@ -431,7 +452,10 @@
 								if ($useBalanceItem.is(":visible")) {
 									$useBalanceItem.velocity("slideUp");
 								}
-								var $toggleItem = $useBalanceItem.find("[data-toggle='item']");
+								if ($useCouponItem.is(":visible")) {
+									$useCouponItem.velocity("slideUp");
+								}
+								var $toggleItem = $useCouponItem.find("[data-toggle='item']");
 								if ($toggleItem.hasClass("active")) {
 									$toggleItem.trigger("click");
 								}
@@ -504,11 +528,11 @@
 						</div>
 					[/#if]
 					<div class="list-group list-group-flat">
-						<div id="currentPaymentMethod" class="[#if order.amountPayable <= 0 ]hidden-element [/#if]list-group-item text-right" data-toggle="page" data-target="#paymentMethodPage">
+						<!--<div id="currentPaymentMethod" class="[#if order.amountPayable <= 0 ]hidden-element [/#if]list-group-item text-right" data-toggle="page" data-target="#paymentMethodPage">
 							<span class="pull-left">${message("Order.paymentMethod")}</span>
 							<span class="name gray-darker">${(defaultPaymentMethod.name)!message("shop.common.choose")}</span>
 							<span class="glyphicon glyphicon-menu-right"></span>
-						</div>
+						</div>-->
 						[#if order.isDelivery]
 							<div id="currentShippingMethod" class="list-group-item text-right" data-toggle="page" data-target="#shippingMethodPage">
 								<span class="pull-left">${message("Order.shippingMethod")}</span>
@@ -550,7 +574,51 @@
 								</div>
 							</div> -->
 						[/#if]
-						[#if currentUser.balance > 0]
+						<!--余额账户-->
+						[#if fiBankbookBalance.type =="balance"]
+							<div id="useBalanceItem" class="[#if order.amountPayable <= 0 ]hidden-element [/#if]list-group-item">
+								<div class="row">
+									<div class="col-xs-3">${message("shop.order.usingBalance")}</div>
+									<div class="col-xs-7">
+										<span class="gray-darker">${currency(fiBankbookBalance.balance, true)}</span>
+									</div>
+									<div class="col-xs-2 text-right">
+										<span class="glyphicon glyphicon-check" data-toggle="item" data-target="#balanceItem"></span>
+									</div>
+								</div>
+							</div>
+							<div id="balanceItem" class="hidden-element list-group-item">
+								<div class="row">
+									<div class="col-xs-3">${message("shop.order.useAmount")}</div>
+									<div class="col-xs-9">
+										<input id="balance" name="balance" type="text" value="0" maxlength="16" onpaste="return false;" disabled>
+									</div>
+								</div>
+							</div>
+						[/#if]
+						<!--券账户-->
+						[#if fiBankbookCoupon.type =="coupon"]
+							<div id="useCouponItem" class="[#if order.couponPrice <= 0 ]hidden-element [/#if]list-group-item">
+								<div class="row">
+									<div class="col-xs-3">${message("shop.order.useCoupon")}</div>
+									<div class="col-xs-7">
+										<span class="gray-darker">${currency(fiBankbookCoupon.balance, true)}</span>
+									</div>
+									<div class="col-xs-2 text-right">
+										<span class="glyphicon glyphicon-check" data-toggle="item" data-target="#couponItem"></span>
+									</div>
+								</div>
+							</div>
+							<div id="couponItem" class="hidden-element list-group-item">
+								<div class="row">
+									<div class="col-xs-3">${message("shop.order.useCoupon")}</div>
+									<div class="col-xs-9">
+										<input id="coupon" name="coupon" type="text" value="0" maxlength="16" onpaste="return false;" disabled>
+									</div>
+								</div>
+							</div>
+						[/#if]
+						<!--[#if currentUser.balance > 0]
 							<div id="useBalanceItem" class="[#if order.amountPayable <= 0 ]hidden-element [/#if]list-group-item">
 								<div class="row">
 									<div class="col-xs-3">${message("shop.order.usingBalance")}</div>
@@ -570,7 +638,7 @@
 									</div>
 								</div>
 							</div>
-						[/#if]
+						[/#if] -->
 						<div class="list-group-item">
 							<div class="row">
 								<div class="col-xs-3">${message("Order.memo")}</div>
@@ -599,6 +667,7 @@
 										[#if orderItem.type != "general"]
 											<strong class="small">[${message("Product.Type." + orderItem.type)}]</strong>
 										[/#if]
+										<span class="small gray-darker">${message("Sku.coupon")}:${currency(orderItem.couponPrice, true)}</span>
 									</div>
 									<div class="media-right media-middle">
 										${currency(orderItem.price, true)}
@@ -616,14 +685,14 @@
 									<strong class="pull-right red">${order.rewardPoint}</strong>
 								</div> -->
 							[/#if]
-							<div class="list-group-item small">
+							<!-- <div class="list-group-item small">
 								${message("Order.promotionDiscount")}
 								<strong class="pull-right red" data-name="promotionDiscount" data-type="currency">${currency(order.promotionDiscount, true)}</strong>
 							</div>
 							<div class="list-group-item small">
 								${message("Order.couponDiscount")}
 								<strong class="pull-right red" data-name="couponDiscount" data-type="currency">${currency(order.couponDiscount, true)}</strong>
-							</div>
+							</div> -->
 							[#if setting.isInvoiceEnabled && setting.isTaxPriceEnabled]
 								<div class="list-group-item small">
 									${message("Order.tax")}
@@ -656,6 +725,7 @@
 								${message("Order.exchangePoint")}:
 								<strong class="red">${order.exchangePoint}</strong>
 							[/#if]
+							${message("Order.coupon")}: <em id="couponPrice">${currency(order.couponPrice, true)}</em>
 						</div>
 						<div class="col-xs-4">
 							<button id="submit" class="btn btn-red btn-flat btn-block" type="button">${message("shop.order.checkout")}</button>
@@ -665,6 +735,7 @@
 			</div>
 		</form>
 	</div>
+	<!-- 查找地址 -->
 	<div id="receiverPage" class="receiver-page page">
 		<div class="header-fixed">
 			<a class="pull-left" href="javascript:;" data-toggle="page" data-target="#mainPage">
@@ -679,6 +750,7 @@
 			<button id="addReceiver" class="btn btn-red btn-flat btn-block" type="button" data-toggle="page" data-target="#addReceiverPage">${message("shop.order.addReceiver")}</button>
 		</div>
 	</div>
+	<!-- 添加收貨地址 -->
 	<div id="addReceiverPage" class="add-receiver-page page">
 		<form id="addReceiverForm" action="receiver_save" method="post">
 			<div class="header-fixed">

@@ -656,6 +656,7 @@
 					[#if setting.isShowMarketPrice]
 						<del class="market-price gray-darker">${currency(defaultSku.marketPrice, true)}</del>
 					[/#if]
+					<dd>${message("Sku.coupon")}:${currency(defaultSku.coupon, true)}</dd>
 				[#elseif product.type == "exchange"]
 					${message("Sku.exchangePoint")}:
 					<strong class="exchange-point red">${defaultSku.exchangePoint}</strong>
@@ -742,6 +743,7 @@
 								[#if setting.isShowMarketPrice]
 									<del class="market-price gray-darker">${currency(defaultSku.marketPrice, true)}</del>
 								[/#if]
+								<em>${message("Sku.coupon")}:${currency(defaultSku.coupon, true)}</em>
 							[#elseif product.type == "exchange"]
 								${message("Sku.exchangePoint")}:
 								<strong class="exchange-point red">${defaultSku.exchangePoint}</strong>

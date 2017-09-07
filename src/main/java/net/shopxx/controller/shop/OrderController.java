@@ -228,7 +228,7 @@ public class OrderController extends BaseController {
 		NapaStores napaStores = currentUser.getNapaStores();
 		
 		//会员账户
-		List<FiBankbookBalance> fiBankbookBalance = fiBankbookBalanceService.findList(currentUser,null, 2, null, null);
+		//List<FiBankbookBalance> fiBankbookBalance = fiBankbookBalanceService.findList(currentUser,null, 2, null, null);
 		
 		Order order = orderService.generate(Order.Type.general, currentCart,napaStores, defaultReceiver, defaultPaymentMethod, defaultShippingMethod, null, null, null, null);
 		model.addAttribute("order", order);
@@ -236,9 +236,9 @@ public class OrderController extends BaseController {
 		model.addAttribute("napaStores", napaStores);
 		model.addAttribute("cartTag", currentCart.getTag());
 		model.addAttribute("paymentMethods", paymentMethods);//支付方式
-		model.addAttribute("fiBankbookBalance", fiBankbookBalance.get(0));//会员余额账户
-		model.addAttribute("fiBankbookCoupon", fiBankbookBalance.get(1));//会员余额账户
-		System.out.println(fiBankbookBalance.get(0).toString());
+		model.addAttribute("fiBankbookBalance", fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.balance));//会员余额账户
+		model.addAttribute("fiBankbookCoupon", fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.coupon));//会员余额账户
+
 		model.addAttribute("shippingMethods", shippingMethods);//快递方式
 		model.addAttribute("defaultPaymentMethod", defaultPaymentMethod);
 		model.addAttribute("defaultShippingMethod", defaultShippingMethod);
@@ -281,7 +281,7 @@ public class OrderController extends BaseController {
 		NapaStores napaStores = currentUser.getNapaStores();
 		
 		//会员账户
-		List<FiBankbookBalance> fiBankbookBalance = fiBankbookBalanceService.findList(currentUser,null, 2, null, null);
+		//List<FiBankbookBalance> fiBankbookBalance = fiBankbookBalanceService.findList(currentUser,null, 2, null, null);
 		
 		Order order = orderService.generate(Order.Type.exchange, cart, napaStores ,defaultReceiver, null, null, null, null, null, null);
 		model.addAttribute("skuId", skuId);
@@ -289,6 +289,8 @@ public class OrderController extends BaseController {
 		model.addAttribute("order", order);
 		model.addAttribute("defaultReceiver", defaultReceiver);
 		model.addAttribute("paymentMethods", paymentMethodService.findAll());
+		model.addAttribute("fiBankbookBalance", fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.balance));//会员余额账户
+		model.addAttribute("fiBankbookCoupon", fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.coupon));//会员余额账户
 		model.addAttribute("shippingMethods", shippingMethodService.findAll());
 		return "shop/order/checkout";
 	}
@@ -380,6 +382,7 @@ public class OrderController extends BaseController {
 		data.put("promotionDiscount", order.getPromotionDiscount());
 		data.put("couponDiscount", order.getCouponDiscount());
 		data.put("amount", order.getAmount());
+		data.put("couponPrice", order.getCouponPrice());
 		data.put("amountPayable", order.getAmountPayable());
 		return ResponseEntity.ok(data);
 	}
