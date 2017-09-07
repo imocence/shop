@@ -15,6 +15,8 @@
 								<del>${currency(product.marketPrice, true)}</del>
 							[/#if]
 						</strong>
+						<!-- 券  -->
+						<em>${message("shop.index.coupon")}${currency(product.coupon, true)}</em>
 					</dd>
 				[/#list]
 			</dl>

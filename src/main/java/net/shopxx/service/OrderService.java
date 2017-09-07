@@ -238,6 +238,7 @@ public interface OrderService extends BaseService<Order, Long> {
 	 *            类型
 	 * @param cart
 	 *            购物车
+	 * @param napaStores 
 	 * @param receiver
 	 *            收货地址
 	 * @param paymentMethod
@@ -254,7 +255,7 @@ public interface OrderService extends BaseService<Order, Long> {
 	 *            附言
 	 * @return 订单
 	 */
-	Order generate(Order.Type type, Cart cart, Receiver receiver, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, String memo);
+	Order generate(Order.Type type, Cart cart, NapaStores napaStores, Receiver receiver, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, String memo);
 
 	/**
 	 * 订单创建
@@ -276,11 +277,12 @@ public interface OrderService extends BaseService<Order, Long> {
 	 *            发票
 	 * @param balance
 	 *            使用余额
+	 * @param coupon 
 	 * @param memo
 	 *            附言
 	 * @return 订单
 	 */
-	Order create(Order.Type type, Cart cart, Receiver receiver, NapaStores napaStores, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, String memo);
+	Order create(Order.Type type, Cart cart, Receiver receiver, NapaStores napaStores, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, BigDecimal coupon, String memo);
 
 	/**
 	 * 订单修改

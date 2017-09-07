@@ -138,16 +138,24 @@ $().ready(function() {
 							</td>
 						</tr>
 						<tr>
+							<td width="100">${message("Order.amountPayable")}:</td>
+							<td>
+								[#if couponPrice??]
+									<strong id="couponPrice">${currency(couponPrice, true, true)}</strong>
+								[#else]
+									<strong id="couponPrice">${currency(order.couponPrice, true)}</strong>
+								[/#if]
+							</td>
 							<td>${message("Order.shippingMethod")}:</td>
 							<td>${order.shippingMethodName!"-"}</td>
+						</tr>
+						<tr>
 							<td>${message("Order.paymentMethod")}:</td>
 							<td>${order.paymentMethodName!"-"}</td>
-						</tr>
-						[#if order.expire??]
-							<tr>
+							[#if order.expire??]
 								<td colspan="4">${message("shop.order.expireTips", order.expire?string("yyyy-MM-dd HH:mm"))}</td>
-							</tr>
-						[/#if]
+							[/#if]
+						</tr>
 					</table>
 					[#if order.paymentMethod.method == "online"]
 						[#if paymentPlugins?has_content]

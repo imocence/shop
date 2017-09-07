@@ -165,6 +165,14 @@ public class Order extends BaseEntity<Long> {
 	@JsonView(BaseView.class)
 	@Column(nullable = false, updatable = false, precision = 21, scale = 6)
 	private BigDecimal price;
+	
+	/**
+	 * 购物券
+	 */
+	@JsonView(BaseView.class)
+	@Column(name="coupon_price",nullable = false, updatable = false, precision = 21, scale = 6)
+	private BigDecimal couponPrice;
+	
 
 	/**
 	 * 支付手续费
@@ -221,6 +229,12 @@ public class Order extends BaseEntity<Long> {
 	 */
 	@Column(nullable = false, precision = 21, scale = 6)
 	private BigDecimal amountPaid;
+	/**
+	 * 已付券
+	 */
+	@Column(nullable = false, precision = 21, scale = 6)
+	private BigDecimal couponPricePaid;
+	
 
 	/**
 	 * 退款金额
@@ -526,7 +540,20 @@ public class Order extends BaseEntity<Long> {
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
-
+	/**
+	 * 获取购物券
+	 * @return
+	 */
+	public BigDecimal getCouponPrice() {
+		return couponPrice;
+	}
+	/**
+	 * 设置购物券
+	 * @param couponPrice
+	 */
+	public void setCouponPrice(BigDecimal couponPrice) {
+		this.couponPrice = couponPrice;
+	}
 	/**
 	 * 获取支付手续费
 	 * 
@@ -678,7 +705,20 @@ public class Order extends BaseEntity<Long> {
 	public void setAmountPaid(BigDecimal amountPaid) {
 		this.amountPaid = amountPaid;
 	}
-
+	/**
+	 * 获取已付券
+	 * @return
+	 */
+	public BigDecimal getCouponPricePaid() {
+		return couponPricePaid;
+	}
+	/**
+	 * 设置已付券
+	 * @param couponPricePaid
+	 */
+	public void setCouponPricePaid(BigDecimal couponPricePaid) {
+		this.couponPricePaid = couponPricePaid;
+	}
 	/**
 	 * 获取退款金额
 	 * 

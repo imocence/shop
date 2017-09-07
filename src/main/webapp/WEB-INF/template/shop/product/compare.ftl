@@ -69,6 +69,11 @@ $().ready(function() {
 										<strong>${currency(product.price, true)}</strong>
 									</td>
 								</tr>
+								<tr>
+									<td>
+										<em>${currency(product.coupon, true)}</em>
+									</td>
+								</tr>
 							</table>
 							[#if product.parameterValues?has_content]
 								<table class="parameterTable">

@@ -115,7 +115,7 @@ public class MemberController extends BaseController {
 		model.addAttribute("genders", Member.Gender.values());
 		model.addAttribute("memberAttributes", memberAttributeService.findList(true, true));
 		//会员存折
-		model.addAttribute("fiBankbookBalanceList", fiBankbookBalanceService.findList(member,null,null,null));
+		model.addAttribute("fiBankbookBalanceList", fiBankbookBalanceService.findList(member,null,null,null,null));
 		model.addAttribute("member", member);
 		
 		return "admin/member/view";
@@ -259,7 +259,7 @@ public class MemberController extends BaseController {
 					fiBankbookBalanceService.save(balance2);
 					
 					//流水号格式：类型首字母+时间
-					String uniqueCode = "ZCZS"+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
+					String uniqueCode = "ZC"+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
 					/**
 					 * 根据会员编号充值购物券接口
 					 * 

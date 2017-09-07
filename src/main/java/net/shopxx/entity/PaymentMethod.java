@@ -11,8 +11,10 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.validation.constraints.Min;
@@ -53,7 +55,6 @@ public class PaymentMethod extends OrderedEntity<Long> {
 	 * 方式
 	 */
 	public enum Method {
-
 		/**
 		 * 在线支付
 		 */
@@ -62,7 +63,7 @@ public class PaymentMethod extends OrderedEntity<Long> {
 		/**
 		 * 线下支付
 		 */
-		offline
+		offline,
 	}
 
 	/**
@@ -111,6 +112,15 @@ public class PaymentMethod extends OrderedEntity<Long> {
 	 */
 	@Lob
 	private String content;
+	
+	/**
+	 * 国籍
+	 * @return 国籍
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
+	
 
 	/**
 	 * 配送方式
@@ -294,7 +304,20 @@ public class PaymentMethod extends OrderedEntity<Long> {
 	public void setOrders(Set<Order> orders) {
 		this.orders = orders;
 	}
-
+	/**
+	 * 获得国籍
+	 * @return
+	 */
+	public Country getCountry() {
+		return country;
+	}
+	/**
+	 * 设置国籍
+	 * @param country
+	 */
+	public void setCountry(Country country) {
+		this.country = country;
+	}
 	/**
 	 * 删除前处理
 	 */

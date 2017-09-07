@@ -57,6 +57,13 @@ public class OrderItem extends BaseEntity<Long> {
 	 */
 	@Column(nullable = false, updatable = false, precision = 21, scale = 6)
 	private BigDecimal price;
+	
+	/**
+	 * 购物券价格
+	 */
+	@Column(name="coupon_price",nullable = false, updatable = false, precision = 21, scale = 6)
+	private BigDecimal couponPrice;
+	
 
 	/**
 	 * 重量
@@ -191,7 +198,20 @@ public class OrderItem extends BaseEntity<Long> {
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
-
+	/**
+	 * 获取购物券价格
+	 * @return
+	 */
+	public BigDecimal getCouponPrice() {
+		return couponPrice;
+	}
+	/**
+	 * 设置购物券价格
+	 * @param couponPrice
+	 */
+	public void setCouponPrice(BigDecimal couponPrice) {
+		this.couponPrice = couponPrice;
+	}
 	/**
 	 * 获取重量
 	 * 
@@ -390,7 +410,17 @@ public class OrderItem extends BaseEntity<Long> {
 			return BigDecimal.ZERO;
 		}
 	}
-
+	/**
+	 * 获取购物券
+	 */
+	@Transient
+	public BigDecimal getTotalCoupon() {
+		if (getCouponPrice() != null && getQuantity() != null) {
+			return getCouponPrice().multiply(new BigDecimal(getQuantity()));
+		} else {
+			return BigDecimal.ZERO;
+		}
+	}
 	/**
 	 * 获取可发货数
 	 * 

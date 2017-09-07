@@ -81,7 +81,7 @@ public class IndexController extends BaseController {
 		model.addAttribute("newOrders", orderService.findList(null, null, currentUser, null, null, null, null, null, null, null, NEW_ORDER_SIZE, null, null));
 
 		//会员存折
-		model.addAttribute("fiBankbookBalanceList", fiBankbookBalanceService.findList(currentUser,null,null,null));
+		model.addAttribute("fiBankbookBalanceList", fiBankbookBalanceService.findList(currentUser,null,null,null,null));
 		return "member/index";
 	}
 
