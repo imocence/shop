@@ -666,7 +666,7 @@
 										[#if orderItem.type != "general"]
 											<strong class="small">[${message("Product.Type." + orderItem.type)}]</strong>
 										[/#if]
-										<span class="small gray-darker">${message("Sku.coupon")}:${currency(orderItem.couponPrice, true)}</span>
+										<div class="small red">${message("Sku.coupon")}:${currency(orderItem.couponPrice, true)}</div>
 									</div>
 									<div class="media-right media-middle">
 										${currency(orderItem.price, true)}
@@ -717,14 +717,17 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-xs-8 text-center">
-							[#if order.type == "general"]
+							<div style="text-align: left;margin-left: 10px;margin-top: 5px">
+								[#if order.type == "general"]
 								${message("Order.amount")}:
-								<strong class="red" data-name="amount" data-type="currency">${currency(order.amount, true)}</strong>
-							[#elseif order.type == "exchange"]
+									<strong class="red" data-name="amount" data-type="currency">${currency(order.amount, true)}</strong>
+								[#elseif order.type == "exchange"]
 								${message("Order.exchangePoint")}:
-								<strong class="red">${order.exchangePoint}</strong>
-							[/#if]
-							${message("Order.coupon")}: <em id="couponPrice">${currency(order.couponPrice, true)}</em>
+									<strong class="red">${order.exchangePoint}</strong>
+								[/#if]
+							</div>
+							<div style="text-align: left;margin-left: 10px;margin-top: 1px">${message("Order.coupon")}: <em class="red" id="couponPrice">${currency(order.couponPrice, true)}</em></div>
+
 						</div>
 						<div class="col-xs-4">
 							<button id="submit" class="btn btn-red btn-flat btn-block" type="button">${message("shop.order.checkout")}</button>
