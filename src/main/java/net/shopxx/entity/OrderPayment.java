@@ -355,7 +355,7 @@ public class OrderPayment extends BaseEntity<Long> {
 		BigDecimal effectiveAmount = getAmount().subtract(getFee());
 		return effectiveAmount.compareTo(BigDecimal.ZERO) >= 0 ? effectiveAmount : BigDecimal.ZERO;
 	}
-
+	
 	/**
 	 * 设置支付方式
 	 * 

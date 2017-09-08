@@ -6,8 +6,10 @@
 package net.shopxx.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import net.shopxx.entity.Area;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Receiver;
 import net.shopxx.entity.ShippingMethod;
 
@@ -44,5 +46,12 @@ public interface ShippingMethodService extends BaseService<ShippingMethod, Long>
 	 * @return 运费
 	 */
 	BigDecimal calculateFreight(ShippingMethod shippingMethod, Receiver receiver, Integer weight);
+	
+	/**
+	 * 根据国家获取支付方式
+	 * @param country
+	 * @return
+	 */
+	List<ShippingMethod> findAll(Country country);
 	
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.shopxx.Filter;
 import net.shopxx.Order;
+
 import java.math.BigDecimal;
 
 import net.shopxx.Page;
@@ -58,5 +59,5 @@ public interface FiBankbookBalanceService extends BaseService<FiBankbookBalance,
 	 * @param fiBankbookBalance
 	 * @param amount
 	 */
-	void addBalance(FiBankbookBalance fiBankbookBalance, BigDecimal amount);
+	void addBalance(FiBankbookBalance fiBankbookBalance, BigDecimal amount) throws Exception;
 }

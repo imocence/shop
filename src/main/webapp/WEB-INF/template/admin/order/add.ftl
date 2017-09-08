@@ -209,9 +209,9 @@ $().ready(function() {
 	// 运费修改
 	$freight.change(function(){
 		var freight = $("#freight").val();
-		if (freight < 0 ){
+		if (!getPNum(freight)){
 			freight = 0;
-			$("#freight").val(freight);
+			$(this).val(0);
 		}
 		var totalPrice = $("#totalPriceSpan").html();
 		$("#balance").val(freight*1 + totalPrice*1);
@@ -329,10 +329,15 @@ $().ready(function() {
 			var $productTotal = $("#product" + index + "total");
 			var $productSku = $("#product" + index + "sku");
 			var quantity = $(this).val();
-			var productSku = $productSku.val();
-			if (productSku<quantity){
-				quantity = productSku;
+			if (!isPInt(quantity)){
+				quantity = 0;
 				$productQuantity.val(quantity);
+			}else{
+				var productSku = $productSku.val();
+				if (productSku<quantity){
+					quantity = productSku;
+					$productQuantity.val(quantity);
+				}
 			}
 			if($.trim(quantity) == ''){
 				return;
@@ -341,15 +346,51 @@ $().ready(function() {
 			getTotal();
 		});
 		
+		// 商品电子币价格
 		$productPrice.change(function(){
+			var price = $(this).val();
+			if (!getPNum(price)){
+				$(this).val(0);
+			}
 			$productQuantity.change();
 		});
-		
+		// 商品购物券价格
 		$productCouponPrice.change(function(){
+			var price = $(this).val();
+			if (!getPNum(price)){
+				$(this).val(0);
+			}
 			$productQuantity.change();
 		});
 	});
 	
+	// 订单电子币总额
+	$("#balance").change(function(){
+		var price = $(this).val();
+		if (!getPNum(price)){
+			$(this).val(0);
+		}
+	});
+	
+	// 订单购物券总额
+	$("#couponbalance").change(function(){
+		var price = $(this).val();
+		if (!getPNum(price)){
+			$(this).val(0);
+		}
+	});
+	
+	// 校验正整数
+	function isPInt(str) {
+	    var g = /^[1-9]*[1-9][0-9]*$/;
+	    return g.test(str);
+	}
+	// 校验正数
+	function getPNum(str){
+	   var g = /^(\d+)$|^(\d+\.\d+)$/;
+	   return g.test(str);
+	}
+
 	function getTotal(){
 		// 计算总重量
 		// 计算总数量

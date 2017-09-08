@@ -228,9 +228,11 @@ public class OrderController extends BaseController {
 		if (order == null || order.hasExpired() || (!Order.Status.pendingPayment.equals(order.getStatus()) && !Order.Status.pendingReview.equals(order.getStatus()))) {
 			return ERROR_VIEW;
 		}
-		model.addAttribute("paymentMethods", paymentMethodService.findAll());
-		model.addAttribute("shippingMethods", shippingMethodService.findAll());
+		Country country = order.getCountry();
+		model.addAttribute("paymentMethods", paymentMethodService.findAll(country));
+		model.addAttribute("shippingMethods", shippingMethodService.findAll(country));
 		model.addAttribute("order", order);
+		model.addAttribute("countryId", country.getId());
 		return "admin/order/edit";
 	}
 
@@ -238,7 +240,7 @@ public class OrderController extends BaseController {
 	 * 更新
 	 */
 	@PostMapping("/update")
-	public String update(Long id, Long areaId, Long paymentMethodId, Long shippingMethodId, BigDecimal freight, BigDecimal tax, BigDecimal offsetAmount, Long rewardPoint, String consignee, String address, String zipCode, String phone, String invoiceTitle, String memo,
+	public String update(Long id, Long areaId, Long paymentMethodId, Long shippingMethodId, BigDecimal freight, BigDecimal tax, BigDecimal offsetAmount, BigDecimal offsetCouponAmount, Long rewardPoint, String consignee, String address, String zipCode, String phone, String invoiceTitle, String memo,
 			RedirectAttributes redirectAttributes) {
 		Area area = areaService.find(areaId);
 		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
@@ -254,6 +256,7 @@ public class OrderController extends BaseController {
 		Invoice invoice = StringUtils.isNotEmpty(invoiceTitle) ? new Invoice(invoiceTitle, null) : null;
 		order.setTax(invoice != null ? tax : BigDecimal.ZERO);
 		order.setOffsetAmount(offsetAmount);
+		order.setOffsetCouponAmount(offsetCouponAmount);
 		order.setRewardPoint(rewardPoint);
 		order.setMemo(memo);
 		order.setInvoice(invoice);
@@ -295,13 +298,16 @@ public class OrderController extends BaseController {
 	@GetMapping("/view")
 	public String view(Long id, ModelMap model) {
 		Setting setting = SystemUtils.getSetting();
+		Order order = orderService.find(id);
+		Country country = order.getCountry();
 		model.addAttribute("orderPaymentMethods", OrderPayment.Method.values());
 		model.addAttribute("orderRefundsMethods", OrderRefunds.Method.values());
-		model.addAttribute("paymentMethods", paymentMethodService.findAll());
-		model.addAttribute("shippingMethods", shippingMethodService.findAll());
+		model.addAttribute("paymentMethods", paymentMethodService.findAll(country));
+		model.addAttribute("shippingMethods", shippingMethodService.findAll(country));
 		model.addAttribute("deliveryCorps", deliveryCorpService.findAll());
 		model.addAttribute("isKuaidi100Enabled", StringUtils.isNotEmpty(setting.getKuaidi100Key()) && StringUtils.isNotEmpty(setting.getKuaidi100Customer()));
-		model.addAttribute("order", orderService.find(id));
+		model.addAttribute("order", order);
+		model.addAttribute("countryId", country.getId());
 		return "admin/order/view";
 	}
 
@@ -326,7 +332,9 @@ public class OrderController extends BaseController {
 	 * 收款
 	 */
 	@PostMapping("/payment")
-	public String payment(OrderPayment orderPayment, Long orderId, Long paymentMethodId, RedirectAttributes redirectAttributes) {
+	public String payment(OrderPayment orderPayment, Long orderId, String usercode, Long paymentMethodId, RedirectAttributes redirectAttributes) {
+		// 不能用hibernate代理对象，不然会影响交易记录
+		Member member = memberService.findByUsercode(usercode);
 		Order order = orderService.find(orderId);
 		if (order == null || !orderService.acquireLock(order)) {
 			return ERROR_VIEW;
@@ -336,8 +344,10 @@ public class OrderController extends BaseController {
 		if (!isValid(orderPayment)) {
 			return ERROR_VIEW;
 		}
-		Member member = order.getMember();
-		if (OrderPayment.Method.deposit.equals(orderPayment.getMethod()) && orderPayment.getAmount().compareTo(member.getBalance()) > 0) {
+		order.setMember(member);
+//		if (OrderPayment.Method.deposit.equals(orderPayment.getMethod()) && orderPayment.getAmount().compareTo(member.getBankbookBalance()) > 0
+		if (orderPayment.getAmount().compareTo(member.getBankbookBalance()) > 0
+			&& orderPayment.getCouponAmount().compareTo(member.getCouponBalance()) > 0) {
 			return ERROR_VIEW;
 		}
 		orderPayment.setFee(BigDecimal.ZERO);
@@ -354,12 +364,16 @@ public class OrderController extends BaseController {
 	 * 退款
 	 */
 	@PostMapping("/refunds")
-	public String refunds(OrderRefunds orderRefunds, Long orderId, Long paymentMethodId, RedirectAttributes redirectAttributes) {
+	public String refunds(OrderRefunds orderRefunds, Long orderId, String usercode, Long paymentMethodId, RedirectAttributes redirectAttributes) {
+		// 不能用hibernate代理对象，不然会影响交易记录
+		Member member = memberService.findByUsercode(usercode);
 		Order order = orderService.find(orderId);
 		if (order == null || !orderService.acquireLock(order)) {
 			return ERROR_VIEW;
 		}
-		if (order.getRefundableAmount().compareTo(BigDecimal.ZERO) <= 0) {
+		order.setMember(member);
+		if (order.getRefundableAmount().compareTo(BigDecimal.ZERO) <= 0
+			&& order.getRefundableCouponAmount().compareTo(BigDecimal.ZERO) <= 0) {
 			return ERROR_VIEW;
 		}
 		orderRefunds.setOrder(order);
@@ -367,7 +381,11 @@ public class OrderController extends BaseController {
 		if (!isValid(orderRefunds)) {
 			return ERROR_VIEW;
 		}
-		orderService.refunds(order, orderRefunds);
+		try {
+			orderService.refunds(order, orderRefunds);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:view?id=" + orderId;
 	}

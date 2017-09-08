@@ -406,6 +406,20 @@ public class OrderItem extends BaseEntity<Long> {
 			return BigDecimal.ZERO;
 		}
 	}
+	
+	/**
+	 * 获取小计
+	 * 
+	 * @return 小计
+	 */
+	@Transient
+	public BigDecimal getSubCouponTotal() {
+		if (getCouponPrice() != null && getQuantity() != null) {
+			return getCouponPrice().multiply(new BigDecimal(getQuantity()));
+		} else {
+			return BigDecimal.ZERO;
+		}
+	}
 
 	/**
 	 * 获取可发货数

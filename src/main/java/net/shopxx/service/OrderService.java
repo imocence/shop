@@ -339,7 +339,7 @@ public interface OrderService extends BaseService<Order, Long> {
 	 * @param orderRefunds
 	 *            订单退款
 	 */
-	void refunds(Order order, OrderRefunds orderRefunds);
+	void refunds(Order order, OrderRefunds orderRefunds) throws Exception;
 
 	/**
 	 * 订单发货

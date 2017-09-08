@@ -168,8 +168,10 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	 *            会员
 	 * @param amount
 	 *            值
+	 * @param amount
+	 *            购物券
 	 */
-	void addAmount(Member member, BigDecimal amount);
+	void addAmount(Member member, BigDecimal amount, BigDecimal couponAmount);
 	
 	/**
 	 * 根据编号和名称查找会员
