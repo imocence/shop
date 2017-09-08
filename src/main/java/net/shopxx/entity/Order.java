@@ -1519,7 +1519,21 @@ public class Order extends BaseEntity<Long> {
 		}
 		return BigDecimal.ZERO;
 	}
-
+	
+	/**
+	 * 获取应付购物券金额
+	 * 
+	 * @return 应付购物券金额
+	 */
+	@Transient
+	public BigDecimal getCouponAmountPayable() {
+		if (!hasExpired() && !Order.Status.completed.equals(getStatus()) && !Order.Status.failed.equals(getStatus()) && !Order.Status.canceled.equals(getStatus()) && !Order.Status.denied.equals(getStatus())) {
+			BigDecimal amountPayable = getCouponAmount().subtract(getCouponAmountPaid());
+			return amountPayable.compareTo(BigDecimal.ZERO) >= 0 ? amountPayable : BigDecimal.ZERO;
+		}
+		return BigDecimal.ZERO;
+	}
+	
 	/**
 	 * 获取应收金额
 	 * 
@@ -1547,6 +1561,24 @@ public class Order extends BaseEntity<Long> {
 		}
 		if (Order.Status.completed.equals(getStatus())) {
 			BigDecimal refundableAmount = getAmountPaid().subtract(getAmount());
+			return refundableAmount.compareTo(BigDecimal.ZERO) >= 0 ? refundableAmount : BigDecimal.ZERO;
+		}
+		return BigDecimal.ZERO;
+	}
+	
+	/**
+	 * 获取应退购物券金额
+	 * 
+	 * @return 应退购物券金额
+	 */
+	@Transient
+	public BigDecimal getRefundableCouponAmount() {
+		if (hasExpired() || Order.Status.failed.equals(getStatus()) || Order.Status.canceled.equals(getStatus()) || Order.Status.denied.equals(getStatus())) {
+			BigDecimal refundableAmount = getCouponAmountPaid();
+			return refundableAmount.compareTo(BigDecimal.ZERO) >= 0 ? refundableAmount : BigDecimal.ZERO;
+		}
+		if (Order.Status.completed.equals(getStatus())) {
+			BigDecimal refundableAmount = getCouponAmountPaid().subtract(getCouponAmount());
 			return refundableAmount.compareTo(BigDecimal.ZERO) >= 0 ? refundableAmount : BigDecimal.ZERO;
 		}
 		return BigDecimal.ZERO;

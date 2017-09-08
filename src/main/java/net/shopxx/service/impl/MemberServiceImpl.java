@@ -256,7 +256,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		pointLogDao.persist(pointLog);
 	}
 
-	public void addAmount(Member member, BigDecimal amount) {
+	public void addAmount(Member member, BigDecimal amount, BigDecimal couponAmount) {
 		Assert.notNull(member);
 		Assert.notNull(amount);
 
@@ -271,8 +271,10 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 
 		Assert.notNull(member.getAmount());
 		Assert.state(member.getAmount().add(amount).compareTo(BigDecimal.ZERO) >= 0);
-
+		Assert.state(member.getCouponAmount().add(couponAmount).compareTo(BigDecimal.ZERO) >= 0);
+		
 		member.setAmount(member.getAmount().add(amount));
+		member.setCouponAmount(member.getCouponAmount().add(couponAmount));
 		MemberRank memberRank = member.getMemberRank();
 		if (memberRank != null && BooleanUtils.isFalse(memberRank.getIsSpecial())) {
 			MemberRank newMemberRank = memberRankDao.findByAmount(member.getAmount());
@@ -282,6 +284,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		}
 		memberDao.flush();
 	}
+	
 	/**
 	 * 验证登录
 	 * @return

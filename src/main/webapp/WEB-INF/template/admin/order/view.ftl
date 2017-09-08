@@ -118,6 +118,7 @@ $().ready(function() {
 					'<form id="paymentForm" action="payment" method="post">
 						<input type="hidden" name="csrfToken" value="${csrfToken}" \/>
 						<input type="hidden" name="orderId" value="${order.id}" \/>
+						<input type="hidden" name="usercode" value="${order.member.usercode}" \/>
 						<table class="input">
 							<tr>
 								<th>
@@ -149,6 +150,20 @@ $().ready(function() {
 							<\/tr>
 							<tr>
 								<th>
+									订单购物券:
+								<\/th>
+								<td>
+									${currency(order.couponAmount)}
+								<\/td>
+								<th>
+									应付购物券:
+								<\/th>
+								<td>
+									${currency(order.couponAmountPayable)}
+								<\/td>
+							<\/tr>
+							<tr>
+								<th>
 									${message("OrderPayment.bank")}:
 								<\/th>
 								<td>
@@ -169,11 +184,26 @@ $().ready(function() {
 									<input type="text" name="amount" class="text"[#if order.amountPayable > 0] value="${order.amountPayable}"[/#if] maxlength="16" \/>
 								<\/td>
 								<th>
+									付款购物券:
+								<\/th>
+								<td>
+									<input type="text" name="couponAmount" class="text"[#if order.couponAmountPayable > 0] value="${order.couponAmountPayable}"[/#if] maxlength="16" \/>
+								<\/td>
+							<\/tr>
+							<tr>
+								<th>
 									${message("OrderPayment.payer")}:
 								<\/th>
 								<td>
 									<input type="text" name="payer" class="text" maxlength="200" \/>
 								<\/td>
+								<th>
+									${message("OrderPayment.memo")}:
+								<\/th>
+								<td>
+									<input type="text" name="memo" class="text" maxlength="200" \/>
+								<\/td>
+								
 							<\/tr>
 							<tr>
 								<th>
@@ -198,14 +228,6 @@ $().ready(function() {
 											[/#noautoesc]
 										[/#list]
 									<\/select>
-								<\/td>
-							<\/tr>
-							<tr>
-								<th>
-									${message("OrderPayment.memo")}:
-								<\/th>
-								<td colspan="3">
-									<input type="text" name="memo" class="text" maxlength="200" \/>
 								<\/td>
 							<\/tr>
 							<tr>
@@ -239,7 +261,16 @@ $().ready(function() {
 								integer: 12,
 								fraction: ${setting.priceScale}
 							},
-							balance: ${order.member.balance}
+							balance: ${order.member.bankbookBalance}
+						},
+						couponAmount: {
+							required: true,
+							positive: true,
+							decimal: {
+								integer: 12,
+								fraction: ${setting.priceScale}
+							},
+							balance: ${order.member.couponBalance}
 						}
 					},
 					submitHandler: function(form) {
@@ -266,6 +297,7 @@ $().ready(function() {
 						'<form id="refundsForm" action="refunds" method="post">
 							<input type="hidden" name="csrfToken" value="${csrfToken}" \/>
 							<input type="hidden" name="orderId" value="${order.id}" \/>
+							<input type="hidden" name="usercode" value="${order.member.usercode}" \/>
 							<table class="input">
 								<tr>
 									<th>
@@ -297,6 +329,20 @@ $().ready(function() {
 								<\/tr>
 								<tr>
 									<th>
+										订单购物券:
+									<\/th>
+									<td>
+										${currency(order.couponAmount)}
+									<\/td>
+									<th>
+										应退购物券:
+									<\/th>
+									<td>
+										${currency(order.refundableCouponAmount)}
+									<\/td>
+								<\/tr>
+								<tr>
+									<th>
 										${message("OrderRefunds.bank")}:
 									<\/th>
 									<td>
@@ -317,10 +363,24 @@ $().ready(function() {
 										<input type="text" name="amount" class="text" value="${order.refundableAmount}" maxlength="16" \/>
 									<\/td>
 									<th>
+										退款购物券:
+									<\/th>
+									<td>
+										<input type="text" name="couponAmount" class="text" value="${order.refundableCouponAmount}" maxlength="16" \/>
+									<\/td>
+								<\/tr>
+								<tr>
+									<th>
 										${message("OrderRefunds.payee")}:
 									<\/th>
 									<td>
 										<input type="text" name="payee" class="text" maxlength="200" \/>
+									<\/td>
+									<th>
+										${message("OrderRefunds.memo")}:
+									<\/th>
+									<td>
+										<input type="text" name="memo" class="text" maxlength="200" \/>
 									<\/td>
 								<\/tr>
 								<tr>
@@ -346,14 +406,6 @@ $().ready(function() {
 												[/#noautoesc]
 											[/#list]
 										<\/select>
-									<\/td>
-								<\/tr>
-								<tr>
-									<th>
-										${message("OrderRefunds.memo")}:
-									<\/th>
-									<td colspan="3">
-										<input type="text" name="memo" class="text" maxlength="200" \/>
 									<\/td>
 								<\/tr>
 								<tr>
@@ -583,7 +635,8 @@ $().ready(function() {
 					var $orderShippingItemsQuantity = $("#shippingForm input.orderShippingItemsQuantity");
 					
 					$("#shippingForm input[name='areaId']").lSelect({
-						url: "${base}/common/area"
+						url: "${base}/common/area",
+						countryId : "${countryId}"
 					});
 					
 					function checkDelivery() {
@@ -837,7 +890,8 @@ $().ready(function() {
 				cancel: "${message("admin.dialog.cancel")}",
 				onShow: function() {
 					$("#returnsForm input[name='areaId']").lSelect({
-						url: "${base}/common/area"
+						url: "${base}/common/area",
+						countryId : "${countryId}"
 					});
 					$.validator.addClassRules({
 						orderReturnsItemsQuantity: {
@@ -1305,10 +1359,16 @@ $().ready(function() {
 				${message("OrderItem.price")}
 			</th>
 			<th>
+				购物券
+			</th>
+			<th>
 				${message("OrderItem.quantity")}
 			</th>
 			<th>
 				${message("OrderItem.subtotal")}
+			</th>
+			<th>
+				购物券小计
 			</th>
 		</tr>
 		[#list order.orderItems as orderItem]
@@ -1337,6 +1397,13 @@ $().ready(function() {
 					[/#if]
 				</td>
 				<td>
+					[#if orderItem.type == "general"]
+						${currency(orderItem.couponPrice)}
+					[#else]
+						-
+					[/#if]
+				</td>
+				<td>
 					${orderItem.quantity}
 				</td>
 				<td>
@@ -1346,9 +1413,17 @@ $().ready(function() {
 						-
 					[/#if]
 				</td>
+				<td>
+					[#if orderItem.type == "general"]
+						${currency(orderItem.subCouponTotal)}
+					[#else]
+						-
+					[/#if]
+				</td>
 			</tr>
 		[/#list]
 	</table>
+	<!-- 收款信息 -->
 	<table class="item tabContent">
 		<tr>
 			<th>
@@ -1362,6 +1437,9 @@ $().ready(function() {
 			</th>
 			<th>
 				${message("OrderPayment.amount")}
+			</th>
+			<th>
+				付款购物券
 			</th>
 			<th>
 				${message("OrderPayment.fee")}
@@ -1385,6 +1463,9 @@ $().ready(function() {
 					${currency(orderPayment.amount, true)}
 				</td>
 				<td>
+					${currency(orderPayment.couponAmount)}
+				</td>
+				<td>
 					${currency(orderPayment.fee, true)}
 				</td>
 				<td>
@@ -1393,6 +1474,7 @@ $().ready(function() {
 			</tr>
 		[/#list]
 	</table>
+	<!-- 退款信息 -->
 	<table class="item tabContent">
 		<tr>
 			<th>
@@ -1406,6 +1488,9 @@ $().ready(function() {
 			</th>
 			<th>
 				${message("OrderRefunds.amount")}
+			</th>
+			<th>
+				退款购物券
 			</th>
 			<th>
 				${message("admin.common.createdDate")}
@@ -1424,6 +1509,9 @@ $().ready(function() {
 				</td>
 				<td>
 					${currency(orderRefunds.amount, true)}
+				</td>
+				<td>
+					${currency(orderRefunds.couponAmount)}
 				</td>
 				<td>
 					<span title="${orderRefunds.createdDate?string("yyyy-MM-dd HH:mm:ss")}">${orderRefunds.createdDate}</span>

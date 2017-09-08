@@ -31,7 +31,8 @@ $().ready(function() {
 	
 	// 地区选择
 	$areaId.lSelect({
-		url: "${base}/common/area"
+		url: "${base}/common/area",
+		countryId : "${countryId}"
 	});
 	
 	// 获取订单锁
@@ -253,6 +254,23 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
+					订单购物券:
+				</th>
+				<td>
+					<span id="couponAmount" class="red">${currency(order.couponAmount)}</span>
+				</td>
+				<th>
+					已付购物券:
+				</th>
+				<td>
+					${currency(order.couponAmountPaid)}
+					[#if order.couponAmountPayable > 0]
+						<span class="silver">(应付购物券: ${currency(order.couponAmountPayable)})</span>
+					[/#if]
+				</td>
+			</tr>
+			<tr>
+				<th>
 					${message("Order.weight")}:
 				</th>
 				<td>
@@ -327,6 +345,14 @@ $().ready(function() {
 				</th>
 				<td>
 					<input type="text" name="rewardPoint" class="text" value="${order.rewardPoint}" maxlength="9" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					调整购物券:
+				</th>
+				<td colspan="3">
+					<input type="text" id="offsetCouponAmount" name="offsetCouponAmount" class="text" value="${order.offsetCouponAmount}" maxlength="16" />
 				</td>
 			</tr>
 			<tr>
@@ -435,10 +461,16 @@ $().ready(function() {
 					${message("OrderItem.price")}
 				</th>
 				<th>
+					购物券
+				</th>
+				<th>
 					${message("OrderItem.quantity")}
 				</th>
 				<th>
 					${message("OrderItem.subtotal")}
+				</th>
+				<th>
+					购物券小计
 				</th>
 			</tr>
 			[#list order.orderItems as orderItem]
@@ -467,11 +499,25 @@ $().ready(function() {
 						[/#if]
 					</td>
 					<td>
+						[#if orderItem.type == "general"]
+							${currency(orderItem.couponPrice)}
+						[#else]
+							-
+						[/#if]
+					</td>
+					<td>
 						${orderItem.quantity}
 					</td>
 					<td>
 						[#if orderItem.type == "general"]
 							${currency(orderItem.subtotal, true)}
+						[#else]
+							-
+						[/#if]
+					</td>
+					<td>
+						[#if orderItem.type == "general"]
+							${currency(orderItem.subCouponTotal)}
 						[#else]
 							-
 						[/#if]
