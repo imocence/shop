@@ -98,6 +98,15 @@ public class OrderPayment extends BaseEntity<Long> {
 	@Digits(integer = 12, fraction = 3)
 	@Column(nullable = false, updatable = false, precision = 21, scale = 6)
 	private BigDecimal amount;
+	
+	/**
+	 * 付款金额
+	 */
+	@NotNull
+	@Min(0)
+	@Digits(integer = 12, fraction = 3)
+	@Column(nullable = false, updatable = false, precision = 21, scale = 6)
+	private BigDecimal couponAmount;
 
 	/**
 	 * 支付手续费
@@ -126,7 +135,14 @@ public class OrderPayment extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "orders", nullable = false, updatable = false)
 	private Order order;
-
+	
+	/**
+	 * 国家
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
+	
 	/**
 	 * 获取编号
 	 * 
@@ -315,6 +331,22 @@ public class OrderPayment extends BaseEntity<Long> {
 	 */
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+	
+	public BigDecimal getCouponAmount() {
+		return couponAmount;
+	}
+
+	public void setCouponAmount(BigDecimal couponAmount) {
+		this.couponAmount = couponAmount;
+	}
+	
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
 	}
 
 	/**

@@ -13,6 +13,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -128,7 +129,16 @@ public class ShippingMethod extends OrderedEntity<Long> {
 	 */
 	@OneToMany(mappedBy = "shippingMethod", fetch = FetchType.LAZY)
 	private Set<Order> orders = new HashSet<>();
-
+	
+	/**
+	 * 获取国家
+	 * 
+	 * @return 国家
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
+	
 	/**
 	 * 获取名称
 	 * 
@@ -336,6 +346,14 @@ public class ShippingMethod extends OrderedEntity<Long> {
 	 */
 	public void setOrders(Set<Order> orders) {
 		this.orders = orders;
+	}
+	
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
 	}
 
 	/**

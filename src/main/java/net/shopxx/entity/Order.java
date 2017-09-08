@@ -86,6 +86,21 @@ public class Order extends BaseEntity<Long> {
 		 */
 		exchange
 	}
+	
+	/**
+	 * 来源
+	 */
+	public enum Source {
+		/**
+		 * 用户订单
+		 */
+		member,
+
+		/**
+		 * 系统订单
+		 */
+		system
+	}
 
 	/**
 	 * 状态
@@ -151,6 +166,13 @@ public class Order extends BaseEntity<Long> {
 	@JsonView(BaseView.class)
 	@Column(nullable = false, updatable = false)
 	private Order.Type type;
+	
+	/**
+	 * 来源
+	 */
+	@JsonView(BaseView.class)
+	@Column(nullable = false, columnDefinition="INT default 0", updatable = false)
+	private Order.Source source;
 
 	/**
 	 * 状态
@@ -172,7 +194,6 @@ public class Order extends BaseEntity<Long> {
 	@JsonView(BaseView.class)
 	@Column(name="coupon_price",nullable = false, updatable = false, precision = 21, scale = 6)
 	private BigDecimal couponPrice;
-	
 
 	/**
 	 * 支付手续费
@@ -216,6 +237,14 @@ public class Order extends BaseEntity<Long> {
 	@Digits(integer = 12, fraction = 3)
 	@Column(nullable = false, precision = 21, scale = 6)
 	private BigDecimal offsetAmount;
+	
+	/**
+	 * 调整购物券金额
+	 */
+	@NotNull
+	@Digits(integer = 12, fraction = 3)
+	@Column(nullable = false, precision = 21, scale = 6)
+	private BigDecimal offsetCouponAmount;
 
 	/**
 	 * 订单金额
@@ -223,24 +252,38 @@ public class Order extends BaseEntity<Long> {
 	@JsonView(BaseView.class)
 	@Column(nullable = false, precision = 21, scale = 6)
 	private BigDecimal amount;
+	
+	/**
+	 * 订单购物券金额
+	 */
+	@JsonView(BaseView.class)
+	@Column(nullable = false, precision = 21, scale = 6)
+	private BigDecimal couponAmount;
 
 	/**
 	 * 已付金额
 	 */
 	@Column(nullable = false, precision = 21, scale = 6)
 	private BigDecimal amountPaid;
+	
 	/**
-	 * 已付券
+	 * 购物券已付金额
 	 */
 	@Column(nullable = false, precision = 21, scale = 6)
-	private BigDecimal couponPricePaid;
-	
+	private BigDecimal couponAmountPaid;
 
 	/**
 	 * 退款金额
 	 */
 	@Column(nullable = false, precision = 21, scale = 6)
 	private BigDecimal refundAmount;
+	
+	/**
+	 * 购物券退款金额
+	 */
+	@Column(nullable = false, precision = 21, scale = 6)
+	private BigDecimal couponRefundAmount;
+
 
 	/**
 	 * 赠送积分
@@ -464,7 +507,14 @@ public class Order extends BaseEntity<Long> {
 	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@OrderBy("createdDate asc")
 	private Set<OrderLog> orderLogs = new HashSet<>();
-
+	
+	/**
+	 * 国家
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
+	
 	/**
 	 * 获取编号
 	 * 
@@ -705,20 +755,7 @@ public class Order extends BaseEntity<Long> {
 	public void setAmountPaid(BigDecimal amountPaid) {
 		this.amountPaid = amountPaid;
 	}
-	/**
-	 * 获取已付券
-	 * @return
-	 */
-	public BigDecimal getCouponPricePaid() {
-		return couponPricePaid;
-	}
-	/**
-	 * 设置已付券
-	 * @param couponPricePaid
-	 */
-	public void setCouponPricePaid(BigDecimal couponPricePaid) {
-		this.couponPricePaid = couponPricePaid;
-	}
+
 	/**
 	 * 获取退款金额
 	 * 
@@ -1402,6 +1439,56 @@ public class Order extends BaseEntity<Long> {
 	public void setOrderLogs(Set<OrderLog> orderLogs) {
 		this.orderLogs = orderLogs;
 	}
+	
+	public Order.Source getSource() {
+		return source;
+	}
+
+	public void setSource(Order.Source source) {
+		this.source = source;
+	}
+	
+	
+	public BigDecimal getOffsetCouponAmount() {
+		return offsetCouponAmount;
+	}
+
+	public void setOffsetCouponAmount(BigDecimal offsetCouponAmount) {
+		this.offsetCouponAmount = offsetCouponAmount;
+	}
+
+	public BigDecimal getCouponAmount() {
+		return couponAmount;
+	}
+
+	public void setCouponAmount(BigDecimal couponAmount) {
+		this.couponAmount = couponAmount;
+	}
+
+	public BigDecimal getCouponAmountPaid() {
+		return couponAmountPaid;
+	}
+
+	public void setCouponAmountPaid(BigDecimal couponAmountPaid) {
+		this.couponAmountPaid = couponAmountPaid;
+	}
+
+	public BigDecimal getCouponRefundAmount() {
+		return couponRefundAmount;
+	}
+
+	public void setCouponRefundAmount(BigDecimal couponRefundAmount) {
+		this.couponRefundAmount = couponRefundAmount;
+	}
+
+	
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
 
 	/**
 	 * 获取是否需要物流
@@ -1428,7 +1515,7 @@ public class Order extends BaseEntity<Long> {
 	public BigDecimal getAmountPayable() {
 		if (!hasExpired() && !Order.Status.completed.equals(getStatus()) && !Order.Status.failed.equals(getStatus()) && !Order.Status.canceled.equals(getStatus()) && !Order.Status.denied.equals(getStatus())) {
 			BigDecimal amountPayable = getAmount().subtract(getAmountPaid());
-			return amountPayable.compareTo(BigDecimal.ZERO) >= 0 ? amountPayable : BigDecimal.ZERO;
+			return amountPayable.compareTo(BigDecimal.ZERO) > 0 ? amountPayable : BigDecimal.ZERO;
 		}
 		return BigDecimal.ZERO;
 	}

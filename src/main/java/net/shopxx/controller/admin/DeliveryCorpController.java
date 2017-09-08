@@ -7,6 +7,12 @@ package net.shopxx.controller.admin;
 
 import javax.inject.Inject;
 
+import net.shopxx.Message;
+import net.shopxx.Pageable;
+import net.shopxx.entity.DeliveryCorp;
+import net.shopxx.service.CountryService;
+import net.shopxx.service.DeliveryCorpService;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import net.shopxx.Message;
-import net.shopxx.Pageable;
-import net.shopxx.entity.DeliveryCorp;
-import net.shopxx.service.DeliveryCorpService;
 
 /**
  * Controller - 物流公司
@@ -32,7 +33,9 @@ public class DeliveryCorpController extends BaseController {
 
 	@Inject
 	private DeliveryCorpService deliveryCorpService;
-
+	@Inject
+	private CountryService countryService;
+	
 	/**
 	 * 添加
 	 */
@@ -45,11 +48,12 @@ public class DeliveryCorpController extends BaseController {
 	 * 保存
 	 */
 	@PostMapping("/save")
-	public String save(DeliveryCorp deliveryCorp, RedirectAttributes redirectAttributes) {
+	public String save(DeliveryCorp deliveryCorp, String countryName, RedirectAttributes redirectAttributes) {
 		if (!isValid(deliveryCorp)) {
 			return ERROR_VIEW;
 		}
 		deliveryCorp.setShippingMethods(null);
+		deliveryCorp.setCountry(countryService.findByName(countryName));
 		deliveryCorpService.save(deliveryCorp);
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -68,10 +72,11 @@ public class DeliveryCorpController extends BaseController {
 	 * 更新
 	 */
 	@PostMapping("/update")
-	public String update(DeliveryCorp deliveryCorp, RedirectAttributes redirectAttributes) {
+	public String update(DeliveryCorp deliveryCorp, String countryName, RedirectAttributes redirectAttributes) {
 		if (!isValid(deliveryCorp)) {
 			return ERROR_VIEW;
 		}
+		deliveryCorp.setCountry(countryService.findByName(countryName));
 		deliveryCorpService.update(deliveryCorp, "shippingMethods");
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
@@ -81,7 +86,8 @@ public class DeliveryCorpController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Pageable pageable, ModelMap model) {
+	public String list(String countryName, Pageable pageable, ModelMap model) {
+		countrySelect(countryName, pageable, model, countryService);
 		model.addAttribute("page", deliveryCorpService.findPage(pageable));
 		return "admin/delivery_corp/list";
 	}

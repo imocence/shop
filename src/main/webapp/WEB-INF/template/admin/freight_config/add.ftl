@@ -21,7 +21,8 @@ $().ready(function() {
 	[@flash_message /]
 	
 	$areaId.lSelect({
-		url: "${base}/common/area"
+		url: "${base}/common/area",
+		countryId : "${shippingMethod.country.id}"
 	});
 	
 	// 表单验证
@@ -63,7 +64,7 @@ $().ready(function() {
 </head>
 <body>
 	<div class="breadcrumb">
-		${message("admin.freightConfig.add")}
+		${message("admin.freightConfig.add")}${shippingMethod.country.id}
 	</div>
 	<form id="inputForm" action="save" method="post">
 		<input type="hidden" name="shippingMethodId" value="${shippingMethod.id}" />

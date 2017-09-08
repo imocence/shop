@@ -312,8 +312,9 @@ public class OrderController extends BaseController {
 		if (balance != null && balance.compareTo(BigDecimal.ZERO) < 0) {
 			return Results.UNPROCESSABLE_ENTITY;
 		}
-		if (balance != null && balance.compareTo(currentUser.getBalance()) > 0) {
-			return Results.unprocessableEntity("shop.order.insufficientBalance");
+		if (balance != null && balance.compareTo(fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.balance).getBalance()) > 0) {
+			return Results.unprocessableEntity("shop.order.credit");
+			//账户余额不足shop.order.insufficientBalance
 		}
 
 		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
@@ -358,7 +359,7 @@ public class OrderController extends BaseController {
 		if (balance != null && balance.compareTo(BigDecimal.ZERO) < 0) {
 			return Results.UNPROCESSABLE_ENTITY;
 		}
-		if (balance != null && balance.compareTo(currentUser.getBalance()) > 0) {
+		if (balance != null && balance.compareTo(fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.balance).getBalance()) > 0) {
 			return Results.unprocessableEntity("shop.order.insufficientBalance");
 		}
 		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
@@ -404,11 +405,7 @@ public class OrderController extends BaseController {
 									@CurrentUser Member currentUser, 
 									@CurrentCart Cart currentCart) {
 		Map<String, Object> data = new HashMap<>();
-		//会员账户
-		List<FiBankbookBalance> fiBankbookBalance = fiBankbookBalanceService.findList(currentUser,null, 2, null, null);
-		if(!(fiBankbookBalance.size() > 0)){
-			return Results.UNPROCESSABLE_ENTITY;
-		}
+
 		if (currentCart == null || currentCart.isEmpty()) {
 			return Results.UNPROCESSABLE_ENTITY;
 		}
@@ -447,18 +444,19 @@ public class OrderController extends BaseController {
 		if (balance != null && balance.compareTo(BigDecimal.ZERO) < 0) {
 			return Results.UNPROCESSABLE_ENTITY;
 		}
-		if (balance != null && balance.compareTo(fiBankbookBalance.get(0).getBalance()) > 0) {
+
+		if (balance != null && balance.compareTo(fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.balance).getBalance()) > 0) {
 			return Results.unprocessableEntity("shop.order.insufficientBalance");
 		}
 		if (coupon != null && coupon.compareTo(BigDecimal.ZERO) < 0) {
 			return Results.UNPROCESSABLE_ENTITY;
 		}
-		if (coupon != null && coupon.compareTo(fiBankbookBalance.get(1).getBalance()) > 0) {
+		if (coupon != null && coupon.compareTo(fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.coupon).getBalance()) > 0) {
 			return Results.unprocessableEntity("shop.order.insufficientCoupon");
 		}
 		Invoice invoice = StringUtils.isNotEmpty(invoiceTitle) ? new Invoice(invoiceTitle, null) : null;
-		Order order = orderService.create(Order.Type.general, currentCart, receiver,napaStores, paymentMethod, shippingMethod, couponCode, invoice, balance,coupon, memo);
-
+		Order order = orderService.createNose(Order.Type.general, currentCart, receiver,napaStores, paymentMethod, shippingMethod, couponCode, invoice, balance,coupon, memo);
+		
 		data.put("sn", order.getSn());
 		
 		//orderService.orderInterface(order);
@@ -480,11 +478,7 @@ public class OrderController extends BaseController {
 									BigDecimal coupon, 
 									String memo, @CurrentUser Member currentUser) {
 		Map<String, Object> data = new HashMap<>();
-		//会员账户
-		List<FiBankbookBalance> fiBankbookBalance = fiBankbookBalanceService.findList(currentUser,null, 2, null, null);
-		if(!(fiBankbookBalance.size() > 0)){
-			return Results.UNPROCESSABLE_ENTITY;
-		}
+
 		if (quantity == null || quantity < 1) {
 			return Results.UNPROCESSABLE_ENTITY;
 		}
@@ -524,13 +518,13 @@ public class OrderController extends BaseController {
 		if (currentUser.getPoint() < sku.getExchangePoint() * quantity) {
 			return Results.unprocessableEntity("shop.order.lowPoint");
 		}
-		if (balance != null && balance.compareTo(fiBankbookBalance.get(0).getBalance()) > 0) {
+		if (balance != null && balance.compareTo(fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.balance).getBalance()) > 0) {
 			return Results.unprocessableEntity("shop.order.insufficientBalance");
 		}
 		if (coupon != null && coupon.compareTo(BigDecimal.ZERO) < 0) {
 			return Results.UNPROCESSABLE_ENTITY;
 		}
-		if (coupon != null && coupon.compareTo(fiBankbookBalance.get(1).getBalance()) > 0) {
+		if (coupon != null && coupon.compareTo(fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.coupon).getBalance()) > 0) {
 			return Results.unprocessableEntity("shop.order.insufficientCoupon");
 		}
 		CartItem cartItem = new CartItem();
@@ -540,7 +534,7 @@ public class OrderController extends BaseController {
 		cart.setMember(currentUser);
 		cart.add(cartItem);
 
-		Order order = orderService.create(Order.Type.exchange, cart, receiver,napaStores, paymentMethod, shippingMethod, null, null, balance,coupon, memo);
+		Order order = orderService.createNose(Order.Type.exchange, cart, receiver,napaStores, paymentMethod, shippingMethod, null, null, balance,coupon, memo);
 		
 		//String orderMap = orderService.orderInterface(order);
 		

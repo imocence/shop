@@ -12,7 +12,8 @@
 				emptyValue: "",
 				cssStyle: {"margin-right": "4px"},
 				url: null,
-				type: "GET"
+				type: "GET",
+				countryId:null
 			};
 			$.extend(settings, options);
 			
@@ -41,7 +42,7 @@
 						$.ajax({
 							url: settings.url,
 							type: settings.type,
-							data: parentId != null ? {parentId: parentId} : null,
+							data: parentId != null ? {parentId: parentId,countryId: settings.countryId} : {countryId: settings.countryId},
 							dataType: "json",
 							cache: false,
 							async: false,

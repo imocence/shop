@@ -149,7 +149,7 @@ $().ready(function() {
 							[#if order.paymentMethod?? && order.amountPayable > 0]
 								<a href="javascript:;" id="payment" class="button">${message("member.order.payment")}</a>
 							[/#if]
-							[#if !order.hasExpired() && (order.status == "pendingPayment" || order.status == "pendingReview")]
+							[#if !order.hasExpired() && (order.status == "pendingPayment" )]//|| order.status == "pendingReview"待审核状态
 								<a href="javascript:;" id="cancel" class="button">${message("member.order.cancel")}</a>
 							[/#if]
 							[#if !order.hasExpired() && order.status == "shipped"]
@@ -297,13 +297,13 @@ $().ready(function() {
 								${currency(order.couponPrice, true)}
 							</td>
 						</tr>
-						[#if order.couponPricePaid > 0]
+						[#if order.couponAmountPaid > 0]
 							<tr>
 								<th>
-									${message("Order.couponPricePaid")}:
+									${message("Order.couponAmountPaid")}:
 								</th>
 								<td>
-									${currency(order.couponPricePaid, true)}
+									${currency(order.couponAmountPaid, true)}
 								</td>
 							</tr>
 						[/#if]

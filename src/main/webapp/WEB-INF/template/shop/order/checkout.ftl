@@ -49,6 +49,9 @@ $().ready(function() {
 	var $coupon = $("#coupon");
 	var $submit = $("#submit");
 	var amount = ${order.amount};
+	var couponPrice = ${order.couponPrice};
+	var fiBankbookCoupon = ${fiBankbookCoupon.balance};
+	var fiBankbookBalance = ${fiBankbookBalance.balance};
 	var amountPayable = ${order.amountPayable};
 	var paymentMethodIds = {};
 	[@compress single_line = true]
@@ -145,7 +148,7 @@ $().ready(function() {
 				}
 				//总券				
 				couponPrice = data.couponPrice;
-				$couponPrice.text(currency(couponPrice, true, true));
+				$couponPrice.text(currency(couponPrice, true));
 				if (couponPrice > 0) {
 					$useCoupon.parent().show();
 				} else {
@@ -308,7 +311,7 @@ $().ready(function() {
 	$coupon.change(function() {
 		var $this = $(this);
 		if (/^\d+(\.\d{0,${setting.priceScale}})?$/.test($this.val())) {
-			var max = ${fiBankbookCoupon.balance} >= amount ? amount : ${fiBankbookCoupon.balance};
+			var max = ${fiBankbookCoupon.balance} >= couponPrice ? couponPrice : ${fiBankbookCoupon.balance};
 			if (parseFloat($this.val()) > max) {
 				$this.val(max);
 			}
@@ -320,13 +323,11 @@ $().ready(function() {
 	
 	// 订单提交
 	$submit.click(function() {
-		if (amountPayable > 0) {
-			if ($paymentMethodId.filter(":checked").size() <= 0) {
-				//$.alert("${message("shop.order.paymentMethodRequired")}");
-				$.alert("${message("shop.order.credit")}");
-				return false;
-			}
-		} else {
+		if((amountPayable - $balance.val()) > 0 && (fiBankbookBalance-amount) < 0 || (fiBankbookCoupon - couponPrice) < 0){
+			$.alert("${message("shop.order.credit")}");
+			//$submit.prop("disabled", false);
+			return false;
+		}else {
 			$paymentMethodId.prop("disabled", true);
 		}
 		[#if order.isDelivery]
@@ -350,7 +351,7 @@ $().ready(function() {
 				$submit.prop("disabled", true);
 			},
 			success: function(data) {
-				location.href = amountPayable > 0 ? "payment?orderSn=" + data.sn : "${base}/member/order/view?orderSn=" + data.sn;
+				location.href = (amountPayable - $balance.val()) > 0 ? "payment?orderSn=" + data.sn : "${base}/member/order/view?orderSn=" + data.sn;
 			},
 			complete: function() {
 				$submit.prop("disabled", false);

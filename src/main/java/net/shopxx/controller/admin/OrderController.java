@@ -21,11 +21,13 @@ import net.shopxx.Message;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.Setting;
+import net.shopxx.entity.Admin;
 import net.shopxx.entity.Area;
-import net.shopxx.entity.Cart;
 import net.shopxx.entity.Country;
+import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.Invoice;
 import net.shopxx.entity.Member;
+import net.shopxx.entity.NapaStores;
 import net.shopxx.entity.Order;
 import net.shopxx.entity.OrderItem;
 import net.shopxx.entity.OrderPayment;
@@ -37,9 +39,9 @@ import net.shopxx.entity.OrderShippingItem;
 import net.shopxx.entity.PaymentMethod;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.ProductCategory;
+import net.shopxx.entity.ProductGrade;
 import net.shopxx.entity.ShippingMethod;
 import net.shopxx.entity.Sku;
-import net.shopxx.security.CurrentCart;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.service.AreaService;
 import net.shopxx.service.CountryService;
@@ -51,9 +53,9 @@ import net.shopxx.service.PaymentMethodService;
 import net.shopxx.service.ProductCategoryService;
 import net.shopxx.service.ProductService;
 import net.shopxx.service.ShippingMethodService;
+import net.shopxx.util.NumberUtil;
 import net.shopxx.util.StringUtil;
 import net.shopxx.util.SystemUtils;
-import oracle.net.aso.b;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -170,51 +172,50 @@ public class OrderController extends BaseController {
 	}
 	
 	/**
-	 * 更新
+	 * 添加订单
+	 * @param order 订单
+	 * @param countryName 国家
+	 * @param usercode 会员usercode
+	 * @param consignee 收货人
+	 * @param phone 收货电话
+	 * @param address 收货地址
+	 * @param paymentMethod 支付ID
+	 * @param shippingMethod 配送ID
+	 * @param memo 附言
+	 * @param freight 运费
+	 * @param balance 订单电子币总额
+	 * @param couponbalance 订单购物券总额
+	 * @param orderItem 订单项
+	 * @param currentUser 当前登录用户
+	 * @param redirectAttributes
+	 * @return
 	 */
 	@PostMapping("/save")
-	public String save(String cartTag, Long receiverId, Long paymentMethodId, Long shippingMethodId, String code, String invoiceTitle, BigDecimal balance, String memo, @CurrentUser Member currentUser, @CurrentCart Cart currentCart, RedirectAttributes redirectAttributes){
-//		Map<String, Object> data = new HashMap<>();
-//		if (currentCart == null || currentCart.isEmpty()) {
-//			return Results.UNPROCESSABLE_ENTITY;
-//		}
-//		if (!StringUtils.equals(currentCart.getTag(), cartTag)) {
-//			return Results.unprocessableEntity("shop.order.cartHasChanged");
-//		}
-//		if (currentCart.hasNotMarketable()) {
-//			return Results.unprocessableEntity("shop.order.hasNotMarketable");
-//		}
-//		if (currentCart.getIsLowStock()) {
-//			return Results.unprocessableEntity("shop.order.cartLowStock");
-//		}
-//		Receiver receiver = null;
-//		ShippingMethod shippingMethod = null;
-//		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
-//		if (currentCart.getIsDelivery()) {
-//			receiver = receiverService.find(receiverId);
-//			if (receiver == null || !currentUser.equals(receiver.getMember())) {
-//				return Results.UNPROCESSABLE_ENTITY;
-//			}
-//			shippingMethod = shippingMethodService.find(shippingMethodId);
-//			if (shippingMethod == null) {
-//				return Results.UNPROCESSABLE_ENTITY;
-//			}
-//		}
-//		CouponCode couponCode = couponCodeService.findByCode(code);
-//		if (couponCode != null && !currentCart.isValid(couponCode)) {
-//			return Results.UNPROCESSABLE_ENTITY;
-//		}
-//		if (balance != null && balance.compareTo(BigDecimal.ZERO) < 0) {
-//			return Results.UNPROCESSABLE_ENTITY;
-//		}
-//		if (balance != null && balance.compareTo(currentUser.getBalance()) > 0) {
-//			return Results.unprocessableEntity("shop.order.insufficientBalance");
-//		}
-//		Invoice invoice = StringUtils.isNotEmpty(invoiceTitle) ? new Invoice(invoiceTitle, null) : null;
-//		Order order = orderService.create(Order.Type.general, currentCart, receiver, paymentMethod, shippingMethod, couponCode, invoice, balance, memo);
-//
-//		data.put("sn", order.getSn());
-//		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
+	public String save(Order order, String countryName, String usercode, String consignee, String phone, String address, Long paymentMethodId, Long shippingMethodId, String memo, BigDecimal freight, BigDecimal amount, BigDecimal couponAmount, @CurrentUser Admin currentUser, RedirectAttributes redirectAttributes){
+		ShippingMethod shippingMethod = shippingMethodService.find(shippingMethodId);
+		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
+		Member member = memberService.findByUsercode(usercode);
+		if (null == member) {
+			addFlashMessage(redirectAttributes, new Message(Message.Type.error, "用户不存在"));
+			return "redirect:list";
+		}
+		if (amount != null && amount.compareTo(BigDecimal.ZERO) < 0) {
+			addFlashMessage(redirectAttributes, new Message(Message.Type.error, "订单电子劵金额非法"));
+			return "redirect:list";
+		}
+		if (couponAmount != null && couponAmount.compareTo(BigDecimal.ZERO) < 0) {
+			addFlashMessage(redirectAttributes, new Message(Message.Type.error, "订单购物券金额非法"));
+			return "redirect:list";
+		}
+		try {
+			order.setCountry(countryService.findByName(countryName));
+			orderService.create(order, member, paymentMethod, shippingMethod, null, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			addFlashMessage(redirectAttributes, new Message(Message.Type.error, e.getMessage()));
+			return "redirect:list";
+		}
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
 	
@@ -340,7 +341,11 @@ public class OrderController extends BaseController {
 			return ERROR_VIEW;
 		}
 		orderPayment.setFee(BigDecimal.ZERO);
-		orderService.payment(order, orderPayment);
+		try {
+			orderService.payment(order, orderPayment);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:view?id=" + orderId;
 	}
@@ -592,11 +597,32 @@ public class OrderController extends BaseController {
 			Map<String, Object> item = new HashMap<>();
 			item.put("usercode", member.getUsercode());
 			item.put("username", member.getUsername());
-			item.put("balance", "100.00");
-			item.put("couponbalance", "200.00");
-			item.put("address", "江苏省苏州市");
-			item.put("phone", "15900001111");
-			item.put("memberrole", "区代");
+			BigDecimal balance = new BigDecimal("0.00");
+			BigDecimal couponbalance = new BigDecimal("0.00");
+			Set<FiBankbookBalance> set = member.getFiBankbookBalances();
+			if (null != set) {
+				for (FiBankbookBalance fiBankbookBalance : set) {
+					if (FiBankbookBalance.Type.balance == fiBankbookBalance.getType()) {
+						balance = fiBankbookBalance.getBalance();
+					}else if (FiBankbookBalance.Type.coupon == fiBankbookBalance.getType()) {
+						couponbalance = fiBankbookBalance.getBalance();
+					}
+				}
+			}
+			item.put("balance", balance);
+			item.put("couponbalance", couponbalance);
+			String address = "";
+			String phone = "";
+			int memberrole = 0;
+			NapaStores napaStores = member.getNapaStores();
+			if (null != napaStores) {
+				address = napaStores.getNapaAddress();
+				phone = napaStores.getMobile();
+				memberrole = napaStores.getType();
+			}
+			item.put("address", address);
+			item.put("phone", phone);
+			item.put("memberrole", memberrole);
 			data.add(item);
 		}
 		return data;
@@ -607,7 +633,7 @@ public class OrderController extends BaseController {
 	 * @param productCategoryId 分类ID
 	 */
 	@GetMapping("/getProducts")
-	public @ResponseBody List<Map<String, Object>> getProducts(Long productCategoryId) {
+	public @ResponseBody List<Map<String, Object>> getProducts(String usercode, Long productCategoryId) {
 		List<Map<String, Object>> data = new ArrayList<>();
 		// key:当前分类ID value:产品集合 
 		Map<Long, Product> productMap = new LinkedHashMap<Long, Product>();
@@ -616,9 +642,15 @@ public class OrderController extends BaseController {
 		if (null == productCategory) {
 			return data;
 		}
+		Member member = memberService.findByUsercode(usercode);
+		Long memberRankId = member.getMemberRank().getId();
 		Set<Product> set = productCategory.getProducts();
 		if (null != set && !set.isEmpty()) {
 			for (Product product : set) {
+				// 判断库存，没有的不显示，没有劵价格的不显示
+				if (!canSelect(product, memberRankId)){
+					continue;
+				}
 				if (!productMap.containsKey(product.getId())) {
 					productMap.put(product.getId(), product);
 				}
@@ -630,6 +662,10 @@ public class OrderController extends BaseController {
 				set = childCategory.getProducts();
 				if (null != set && !set.isEmpty()) {
 					for (Product product : set) {
+						// 判断库存，没有的不显示，没有劵价格的不显示
+						if (!canSelect(product, memberRankId)){
+							continue;
+						}
 						if (!productMap.containsKey(product.getId())) {
 							productMap.put(product.getId(), product);
 						}
@@ -651,19 +687,28 @@ public class OrderController extends BaseController {
 	 * @param productId 商品ID
 	 */
 	@GetMapping("/getProduct")
-	public @ResponseBody Map<String, Object> getProduct(Long productId) {
+	public @ResponseBody Map<String, Object> getProduct(String usercode, Long productId) {
 		Map<String, Object> data = new HashMap<String, Object>();
 		Product product = productService.find(productId);
 		if (null == product) {
 			return data;
 		}
+		Member member = memberService.findByUsercode(usercode);
+		Long memberRankId = member.getMemberRank().getId();
+		Set<ProductGrade> grades = product.getProductGrades();
+		if (null != grades) {
+			for (ProductGrade productGrade : grades) {
+				if (productGrade.getGrade().getId() == memberRankId) {
+					data.put("price", productGrade.getPrice());
+					data.put("couponPrice", productGrade.getCoupon());
+				}
+			}
+		}
 		data.put("sn", product.getSn());
 		data.put("name", product.getName());
-		data.put("price", product.getPrice());
-		data.put("weight", product.getWeight());
-		data.put("couponPrice", product.getPrice());
+		data.put("weight", NumberUtil.getInt(product.getWeight()));
 		data.put("image", product.getImage());
-		data.put("sku", product.getDefaultSku().getStock());
+		data.put("sku", product.getDefaultSku().getAvailableStock());
 		return data;
 	}
 	
@@ -673,7 +718,13 @@ public class OrderController extends BaseController {
 	 */
 	@GetMapping("/getFreight")
 	public @ResponseBody BigDecimal getFreight(Long shippingMethodId, Integer weight) {
+		if (null == shippingMethodId) {
+			return new BigDecimal(0);
+		}
 		ShippingMethod shippingMethod = shippingMethodService.find(shippingMethodId);
+		if (null == shippingMethod) {
+			return new BigDecimal(0);
+		}
 		Area area  = null;
 		return shippingMethodService.calculateFreight(shippingMethod, area, weight);
 	}
@@ -743,5 +794,28 @@ public class OrderController extends BaseController {
 		}
 		return array.toJSONString();
 	}
-
+	
+	/**
+	 * 是否可以选择商品
+	 * @param product
+	 * @param memberRankId
+	 * @return
+	 */
+	private boolean canSelect(Product product, Long memberRankId){
+		// 判断库存，没有的不显示
+		Sku sku = product.getDefaultSku();
+		if (null == sku || sku.getAvailableStock() <= 0) {
+			return false;
+		}
+		// 没有劵的不显示
+		Set<ProductGrade> grades = product.getProductGrades();
+		if (null != grades) {
+			for (ProductGrade productGrade : grades) {
+				if (productGrade.getGrade().getId() == memberRankId) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

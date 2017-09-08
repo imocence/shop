@@ -316,10 +316,10 @@
 						<span class="pull-right">${currency(order.amountPaid, true)}</span>
 					</div>
 				[/#if]
-				[#if order.couponPricePaid > 0]
+				[#if order.couponAmountPaid > 0]
 					<div class="list-group-item">
-						${message("Order.couponPricePaid")}
-						<span class="pull-right">${currency(order.couponPricePaid, true)}</span>
+						${message("Order.couponAmountPaid")}
+						<span class="pull-right">${currency(order.couponAmountPaid, true)}</span>
 					</div>
 				[/#if]
 				[#if order.refundAmount > 0]
@@ -373,7 +373,7 @@
 				[#if order.paymentMethod?? && order.amountPayable > 0]
 					<a id="payment" class="btn btn-sm btn-default" href="javascript:;">${message("member.order.payment")}</a>
 				[/#if]
-				[#if !order.hasExpired() && (order.status == "pendingPayment" || order.status == "pendingReview")]
+				[#if !order.hasExpired() && (order.status == "pendingPayment") ]//|| order.status == "pendingReview")已支付
 					<a id="cancel" class="btn btn-sm btn-default" href="javascript:;">${message("member.order.cancel")}</a>
 				[/#if]
 				[#if !order.hasExpired() && order.status == "shipped"]

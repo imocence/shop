@@ -35,11 +35,8 @@ import net.shopxx.Message;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.BaseEntity;
-import net.shopxx.entity.FiBankbookBalance;
-import net.shopxx.entity.FiBankbookBalance.Type;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
-import net.shopxx.entity.NapaStores;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.FiBankbookBalanceService;
 import net.shopxx.service.FiBankbookJournalService;
@@ -171,127 +168,20 @@ public class MemberController extends BaseController {
 		if (!signature0.equals(signature)) {			
 			errCode = "\"1001\"";
 			state = "\"验签错误\"";
-		}else{		
-			//区代账号创建
-			NapaStores napaStores = new NapaStores();
-			napaStores.setMobile(null);
-			napaStores.setNapaCode(null);
-			napaStores.setType(0);
-			napaStores.setBalance(BigDecimal.ZERO);
-			napaStoresService.save(napaStores);
-			member.setNapaStores(napaStores);
-			
-			member.setUsername(userCode);
-			member.setUsercode(userCode);
-			
-			member.setPassword("a123456");
-			member.setEncodedPassword(DigestUtils.md5Hex("a123456"));
-			member.setEmail(null);
-			member.setMemberRank(memberRankService.find(1L));
-			
-			member.setIsEnabled(true);
-			member.setCountry(countryService.findByName(companyCode));	
-			
-			if (!isValid(member, BaseEntity.Save.class)) {
-				map.put("errCode", "\"2001\"");
-				map.put("state", "\"异常:\"");
-				JSONObject jsonObject = JSONObject.fromObject(map.toString());
-				
-				napaStoresService.delete(napaStores);
-				
-				return jsonObject;
-			}
-
-			member.removeAttributeValue();
-			for (MemberAttribute memberAttribute : memberAttributeService.findList(true, true)) {
-				String[] values = request.getParameterValues("memberAttribute_" + memberAttribute.getId());
-				if (!memberAttributeService.isValid(memberAttribute, values)) {
-					map.put("errCode", "\"2001\"");
-					map.put("state", "\"异常:\"");
-					JSONObject jsonObject = JSONObject.fromObject(map.toString());
-					
-					napaStoresService.delete(napaStores);
-					
-					return jsonObject;
-				}
-				Object memberAttributeValue = memberAttributeService.toMemberAttributeValue(memberAttribute, values);
-				member.setAttributeValue(memberAttribute, memberAttributeValue);
-			}
-			
-			member.setPoint(0L);
-			member.setBalance(BigDecimal.ZERO);
-			member.setAmount(BigDecimal.ZERO);
-			member.setIsLocked(false);
-			member.setLockDate(null);
-			member.setLastLoginIp(null);
-			member.setLastLoginDate(null);
-			member.setSafeKey(null);
-			member.setCart(null);
-			member.setOrders(null);
-			member.setPaymentTransactions(null);
-			member.setDepositLogs(null);
-			member.setCouponCodes(null);
-			member.setReceivers(null);
-			member.setReviews(null);
-			member.setConsultations(null);
-			member.setProductFavorites(null);
-			member.setProductNotifies(null);
-			member.setInMessages(null);
-			member.setOutMessages(null);
-			member.setPointLogs(null);//n
-			
+		}else{	
 			try {
-				if(null == memberService.findByUsercode(userCode)){
-					
-					memberService.save(member);
-					
-					//创建会员的存折
-					FiBankbookBalance balance1 = new FiBankbookBalance();
-					balance1.setBalance(BigDecimal.ZERO);
-					balance1.setType(Type.balance);
-					balance1.setMember(member);
-					fiBankbookBalanceService.save(balance1);
-					
-					FiBankbookBalance balance2 = new FiBankbookBalance();
-					balance2.setBalance(BigDecimal.ZERO);
-					balance2.setType(Type.coupon);
-					balance2.setMember(member);
-					fiBankbookBalanceService.save(balance2);
-					
-					//流水号格式：类型首字母+时间
-					String uniqueCode = "ZC"+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
-					/**
-					 * 根据会员编号充值购物券接口
-					 * 
-					 * @param usercode 会员编号
-					 * @param money 资金
-					 * @param uniqueCode 交易单号
-					 * @param type 0:电子币账户  1:购物券账户
-					 * @param dealType 0:存入  1取出
-					 * @param moneyType 0:现金  1:在线充值
-					 * @param notes 摘要
-					 * @return
-					 * @throws Exception
-					 */
-					try {
-						//添加一条注册赠送记录
-						String success = fiBankbookJournalService.recharge(userCode, new BigDecimal("10000"), uniqueCode, 1, 0, 1, "用户注册赠送");
-						if(!"success".equals(success)){
-							System.out.println("注册赠送券未成功，提醒手动添加，会员编码为："+userCode);
-						}
-					} catch (Exception e) {
-						System.out.println("注册赠送券未成功，提醒手动添加，会员编码为："+userCode);
-					}
-				}else{
-					errCode = "\"2001\"";
-					state = "\"异常:已有会员编号为"+userCode+"的会员\"";
-					napaStoresService.delete(napaStores);
+				memberService.create(member,companyCode,userCode,signature,timestamp,request,redirectAttributes);
+				//流水号格式：类型首字母+时间
+				String uniqueCode = "ZC"+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
+				//添加一条注册赠送记录
+				String success = fiBankbookJournalService.recharge(userCode, new BigDecimal("10000"), uniqueCode, 1, 0, 1, "用户注册赠送");
+				if(!"success".equals(success)){
+					System.out.println("注册赠送券未成功，提醒手动添加，会员编码为："+userCode);
 				}
-				
 			} catch (Exception e) {
+				e.printStackTrace();
 				errCode = "\"2001\"";
-				state = "\"异常:会员编号为"+userCode+"的会员信息保存失败\"";
-				napaStoresService.delete(napaStores);
+				state = "\"保存失败\"";
 			}
 		}
 		map.put("errCode", errCode);

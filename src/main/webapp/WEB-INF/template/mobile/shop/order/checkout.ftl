@@ -371,17 +371,11 @@
 						return false;
 					}
 				[/#if]
-				if((fiBankbookBalance-amount) < 0 || (fiBankbookCoupon - amount) < 0){
+				if((amountPayable - $balance.val()) > 0 && (fiBankbookBalance-amount) < 0 || (fiBankbookCoupon - couponPrice) < 0){
 					$.alert("${message("shop.order.credit")}");
+					$submit.prop("disabled", false);
 					return false;
-				}
-				if (amountPayable > 0) {
-					if ($paymentMethodId.val() == "") {
-						//$.alert("${message("shop.order.paymentMethodRequired")}");
-						$.alert("${message("shop.order.credit")}");
-						return false;
-					}
-				} else {
+				}else {
 					$paymentMethodId.prop("disabled", true);
 				}
 				[#if order.isDelivery]
@@ -399,7 +393,7 @@
 						$submit.prop("disabled", true);
 					},
 					success: function(data) {
-						location.href = amountPayable > 0 ? "payment?orderSn=" + data.sn : "${base}/member/order/view?orderSn=" + data.sn;
+						location.href = (amountPayable - $balance.val()) > 0 ? "payment?orderSn=" + data.sn : "${base}/member/order/view?orderSn=" + data.sn;
 					},
 					complete: function() {
 						$submit.prop("disabled", false);

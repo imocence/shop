@@ -282,7 +282,23 @@ public interface OrderService extends BaseService<Order, Long> {
 	 *            附言
 	 * @return 订单
 	 */
-	Order create(Order.Type type, Cart cart, Receiver receiver, NapaStores napaStores, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, BigDecimal coupon, String memo);
+	//前端
+	Order createNose(Order.Type type, Cart cart, Receiver receiver, NapaStores napaStores, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, BigDecimal coupon, String memo);
+	
+	/**
+	 * 后台订单创建
+	 * 
+	 * @param order
+	 *            订单
+	 * @param member
+	 *            会员
+	 * @param paymentMethod
+	 *            支付方式
+	 * @param shippingMethod
+	 *            配送方式
+	 * @return 订单
+	 */
+	boolean create(Order order, Member member, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice) throws Exception;
 
 	/**
 	 * 订单修改
@@ -318,7 +334,7 @@ public interface OrderService extends BaseService<Order, Long> {
 	 * @param orderPayment
 	 *            订单支付
 	 */
-	void payment(Order order, OrderPayment orderPayment);
+	void payment(Order order, OrderPayment orderPayment)  throws Exception;
 
 	/**
 	 * 订单退款
