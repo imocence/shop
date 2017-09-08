@@ -209,6 +209,7 @@
 										<span class="small gray-darker">${cartItem.sku.specifications?join(", ")}</span>
 									[/#if]
 									<strong class="red">${currency(cartItem.price, true)}</strong>
+									<dd>${message("Sku.coupon")}:${currency(cartItem.couponPrice, true)}</dd>
 								</div>
 								<div class="media-right media-bottom text-right">
 									<button class="remove btn btn-sm btn-red" type="button" data-sku-id="${cartItem.sku.id}">${message("shop.cart.remove")}</button>
@@ -254,8 +255,13 @@
 			<div class="row">
 				<div class="col-xs-6 text-center">
 					[#if currentCart?? && currentCart.cartItems?has_content]
-						${message("shop.cart.total")}:
-						<strong id="effectivePrice" class="red">${currency(currentCart.effectivePrice, true)}</strong>
+						<div>${message("shop.cart.total")}:
+							<strong id="effectivePrice" class="red">${currency(currentCart.effectivePrice, true)}</strong>
+						</div>
+						<div>
+							${message("shop.cart.totalCoupon")}:
+							<span class="red">${currency(currentCart.effectiveCoupon, true)}</span>
+						</div>
 					[/#if]
 				</div>
 				<div class="col-xs-3">

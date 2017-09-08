@@ -31,8 +31,10 @@ import net.shopxx.entity.Cart;
 import net.shopxx.entity.CartItem;
 import net.shopxx.entity.Coupon;
 import net.shopxx.entity.CouponCode;
+import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.Invoice;
 import net.shopxx.entity.Member;
+import net.shopxx.entity.NapaStores;
 import net.shopxx.entity.Order;
 import net.shopxx.entity.PaymentMethod;
 import net.shopxx.entity.Product;
@@ -44,6 +46,8 @@ import net.shopxx.security.CurrentCart;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.service.AreaService;
 import net.shopxx.service.CouponCodeService;
+import net.shopxx.service.FiBankbookBalanceService;
+import net.shopxx.service.NapaStoresService;
 import net.shopxx.service.OrderItemService;
 import net.shopxx.service.OrderService;
 import net.shopxx.service.PaymentMethodService;
@@ -81,7 +85,10 @@ public class OrderController extends BaseController {
 	private PluginService pluginService;
 	@Inject
 	OrderItemService orderItemService;
-
+	@Inject
+	NapaStoresService napaStoresService;
+	@Inject
+	FiBankbookBalanceService fiBankbookBalanceService;
 	/**
 	 * 检查积分兑换
 	 */
@@ -216,12 +223,23 @@ public class OrderController extends BaseController {
 			}
 		}
 		Receiver defaultReceiver = receiverService.findDefault(currentUser);
-		Order order = orderService.generate(Order.Type.general, currentCart, defaultReceiver, defaultPaymentMethod, defaultShippingMethod, null, null, null, null);
+		
+		//区代
+		NapaStores napaStores = currentUser.getNapaStores();
+		
+		//会员账户
+		//List<FiBankbookBalance> fiBankbookBalance = fiBankbookBalanceService.findList(currentUser,null, 2, null, null);
+		
+		Order order = orderService.generate(Order.Type.general, currentCart,napaStores, defaultReceiver, defaultPaymentMethod, defaultShippingMethod, null, null, null, null);
 		model.addAttribute("order", order);
 		model.addAttribute("defaultReceiver", defaultReceiver);
+		model.addAttribute("napaStores", napaStores);
 		model.addAttribute("cartTag", currentCart.getTag());
-		model.addAttribute("paymentMethods", paymentMethods);
-		model.addAttribute("shippingMethods", shippingMethods);
+		model.addAttribute("paymentMethods", paymentMethods);//支付方式
+		model.addAttribute("fiBankbookBalance", fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.balance));//会员余额账户
+		model.addAttribute("fiBankbookCoupon", fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.coupon));//会员余额账户
+
+		model.addAttribute("shippingMethods", shippingMethods);//快递方式
 		model.addAttribute("defaultPaymentMethod", defaultPaymentMethod);
 		model.addAttribute("defaultShippingMethod", defaultShippingMethod);
 		return "shop/order/checkout";
@@ -258,18 +276,28 @@ public class OrderController extends BaseController {
 		cart.setMember(currentUser);
 		cart.add(cartItem);
 		Receiver defaultReceiver = receiverService.findDefault(currentUser);
-		Order order = orderService.generate(Order.Type.exchange, cart, defaultReceiver, null, null, null, null, null, null);
+		
+		//区代
+		NapaStores napaStores = currentUser.getNapaStores();
+		
+		//会员账户
+		//List<FiBankbookBalance> fiBankbookBalance = fiBankbookBalanceService.findList(currentUser,null, 2, null, null);
+		
+		Order order = orderService.generate(Order.Type.exchange, cart, napaStores ,defaultReceiver, null, null, null, null, null, null);
 		model.addAttribute("skuId", skuId);
 		model.addAttribute("quantity", quantity);
 		model.addAttribute("order", order);
 		model.addAttribute("defaultReceiver", defaultReceiver);
 		model.addAttribute("paymentMethods", paymentMethodService.findAll());
+		model.addAttribute("fiBankbookBalance", fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.balance));//会员余额账户
+		model.addAttribute("fiBankbookCoupon", fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.coupon));//会员余额账户
 		model.addAttribute("shippingMethods", shippingMethodService.findAll());
 		return "shop/order/checkout";
 	}
 
 	/**
 	 * 计算
+	 * 如果券和余额都充足则用余额，否则提示需要充值
 	 */
 	@GetMapping("/calculate")
 	public ResponseEntity<?> calculate(Long receiverId, Long paymentMethodId, Long shippingMethodId, String code, String invoiceTitle, BigDecimal balance, String memo, @CurrentUser Member currentUser, @CurrentCart Cart currentCart) {
@@ -284,15 +312,20 @@ public class OrderController extends BaseController {
 		if (balance != null && balance.compareTo(BigDecimal.ZERO) < 0) {
 			return Results.UNPROCESSABLE_ENTITY;
 		}
-		if (balance != null && balance.compareTo(currentUser.getBalance()) > 0) {
-			return Results.unprocessableEntity("shop.order.insufficientBalance");
+		if (balance != null && balance.compareTo(fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.balance).getBalance()) > 0) {
+			return Results.unprocessableEntity("shop.order.credit");
+			//账户余额不足shop.order.insufficientBalance
 		}
 
 		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
 		ShippingMethod shippingMethod = shippingMethodService.find(shippingMethodId);
 		CouponCode couponCode = couponCodeService.findByCode(code);
 		Invoice invoice = StringUtils.isNotEmpty(invoiceTitle) ? new Invoice(invoiceTitle, null) : null;
-		Order order = orderService.generate(Order.Type.general, currentCart, receiver, paymentMethod, shippingMethod, couponCode, invoice, balance, memo);
+		
+		//区代
+		NapaStores napaStores = currentUser.getNapaStores();
+		
+		Order order = orderService.generate(Order.Type.general, currentCart, napaStores ,receiver, paymentMethod, shippingMethod, couponCode, invoice, balance, memo);
 
 		data.put("price", order.getPrice());
 		data.put("fee", order.getFee());
@@ -301,6 +334,7 @@ public class OrderController extends BaseController {
 		data.put("promotionDiscount", order.getPromotionDiscount());
 		data.put("couponDiscount", order.getCouponDiscount());
 		data.put("amount", order.getAmount());
+		data.put("couponPrice", order.getCouponPrice());
 		data.put("amountPayable", order.getAmountPayable());
 		return ResponseEntity.ok(data);
 	}
@@ -325,7 +359,7 @@ public class OrderController extends BaseController {
 		if (balance != null && balance.compareTo(BigDecimal.ZERO) < 0) {
 			return Results.UNPROCESSABLE_ENTITY;
 		}
-		if (balance != null && balance.compareTo(currentUser.getBalance()) > 0) {
+		if (balance != null && balance.compareTo(fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.balance).getBalance()) > 0) {
 			return Results.unprocessableEntity("shop.order.insufficientBalance");
 		}
 		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
@@ -336,7 +370,11 @@ public class OrderController extends BaseController {
 		Cart cart = new Cart();
 		cart.setMember(currentUser);
 		cart.add(cartItem);
-		Order order = orderService.generate(Order.Type.general, cart, receiver, paymentMethod, shippingMethod, null, null, balance, null);
+		
+		//区代
+		NapaStores napaStores = currentUser.getNapaStores();
+		
+		Order order = orderService.generate(Order.Type.general, cart, napaStores ,receiver, paymentMethod, shippingMethod, null, null, balance, null);
 
 		data.put("price", order.getPrice());
 		data.put("fee", order.getFee());
@@ -345,6 +383,7 @@ public class OrderController extends BaseController {
 		data.put("promotionDiscount", order.getPromotionDiscount());
 		data.put("couponDiscount", order.getCouponDiscount());
 		data.put("amount", order.getAmount());
+		data.put("couponPrice", order.getCouponPrice());
 		data.put("amountPayable", order.getAmountPayable());
 		return ResponseEntity.ok(data);
 	}
@@ -353,8 +392,20 @@ public class OrderController extends BaseController {
 	 * 创建
 	 */
 	@PostMapping("/create")
-	public ResponseEntity<?> create(String cartTag, Long receiverId, Long paymentMethodId, Long shippingMethodId, String code, String invoiceTitle, BigDecimal balance, String memo, @CurrentUser Member currentUser, @CurrentCart Cart currentCart) {
+	public ResponseEntity<?> create(String cartTag, 
+									Long receiverId, 
+									Long napaStoresId,
+									Long paymentMethodId, 
+									Long shippingMethodId, 
+									String code, 
+									String invoiceTitle, 
+									BigDecimal balance, 
+									BigDecimal coupon,
+									String memo, 
+									@CurrentUser Member currentUser, 
+									@CurrentCart Cart currentCart) {
 		Map<String, Object> data = new HashMap<>();
+
 		if (currentCart == null || currentCart.isEmpty()) {
 			return Results.UNPROCESSABLE_ENTITY;
 		}
@@ -368,13 +419,19 @@ public class OrderController extends BaseController {
 			return Results.unprocessableEntity("shop.order.cartLowStock");
 		}
 		Receiver receiver = null;
+		//区代
+		NapaStores napaStores = napaStoresService.find(napaStoresId);
+		if(napaStores == null || !currentUser.getNapaStores().equals(napaStores)){
+			return Results.UNPROCESSABLE_ENTITY;
+		}
+		
 		ShippingMethod shippingMethod = null;
 		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
 		if (currentCart.getIsDelivery()) {
-			receiver = receiverService.find(receiverId);
+			/*receiver = receiverService.find(receiverId);
 			if (receiver == null || !currentUser.equals(receiver.getMember())) {
 				return Results.UNPROCESSABLE_ENTITY;
-			}
+			}*/
 			shippingMethod = shippingMethodService.find(shippingMethodId);
 			if (shippingMethod == null) {
 				return Results.UNPROCESSABLE_ENTITY;
@@ -387,14 +444,22 @@ public class OrderController extends BaseController {
 		if (balance != null && balance.compareTo(BigDecimal.ZERO) < 0) {
 			return Results.UNPROCESSABLE_ENTITY;
 		}
-		if (balance != null && balance.compareTo(currentUser.getBalance()) > 0) {
+
+		if (balance != null && balance.compareTo(fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.balance).getBalance()) > 0) {
 			return Results.unprocessableEntity("shop.order.insufficientBalance");
 		}
+		if (coupon != null && coupon.compareTo(BigDecimal.ZERO) < 0) {
+			return Results.UNPROCESSABLE_ENTITY;
+		}
+		if (coupon != null && coupon.compareTo(fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.coupon).getBalance()) > 0) {
+			return Results.unprocessableEntity("shop.order.insufficientCoupon");
+		}
 		Invoice invoice = StringUtils.isNotEmpty(invoiceTitle) ? new Invoice(invoiceTitle, null) : null;
-		Order order = orderService.create(Order.Type.general, currentCart, receiver, paymentMethod, shippingMethod, couponCode, invoice, balance, memo);
-
+		Order order = orderService.createNose(Order.Type.general, currentCart, receiver,napaStores, paymentMethod, shippingMethod, couponCode, invoice, balance,coupon, memo);
+		
 		data.put("sn", order.getSn());
-		orderService.orderInterface(order);
+		
+		//orderService.orderInterface(order);
 		
 		return ResponseEntity.ok(data);
 	}
@@ -403,8 +468,17 @@ public class OrderController extends BaseController {
 	 * 创建
 	 */
 	@PostMapping(path = "/create", params = "type=exchange")
-	public ResponseEntity<?> create(Long skuId, Integer quantity, Long receiverId, Long paymentMethodId, Long shippingMethodId, BigDecimal balance, String memo, @CurrentUser Member currentUser) {
+	public ResponseEntity<?> create(Long skuId, 
+									Integer quantity, 
+									Long receiverId,
+									Long napaStoresId, 
+									Long paymentMethodId, 
+									Long shippingMethodId, 
+									BigDecimal balance, 
+									BigDecimal coupon, 
+									String memo, @CurrentUser Member currentUser) {
 		Map<String, Object> data = new HashMap<>();
+
 		if (quantity == null || quantity < 1) {
 			return Results.UNPROCESSABLE_ENTITY;
 		}
@@ -422,13 +496,20 @@ public class OrderController extends BaseController {
 			return Results.unprocessableEntity("shop.order.skuLowStock");
 		}
 		Receiver receiver = null;
+		
+		//区代
+		NapaStores napaStores = napaStoresService.find(napaStoresId);
+		if(napaStores == null || !currentUser.getNapaStores().equals(napaStores)){
+			return Results.UNPROCESSABLE_ENTITY;
+		}
+		
 		ShippingMethod shippingMethod = null;
 		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
 		if (sku.getIsDelivery()) {
-			receiver = receiverService.find(receiverId);
+			/*receiver = receiverService.find(receiverId);
 			if (receiver == null || !currentUser.equals(receiver.getMember())) {
 				return Results.UNPROCESSABLE_ENTITY;
-			}
+			}*/
 			shippingMethod = shippingMethodService.find(shippingMethodId);
 			if (shippingMethod == null) {
 				return Results.UNPROCESSABLE_ENTITY;
@@ -437,8 +518,14 @@ public class OrderController extends BaseController {
 		if (currentUser.getPoint() < sku.getExchangePoint() * quantity) {
 			return Results.unprocessableEntity("shop.order.lowPoint");
 		}
-		if (balance != null && balance.compareTo(currentUser.getBalance()) > 0) {
+		if (balance != null && balance.compareTo(fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.balance).getBalance()) > 0) {
 			return Results.unprocessableEntity("shop.order.insufficientBalance");
+		}
+		if (coupon != null && coupon.compareTo(BigDecimal.ZERO) < 0) {
+			return Results.UNPROCESSABLE_ENTITY;
+		}
+		if (coupon != null && coupon.compareTo(fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.coupon).getBalance()) > 0) {
+			return Results.unprocessableEntity("shop.order.insufficientCoupon");
 		}
 		CartItem cartItem = new CartItem();
 		cartItem.setSku(sku);
@@ -447,9 +534,9 @@ public class OrderController extends BaseController {
 		cart.setMember(currentUser);
 		cart.add(cartItem);
 
-		Order order = orderService.create(Order.Type.exchange, cart, receiver, paymentMethod, shippingMethod, null, null, balance, memo);
+		Order order = orderService.createNose(Order.Type.exchange, cart, receiver,napaStores, paymentMethod, shippingMethod, null, null, balance,coupon, memo);
 		
-		orderService.orderInterface(order);
+		//String orderMap = orderService.orderInterface(order);
 		
 		data.put("sn", order.getSn());
 		return ResponseEntity.ok(data);
@@ -474,6 +561,7 @@ public class OrderController extends BaseController {
 				PaymentPlugin defaultPaymentPlugin = paymentPlugins.get(0);
 				model.addAttribute("fee", defaultPaymentPlugin.calculateFee(order.getAmountPayable()));
 				model.addAttribute("amount", defaultPaymentPlugin.calculateAmount(order.getAmountPayable()));
+				model.addAttribute("couponPrice", defaultPaymentPlugin.calculateCouponPrice(order.getCouponPrice()));
 				model.addAttribute("defaultPaymentPlugin", defaultPaymentPlugin);
 				model.addAttribute("paymentPlugins", paymentPlugins);
 			}

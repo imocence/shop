@@ -463,6 +463,8 @@ $().ready(function() {
 												${defaultSku.exchangePoint}
 											[/#if]
 										</strong>
+										<!-- 券  -->
+										<em>${message("shop.index.coupon")}${currency(defaultSku.coupon, true)}</em>
 										<div class="action">
 											[#if product.type == "general"]
 												<a href="javascript:;" class="addCart" skuId="${defaultSku.id}">${message("shop.product.addCart")}</a>

@@ -8,7 +8,10 @@ package net.shopxx.service;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Repository;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
@@ -179,5 +182,19 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	 * @return
 	 */
 	List<Member> search(String keyword, Country country, Integer count);
+	/**
+	 * 创建一个会员
+	 * @param companyCode
+	 * 			国家码
+	 * @param userCode
+	 * 			会员编码
+	 * @param signature
+	 * 			约定码：MD5加密，格式=时间戳+约定值
+	 * @param timestamp
+	 * 			时间戳
+	 * @return
+	 * @throws Exception 
+	 */
+	boolean create(Member member,String companyCode, String userCode, String signature,String timestamp,HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception;
 
 }

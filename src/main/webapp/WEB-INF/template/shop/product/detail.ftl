@@ -553,6 +553,7 @@ $().ready(function() {
 							</dd>
 						</dl>
 					[/#if]
+					<!-- general普通商品，gift赠品，exchange兑换商品 -->
 					[#if product.type == "general"]
 						<dl>
 							<dt>${message("Sku.price")}:</dt>
@@ -579,13 +580,18 @@ $().ready(function() {
 							</dl>
 						[/#if]
 						[#if defaultSku.rewardPoint > 0]
-							<dl>
+							<!-- <dl>
 								<dt>${message("Sku.rewardPoint")}:</dt>
 								<dd id="rewardPoint">
 									${defaultSku.rewardPoint}
 								</dd>
-							</dl>
+							</dl> -->
 						[/#if]
+						<!-- 券 -->
+						<dl>
+							<dt>${message("Sku.coupon")}:</dt>
+							<dd>${currency(product.coupon, true)}</dd>
+						</dl>
 					[#else]
 						[#if product.type == "exchange"]
 							<dl>

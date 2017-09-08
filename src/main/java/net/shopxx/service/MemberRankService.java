@@ -7,6 +7,10 @@ package net.shopxx.service;
 
 import java.math.BigDecimal;
 
+import net.shopxx.Page;
+import net.shopxx.Pageable;
+import net.shopxx.entity.Brand;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.MemberRank;
 
 /**
@@ -52,4 +56,6 @@ public interface MemberRankService extends BaseService<MemberRank, Long> {
 	 * @return 会员等级，不包含特殊会员等级，若不存在则返回null
 	 */
 	MemberRank findByAmount(BigDecimal amount);
+	
+	Page<MemberRank> findPage(Country country, Pageable pageable);
 }

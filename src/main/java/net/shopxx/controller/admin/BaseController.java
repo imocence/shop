@@ -14,15 +14,21 @@ import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import org.springframework.ui.ModelMap;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import net.shopxx.Filter;
 import net.shopxx.Message;
+import net.shopxx.Pageable;
 import net.shopxx.Setting;
+import net.shopxx.entity.Country;
+import net.shopxx.service.CountryService;
 import net.shopxx.template.directive.FlashMessageDirective;
 import net.shopxx.util.SpringUtils;
+import net.shopxx.util.StringUtil;
 import net.shopxx.util.SystemUtils;
 
 /**
@@ -195,6 +201,21 @@ public class BaseController {
 	protected void addFlashMessage(RedirectAttributes redirectAttributes, Message message) {
 		if (redirectAttributes != null && message != null) {
 			redirectAttributes.addFlashAttribute(FlashMessageDirective.FLASH_MESSAGE_ATTRIBUTE_NAME, message);
+		}
+	}
+	
+	protected void countrySelect(String countryName, Pageable pageable, ModelMap model, CountryService countryService){
+		Country country = null;
+		if (StringUtil.isNotEmpty(countryName)) {
+			country = countryService.findByName(countryName);
+		}
+		model.addAttribute("countryName", countryName);
+		if (null != country) {
+			Filter filter = new Filter();
+			filter.setProperty("country");
+			filter.setValue(country);
+			filter.setOperator(Filter.Operator.eq);
+			pageable.getFilters().add(filter);
 		}
 	}
 

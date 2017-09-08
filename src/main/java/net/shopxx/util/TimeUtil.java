@@ -22,6 +22,12 @@ public class TimeUtil {
 		return difference;
 	}
 	/**
+	 * 获取当前时间的时间戳
+	 */
+	public static Long getTimestamp(){
+		return System.currentTimeMillis()/1000;
+	}
+	/**
 	 * 获取当前时间
 	 * @return
 	 */

@@ -5,6 +5,8 @@
  */
 package net.shopxx.controller.member;
 
+import java.math.BigDecimal;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +23,8 @@ import net.shopxx.entity.Member;
 import net.shopxx.entity.SocialUser;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.security.UserAuthenticationToken;
+import net.shopxx.service.FiBankbookJournalService;
+import net.shopxx.service.MemberService;
 import net.shopxx.service.PluginService;
 import net.shopxx.service.SocialUserService;
 import net.shopxx.service.UserService;
@@ -46,11 +50,12 @@ public class LoginController extends BaseController {
 	private String memberIndex;
 	@Value("${member_login_view}")
 	private String memberLoginView;
-
 	@Inject
 	private PluginService pluginService;
 	@Inject
 	private SocialUserService socialUserService;
+	@Inject 
+	FiBankbookJournalService fiBankbookJournalService;
 	/**
 	 * MD5加密约定码
 	 */
@@ -58,6 +63,8 @@ public class LoginController extends BaseController {
 	private String urlSignature;
 	@Inject
 	private UserService userService;
+	@Inject
+	private MemberService memberService;
 	/**
 	 * 登录页面
 	 */
@@ -81,21 +88,59 @@ public class LoginController extends BaseController {
 		
 		//跳过登录
 		String userCode = request.getParameter("userCode");
-		if(userCode != null){
-			String signature = request.getParameter("signature");
-			String appointtrue = DigestUtils.md5Hex(userCode+TimeUtil.getFormatNowTime("yyyyMMdd")+urlSignature);
+		Member member = memberService.findByUsercode(userCode);
+		String companyCode = request.getParameter("companyCode");
+		String signature = request.getParameter("signature");
+		String timestamp = request.getParameter("timestamp");
+		if(userCode != null && member != null){
+			
+			String appointtrue = DigestUtils.md5Hex(timestamp+urlSignature);
 			System.out.println("MD5:"+appointtrue);
-			System.out.println("当前时间戳："+System.currentTimeMillis() / 1000);
+			System.out.println("接口传过来的时间戳："+timestamp+"当前时间戳"+System.currentTimeMillis() / 1000);
 			//时间差
-			Long timeT = TimeUtil.validateTimeStamp(Long.parseLong(request.getParameter("tt")));
+			Long timeT = TimeUtil.validateTimeStamp(Long.parseLong(timestamp));
+			System.out.println(timeT);
 			if(timeT < 3 && appointtrue.equals(signature)){
 				try {
-					userService.login(new UserAuthenticationToken(Member.class,userCode , "a123456", false, request.getRemoteAddr()));					
+					userService.login(new UserAuthenticationToken(Member.class,userCode , "a123456", false, request.getRemoteAddr()));	
+					String uniqueCode = "ZC"+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
+					//添加一条注册赠送记录
+					String success = fiBankbookJournalService.recharge(userCode, new BigDecimal("10000"), uniqueCode, 1, 0, 1, "用户注册赠送");
+					if(!"success".equals(success)){
+						System.out.println("注册赠送券未成功，提醒手动添加，会员编码为："+userCode);
+					}
 				} catch (Exception e) {
 					System.out.println("数据库没有"+userCode+"这个会员编号");
 				}
+			}else if(!(timeT < 3) && appointtrue.equals(signature)){
+				userService.logout();
 			}
 			return "redirect:/";
+		}else if(companyCode != null){		
+			try {
+				member = new Member();
+				memberService.create(member,companyCode,userCode,signature,timestamp,request,null);
+				String appointtrue = DigestUtils.md5Hex(timestamp+urlSignature);
+				System.out.println("MD5:"+appointtrue);
+				System.out.println("接口传过来的时间戳："+timestamp+"当前时间戳"+System.currentTimeMillis() / 1000);
+				//时间差
+				Long timeT = TimeUtil.validateTimeStamp(Long.parseLong(timestamp));
+				System.out.println(timeT);
+				if(timeT < 3 && appointtrue.equals(signature)){
+					try {
+						userService.login(new UserAuthenticationToken(Member.class,userCode , "a123456", false, request.getRemoteAddr()));					
+					} catch (Exception e) {
+						System.out.println("数据库没有"+userCode+"这个会员编号");
+					}
+				}else if(!(timeT < 3) && appointtrue.equals(signature)){
+					userService.logout();
+				}
+				return "redirect:/";
+			} catch (Exception e) {
+				System.out.println("注册失败");
+				e.printStackTrace();
+				return "redirect:/";
+			}
 		}else{
 			return currentUser != null ? "redirect:" + memberIndex : memberLoginView;
 		}

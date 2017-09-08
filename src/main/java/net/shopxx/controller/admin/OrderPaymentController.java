@@ -14,9 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import net.shopxx.Filter;
 import net.shopxx.Message;
 import net.shopxx.Pageable;
+import net.shopxx.entity.Country;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.OrderPaymentService;
+import net.shopxx.util.StringUtil;
 
 /**
  * Controller - 订单支付
@@ -30,7 +34,10 @@ public class OrderPaymentController extends BaseController {
 
 	@Inject
 	private OrderPaymentService orderPaymentService;
-
+	
+	@Inject
+	private CountryService countryService;
+	
 	/**
 	 * 查看
 	 */
@@ -44,7 +51,8 @@ public class OrderPaymentController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Pageable pageable, ModelMap model) {
+	public String list(String countryName, Pageable pageable, ModelMap model) {
+		countrySelect(countryName, pageable, model, countryService);
 		model.addAttribute("page", orderPaymentService.findPage(pageable));
 		return "admin/order_payment/list";
 	}

@@ -504,7 +504,15 @@ public abstract class PaymentPlugin implements Comparable<PaymentPlugin> {
 
 		return amount.add(calculateFee(amount)).setScale(2, RoundingMode.UP);
 	}
+	/**
+	 * 计算支付券金额
+	 */
+	public BigDecimal calculateCouponPrice(BigDecimal couponPrice) {
+		Assert.notNull(couponPrice);
+		Assert.state(couponPrice.compareTo(BigDecimal.ZERO) >= 0);
 
+		return couponPrice.setScale(2, RoundingMode.UP);
+	}
 	/**
 	 * 连接Map键值对
 	 * 

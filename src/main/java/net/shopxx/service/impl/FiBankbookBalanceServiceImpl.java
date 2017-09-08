@@ -37,8 +37,8 @@ public class FiBankbookBalanceServiceImpl extends BaseServiceImpl<FiBankbookBala
 	FiBankbookBalanceService fiBankbookBalanceService;
 	
 	@Transactional(readOnly = true)
-	public List<FiBankbookBalance> findList(Member member,Integer count, List<Filter> filters, List<Order> orders){		
-		return fiBankbookBalanceDao.findList(member,count, filters, orders);
+	public List<FiBankbookBalance> findList(Member member,String type,Integer count, List<Filter> filters, List<Order> orders){		
+		return fiBankbookBalanceDao.findList(member,type,count, filters, orders);
 	}
 	
 

@@ -719,6 +719,11 @@ $().ready(function() {
         $countryId.val($(this).children('option:selected').val());
         $("#name").val("test");
         $("#stock").val(20);
+        $("#price").val(0);
+        $("#coupon").val(0);
+        $("input[name='gradePrices']").val(0);
+        $("input[name='coupons']").val(0);
+        
         $inputForm.attr('method','get');      
         $inputForm.attr('action','listByCountry');      
        	
@@ -749,9 +754,8 @@ $().ready(function() {
                });
            }
        }
-       
         $("#price").val(0);
-        $("#coupon").val(0);
+        $("#coupon").val(0); 
 
 });
 </script>

@@ -10,6 +10,7 @@
 <script type="text/javascript" src="${base}/resources/admin/js/jquery.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/common.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/list.js"></script>
+<script type="text/javascript" src="${base}/resources/admin/js/country.js"></script>
 <script type="text/javascript">
 $().ready(function() {
 
@@ -23,6 +24,7 @@ $().ready(function() {
 		${message("admin.orderRefunds.list")} <span>(${message("admin.page.total", page.total)})</span>
 	</div>
 	<form id="listForm" action="list" method="get">
+		<input type="hidden" id="countryName" name="countryName" value="${countryName}" />
 		<div class="bar">
 			<div class="buttonGroup">
 				<a href="javascript:;" id="deleteButton" class="iconButton disabled">
@@ -40,6 +42,19 @@ $().ready(function() {
 						<li[#if page.pageSize == 20] class="current"[/#if] val="20">20</li>
 						<li[#if page.pageSize == 50] class="current"[/#if] val="50">50</li>
 						<li[#if page.pageSize == 100] class="current"[/#if] val="100">100</li>
+					</ul>
+				</div>
+				<div id="countryMenu" class="dropdownMenu">
+					<a href="javascript:;" class="button">
+						${message("common.country")}<span class="arrow">&nbsp;</span>
+					</a>
+					<ul>
+						<li[#if country.name == null] class="current"[/#if] val="">${message("common.country.all")}</li>
+						[@country_list]
+							[#list countrys as country]
+								<li[#if country.name == countryName] class="current"[/#if] val="${country.name}">${message("${country.nameLocal}")}</li>
+							[/#list]
+						[/@country_list]
 					</ul>
 				</div>
 			</div>
@@ -83,6 +98,9 @@ $().ready(function() {
 					<a href="javascript:;" class="sort" name="createdDate">${message("admin.common.createdDate")}</a>
 				</th>
 				<th>
+					<span>${message("common.country")}</span>
+				</th>
+				<th>
 					<span>${message("admin.common.action")}</span>
 				</th>
 			</tr>
@@ -111,6 +129,9 @@ $().ready(function() {
 					</td>
 					<td>
 						<span title="${orderRefunds.createdDate?string("yyyy-MM-dd HH:mm:ss")}">${orderRefunds.createdDate}</span>
+					</td>
+					<td>
+						${message("${orderRefunds.country.nameLocal}")}
 					</td>
 					<td>
 						<a href="view?id=${orderRefunds.id}">[${message("admin.common.view")}]</a>

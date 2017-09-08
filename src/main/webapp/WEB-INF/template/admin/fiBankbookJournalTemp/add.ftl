@@ -30,7 +30,11 @@ $().ready(function() {
 		max: 20,
 		width: 218,
 		scrollHeight: 300,
-		extraParams: {country:$country.val()}, 
+		extraParams: { 
+			country: function() {
+				 return $country.val();
+			}
+		}, 
 		parse: function(data) {
 			return $.map(data, function(item) {
 				return {
@@ -67,13 +71,14 @@ $().ready(function() {
 			form.submit();
 		}
 	});
-
+	
+	$country.change(function(){
+		$memberSelect.flushCache();
+		$usercode.val('');
+		$name.html('').closest("tr").hide();
+	});
 });
 
-function countryChange(){
-	$("#usercode").val('');
-	$("#name").html('').closest("tr").hide();
-}
 </script>
 </head>
 <body>
@@ -88,7 +93,7 @@ function countryChange(){
 					<span class="requiredField">*</span>${message("common.country")}:
 				</th>
 				<td>
-					<select id="country" name="country" onchange="countryChange();">
+					<select id="country" name="country">
 						[@country_list]
 							[#list countrys as country]
 								<option value="${country.name}">${message("${country.nameLocal}")}</option>

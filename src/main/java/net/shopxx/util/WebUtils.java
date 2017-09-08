@@ -51,8 +51,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.alibaba.fastjson.JSON;
-
-import net.sf.json.JSONObject;
 import net.shopxx.Setting;
 
 /**

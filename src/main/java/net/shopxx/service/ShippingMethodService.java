@@ -44,5 +44,5 @@ public interface ShippingMethodService extends BaseService<ShippingMethod, Long>
 	 * @return 运费
 	 */
 	BigDecimal calculateFreight(ShippingMethod shippingMethod, Receiver receiver, Integer weight);
-
+	
 }

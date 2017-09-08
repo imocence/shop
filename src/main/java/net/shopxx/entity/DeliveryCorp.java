@@ -11,6 +11,8 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.validation.constraints.Pattern;
@@ -55,7 +57,16 @@ public class DeliveryCorp extends OrderedEntity<Long> {
 	 */
 	@OneToMany(mappedBy = "defaultDeliveryCorp", fetch = FetchType.LAZY)
 	private Set<ShippingMethod> shippingMethods = new HashSet<>();
-
+	
+	/**
+	 * 获取国家
+	 * 
+	 * @return 国家
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
+	
 	/**
 	 * 获取名称
 	 * 
@@ -130,6 +141,14 @@ public class DeliveryCorp extends OrderedEntity<Long> {
 	 */
 	public void setShippingMethods(Set<ShippingMethod> shippingMethods) {
 		this.shippingMethods = shippingMethods;
+	}
+	
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
 	}
 
 	/**

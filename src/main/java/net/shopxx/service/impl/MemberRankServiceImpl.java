@@ -14,7 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import net.shopxx.Page;
+import net.shopxx.Pageable;
 import net.shopxx.dao.MemberRankDao;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.MemberRank;
 import net.shopxx.service.MemberRankService;
 
@@ -72,5 +75,10 @@ public class MemberRankServiceImpl extends BaseServiceImpl<MemberRank, Long> imp
 		}
 		return pMemberRank;
 	}
+
+    @Override
+    public Page<MemberRank> findPage(Country country, Pageable pageable) {
+        return memberRankDao.findPage(country,pageable);
+    }
 
 }

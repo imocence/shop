@@ -9,11 +9,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
-
 import net.shopxx.Setting;
 import net.shopxx.entity.Area;
 import net.shopxx.entity.FreightConfig;
@@ -21,6 +16,11 @@ import net.shopxx.entity.Receiver;
 import net.shopxx.entity.ShippingMethod;
 import net.shopxx.service.ShippingMethodService;
 import net.shopxx.util.SystemUtils;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 /**
  * Service - 配送方式
@@ -63,5 +63,5 @@ public class ShippingMethodServiceImpl extends BaseServiceImpl<ShippingMethod, L
 	public BigDecimal calculateFreight(ShippingMethod shippingMethod, Receiver receiver, Integer weight) {
 		return calculateFreight(shippingMethod, receiver != null ? receiver.getArea() : null, weight);
 	}
-
+	
 }

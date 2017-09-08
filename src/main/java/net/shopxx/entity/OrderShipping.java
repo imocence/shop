@@ -175,7 +175,14 @@ public class OrderShipping extends BaseEntity<Long> {
 	@NotEmpty
 	@OneToMany(mappedBy = "orderShipping", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<OrderShippingItem> orderShippingItems = new ArrayList<>();
-
+	
+	/**
+	 * 国家
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
+	
 	/**
 	 * 获取编号
 	 * 
@@ -459,6 +466,14 @@ public class OrderShipping extends BaseEntity<Long> {
 	 */
 	public void setOrderShippingItems(List<OrderShippingItem> orderShippingItems) {
 		this.orderShippingItems = orderShippingItems;
+	}
+	
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
 	}
 
 	/**

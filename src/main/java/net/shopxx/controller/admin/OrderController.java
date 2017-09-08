@@ -9,19 +9,25 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
+import net.shopxx.Filter;
 import net.shopxx.Message;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.Setting;
+import net.shopxx.entity.Admin;
 import net.shopxx.entity.Area;
 import net.shopxx.entity.Country;
+import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.Invoice;
 import net.shopxx.entity.Member;
+import net.shopxx.entity.NapaStores;
 import net.shopxx.entity.Order;
 import net.shopxx.entity.OrderItem;
 import net.shopxx.entity.OrderPayment;
@@ -33,8 +39,10 @@ import net.shopxx.entity.OrderShippingItem;
 import net.shopxx.entity.PaymentMethod;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.ProductCategory;
+import net.shopxx.entity.ProductGrade;
 import net.shopxx.entity.ShippingMethod;
 import net.shopxx.entity.Sku;
+import net.shopxx.security.CurrentUser;
 import net.shopxx.service.AreaService;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.DeliveryCorpService;
@@ -45,6 +53,7 @@ import net.shopxx.service.PaymentMethodService;
 import net.shopxx.service.ProductCategoryService;
 import net.shopxx.service.ProductService;
 import net.shopxx.service.ShippingMethodService;
+import net.shopxx.util.NumberUtil;
 import net.shopxx.util.StringUtil;
 import net.shopxx.util.SystemUtils;
 
@@ -54,6 +63,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -84,14 +94,13 @@ public class OrderController extends BaseController {
 	private OrderShippingService orderShippingService;
 	@Inject
 	private MemberService memberService;
-
 	@Inject
 	private CountryService countryService;
 	@Inject
 	private ProductCategoryService productCategoryService;
 	@Inject
 	private ProductService productService;
-
+	
 	/**
 	 * 获取订单锁
 	 */
@@ -142,15 +151,70 @@ public class OrderController extends BaseController {
 	 * 新增
 	 */
 	@GetMapping("/add")
-	public String add() {
+	public String add(ModelMap model) {
+//		List<PaymentMethod> paymentMethods = paymentMethodService.findAll();
+//		List<ShippingMethod> shippingMethods = shippingMethodService.findAll();
+//		PaymentMethod defaultPaymentMethod = CollectionUtils.isNotEmpty(paymentMethods) ? paymentMethods.get(0) : null;
+//		ShippingMethod defaultShippingMethod = null;
+//		if (defaultPaymentMethod != null) {
+//			for (ShippingMethod shippingMethod : shippingMethods) {
+//				if (CollectionUtils.isNotEmpty(shippingMethod.getPaymentMethods()) && shippingMethod.getPaymentMethods().contains(defaultPaymentMethod)) {
+//					defaultShippingMethod = shippingMethod;
+//					break;
+//				}
+//			}
+//		}
+//		model.addAttribute("paymentMethods", paymentMethods);
+//		model.addAttribute("shippingMethods", shippingMethods);
+//		model.addAttribute("defaultPaymentMethod", defaultPaymentMethod);
+//		model.addAttribute("defaultShippingMethod", defaultShippingMethod);
 		return "admin/order/add";
 	}
 	
 	/**
-	 * 更新
+	 * 添加订单
+	 * @param order 订单
+	 * @param countryName 国家
+	 * @param usercode 会员usercode
+	 * @param consignee 收货人
+	 * @param phone 收货电话
+	 * @param address 收货地址
+	 * @param paymentMethod 支付ID
+	 * @param shippingMethod 配送ID
+	 * @param memo 附言
+	 * @param freight 运费
+	 * @param balance 订单电子币总额
+	 * @param couponbalance 订单购物券总额
+	 * @param orderItem 订单项
+	 * @param currentUser 当前登录用户
+	 * @param redirectAttributes
+	 * @return
 	 */
 	@PostMapping("/save")
-	public String save(RedirectAttributes redirectAttributes){
+	public String save(Order order, String countryName, String usercode, String consignee, String phone, String address, Long paymentMethodId, Long shippingMethodId, String memo, BigDecimal freight, BigDecimal amount, BigDecimal couponAmount, @CurrentUser Admin currentUser, RedirectAttributes redirectAttributes){
+		ShippingMethod shippingMethod = shippingMethodService.find(shippingMethodId);
+		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
+		Member member = memberService.findByUsercode(usercode);
+		if (null == member) {
+			addFlashMessage(redirectAttributes, new Message(Message.Type.error, "用户不存在"));
+			return "redirect:list";
+		}
+		if (amount != null && amount.compareTo(BigDecimal.ZERO) < 0) {
+			addFlashMessage(redirectAttributes, new Message(Message.Type.error, "订单电子劵金额非法"));
+			return "redirect:list";
+		}
+		if (couponAmount != null && couponAmount.compareTo(BigDecimal.ZERO) < 0) {
+			addFlashMessage(redirectAttributes, new Message(Message.Type.error, "订单购物券金额非法"));
+			return "redirect:list";
+		}
+		try {
+			order.setCountry(countryService.findByName(countryName));
+			orderService.create(order, member, paymentMethod, shippingMethod, null, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			addFlashMessage(redirectAttributes, new Message(Message.Type.error, e.getMessage()));
+			return "redirect:list";
+		}
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
@@ -277,7 +341,11 @@ public class OrderController extends BaseController {
 			return ERROR_VIEW;
 		}
 		orderPayment.setFee(BigDecimal.ZERO);
-		orderService.payment(order, orderPayment);
+		try {
+			orderService.payment(order, orderPayment);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:view?id=" + orderId;
 	}
@@ -462,7 +530,7 @@ public class OrderController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Order.Type type, Order.Status status, String memberUsername, Boolean isPendingReceive, Boolean isPendingRefunds, Boolean isAllocatedStock, Boolean hasExpired, Pageable pageable, ModelMap model) {
+	public String list(String countryName, Order.Type type, Order.Status status, String memberUsername, Boolean isPendingReceive, Boolean isPendingRefunds, Boolean isAllocatedStock, Boolean hasExpired, Pageable pageable, ModelMap model) {
 		model.addAttribute("types", Order.Type.values());
 		model.addAttribute("statuses", Order.Status.values());
 		model.addAttribute("type", type);
@@ -472,7 +540,20 @@ public class OrderController extends BaseController {
 		model.addAttribute("isPendingRefunds", isPendingRefunds);
 		model.addAttribute("isAllocatedStock", isAllocatedStock);
 		model.addAttribute("hasExpired", hasExpired);
-
+		
+		Country country = null;
+		if (StringUtil.isNotEmpty(countryName)) {
+			country = countryService.findByName(countryName);
+		}
+		model.addAttribute("countryName", countryName);
+		if (null != country) {
+			Filter filter = new Filter();
+			filter.setProperty("country");
+			filter.setValue(country);
+			filter.setOperator(Filter.Operator.eq);
+			pageable.getFilters().add(filter);
+		}
+		
 		Member member = memberService.findByUsername(memberUsername);
 		if (StringUtils.isNotEmpty(memberUsername) && member == null) {
 			model.addAttribute("page", Page.emptyPage(pageable));
@@ -499,13 +580,162 @@ public class OrderController extends BaseController {
 		return Message.success(SUCCESS_MESSAGE);
 	}
 	
+	/**
+	 * 会员选择
+	 */
+	@GetMapping("/member_select")
+	public @ResponseBody List<Map<String, Object>> memberSelect(@RequestParam("q") String keyword, @RequestParam("country") String country, @RequestParam("limit") Integer count) {
+		List<Map<String, Object>> data = new ArrayList<>();
+		if (StringUtils.isEmpty(keyword)) {
+			return data;
+		}
+		// 获取国家
+		Country countryBean = countryService.findByName(country);
+		List<Member> members = memberService.search(keyword, countryBean, count);
+		for (Member member : members) {
+			// 会员编号、姓名、余额、收货地址、手机号、会员角色
+			Map<String, Object> item = new HashMap<>();
+			item.put("usercode", member.getUsercode());
+			item.put("username", member.getUsername());
+			BigDecimal balance = new BigDecimal("0.00");
+			BigDecimal couponbalance = new BigDecimal("0.00");
+			Set<FiBankbookBalance> set = member.getFiBankbookBalances();
+			if (null != set) {
+				for (FiBankbookBalance fiBankbookBalance : set) {
+					if (FiBankbookBalance.Type.balance == fiBankbookBalance.getType()) {
+						balance = fiBankbookBalance.getBalance();
+					}else if (FiBankbookBalance.Type.coupon == fiBankbookBalance.getType()) {
+						couponbalance = fiBankbookBalance.getBalance();
+					}
+				}
+			}
+			item.put("balance", balance);
+			item.put("couponbalance", couponbalance);
+			String address = "";
+			String phone = "";
+			int memberrole = 0;
+			NapaStores napaStores = member.getNapaStores();
+			if (null != napaStores) {
+				address = napaStores.getNapaAddress();
+				phone = napaStores.getMobile();
+				memberrole = napaStores.getType();
+			}
+			item.put("address", address);
+			item.put("phone", phone);
+			item.put("memberrole", memberrole);
+			data.add(item);
+		}
+		return data;
+	}
 	
 	/**
+	 * 获取分类以及子分类下的商品列表
+	 * @param productCategoryId 分类ID
+	 */
+	@GetMapping("/getProducts")
+	public @ResponseBody List<Map<String, Object>> getProducts(String usercode, Long productCategoryId) {
+		List<Map<String, Object>> data = new ArrayList<>();
+		// key:当前分类ID value:产品集合 
+		Map<Long, Product> productMap = new LinkedHashMap<Long, Product>();
+		// 获取当前分类下的所有的子分类id
+		ProductCategory productCategory = productCategoryService.find(productCategoryId);
+		if (null == productCategory) {
+			return data;
+		}
+		Member member = memberService.findByUsercode(usercode);
+		Long memberRankId = member.getMemberRank().getId();
+		Set<Product> set = productCategory.getProducts();
+		if (null != set && !set.isEmpty()) {
+			for (Product product : set) {
+				// 判断库存，没有的不显示，没有劵价格的不显示
+				if (!canSelect(product, memberRankId)){
+					continue;
+				}
+				if (!productMap.containsKey(product.getId())) {
+					productMap.put(product.getId(), product);
+				}
+			}
+		}
+		List<ProductCategory> childrenCategorys = productCategoryService.findChildren(productCategoryId, true, null, true);
+		if (null != childrenCategorys && !childrenCategorys.isEmpty()) {
+			for (ProductCategory childCategory : childrenCategorys) {
+				set = childCategory.getProducts();
+				if (null != set && !set.isEmpty()) {
+					for (Product product : set) {
+						// 判断库存，没有的不显示，没有劵价格的不显示
+						if (!canSelect(product, memberRankId)){
+							continue;
+						}
+						if (!productMap.containsKey(product.getId())) {
+							productMap.put(product.getId(), product);
+						}
+					}
+				}
+			}
+		}
+		for (Product product : productMap.values()) {
+			Map<String, Object> item = new HashMap<>();
+			item.put("id", product.getId());
+			item.put("name", product.getName());
+			data.add(item);
+		}
+		return data;
+	}
+	
+	/**
+	 * 获取商品详情
+	 * @param productId 商品ID
+	 */
+	@GetMapping("/getProduct")
+	public @ResponseBody Map<String, Object> getProduct(String usercode, Long productId) {
+		Map<String, Object> data = new HashMap<String, Object>();
+		Product product = productService.find(productId);
+		if (null == product) {
+			return data;
+		}
+		Member member = memberService.findByUsercode(usercode);
+		Long memberRankId = member.getMemberRank().getId();
+		Set<ProductGrade> grades = product.getProductGrades();
+		if (null != grades) {
+			for (ProductGrade productGrade : grades) {
+				if (productGrade.getGrade().getId() == memberRankId) {
+					data.put("price", productGrade.getPrice());
+					data.put("couponPrice", productGrade.getCoupon());
+				}
+			}
+		}
+		data.put("sn", product.getSn());
+		data.put("name", product.getName());
+		data.put("weight", NumberUtil.getInt(product.getWeight()));
+		data.put("image", product.getImage());
+		data.put("sku", product.getDefaultSku().getAvailableStock());
+		return data;
+	}
+	
+	/**
+	 * 获取运费
+	 * @param productId 商品ID
+	 */
+	@GetMapping("/getFreight")
+	public @ResponseBody BigDecimal getFreight(Long shippingMethodId, Integer weight) {
+		if (null == shippingMethodId) {
+			return new BigDecimal(0);
+		}
+		ShippingMethod shippingMethod = shippingMethodService.find(shippingMethodId);
+		if (null == shippingMethod) {
+			return new BigDecimal(0);
+		}
+		Area area  = null;
+		return shippingMethodService.calculateFreight(shippingMethod, area, weight);
+	}
+	
+	/**
+	 * 暂时不用，预留
 	 * 获取所有的二级分类以及分类下的商品列表
 	 * [{"name":"1级分类名称", products:[{product},{product}]}]
 	 */
-	@GetMapping("/getProducts")
-	public @ResponseBody String getProducts(String countryName) {
+	@GetMapping("/getProductsBuCountry")
+	public @ResponseBody String getProductsBuCountry(String countryName) {
 		Country country = null;
 		if (StringUtil.isNotEmpty(countryName)) {
 			country = countryService.findByName(countryName);
@@ -552,8 +782,6 @@ public class OrderController extends BaseController {
 					JSONObject productObj = new JSONObject();
 					productObj.put("sn", product.getSn());
 					productObj.put("name", product.getName());
-					productObj.put("price", product.getPrice());
-					productObj.put("image", product.getImage());
 					// 缺少库存参数
 					productArray.add(productObj);
 				}
@@ -566,5 +794,28 @@ public class OrderController extends BaseController {
 		}
 		return array.toJSONString();
 	}
-
+	
+	/**
+	 * 是否可以选择商品
+	 * @param product
+	 * @param memberRankId
+	 * @return
+	 */
+	private boolean canSelect(Product product, Long memberRankId){
+		// 判断库存，没有的不显示
+		Sku sku = product.getDefaultSku();
+		if (null == sku || sku.getAvailableStock() <= 0) {
+			return false;
+		}
+		// 没有劵的不显示
+		Set<ProductGrade> grades = product.getProductGrades();
+		if (null != grades) {
+			for (ProductGrade productGrade : grades) {
+				if (productGrade.getGrade().getId() == memberRankId) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

@@ -656,6 +656,7 @@
 					[#if setting.isShowMarketPrice]
 						<del class="market-price gray-darker">${currency(defaultSku.marketPrice, true)}</del>
 					[/#if]
+					<dd>${message("Sku.coupon")}:${currency(defaultSku.coupon, true)}</dd>
 				[#elseif product.type == "exchange"]
 					${message("Sku.exchangePoint")}:
 					<strong class="exchange-point red">${defaultSku.exchangePoint}</strong>
@@ -742,6 +743,7 @@
 								[#if setting.isShowMarketPrice]
 									<del class="market-price gray-darker">${currency(defaultSku.marketPrice, true)}</del>
 								[/#if]
+								<strong style="margin-left: 10px" class="red">${message("Sku.coupon")}:${currency(defaultSku.coupon, true)}</strong>
 							[#elseif product.type == "exchange"]
 								${message("Sku.exchangePoint")}:
 								<strong class="exchange-point red">${defaultSku.exchangePoint}</strong>
@@ -780,23 +782,23 @@
 	<footer class="footer-fixed">
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-xs-3 text-center">
+				<div class="col-xs-3 text-center" style="margin-top: 5px">
 					<span class="glyphicon glyphicon-home"></span>
 					<a href="${base}/">${message("shop.product.home")}</a>
 				</div>
-				<div class="col-xs-3 text-center">
+				<div class="col-xs-3 text-center" style="margin-top: 5px">
 					<span class="glyphicon glyphicon-heart"></span>
 					<a id="addProductFavorite" href="javascript:;">${message("shop.product.addProductFavorite")}</a>
 				</div>
-				<div class="col-xs-3 text-center">
+				<div class="col-xs-3 text-center" style="margin-top: 5px">
 					<span class="glyphicon glyphicon-shopping-cart"></span>
 					<a href="${base}/cart/list">${message("shop.product.cart")}</a>
 				</div>
 				<div class="col-xs-3 text-right">
 					[#if product.type == "general"]
-						<button id="willAddCart" class="btn btn-primary btn-flat btn-block" type="button">${message("shop.product.addCart")}</button>
+						<button id="willAddCart" class="btn btn-primary btn-flat btn-block" style="margin-bottom: -3px;" type="button">${message("shop.product.addCart")}</button>
 					[#elseif product.type == "exchange"]
-						<button id="willExchange" class="btn btn-primary btn-flat btn-block" type="button">${message("shop.product.exchange")}</button>
+						<button id="willExchange" class="btn btn-primary btn-flat btn-block" style="margin-bottom: -3px;" type="button">${message("shop.product.exchange")}</button>
 					[/#if]
 				</div>
 			</div>
