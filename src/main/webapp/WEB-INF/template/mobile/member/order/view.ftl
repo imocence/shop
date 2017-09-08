@@ -232,6 +232,13 @@
 						<span class="red">${currency(order.amount, true)}</span>
 					</span>
 				</div>
+				<div class="list-group-item">
+					${message("member.order.quantity", order.quantity)}
+					<span class="pull-right">
+						${message("Order.coupon")}:
+						<span class="red">${currency(order.couponPrice, true)}</span>
+					</span>
+				</div>
 				[#if order.paymentMethodName?has_content || order.shippingMethodName?has_content]
 					<div class="list-group-item">
 						${message("Order.paymentMethod")}: ${(order.paymentMethodName)!"-"}
@@ -309,6 +316,12 @@
 						<span class="pull-right">${currency(order.amountPaid, true)}</span>
 					</div>
 				[/#if]
+				[#if order.couponAmountPaid > 0]
+					<div class="list-group-item">
+						${message("Order.couponAmountPaid")}
+						<span class="pull-right">${currency(order.couponAmountPaid, true)}</span>
+					</div>
+				[/#if]
 				[#if order.refundAmount > 0]
 					<div class="list-group-item">
 						${message("Order.refundAmount")}
@@ -322,10 +335,10 @@
 					</div>
 				[/#if]
 				[#if order.rewardPoint > 0]
-					<div class="list-group-item">
+					<!-- <div class="list-group-item">
 						${message("Order.rewardPoint")}
 						<span class="pull-right red">${order.rewardPoint}</span>
-					</div>
+					</div> -->
 				[/#if]
 				[#if order.exchangePoint > 0]
 					<div class="list-group-item">
@@ -360,7 +373,7 @@
 				[#if order.paymentMethod?? && order.amountPayable > 0]
 					<a id="payment" class="btn btn-sm btn-default" href="javascript:;">${message("member.order.payment")}</a>
 				[/#if]
-				[#if !order.hasExpired() && (order.status == "pendingPayment" || order.status == "pendingReview")]
+				[#if !order.hasExpired() && (order.status == "pendingPayment") ]//|| order.status == "pendingReview")已支付
 					<a id="cancel" class="btn btn-sm btn-default" href="javascript:;">${message("member.order.cancel")}</a>
 				[/#if]
 				[#if !order.hasExpired() && order.status == "shipped"]

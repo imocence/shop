@@ -24,7 +24,7 @@ public interface FiBankbookBalanceService extends BaseService<FiBankbookBalance,
 	 * @param userCode
 	 * @return
 	 */
-	List<FiBankbookBalance> findList(Member member, Integer count, List<Filter> filters, List<Order> orders);
+	List<FiBankbookBalance> findList(Member member,String type, Integer count, List<Filter> filters, List<Order> orders);
 	/**
 	 * 根据会员编号查找存折账号
 	 * @param userCode

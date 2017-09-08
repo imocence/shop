@@ -263,7 +263,7 @@ $().ready(function() {
 				<th>
 					<a href="javascript:;" class="sort" name="uniqueCode">${message("admin.fiBankbookJournal.uniqueCode")}</a>
 				</th>
-				<th>
+				<th style="width: 220px;">
 					<a href="javascript:;" class="sort" name="notes">${message("admin.fiBankbookJournal.notes")}</a>
 				</th>
 				<th>

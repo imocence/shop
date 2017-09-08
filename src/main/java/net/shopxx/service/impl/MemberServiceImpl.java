@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.persistence.LockModeType;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.BooleanUtils;
@@ -23,26 +24,32 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
+import net.shopxx.controller.admin.BaseController;
 import net.shopxx.dao.DepositLogDao;
 import net.shopxx.dao.MemberDao;
 import net.shopxx.dao.MemberRankDao;
 import net.shopxx.dao.PointLogDao;
+import net.shopxx.entity.BaseEntity;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.DepositLog;
+import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.Member;
+import net.shopxx.entity.MemberAttribute;
 import net.shopxx.entity.MemberRank;
 import net.shopxx.entity.NapaStores;
-import net.shopxx.entity.OrderItem;
 import net.shopxx.entity.PointLog;
-import net.shopxx.entity.Sku;
 import net.shopxx.entity.User;
+import net.shopxx.entity.FiBankbookBalance.Type;
 import net.shopxx.service.CountryService;
+import net.shopxx.service.FiBankbookBalanceService;
 import net.shopxx.service.MailService;
+import net.shopxx.service.MemberAttributeService;
 import net.shopxx.service.MemberRankService;
 import net.shopxx.service.MemberService;
 import net.shopxx.service.NapaStoresService;
@@ -91,6 +98,10 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	private String urlPath;
 	@Value("${url.signature}")
 	private String urlSignature;
+	@Inject
+	MemberAttributeService memberAttributeService;
+	@Inject
+	FiBankbookBalanceService fiBankbookBalanceService;
 	/**
 	 * 根据会员邮箱、手机、会员编码查找会员信息
 	 */
@@ -281,7 +292,9 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("userCode", StringUtils.upperCase(usercode));
 		parameterMap.put("password", DigestUtils.md5Hex("a"+password));
-		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getFormatNowTime("yyyyMMdd")+urlSignature));
+		parameterMap.put("timestamp", TimeUtil.getTimestamp());
+		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getTimestamp()+urlSignature));
+
 		//登录
 		String userCodeMap = WebUtils.postJson(urlPath+"/verifyLoginToShop.html",parameterMap);
 		try {
@@ -305,7 +318,8 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	@Transactional
 	public List<Member> getListMember(String userCodes){		
 		Map<String, Object> parameterMap = new HashMap<>();
-		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getFormatNowTime("yyyyMMdd")+urlSignature));
+		parameterMap.put("timestamp", TimeUtil.getTimestamp());
+		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getTimestamp()+urlSignature));
 		parameterMap.put("userCode", StringUtils.upperCase(userCodes));
 		System.out.println(parameterMap);
 		
@@ -390,5 +404,92 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	public List<Member> search(String keyword, Country country, Integer count){
 		return memberDao.search(keyword, country, count);
 	}
-
+	/**
+	 * 创建一个会员
+	 * @param companyCode
+	 * 			国家码
+	 * @param userCode
+	 * 			会员编码
+	 * @param signature
+	 * 			约定码：MD5加密，格式=时间戳+约定值
+	 * @param timestamp
+	 * 			时间戳
+	 * @return
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	public boolean create(Member member,String companyCode, String userCode, String signature,String timestamp,HttpServletRequest request, RedirectAttributes redirectAttributes)throws Exception{
+		//区代账号创建
+		NapaStores napaStores = new NapaStores();
+		napaStores.setMobile(null);
+		napaStores.setNapaCode(null);
+		napaStores.setType(0);
+		napaStores.setBalance(BigDecimal.ZERO);
+		napaStoresService.save(napaStores);
+		member.setNapaStores(napaStores);
+		
+		member.setUsername(userCode);
+		member.setUsercode(userCode);
+		
+		member.setPassword("a123456");
+		member.setEncodedPassword(DigestUtils.md5Hex("a123456"));
+		member.setEmail(null);
+		member.setMemberRank(memberRankService.find(1L));
+		
+		member.setIsEnabled(true);
+		member.setCountry(countryService.findByName(companyCode));	
+		
+		System.out.println(countryService.findByName(companyCode).getName());
+		member.removeAttributeValue();
+		for (MemberAttribute memberAttribute : memberAttributeService.findList(true, true)) {
+			String[] values = request.getParameterValues("memberAttribute_" + memberAttribute.getId());
+			if (!memberAttributeService.isValid(memberAttribute, values)) {				
+				napaStoresService.delete(napaStores);
+			}
+			Object memberAttributeValue = memberAttributeService.toMemberAttributeValue(memberAttribute, values);
+			member.setAttributeValue(memberAttribute, memberAttributeValue);
+		}
+		
+		member.setPoint(0L);
+		member.setBalance(BigDecimal.ZERO);
+		member.setAmount(BigDecimal.ZERO);
+		member.setIsLocked(false);
+		member.setLockDate(null);
+		member.setLastLoginIp(null);
+		member.setLastLoginDate(null);
+		member.setSafeKey(null);
+		member.setCart(null);
+		member.setOrders(null);
+		member.setPaymentTransactions(null);
+		member.setDepositLogs(null);
+		member.setCouponCodes(null);
+		member.setReceivers(null);
+		member.setReviews(null);
+		member.setConsultations(null);
+		member.setProductFavorites(null);
+		member.setProductNotifies(null);
+		member.setInMessages(null);
+		member.setOutMessages(null);
+		member.setPointLogs(null);//n
+		
+		if(null == findByUsercode(userCode)){				
+			save(member);				
+			//创建会员的存折
+			FiBankbookBalance balance1 = new FiBankbookBalance();
+			balance1.setBalance(BigDecimal.ZERO);
+			balance1.setType(Type.balance);
+			balance1.setMember(member);
+			fiBankbookBalanceService.save(balance1);
+			
+			FiBankbookBalance balance2 = new FiBankbookBalance();
+			balance2.setBalance(BigDecimal.ZERO);
+			balance2.setType(Type.coupon);
+			balance2.setMember(member);
+			fiBankbookBalanceService.save(balance2);
+			
+		}else{
+			napaStoresService.delete(napaStores);
+			throw new IllegalArgumentException("保存失败,已有用户");
+		}
+		return true;
+	}
 }

@@ -336,7 +336,17 @@ public class Cart extends BaseEntity<Long> implements Iterable<CartItem> {
 		}
 		return price;
 	}
-
+	/**
+	 * 获取券
+	 */
+	@Transient
+	public BigDecimal getCouponPrice() {
+		BigDecimal couponPrice = BigDecimal.ZERO;
+		for (CartItem cartItem : this) {
+			couponPrice = couponPrice.add(cartItem.getTotalCoupon());
+		}
+		return couponPrice;
+	}
 	/**
 	 * 获取折扣
 	 * 
@@ -384,7 +394,14 @@ public class Cart extends BaseEntity<Long> implements Iterable<CartItem> {
 		BigDecimal effectivePrice = getPrice().subtract(getDiscount());
 		return effectivePrice.compareTo(BigDecimal.ZERO) >= 0 ? effectivePrice : BigDecimal.ZERO;
 	}
-
+	/**
+	 * 获取券总额
+	 */
+	@Transient
+	public BigDecimal getEffectiveCoupon() {
+		BigDecimal effectiveCoupon = getCouponPrice().subtract(getDiscount());
+		return effectiveCoupon.compareTo(BigDecimal.ZERO) >= 0 ? effectiveCoupon : BigDecimal.ZERO;
+	}
 	/**
 	 * 获取赠品
 	 * 
@@ -522,6 +539,7 @@ public class Cart extends BaseEntity<Long> implements Iterable<CartItem> {
 			item.put("skuId", cartItem.getSku().getId());
 			item.put("quantity", cartItem.getQuantity());
 			item.put("price", cartItem.getPrice());
+			item.put("coupon", cartItem.getCouponPrice());
 			items.add(item);
 		}
 		return DigestUtils.md5Hex(JsonUtils.toJson(items));
@@ -629,7 +647,18 @@ public class Cart extends BaseEntity<Long> implements Iterable<CartItem> {
 		}
 		return price;
 	}
-
+	/**
+	 * 获取券
+	 */
+	
+	@Transient
+	private BigDecimal getTotalCoupon(Promotion promotion) {
+		BigDecimal couponPrice = BigDecimal.ZERO;
+		for (CartItem cartItem : getCartItems(promotion)) {
+			couponPrice = couponPrice.add(cartItem.getTotalCoupon());
+		}
+		return couponPrice;
+	}
 	/**
 	 * 判断促销是否有效
 	 * 

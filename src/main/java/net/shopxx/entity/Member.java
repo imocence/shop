@@ -156,7 +156,7 @@ public class Member extends User {
 	 */
 	@Length(max = 200)
 	@Pattern(regexp = "^1[3|4|5|7|8]\\d{9}$")
-	@Column(unique = true)
+	@Column(nullable = true)
 	private String mobile;
 
 	/**
@@ -383,9 +383,17 @@ public class Member extends User {
 	/**
 	 * 国家
 	 */
+	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="locale", referencedColumnName="name_cn")
+	@JoinColumn(nullable = false,name="locale", referencedColumnName="name_cn")
 	private Country country;
+	
+	/**
+	 * 余额
+	 */
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+	private Set<FiBankbookBalance> fiBankbookBalances = new HashSet<>();	
+	
 	
 	/**
 	 * 获取用户名
@@ -1393,5 +1401,13 @@ public class Member extends User {
 
 	public void setCountry(Country country) {
 		this.country = country;
+	}
+
+	public Set<FiBankbookBalance> getFiBankbookBalances() {
+		return fiBankbookBalances;
+	}
+
+	public void setFiBankbookBalances(Set<FiBankbookBalance> fiBankbookBalances) {
+		this.fiBankbookBalances = fiBankbookBalances;
 	}
 }

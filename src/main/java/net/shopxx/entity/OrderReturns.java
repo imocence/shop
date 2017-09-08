@@ -130,7 +130,14 @@ public class OrderReturns extends BaseEntity<Long> {
 	@NotEmpty
 	@OneToMany(mappedBy = "orderReturns", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<OrderReturnsItem> orderReturnsItems = new ArrayList<>();
-
+	
+	/**
+	 * 国家
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="country", referencedColumnName="name_cn")
+	private Country country;
+	
 	/**
 	 * 获取编号
 	 * 
@@ -427,6 +434,14 @@ public class OrderReturns extends BaseEntity<Long> {
 	@Transient
 	public void setArea(Area area) {
 		setArea(area != null ? area.getFullName() : null);
+	}
+	
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
 	}
 
 	/**

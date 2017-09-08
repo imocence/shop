@@ -55,7 +55,6 @@ public class PaymentMethod extends OrderedEntity<Long> {
 	 * 方式
 	 */
 	public enum Method {
-
 		/**
 		 * 在线支付
 		 */
@@ -64,7 +63,7 @@ public class PaymentMethod extends OrderedEntity<Long> {
 		/**
 		 * 线下支付
 		 */
-		offline
+		offline,
 	}
 
 	/**
@@ -113,6 +112,8 @@ public class PaymentMethod extends OrderedEntity<Long> {
 	 */
 	@Lob
 	private String content;
+	
+	
 
 	/**
 	 * 配送方式
@@ -305,11 +306,18 @@ public class PaymentMethod extends OrderedEntity<Long> {
 	public void setOrders(Set<Order> orders) {
 		this.orders = orders;
 	}
-	
+
+	/**
+	 * 获得国籍
+	 * @return
+	 */
 	public Country getCountry() {
 		return country;
 	}
-
+	/**
+	 * 设置国籍
+	 * @param country
+	 */
 	public void setCountry(Country country) {
 		this.country = country;
 	}

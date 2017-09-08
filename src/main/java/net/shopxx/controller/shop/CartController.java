@@ -61,8 +61,9 @@ public class CartController extends BaseController {
 				item.put("skuThumbnail", cartItem.getSku().getThumbnail());
 				item.put("skuPath", cartItem.getSku().getPath());
 				item.put("price", cartItem.getPrice());
+				item.put("couponPrice", cartItem.getCouponPrice());//券单价
 				item.put("quantity", cartItem.getQuantity());
-				item.put("subtotal", cartItem.getSubtotal());
+				item.put("totalCoupon", cartItem.getTotalCoupon());//券总数
 				items.add(item);
 			}
 			data.put("items", items);
@@ -157,9 +158,11 @@ public class CartController extends BaseController {
 		CartItem cartItem = currentCart.getCartItem(sku);
 
 		data.put("subtotal", cartItem.getSubtotal());
+		data.put("totalCoupon", cartItem.getTotalCoupon());
 		data.put("isLowStock", cartItem.getIsLowStock());
 		data.put("quantity", currentCart.getProductQuantity());
 		data.put("effectiveRewardPoint", currentCart.getEffectiveRewardPoint());
+		data.put("effectiveCoupon", currentCart.getEffectiveCoupon());
 		data.put("effectivePrice", currentCart.getEffectivePrice());
 		data.put("giftNames", currentCart.getGiftNames());
 		data.put("promotionNames", currentCart.getPromotionNames());

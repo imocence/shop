@@ -30,7 +30,7 @@ public class FiBankbookBalanceDaoImpl extends BaseDaoImpl<FiBankbookBalance, Lon
 	/**
 	 * 根据会员编号查询存折
 	 */
-	public List<FiBankbookBalance> findList(Member member, Integer count,List<Filter> filters, List<Order> orders){
+	public List<FiBankbookBalance> findList(Member member,String type, Integer count,List<Filter> filters, List<Order> orders){
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<FiBankbookBalance> criteriaQuery = criteriaBuilder.createQuery(FiBankbookBalance.class);
 		Root<FiBankbookBalance> root = criteriaQuery.from(FiBankbookBalance.class);
@@ -38,6 +38,9 @@ public class FiBankbookBalanceDaoImpl extends BaseDaoImpl<FiBankbookBalance, Lon
 		Predicate restrictions = criteriaBuilder.conjunction();
 		if(member != null){
 			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("member"), member));
+		}
+		if(type != null){
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("type"), type));
 		}
 		criteriaQuery.where(restrictions);
 		return super.findList(criteriaQuery, null, count, filters, orders);

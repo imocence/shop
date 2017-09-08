@@ -21,7 +21,8 @@ $().ready(function() {
 	[@flash_message /]
 	
 	$areaId.lSelect({
-		url: "${base}/common/area"
+		url: "${base}/common/area",
+		countryId : "${freightConfig.shippingMethod.country.id}"
 	});
 	
 	// 表单验证

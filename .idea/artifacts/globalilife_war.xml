@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="globalilife:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="globalilife.war">
+      <element id="artifact" artifact-name="globalilife:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -52,7 +52,7 @@
 											[/#if]
 										[/#list]
 									</em>
-									<a href="coupon_code/exchange" class="silver">${message("member.index.exchange")}</a>
+									<!-- <a href="coupon_code/exchange" class="silver">${message("member.index.exchange")}</a> 购买券 -->
 								</li>
 							</ul>
 							<ul>

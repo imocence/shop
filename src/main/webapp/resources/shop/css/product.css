@@ -254,7 +254,14 @@
 	font-size: 11px;
 	text-decoration: line-through;
 }
-
+.hotProduct dd em {
+	height: 24px;
+    display: block;
+    color: #ff7700;
+    font-size: 12px;
+    font-weight: normal;
+    overflow: hidden;
+}
 /* ---------- HotPromotion ---------- */
 
 .hotPromotion {
@@ -827,7 +834,7 @@
 
 .productList .grid li {
 	width: 170px;
-	height: 270px;
+	height: 290px;
 	float: left;
 	padding: 14px;
 	word-break: break-all;
@@ -860,7 +867,14 @@
 	font-size: 14px;
 	overflow: hidden;
 }
-
+.productList .grid em{
+	height: 24px;
+	display: block;
+	color: #ff7700;
+	font-size: 12px;
+	font-weight: normal;
+	overflow: hidden;
+}
 .productList .grid a em {
 	height: 24px;
 	display: block;

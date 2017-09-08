@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import net.shopxx.Message;
 import net.shopxx.Pageable;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.OrderReturnsService;
 
 /**
@@ -30,7 +31,10 @@ public class OrderReturnsController extends BaseController {
 
 	@Inject
 	private OrderReturnsService orderReturnsService;
-
+	
+	@Inject
+	private CountryService countryService;
+	
 	/**
 	 * 查看
 	 */
@@ -44,7 +48,8 @@ public class OrderReturnsController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Pageable pageable, ModelMap model) {
+	public String list(String countryName, Pageable pageable, ModelMap model) {
+		countrySelect(countryName, pageable, model, countryService);
 		model.addAttribute("page", orderReturnsService.findPage(pageable));
 		return "admin/order_returns/list";
 	}

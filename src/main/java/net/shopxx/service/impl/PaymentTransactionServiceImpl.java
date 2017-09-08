@@ -104,7 +104,11 @@ public class PaymentTransactionServiceImpl extends BaseServiceImpl<PaymentTransa
 				orderPayment.setAmount(paymentTransaction.getAmount());
 				orderPayment.setFee(paymentTransaction.getFee());
 				orderPayment.setOrder(order);
-				orderService.payment(order, orderPayment);
+				try {
+					orderService.payment(order, orderPayment);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			break;
 		case DEPOSIT_RECHARGE:
