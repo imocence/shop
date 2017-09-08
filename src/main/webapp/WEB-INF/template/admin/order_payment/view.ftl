@@ -76,23 +76,31 @@ $().ready(function() {
 				[/#if]
 			</td>
 			<th>
+				付款购物券:
+			</th>
+			<td>
+				${currency(orderPayment.couponAmount, true)}
+			</td>
+		</tr>
+		<tr>
+			<th>
 				${message("OrderPayment.payer")}:
 			</th>
 			<td>
 				${orderPayment.payer!"-"}
 			</td>
-		</tr>
-		<tr>
 			<th>
 				${message("OrderPayment.order")}:
 			</th>
 			<td>
 				${orderPayment.order.sn}
 			</td>
+		</tr>
+		<tr>
 			<th>
 				${message("OrderPayment.memo")}:
 			</th>
-			<td>
+			<td colspan="3">
 				${orderPayment.memo!"-"}
 			</td>
 		</tr>

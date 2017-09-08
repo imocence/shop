@@ -21,7 +21,6 @@ import net.sf.ehcache.Element;
 import net.shopxx.Filter;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
-import net.shopxx.Results;
 import net.shopxx.Setting;
 import net.shopxx.dao.CartDao;
 import net.shopxx.dao.OrderDao;
@@ -31,7 +30,6 @@ import net.shopxx.dao.OrderRefundsDao;
 import net.shopxx.dao.OrderReturnsDao;
 import net.shopxx.dao.OrderShippingDao;
 import net.shopxx.dao.SnDao;
-import net.shopxx.entity.Area;
 import net.shopxx.entity.Cart;
 import net.shopxx.entity.CartItem;
 import net.shopxx.entity.Coupon;
@@ -59,8 +57,6 @@ import net.shopxx.entity.Sku;
 import net.shopxx.entity.Sn;
 import net.shopxx.entity.StockLog;
 import net.shopxx.entity.User;
-import net.shopxx.service.AreaService;
-import net.shopxx.service.CountryService;
 import net.shopxx.service.CouponCodeService;
 import net.shopxx.service.FiBankbookBalanceService;
 import net.shopxx.service.FiBankbookJournalService;
@@ -833,6 +829,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 //		order.setPrice(order.getAmount());
 		order.setPromotionDiscount(BigDecimal.ZERO);
 		order.setCouponAmountPaid(BigDecimal.ZERO);
+		order.setCouponPricePaid(BigDecimal.ZERO);
 		BigDecimal amount = order.getAmount();
 		BigDecimal couponAmount = order.getCouponAmount();
 		// 获取用户余额
@@ -939,7 +936,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 		order.setAmount(calculateAmount(order));
 		order.setCouponAmount(calculateCouponAmount(order));
-		if (order.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0) {
+		if (order.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0 && order.getCouponAmountPayable().compareTo(BigDecimal.ZERO) <= 0) {
 			order.setStatus(Order.Status.pendingReview);
 			order.setExpire(null);
 		} else {
@@ -1012,7 +1009,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		Assert.notNull(orderPayment);
 		Assert.isTrue(orderPayment.isNew());
 		Assert.notNull(orderPayment.getAmount());
-		Assert.state(orderPayment.getAmount().compareTo(BigDecimal.ZERO) > 0);
+		Assert.notNull(orderPayment.getCouponAmount());
+		Assert.state(orderPayment.getAmount().compareTo(BigDecimal.ZERO) >= 0);
+		Assert.state(orderPayment.getCouponAmount().compareTo(BigDecimal.ZERO) >= 0);
+		Assert.state(!(orderPayment.getAmount().compareTo(BigDecimal.ZERO) == 0 && orderPayment.getCouponAmount().compareTo(BigDecimal.ZERO) == 0));
 		Member member = order.getMember();
 		orderPayment.setSn(snDao.generate(Sn.Type.orderPayment));
 		orderPayment.setCountry(member.getCountry());
@@ -1022,11 +1022,15 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		if (member != null) {
 //			memberService.addBalance(order.getMember(), orderPayment.getEffectiveAmount().negate(), DepositLog.Type.orderPayment, null);
 			String notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 电子币账户消费" + orderPayment.getAmount();
-			fiBankbookJournalService.recharge(member.getUsercode(), orderPayment.getAmount(), null, 
-					FiBankbookJournal.Type.balance.ordinal(), FiBankbookJournal.DealType.takeout.ordinal(), FiBankbookJournal.MoneyType.cash.ordinal(), notes);
+			if (orderPayment.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+				fiBankbookJournalService.recharge(member.getUsercode(), orderPayment.getAmount(), null, 
+						FiBankbookJournal.Type.balance.ordinal(), FiBankbookJournal.DealType.takeout.ordinal(), FiBankbookJournal.MoneyType.cash.ordinal(), notes);
+			}
 			notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 购物券账户消费" + orderPayment.getCouponAmount();
-			fiBankbookJournalService.recharge(member.getUsercode(), orderPayment.getCouponAmount(), null, 
-					FiBankbookJournal.Type.coupon.ordinal(), FiBankbookJournal.DealType.takeout.ordinal(), FiBankbookJournal.MoneyType.cash.ordinal(), notes);
+			if (orderPayment.getCouponAmount().compareTo(BigDecimal.ZERO) > 0) {
+				fiBankbookJournalService.recharge(member.getUsercode(), orderPayment.getCouponAmount(), null, 
+						FiBankbookJournal.Type.coupon.ordinal(), FiBankbookJournal.DealType.takeout.ordinal(), FiBankbookJournal.MoneyType.cash.ordinal(), notes);
+			}
 
 		}
 		Setting setting = SystemUtils.getSetting();
@@ -1036,7 +1040,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		order.setAmountPaid(order.getAmountPaid().add(orderPayment.getEffectiveAmount()));
 		order.setCouponAmountPaid(order.getCouponAmountPaid().add(orderPayment.getCouponAmount()));
 		order.setFee(order.getFee().add(orderPayment.getFee()));
-		if (!order.hasExpired() && Order.Status.pendingPayment.equals(order.getStatus()) && order.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0) {
+		if (!order.hasExpired() && Order.Status.pendingPayment.equals(order.getStatus()) && (order.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0 && order.getCouponAmountPayable().compareTo(BigDecimal.ZERO) <= 0)) {
 			order.setStatus(Order.Status.pendingReview);
 			order.setExpire(null);
 		}
@@ -1059,7 +1063,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		Assert.notNull(orderRefunds);
 		Assert.isTrue(orderRefunds.isNew());
 		Assert.notNull(orderRefunds.getAmount());
-		Assert.state(orderRefunds.getAmount().compareTo(BigDecimal.ZERO) > 0 && orderRefunds.getAmount().compareTo(order.getRefundableAmount()) <= 0);
+		Assert.notNull(orderRefunds.getCouponAmount());
+		Assert.state((orderRefunds.getAmount().compareTo(BigDecimal.ZERO) > 0 && orderRefunds.getAmount().compareTo(order.getRefundableAmount()) <= 0)
+				|| (orderRefunds.getCouponAmount().compareTo(BigDecimal.ZERO) > 0 && orderRefunds.getCouponAmount().compareTo(order.getRefundableCouponAmount()) <= 0));
+		
 		Member member = order.getMember();
 		orderRefunds.setSn(snDao.generate(Sn.Type.orderRefunds));
 		orderRefunds.setOrder(order);
@@ -1069,11 +1076,15 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		if (member != null) {
 //			memberService.addBalance(order.getMember(), orderRefunds.getAmount(), DepositLog.Type.orderRefunds, null);
 			String notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 电子币账户退款" + orderRefunds.getAmount();
-			fiBankbookJournalService.recharge(member.getUsercode(), orderRefunds.getAmount(), null, 
-					FiBankbookJournal.Type.balance.ordinal(), FiBankbookJournal.DealType.deposit.ordinal(), FiBankbookJournal.MoneyType.cash.ordinal(), notes);
-			notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 购物券账户退款" + orderRefunds.getCouponAmount();
-			fiBankbookJournalService.recharge(member.getUsercode(), orderRefunds.getCouponAmount(), null, 
-					FiBankbookJournal.Type.coupon.ordinal(), FiBankbookJournal.DealType.deposit.ordinal(), FiBankbookJournal.MoneyType.cash.ordinal(), notes);
+			if (orderRefunds.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+				fiBankbookJournalService.recharge(member.getUsercode(), orderRefunds.getAmount(), null, 
+						FiBankbookJournal.Type.balance.ordinal(), FiBankbookJournal.DealType.deposit.ordinal(), FiBankbookJournal.MoneyType.cash.ordinal(), notes);
+			}
+			if (orderRefunds.getCouponAmount().compareTo(BigDecimal.ZERO) > 0) {
+				notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 购物券账户退款" + orderRefunds.getCouponAmount();
+				fiBankbookJournalService.recharge(member.getUsercode(), orderRefunds.getCouponAmount(), null, 
+						FiBankbookJournal.Type.coupon.ordinal(), FiBankbookJournal.DealType.deposit.ordinal(), FiBankbookJournal.MoneyType.cash.ordinal(), notes);
+			}
 		}
 		
 		order.setAmountPaid(order.getAmountPaid().subtract(orderRefunds.getAmount()));

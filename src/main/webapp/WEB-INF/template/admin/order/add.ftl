@@ -301,7 +301,15 @@ $().ready(function() {
 		// 获取商品信息
 		$selectProductId.change(function(){
 			var index = $(this).attr("data");
+			$("#product" + index + "image").empty();
 			$("#product" + index + "sn").val('');
+			$("#product" + index + "name").val('');
+			$("#product" + index + "price").val('');
+			$("#product" + index + "couponPrice").val('');
+			$("#product" + index + "sku").val('');
+			$("#product" + index + "weight").val('');
+			$("#product" + index + "quantity").val('');
+			$("#product" + index + "total").val('');
 			if ($(this).val() != '-1' && $(this).val() != null){
 				$.ajax({
 					url: "${base}/admin/order/getProduct",
@@ -317,8 +325,14 @@ $().ready(function() {
 						$("#product" + index + "couponPrice").val(item.couponPrice);
 						$("#product" + index + "sku").val(item.sku);
 						$("#product" + index + "weight").val(item.weight);
+						$("#product" + index + "quantity").val(0);
+						$("#product" + index + "total").val("0+0");
 					}
 				});
+			}
+			// 修改商品时需要重新计价
+			else{
+				getTotal();
 			}
 		});
 		// 获取商品信息
@@ -474,7 +488,7 @@ $().ready(function() {
 				<th>
 					<span class="requiredField">*</span>${message("common.country")}:
 				</th>
-				<td>
+				<td colspan="3">
 					<select id="country" name="countryName">
 						[@country_list]
 							[#list countrys as country]
@@ -488,7 +502,7 @@ $().ready(function() {
 				<th>
 					<span class="requiredField">*</span>${message("admin.fiBankbookJournalTemp.memberSelect")}:
 				</th>
-				<td>
+				<td colspan="3">
 					<input type="text" id="memberSelect" name="memberSelect" class="text" maxlength="200" title="${message("admin.fiBankbookJournalTemp.memberSelectTitle")}" />
 				</td>
 			</tr>
@@ -499,8 +513,6 @@ $().ready(function() {
 				<td>
 					<span id="usercodeSpan" />
 				</td>
-			</tr>
-			<tr>
 				<th>
 					${message("common.member.name")}:
 				</th>
@@ -515,8 +527,6 @@ $().ready(function() {
 				<td>
 					<span id="userBalance" />
 				</td>
-			</tr>
-			<tr>
 				<th>
 					${message("admin.fiBankbookBalance.type.coupon")}:
 				</th>
@@ -532,9 +542,7 @@ $().ready(function() {
 				<td>
 					<input type="text" id="consignee" name="consignee" class="text" maxlength="200" />
 				</td>
-			</tr>
 			<!-- 电话 -->
-			<tr>
 				<th>
 					<span class="requiredField">*</span>${message("Receiver.phone")}
 				</th>
@@ -550,6 +558,13 @@ $().ready(function() {
 				<td>
 					<input type="text" id="address" name="address" class="text" maxlength="200" />
 				</td>
+			<!-- 附言 -->
+				<th>
+					${message("Order.memo")}:
+				</th>
+				<td>
+					<input type="text" name="memo" class="text" maxlength="200" />
+				</td>
 			</tr>
 			<!-- 支付方式 -->
 			<tr>
@@ -560,24 +575,13 @@ $().ready(function() {
 					<select id="paymentMethod" name="paymentMethodId">
 					</select>
 				</td>
-			</tr>
 			<!-- 配送方式 -->
-			<tr>
 				<th>
 					<span class="requiredField">*</span>${message("Order.shippingMethod")}
 				</th>
 				<td>
 					<select id="shippingMethod" name="shippingMethodId">
 					</select>
-				</td>
-			</tr>
-			<!-- 附言 -->
-			<tr>
-				<th>
-					${message("Order.memo")}:
-				</th>
-				<td>
-					<input type="text" name="memo" class="text" maxlength="200" />
 				</td>
 			</tr>
 			<!-- 重量 -->
@@ -590,9 +594,7 @@ $().ready(function() {
 					<!-- 数量-->
 					<input type="hidden" id="totalQuantity" />
 				</td>
-			</tr>
 			<!-- 运费 -->
-			<tr>
 				<th>
 					${message("Order.freight")}:
 				</th>
@@ -608,9 +610,7 @@ $().ready(function() {
 				<td>
 					<input type="text" style='border:none;' id="balance" name="amount" class="text" maxlength="200" />
 				</td>
-			</tr>
 			<!-- 订单总购物券金额-->
-			<tr>
 				<th>
 					订单购物券总额:
 				</th>

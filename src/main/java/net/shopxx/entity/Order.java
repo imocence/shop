@@ -515,6 +515,9 @@ public class Order extends BaseEntity<Long> {
 	@JoinColumn(name="country", referencedColumnName="name_cn")
 	private Country country;
 	
+	@Column(nullable = false, precision = 21, scale = 6)
+	private BigDecimal couponPricePaid;
+	
 	/**
 	 * 获取编号
 	 * 
@@ -1489,6 +1492,14 @@ public class Order extends BaseEntity<Long> {
 	public void setCountry(Country country) {
 		this.country = country;
 	}
+	
+	public BigDecimal getCouponPricePaid() {
+		return couponPricePaid;
+	}
+
+	public void setCouponPricePaid(BigDecimal couponPricePaid) {
+		this.couponPricePaid = couponPricePaid;
+	}
 
 	/**
 	 * 获取是否需要物流
@@ -1677,7 +1688,7 @@ public class Order extends BaseEntity<Long> {
 			setShippingMethodName(getShippingMethod().getName());
 		}
 	}
-
+	
 	/**
 	 * 类型转换 - 促销名称
 	 * 

@@ -181,13 +181,13 @@ $().ready(function() {
 									${message("OrderPayment.amount")}:
 								<\/th>
 								<td>
-									<input type="text" name="amount" class="text"[#if order.amountPayable > 0] value="${order.amountPayable}"[/#if] maxlength="16" \/>
+									<input type="text" name="amount" class="text"[#if order.amountPayable gte 0] value="${order.amountPayable}"[/#if] maxlength="16" \/>
 								<\/td>
 								<th>
 									付款购物券:
 								<\/th>
 								<td>
-									<input type="text" name="couponAmount" class="text"[#if order.couponAmountPayable > 0] value="${order.couponAmountPayable}"[/#if] maxlength="16" \/>
+									<input type="text" name="couponAmount" class="text"[#if order.couponAmountPayable gte 0] value="${order.couponAmountPayable}"[/#if] maxlength="16" \/>
 								<\/td>
 							<\/tr>
 							<tr>
@@ -245,6 +245,7 @@ $().ready(function() {
 			cancel: "${message("admin.dialog.cancel")}",
 			onShow: function() {
 				var $amount = $("#paymentForm input[name='amount']");
+				var $couponAmount = $("#paymentForm input[name='couponAmount']");
 				var $method = $("#paymentForm select[name='method']");
 				$.validator.addMethod("balance",
 					function(value, element, param) {
@@ -256,7 +257,7 @@ $().ready(function() {
 					rules: {
 						amount: {
 							required: true,
-							positive: true,
+							min: 0,
 							decimal: {
 								integer: 12,
 								fraction: ${setting.priceScale}
@@ -265,7 +266,7 @@ $().ready(function() {
 						},
 						couponAmount: {
 							required: true,
-							positive: true,
+							min: 0,
 							decimal: {
 								integer: 12,
 								fraction: ${setting.priceScale}
@@ -274,7 +275,11 @@ $().ready(function() {
 						}
 					},
 					submitHandler: function(form) {
-						if (parseFloat($amount.val()) <= ${order.amountPayable} || confirm("${message("admin.order.paymentConfirm")}")) {
+						if ($amount.val() == 0 && $couponAmount.val()==0){
+							$.message("warn", "付款金额和付款购物券不能都为0");
+							return false;
+						}
+						if ((parseFloat($amount.val()) <= ${order.amountPayable} && parseFloat($couponAmount.val()) <= ${order.couponAmountPayable}) || confirm("${message("admin.order.paymentConfirm")}")) {
 							form.submit();
 						}
 					}
@@ -1167,6 +1172,23 @@ $().ready(function() {
 				${currency(order.amountPaid, true)}
 				[#if order.amountPayable > 0]
 					<span class="silver">(${message("Order.amountPayable")}: ${currency(order.amountPayable, true)})</span>
+				[/#if]
+			</td>
+		</tr>
+		<tr>
+			<th>
+				订单购物券:
+			</th>
+			<td>
+				<span class="red">${currency(order.couponAmount, true)}</span>
+			</td>
+			<th>
+				已付购物券:
+			</th>
+			<td>
+				${currency(order.couponAmountPaid, true)}
+				[#if order.couponAmountPayable > 0]
+					<span class="silver">(应付购物券: ${currency(order.couponAmountPayable, true)})</span>
 				[/#if]
 			</td>
 		</tr>
