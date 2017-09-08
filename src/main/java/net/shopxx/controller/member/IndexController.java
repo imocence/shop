@@ -13,6 +13,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.Order;
 import net.shopxx.security.CurrentUser;
@@ -81,7 +82,8 @@ public class IndexController extends BaseController {
 		model.addAttribute("newOrders", orderService.findList(null, null, currentUser, null, null, null, null, null, null, null, NEW_ORDER_SIZE, null, null));
 
 		//会员存折
-		model.addAttribute("fiBankbookBalanceList", fiBankbookBalanceService.findList(currentUser,null,null,null,null));
+		model.addAttribute("fiBankbookBalance", fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.balance));
+		model.addAttribute("fiBankbookCoupon", fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.coupon));
 		return "member/index";
 	}
 

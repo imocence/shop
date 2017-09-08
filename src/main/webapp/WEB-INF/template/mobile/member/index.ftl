@@ -41,6 +41,14 @@
 						<span class="red">${currentUser.memberRank.name}</span>
 					</span>
 				</div>
+				<div class="panel-heading">
+					${message("member.navigation.balance")}
+					<span class="red">${currency(fiBankbookBalance.balance, true)}</span>
+					<span class="pull-right">
+						${message("member.navigation.coupon")}:
+						<span class="red">${currency(fiBankbookCoupon.balance, true)}</span>
+					</span>
+				</div>
 				<div class="panel-body small">
 					<div class="row">
 						<div class="col-xs-3 text-center">
