@@ -179,24 +179,24 @@ $().ready(function() {
 										</td>
 									</tr>
 								[/#if]
-								<tr class="register">
-									<th>
-										&nbsp;
-									</th>
-									<td>
-										<dl>
-											<dt>${message("member.login.noAccount")}</dt>
-											<dd>
-												${message("member.login.tips")}
-												[#if socialUserId?has_content && uniqueId?has_content]
-													<a href="${base}/member/register?socialUserId=${socialUserId}&uniqueId=${uniqueId}">${message("member.login.registerBind")}</a>
-												[#else]
-													<a href="${base}/member/register">${message("member.login.register")}</a>
-												[/#if]
-											</dd>
-										</dl>
-									</td>
-								</tr>
+								[#--<tr class="register">--]
+									[#--<th>--]
+										[#--&nbsp;--]
+									[#--</th>--]
+									[#--<td>--]
+										[#--<dl>--]
+											[#--<dt>${message("member.login.noAccount")}</dt>--]
+											[#--<dd>--]
+												[#--${message("member.login.tips")}--]
+												[#--[#if socialUserId?has_content && uniqueId?has_content]--]
+													[#--<a href="${base}/member/register?socialUserId=${socialUserId}&uniqueId=${uniqueId}">${message("member.login.registerBind")}</a>--]
+												[#--[#else]--]
+													[#--<a href="${base}/member/register">${message("member.login.register")}</a>--]
+												[#--[/#if]--]
+											[#--</dd>--]
+										[#--</dl>--]
+									[#--</td>--]
+								[#--</tr>--]
 							</table>
 						</form>
 					</div>
