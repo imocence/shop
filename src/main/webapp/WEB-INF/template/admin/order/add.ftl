@@ -348,7 +348,7 @@ $().ready(function() {
 				$productQuantity.val(quantity);
 			}else{
 				var productSku = $productSku.val();
-				if (productSku<quantity){
+				if ((productSku*1)<(quantity*1)){
 					quantity = productSku;
 					$productQuantity.val(quantity);
 				}
