@@ -26,6 +26,9 @@ $().ready(function() {
 	var $quantity = $("#quantity");
 	var stock = ${(sku.stock)!"null"};
 	
+	var $countryId = $("#countryId");
+	var $countrySelect = $("#countrySelect");
+	
 	[@flash_message /]
 	
 	// SKU选择
@@ -34,6 +37,11 @@ $().ready(function() {
 		max: 20,
 		width: 218,
 		scrollHeight: 300,
+		extraParams: { 
+			countryId: function() {
+				 return $countryId.val();
+			}
+		}, 
 		parse: function(data) {
 			return $.map(data, function(item) {
 				return {
@@ -77,7 +85,14 @@ $().ready(function() {
 			form.submit();
 		}
 	});
-
+	$countrySelect.change(function(){ 
+        $countryId.val($(this).children('option:selected').val());
+        $name.val("test");
+        $inputForm.attr('method','get');      
+        $inputForm.attr('action','listByCountry');      
+       	
+        $inputForm.submit();
+	});
 });
 </script>
 </head>
@@ -86,8 +101,21 @@ $().ready(function() {
 		${message("admin.stock.stockOut")}
 	</div>
 	<form id="inputForm" action="stock_out" method="post">
+		<input type="hidden" id="countryId" name="countryId" value="${countryId}" />
 		<input type="hidden" id="skuId" name="skuId" value="${(sku.id)!}" />
 		<table class="input">
+			<tr>
+				<th>
+					${message("common.country")}:
+				</th>
+				<td>
+					<select id="countrySelect" name="country.id">
+						[#list countries as country]
+							<option value="${country.id}"[#if country.id == countryId] selected="selected"[/#if]>${country.name}</option>
+						[/#list]
+					</select>
+				</td>
+			</tr>
 			<tr>
 				<th>
 					${message("admin.stock.skuSelect")}:
