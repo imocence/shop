@@ -89,6 +89,9 @@ $().ready(function() {
 					<a href="javascript:;" class="sort" name="amount">${message("OrderRefunds.amount")}</a>
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" name="couponAmount">退款购物券</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="payee">${message("OrderRefunds.payee")}</a>
 				</th>
 				<th>
@@ -120,6 +123,9 @@ $().ready(function() {
 					</td>
 					<td>
 						${currency(orderRefunds.amount, true)}
+					</td>
+					<td>
+						${currency(orderRefunds.couponAmount, true)}
 					</td>
 					<td>
 						${orderRefunds.payee}

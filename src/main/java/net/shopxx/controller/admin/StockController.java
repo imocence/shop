@@ -14,8 +14,10 @@ import javax.inject.Inject;
 
 import net.shopxx.Message;
 import net.shopxx.Pageable;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Sku;
 import net.shopxx.entity.StockLog;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.SkuService;
 import net.shopxx.service.StockLogService;
 
@@ -43,7 +45,9 @@ public class StockController extends BaseController {
 	private StockLogService stockLogService;
 	@Inject
 	private SkuService skuService;
-
+	@Inject
+	private CountryService countryService;
+	
 	/**
 	 * SKU选择
 	 */
@@ -126,8 +130,11 @@ public class StockController extends BaseController {
 	 * 记录
 	 */
 	@GetMapping("/log")
-	public String log(Pageable pageable, ModelMap model) {
-		model.addAttribute("page", stockLogService.findPage(pageable));
+	public String log(Pageable pageable,Long countryId, ModelMap model) {
+		model.addAttribute("countries", countryService.findRoots());
+	    model.addAttribute("countryId", countryId);
+	    Country country = countryService.find(countryId);
+		model.addAttribute("page", stockLogService.findPage(country,pageable));
 		return "admin/stock/log";
 	}
 

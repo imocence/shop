@@ -9,12 +9,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.shopxx.Filter;
+import net.shopxx.Order;
 import net.shopxx.Setting;
 import net.shopxx.entity.Area;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.FreightConfig;
 import net.shopxx.entity.Receiver;
 import net.shopxx.entity.ShippingMethod;
 import net.shopxx.service.ShippingMethodService;
+import net.shopxx.util.StringConstant;
 import net.shopxx.util.SystemUtils;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -62,6 +66,21 @@ public class ShippingMethodServiceImpl extends BaseServiceImpl<ShippingMethod, L
 	@Transactional(readOnly = true)
 	public BigDecimal calculateFreight(ShippingMethod shippingMethod, Receiver receiver, Integer weight) {
 		return calculateFreight(shippingMethod, receiver != null ? receiver.getArea() : null, weight);
+	}
+	
+	/**
+	 * 根据国家获取支付方式
+	 * @param country
+	 * @return
+	 */
+	public List<ShippingMethod> findAll(Country country){
+		List<Filter> filters = new ArrayList<Filter>();
+		Filter filter = new Filter(StringConstant.COUNTRY, Filter.Operator.eq, country);
+		filters.add(filter);
+		List<Order> orders = new ArrayList<Order>();
+		Order order = new Order(StringConstant.ORDER, Order.Direction.asc);
+		orders.add(order);
+		return super.findList(null, filters, orders);
 	}
 	
 }

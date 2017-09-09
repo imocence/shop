@@ -5,6 +5,9 @@
  */
 package net.shopxx.dao;
 
+import net.shopxx.Page;
+import net.shopxx.Pageable;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.StockLog;
 
 /**
@@ -15,4 +18,5 @@ import net.shopxx.entity.StockLog;
  */
 public interface StockLogDao extends BaseDao<StockLog, Long> {
 
+	Page<StockLog> findPage(Country country, Pageable pageable);
 }

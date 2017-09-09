@@ -89,6 +89,9 @@ $().ready(function() {
 					<a href="javascript:;" class="sort" name="amount">${message("OrderPayment.amount")}</a>
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" name="couponAmount">付款购物券</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="fee">${message("OrderPayment.fee")}</a>
 				</th>
 				<th>
@@ -123,6 +126,9 @@ $().ready(function() {
 					</td>
 					<td>
 						${currency(orderPayment.amount, true)}
+					</td>
+					<td>
+						${currency(orderPayment.couponAmount)}
 					</td>
 					<td>
 						${currency(orderPayment.fee, true)}

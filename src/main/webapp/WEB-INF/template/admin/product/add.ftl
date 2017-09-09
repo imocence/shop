@@ -754,7 +754,8 @@ $().ready(function() {
                });
            }
        }
-       
+        $("#price").val(0);
+        $("#coupon").val(0); 
 
 });
 </script>

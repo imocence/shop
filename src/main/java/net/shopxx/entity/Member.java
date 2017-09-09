@@ -176,6 +176,12 @@ public class Member extends User {
 	 */
 	@Column(nullable = false, precision = 27, scale = 12)
 	private BigDecimal amount;
+	
+	/**
+	 * 消费购物券金额
+	 */
+	@Column(nullable = false, columnDefinition="decimal(27,12) default 0.000000000000", precision = 27, scale = 12)
+	private BigDecimal couponAmount;
 
 	/**
 	 * 姓名
@@ -1409,5 +1415,37 @@ public class Member extends User {
 
 	public void setFiBankbookBalances(Set<FiBankbookBalance> fiBankbookBalances) {
 		this.fiBankbookBalances = fiBankbookBalances;
+	}
+	
+	public BigDecimal getBankbookBalance() {
+		Set<FiBankbookBalance> set = getFiBankbookBalances();
+		if (null != set && !set.isEmpty()) {
+			for (FiBankbookBalance fiBankbookBalance : set) {
+				if (FiBankbookBalance.Type.balance == fiBankbookBalance.getType()) {
+					return fiBankbookBalance.getBalance();
+				}
+			}
+		}
+		return BigDecimal.ZERO;
+	}
+	
+	public BigDecimal getCouponBalance() {
+		Set<FiBankbookBalance> set = getFiBankbookBalances();
+		if (null != set && !set.isEmpty()) {
+			for (FiBankbookBalance fiBankbookBalance : set) {
+				if (FiBankbookBalance.Type.coupon == fiBankbookBalance.getType()) {
+					return fiBankbookBalance.getBalance();
+				}
+			}
+		}
+		return BigDecimal.ZERO;
+	}
+
+	public BigDecimal getCouponAmount() {
+		return couponAmount;
+	}
+
+	public void setCouponAmount(BigDecimal couponAmount) {
+		this.couponAmount = couponAmount;
 	}
 }

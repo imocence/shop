@@ -94,6 +94,15 @@ public class OrderRefunds extends BaseEntity<Long> {
 	@Digits(integer = 12, fraction = 3)
 	@Column(nullable = false, updatable = false, precision = 21, scale = 6)
 	private BigDecimal amount;
+	
+	/**
+	 * 退款购物券
+	 */
+	@NotNull
+	@Min(0)
+	@Digits(integer = 12, fraction = 3)
+	@Column(nullable = false, updatable = false, precision = 21, scale = 6)
+	private BigDecimal couponAmount;
 
 	/**
 	 * 收款人
@@ -301,6 +310,14 @@ public class OrderRefunds extends BaseEntity<Long> {
 	 */
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+	
+	public BigDecimal getCouponAmount() {
+		return couponAmount;
+	}
+
+	public void setCouponAmount(BigDecimal couponAmount) {
+		this.couponAmount = couponAmount;
 	}
 
 	/**

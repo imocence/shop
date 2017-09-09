@@ -73,23 +73,31 @@ $().ready(function() {
 				${currency(orderRefunds.amount, true)}
 			</td>
 			<th>
+				退款购物券:
+			</th>
+			<td>
+				${currency(orderRefunds.couponAmount, true)}
+			</td>
+		</tr>
+		<tr>
+			<th>
 				${message("OrderRefunds.payee")}:
 			</th>
 			<td>
 				${orderRefunds.payee!"-"}
 			</td>
-		</tr>
-		<tr>
 			<th>
 				${message("OrderRefunds.order")}:
 			</th>
 			<td>
 				${orderRefunds.order.sn}
 			</td>
+		</tr>
+		<tr>
 			<th>
 				${message("OrderRefunds.memo")}:
 			</th>
-			<td>
+			<td colspan="3">
 				${orderRefunds.memo!"-"}
 			</td>
 		</tr>
