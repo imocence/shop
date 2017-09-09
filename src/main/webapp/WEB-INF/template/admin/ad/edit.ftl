@@ -37,7 +37,7 @@ $().ready(function() {
 		} else {
 			$content.prop("disabled", true).closest("tr").hide();
 			$path.prop("disabled", false).closest("tr").show();
-			$filePicker.initUploader("logo");
+			$filePicker.initUploader("path");
 		}
 	});
 	
