@@ -11,6 +11,7 @@ import net.shopxx.dao.FiBankbookJournalDao;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.FiBankbookJournal;
+import net.shopxx.entity.FiBankbookJournal.Type;
 import net.shopxx.entity.Member;
 import net.shopxx.service.FiBankbookBalanceService;
 import net.shopxx.service.FiBankbookJournalService;
@@ -68,8 +69,8 @@ public class FiBankbookJournalServiceImpl extends BaseServiceImpl<FiBankbookJour
 	 * @return 交易记录分页
 	 */
 	@Transactional(readOnly = true)
-	public Page<FiBankbookJournal> findPageByMemberId(Member currentUser, Pageable pageNumber){
-		return fiBankbookJournalDao.findPageByMemberId(currentUser, pageNumber);
+	public Page<FiBankbookJournal> findPageByMemberId(Type type,Member currentUser, Pageable pageNumber){
+		return fiBankbookJournalDao.findPageByMemberId(type,currentUser, pageNumber);
 	}
 	/**
 	 * 获取最近的一条记录

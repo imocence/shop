@@ -7,6 +7,7 @@ import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.FiBankbookJournal;
+import net.shopxx.entity.FiBankbookJournal.Type;
 import net.shopxx.entity.Member;
 
 /**
@@ -60,10 +61,12 @@ public interface FiBankbookJournalService extends BaseService<FiBankbookJournal,
 	String recharge(String usercode, BigDecimal money, String uniqueCode, int type, int dealType, int moneyType, String notes) throws Exception;
 	/**
 	 * 根据会员编号查找充值记录接口
+	 * @param type 
 	 * 
 	 * @param usercode 会员编号
 	 * @return
 	 * @throws Exception
 	 */
-	Page<FiBankbookJournal> findPageByMemberId(Member currentUser, Pageable pageNumber);
+	Page<FiBankbookJournal> findPageByMemberId(Type type, Member currentUser, Pageable pageNumber);
+
 }

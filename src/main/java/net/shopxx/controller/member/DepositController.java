@@ -22,12 +22,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.Results;
 import net.shopxx.entity.BaseEntity;
-import net.shopxx.entity.DepositLog;
 import net.shopxx.entity.FiBankbookJournal;
+import net.shopxx.entity.FiBankbookJournal.Type;
 import net.shopxx.entity.Member;
 import net.shopxx.plugin.PaymentPlugin;
 import net.shopxx.security.CurrentUser;
@@ -101,13 +100,22 @@ public class DepositController extends BaseController {
 	 * 记录
 	 */
 	@GetMapping("/log")
-	public String log(Integer pageNumber, @CurrentUser Member currentUser, ModelMap model) {
+	public String log(Integer pageNumber, @CurrentUser Member currentUser, ModelMap model,String type) {
 		Pageable pageable = new Pageable(pageNumber, PAGE_SIZE);
 		//Page<DepositLog> depositLog = depositLogService.findPage(currentUser, pageable);
 		//model.addAttribute("page", depositLogService.findPage(currentUser, pageable));
 		//Page<FiBankbookJournal> FiBankbookJournal = fiBankbookJournalService.findPageByMemberId(currentUser, pageable);
-		model.addAttribute("page", fiBankbookJournalService.findPageByMemberId(currentUser, pageable));
-		return "member/deposit/log";
+		Type typeF = FiBankbookJournal.Type.balance;
+		if("1".equals(type)){
+			typeF = FiBankbookJournal.Type.coupon;
+		}
+		model.addAttribute("page", fiBankbookJournalService.findPageByMemberId(typeF,currentUser, pageable));
+		if("1".equals(type)){
+			return "member/deposit/coupon";
+		}else{
+			return "member/deposit/log";
+		}
+		
 	}
 
 	/**
@@ -115,12 +123,16 @@ public class DepositController extends BaseController {
 	 */
 	@GetMapping(path = "/log", produces = MediaType.APPLICATION_JSON_VALUE)
 	@JsonView(BaseEntity.BaseView.class)
-	public ResponseEntity<?> log(Integer pageNumber, @CurrentUser Member currentUser) {
+	public ResponseEntity<?> log(Integer pageNumber, @CurrentUser Member currentUser,String type) {
 		Pageable pageable = new Pageable(pageNumber, PAGE_SIZE);
 		//List<DepositLog> depositLog = depositLogService.findPage(currentUser, pageable).getContent();
 		//return ResponseEntity.ok(depositLog);
-		//List<FiBankbookJournal> fiBankbookJournal = fiBankbookJournalService.findPageByMemberId(currentUser, pageable).getContent();
-		return ResponseEntity.ok(fiBankbookJournalService.findPageByMemberId(currentUser, pageable).getContent());
+		Type typeF = FiBankbookJournal.Type.balance;
+		if("1".equals(type)){
+			typeF = FiBankbookJournal.Type.coupon;
+		}
+		List<FiBankbookJournal> fiBankbookJournal = fiBankbookJournalService.findPageByMemberId(typeF,currentUser, pageable).getContent();
+		return ResponseEntity.ok(fiBankbookJournal);
 	}
 
 }
