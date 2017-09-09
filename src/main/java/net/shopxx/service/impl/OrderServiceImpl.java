@@ -441,6 +441,16 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		parameterMap.put("timestamp", TimeUtil.getTimestamp());
 		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getTimestamp()+urlSignature));
 		try {
+			/**
+			 * errCode         msg
+			 * 0000 		成功：success
+			 * 1001 		验签错误
+			 * 1002 		会员编号已存在
+			 * 1003 		区代编号已存在
+			 * 1004 		链接超过有效时间
+			 * 1005                           商品编码不存在
+			 * 2001 		异常:xxx
+			 */
 			String orderMap = WebUtils.postJson(urlPath+"/shopMemberOrderCreate.html",parameterMap);
 			System.out.println(orderMap);
 			return orderMap;
