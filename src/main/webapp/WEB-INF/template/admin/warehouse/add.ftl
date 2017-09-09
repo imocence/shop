@@ -36,7 +36,7 @@ $().ready(function() {
         $inputForm.attr('action','listByCountry');      
        	
         $inputForm.submit();
-	}) 
+	});
 });
 </script>
 </head>

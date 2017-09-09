@@ -48,7 +48,7 @@ $().ready(function() {
 		width: 218,
 		scrollHeight: 300,
 		extraParams: { 
-			country: function() {
+			countryId: function() {
 				 return $country.val();
 			}
 		}, 

@@ -19,7 +19,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import net.shopxx.dao.SkuDao;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Product;
+import net.shopxx.entity.Product.Type;
 import net.shopxx.entity.Sku;
 
 /**
@@ -43,6 +45,31 @@ public class SkuDaoImpl extends BaseDaoImpl<Sku, Long> implements SkuDao {
 		Predicate restrictions = criteriaBuilder.conjunction();
 		if (type != null) {
 			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("product").get("type"), type));
+		}
+		restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.or(criteriaBuilder.like(root.<String>get("sn"), "%" + keyword + "%"), criteriaBuilder.like(root.get("product").<String>get("name"), "%" + keyword + "%")));
+		if (CollectionUtils.isNotEmpty(excludes)) {
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.not(root.in(excludes)));
+		}
+		criteriaQuery.where(restrictions);
+		return super.findList(criteriaQuery, null, count, null, null);
+	}
+
+	@Override
+	public List<Sku> search(Type type, String keyword, Country country, Set<Sku> excludes, Integer count) {
+		if (StringUtils.isEmpty(keyword)) {
+			return Collections.emptyList();
+		}
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Sku> criteriaQuery = criteriaBuilder.createQuery(Sku.class);
+		Root<Sku> root = criteriaQuery.from(Sku.class);
+		criteriaQuery.select(root);
+		Predicate restrictions = criteriaBuilder.conjunction();
+		if (type != null) {
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("product").get("type"), type));
+		}
+		if (country != null) {
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("product").get("productCategory").get("country"), country));
 		}
 		restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.or(criteriaBuilder.like(root.<String>get("sn"), "%" + keyword + "%"), criteriaBuilder.like(root.get("product").<String>get("name"), "%" + keyword + "%")));
 		if (CollectionUtils.isNotEmpty(excludes)) {

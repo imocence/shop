@@ -8,6 +8,7 @@ package net.shopxx.service;
 import java.util.List;
 import java.util.Set;
 
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.Sku;
 import net.shopxx.entity.StockLog;
@@ -52,6 +53,21 @@ public interface SkuService extends BaseService<Sku, Long> {
 	 * @return SKU
 	 */
 	List<Sku> search(Product.Type type, String keyword, Set<Sku> excludes, Integer count);
+	
+	/**
+	 * 通过编号、名称查找SKU
+	 * 
+	 * @param type
+	 *            类型
+	 * @param keyword
+	 *            关键词
+	 * @param excludes
+	 *            排除SKU
+	 * @param count
+	 *            数量
+	 * @return SKU
+	 */
+	List<Sku> search(Product.Type type, String keyword,Country country, Set<Sku> excludes, Integer count);
 
 	/**
 	 * 增加库存
