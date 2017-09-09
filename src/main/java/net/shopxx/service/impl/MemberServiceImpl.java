@@ -275,13 +275,13 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		
 		member.setAmount(member.getAmount().add(amount));
 		member.setCouponAmount(member.getCouponAmount().add(couponAmount));
-		MemberRank memberRank = member.getMemberRank();
-		if (memberRank != null && BooleanUtils.isFalse(memberRank.getIsSpecial())) {
-			MemberRank newMemberRank = memberRankDao.findByAmount(member.getAmount());
-			if (newMemberRank != null && newMemberRank.getAmount() != null && newMemberRank.getAmount().compareTo(memberRank.getAmount()) > 0) {
-				member.setMemberRank(newMemberRank);
-			}
-		}
+//		MemberRank memberRank = member.getMemberRank();
+//		if (memberRank != null && BooleanUtils.isFalse(memberRank.getIsSpecial())) {
+//			MemberRank newMemberRank = memberRankDao.findByAmount(member.getAmount());
+//			if (newMemberRank != null && newMemberRank.getAmount() != null && newMemberRank.getAmount().compareTo(memberRank.getAmount()) > 0) {
+//				member.setMemberRank(newMemberRank);
+//			}
+//		}
 		memberDao.flush();
 	}
 	

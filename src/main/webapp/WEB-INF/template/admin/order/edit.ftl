@@ -447,6 +447,14 @@ $().ready(function() {
 						<input type="text" name="memo" class="text" value="${order.memo}" maxlength="200" />
 					</td>
 				</tr>
+				<tr>
+					<th>
+						${message("admin.order.source")}:
+					</th>
+					<td colspan="3">
+						${message("admin.order.source." + order.source)}
+					</td>
+				</tr>
 			[/#if]
 		</table>
 		<table class="item tabContent">

@@ -164,20 +164,6 @@ $().ready(function() {
 							<\/tr>
 							<tr>
 								<th>
-									${message("OrderPayment.bank")}:
-								<\/th>
-								<td>
-									<input type="text" name="bank" class="text" maxlength="200" \/>
-								<\/td>
-								<th>
-									${message("OrderPayment.account")}:
-								<\/th>
-								<td>
-									<input type="text" name="account" class="text" maxlength="200" \/>
-								<\/td>
-							<\/tr>
-							<tr>
-								<th>
 									${message("OrderPayment.amount")}:
 								<\/th>
 								<td>
@@ -189,21 +175,6 @@ $().ready(function() {
 								<td>
 									<input type="text" name="couponAmount" class="text"[#if order.couponAmountPayable gte 0] value="${order.couponAmountPayable}"[/#if] maxlength="16" \/>
 								<\/td>
-							<\/tr>
-							<tr>
-								<th>
-									${message("OrderPayment.payer")}:
-								<\/th>
-								<td>
-									<input type="text" name="payer" class="text" maxlength="200" \/>
-								<\/td>
-								<th>
-									${message("OrderPayment.memo")}:
-								<\/th>
-								<td>
-									<input type="text" name="memo" class="text" maxlength="200" \/>
-								<\/td>
-								
 							<\/tr>
 							<tr>
 								<th>
@@ -228,6 +199,14 @@ $().ready(function() {
 											[/#noautoesc]
 										[/#list]
 									<\/select>
+								<\/td>
+							<\/tr>
+							<tr>
+								<th>
+									${message("OrderPayment.memo")}:
+								<\/th>
+								<td colspan="3">
+									<input type="text" name="memo" class="text" maxlength="200" \/>
 								<\/td>
 							<\/tr>
 							<tr>
@@ -348,20 +327,6 @@ $().ready(function() {
 								<\/tr>
 								<tr>
 									<th>
-										${message("OrderRefunds.bank")}:
-									<\/th>
-									<td>
-										<input type="text" name="bank" class="text" maxlength="200" \/>
-									<\/td>
-									<th>
-										${message("OrderRefunds.account")}:
-									<\/th>
-									<td>
-										<input type="text" name="account" class="text" maxlength="200" \/>
-									<\/td>
-								<\/tr>
-								<tr>
-									<th>
 										${message("OrderRefunds.amount")}:
 									<\/th>
 									<td>
@@ -372,20 +337,6 @@ $().ready(function() {
 									<\/th>
 									<td>
 										<input type="text" name="couponAmount" class="text" value="${order.refundableCouponAmount}" maxlength="16" \/>
-									<\/td>
-								<\/tr>
-								<tr>
-									<th>
-										${message("OrderRefunds.payee")}:
-									<\/th>
-									<td>
-										<input type="text" name="payee" class="text" maxlength="200" \/>
-									<\/td>
-									<th>
-										${message("OrderRefunds.memo")}:
-									<\/th>
-									<td>
-										<input type="text" name="memo" class="text" maxlength="200" \/>
 									<\/td>
 								<\/tr>
 								<tr>
@@ -411,6 +362,14 @@ $().ready(function() {
 												[/#noautoesc]
 											[/#list]
 										<\/select>
+									<\/td>
+								<\/tr>
+								<tr>
+									<th>
+										${message("OrderRefunds.memo")}:
+									<\/th>
+									<td colspan="3">
+										<input type="text" name="memo" class="text" maxlength="200" \/>
 									<\/td>
 								<\/tr>
 								<tr>
@@ -1368,7 +1327,16 @@ $().ready(function() {
 				${order.memo}
 			</td>
 		</tr>
+		<tr>
+			<th>
+				${message("admin.order.source")}:
+			</th>
+			<td colspan="3">
+				${message("admin.order.source." + order.source)}
+			</td>
+		</tr>
 	</table>
+	<!-- 商品信息 -->
 	<table class="item tabContent">
 		<tr>
 			<th>

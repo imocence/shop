@@ -11,6 +11,7 @@
 <script type="text/javascript" src="${base}/resources/admin/js/jquery.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/common.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/list.js"></script>
+<script type="text/javascript" src="${base}/resources/admin/js/country.js"></script>
 <style type="text/css">
 .moreTable th {
 	width: 80px;
@@ -141,6 +142,7 @@ $().ready(function() {
 		<input type="hidden" id="isPendingRefunds" name="isPendingRefunds" value="${(isPendingRefunds?string("true", "false"))!}" />
 		<input type="hidden" id="isAllocatedStock" name="isAllocatedStock" value="${(isAllocatedStock?string("true", "false"))!}" />
 		<input type="hidden" id="hasExpired" name="hasExpired" value="${(hasExpired?string("true", "false"))!}" />
+		<input type="hidden" id="countryName" name="countryName" value="${countryName}" />
 		<div class="bar">
 			<div class="buttonGroup">
 				<a href="javascript:;" id="deleteButton" class="iconButton disabled">
@@ -168,6 +170,19 @@ $().ready(function() {
 					</ul>
 				</div>
 				<a href="javascript:;" id="moreButton" class="button">${message("admin.order.moreOption")}</a>
+				<div id="countryMenu" class="dropdownMenu">
+					<a href="javascript:;" class="button">
+						${message("common.country")}<span class="arrow">&nbsp;</span>
+					</a>
+					<ul>
+						<li[#if country.name == null] class="current"[/#if] val="">${message("common.country.all")}</li>
+						[@country_list]
+							[#list countrys as country]
+								<li[#if country.name == countryName] class="current"[/#if] val="${country.name}">${message("${country.nameLocal}")}</li>
+							[/#list]
+						[/@country_list]
+					</ul>
+				</div>
 				<div id="pageSizeMenu" class="dropdownMenu">
 					<a href="javascript:;" class="button">
 						${message("admin.page.pageSize")}<span class="arrow">&nbsp;</span>
@@ -223,6 +238,9 @@ $().ready(function() {
 					<a href="javascript:;" class="sort" name="status">${message("Order.status")}</a>
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" name="source">${message("admin.order.source")}</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="createdDate">${message("admin.common.createdDate")}</a>
 				</th>
 				[@shiro.hasPermission name = "admin:print"]
@@ -262,6 +280,9 @@ $().ready(function() {
 						[#if order.hasExpired()]
 							<span class="silver">(${message("admin.order.hasExpired")})</span>
 						[/#if]
+					</td>
+					<td>
+						${message("admin.order.source." + order.source)}
 					</td>
 					<td>
 						<span title="${order.createdDate?string("yyyy-MM-dd HH:mm:ss")}">${order.createdDate}</span>

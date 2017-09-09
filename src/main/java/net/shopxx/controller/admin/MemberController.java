@@ -35,6 +35,7 @@ import net.shopxx.Message;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.BaseEntity;
+import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
 import net.shopxx.service.CountryService;
@@ -174,7 +175,7 @@ public class MemberController extends BaseController {
 				//流水号格式：类型首字母+时间
 				String uniqueCode = "ZC"+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
 				//添加一条注册赠送记录
-				String success = fiBankbookJournalService.recharge(userCode, new BigDecimal("10000"), uniqueCode, 1, 0, 1, "用户注册赠送");
+				String success = fiBankbookJournalService.recharge(userCode, new BigDecimal("10000"), uniqueCode, FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.recharge, "用户注册赠送");
 				if(!"success".equals(success)){
 					System.out.println("注册赠送券未成功，提醒手动添加，会员编码为："+userCode);
 				}

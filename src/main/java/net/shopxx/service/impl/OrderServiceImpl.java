@@ -818,7 +818,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 //		order.setConsignee(receiver.getConsignee());
 //		order.setAreaName(receiver.getAreaName());
 //		order.setAddress(receiver.getAddress());
-		order.setZipCode("123456");
+//		order.setZipCode("123456");
 //		order.setPhone(receiver.getPhone());
 //		order.setArea(receiver.getArea());
 		order.setIsUseCouponCode(false);
@@ -837,7 +837,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 //		order.setPrice(order.getAmount());
 		order.setPromotionDiscount(BigDecimal.ZERO);
 		order.setCouponAmountPaid(BigDecimal.ZERO);
-		//order.setCouponPricePaid(BigDecimal.ZERO);
 		BigDecimal amount = order.getAmount();
 		BigDecimal couponAmount = order.getCouponAmount();
 		// 获取用户余额
@@ -993,6 +992,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 		if (passed) {
 			order.setStatus(Order.Status.pendingShipment);
+			// 审核通过之后向直销推送订单
+//			orderInterface(order);
 		} else {
 			order.setStatus(Order.Status.denied);
 
@@ -1032,12 +1033,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			String notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 电子币账户消费" + orderPayment.getAmount();
 			if (orderPayment.getAmount().compareTo(BigDecimal.ZERO) > 0) {
 				fiBankbookJournalService.recharge(member.getUsercode(), orderPayment.getAmount(), null, 
-						FiBankbookJournal.Type.balance.ordinal(), FiBankbookJournal.DealType.takeout.ordinal(), FiBankbookJournal.MoneyType.cash.ordinal(), notes);
+						FiBankbookJournal.Type.balance, FiBankbookJournal.DealType.takeout, FiBankbookJournal.MoneyType.orderAudit, notes);
 			}
 			notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 购物券账户消费" + orderPayment.getCouponAmount();
 			if (orderPayment.getCouponAmount().compareTo(BigDecimal.ZERO) > 0) {
 				fiBankbookJournalService.recharge(member.getUsercode(), orderPayment.getCouponAmount(), null, 
-						FiBankbookJournal.Type.coupon.ordinal(), FiBankbookJournal.DealType.takeout.ordinal(), FiBankbookJournal.MoneyType.cash.ordinal(), notes);
+						FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.takeout, FiBankbookJournal.MoneyType.orderAudit, notes);
 			}
 
 		}
@@ -1086,12 +1087,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			String notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 电子币账户退款" + orderRefunds.getAmount();
 			if (orderRefunds.getAmount().compareTo(BigDecimal.ZERO) > 0) {
 				fiBankbookJournalService.recharge(member.getUsercode(), orderRefunds.getAmount(), null, 
-						FiBankbookJournal.Type.balance.ordinal(), FiBankbookJournal.DealType.deposit.ordinal(), FiBankbookJournal.MoneyType.cash.ordinal(), notes);
+						FiBankbookJournal.Type.balance, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.balanceRefund, notes);
 			}
 			if (orderRefunds.getCouponAmount().compareTo(BigDecimal.ZERO) > 0) {
 				notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 购物券账户退款" + orderRefunds.getCouponAmount();
 				fiBankbookJournalService.recharge(member.getUsercode(), orderRefunds.getCouponAmount(), null, 
-						FiBankbookJournal.Type.coupon.ordinal(), FiBankbookJournal.DealType.deposit.ordinal(), FiBankbookJournal.MoneyType.cash.ordinal(), notes);
+						FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.balanceRefund, notes);
 			}
 		}
 		

@@ -191,7 +191,7 @@ public class OrderController extends BaseController {
 	 * @return
 	 */
 	@PostMapping("/save")
-	public String save(Order order, String countryName, String usercode, String consignee, String phone, String address, Long paymentMethodId, Long shippingMethodId, String memo, BigDecimal freight, BigDecimal amount, BigDecimal couponAmount, @CurrentUser Admin currentUser, RedirectAttributes redirectAttributes){
+	public String save(Order order, Long areaId, String countryName, String usercode, String consignee, String phone, String address, Long paymentMethodId, Long shippingMethodId, String memo, BigDecimal freight, BigDecimal amount, BigDecimal couponAmount, @CurrentUser Admin currentUser, RedirectAttributes redirectAttributes){
 		ShippingMethod shippingMethod = shippingMethodService.find(shippingMethodId);
 		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
 		Member member = memberService.findByUsercode(usercode);
@@ -209,6 +209,9 @@ public class OrderController extends BaseController {
 		}
 		try {
 			order.setCountry(countryService.findByName(countryName));
+			if (null != areaId) {
+				order.setArea(areaService.find(areaId));
+			}
 			orderService.create(order, member, paymentMethod, shippingMethod, null, null);
 		} catch (Exception e) {
 			e.printStackTrace();

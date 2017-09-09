@@ -38,7 +38,8 @@ $().ready(function() {
 	var $productTable = $("#productTable");
 	var $freight = $("#freight");
 	var $totalQuantity = $("#totalQuantity");
-	
+	var $areaId = $("#areaId");
+	var $zipCode = $("#zipCode");
 	var productIndex = -1;
 	var productCategoryTree='';
 	// 用户选择
@@ -123,6 +124,7 @@ $().ready(function() {
 			form.submit();
 		}
 	});
+	
 	$country.change(function(){
 		$memberSelect.flushCache();
 	  	$usercode.val('');
@@ -130,7 +132,23 @@ $().ready(function() {
 		$username.html('');
 		$userBalance.html('');
 		$userCouponBalance.html('');
+		$zipCode.val('');
 		$("tr.product").remove();
+		// ajax获取国家ID,修改地区
+		$.ajax({
+			url: "${base}/common/area/findId",
+			type: "GET",
+			data: {name: $country.val()},
+			dataType: "json",
+			cache: false,
+			success: function(message) {
+				$areaId.nextAll().remove();
+				$areaId.lSelect({
+					url: "${base}/common/area",
+					countryId : message
+				});
+			}
+		});
 		// ajax获取paymentMethod
 		$.ajax({
 			url: "${base}/admin/payment_method/listByCountry",
@@ -216,7 +234,7 @@ $().ready(function() {
 		var totalPrice = $("#totalPriceSpan").html();
 		$("#balance").val(freight*1 + totalPrice*1);
 	});
-	// 增加商品图片
+	// 增加商品
 	$addProduct.click(function() {
 		if ($usercode.val() == "") {
 			$.message("warn", "${message("admin.fiBankbookJournalTemp.usercodeRequired")}");
@@ -318,7 +336,11 @@ $().ready(function() {
 					dataType: "json",
 					cache: false,
 					success: function(item) {
-						$("#product" + index + "image").append("<image style='width:50px;height:50px;' src='" + item.image + "'style=width:80px;'></image>");
+						if (item.image == null){
+							$("#product" + index + "image").append("<image style='width:50px;height:50px;' src='${base}/upload/image/defaultProduct.jpg' style=width:80px;'></image>");
+						}else{
+							$("#product" + index + "image").append("<image style='width:50px;height:50px;' src='" + item.image + "' style=width:80px;'></image>");
+						}
 						$("#product" + index + "sn").val(item.sn);
 						$("#product" + index + "name").val(item.name);
 						$("#product" + index + "price").val(item.price);
@@ -558,7 +580,23 @@ $().ready(function() {
 				<td>
 					<input type="text" id="address" name="address" class="text" maxlength="200" />
 				</td>
+			<!-- 地区 -->
+				<th>
+					${message("Order.area")}:
+				</th>
+				<td>
+					<span class="fieldSet">
+						<input type="hidden" id="areaId" name="areaId" value="${(order.area.id)!}" treePath="${(order.area.treePath)!}" />
+					</span>
+				</td>
 			<!-- 附言 -->
+			<tr>
+				<th>
+					${message("Order.zipCode")}:
+				</th>
+				<td>
+					<input type="text" id="zipCode" name="zipCode" class="text" maxlength="200" />
+				</td>
 				<th>
 					${message("Order.memo")}:
 				</th>

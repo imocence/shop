@@ -67,4 +67,16 @@ public class AreaController {
 		}
 		return data;
 	}
+	
+	/**
+	 * 地区
+	 */
+	@GetMapping("/findId")
+	public @ResponseBody Long findId(String name) {
+		Country c = countryService.findByName(name);
+		if (null != c) {
+			return c.getId();
+		}
+		return 1L;
+	}
 }
