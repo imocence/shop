@@ -458,8 +458,8 @@ public class OrderController extends BaseController {
 		Order order = orderService.createNose(Order.Type.general, currentCart, receiver,napaStores, paymentMethod, shippingMethod, couponCode, invoice, balance,coupon, memo);
 		
 		data.put("sn", order.getSn());
-		
-		//orderService.orderInterface(order);
+		//发送订单接口
+		boolean ss = orderService.orderInterface(order);
 		
 		return ResponseEntity.ok(data);
 	}
@@ -536,7 +536,8 @@ public class OrderController extends BaseController {
 
 		Order order = orderService.createNose(Order.Type.exchange, cart, receiver,napaStores, paymentMethod, shippingMethod, null, null, balance,coupon, memo);
 		
-		//String orderMap = orderService.orderInterface(order);
+		//发送订单接口
+		boolean ss = orderService.orderInterface(order);
 		
 		data.put("sn", order.getSn());
 		return ResponseEntity.ok(data);

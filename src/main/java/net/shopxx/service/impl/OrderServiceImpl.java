@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
+import net.sf.json.JSONObject;
 import net.shopxx.Filter;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
@@ -372,7 +373,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		volume 体积
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public String orderInterface(Order order){
+	public boolean orderInterface(Order order){
 		Map<String,Object> parameterMap = new HashMap<>();
 		Map<String,Object> goods = new HashMap<String,Object>();
 		List<Object> data = new ArrayList<>();
@@ -437,21 +438,24 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		parameterMap.put("goods_data", data);//商品信息
 		
 		
-		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getFormatNowTime("yyyyMMdd")+urlSignature));
-		System.out.println(parameterMap.toString());
+		parameterMap.put("timestamp", TimeUtil.getTimestamp());
+		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getTimestamp()+urlSignature));
 		String orderMap = WebUtils.postJson(urlPath+"/shopMemberOrderCreate.html",parameterMap);
 		System.out.println(orderMap);
-		/**
-		 * errCode         msg
-		 * 0000 		成功：success
-		 * 1001 		验签错误
-		 * 1002 		会员编号已存在
-		 * 1003 		区代编号已存在
-		 * 1004 		链接超过有效时间
-		 * 1005                           商品编码不存在
-		 * 2001 		异常:xxx
-		 */
-		return orderMap;
+		try {
+			JSONObject jsStr = JSONObject.fromObject(orderMap); 
+			String errKey = jsStr.getString("errCode");
+			if("0000".equals(errKey)){
+				return true;
+			}else{
+				System.out.println(jsStr.getString("msg"));
+				return false;
+			}
+		} catch (Exception e) {
+			System.out.println("没有返回信息");
+			return false;
+		}
+				
 	}
 	
 	@Transactional(readOnly = true)
@@ -741,7 +745,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			orderItems.add(orderItem);
 		}
 		
-		orderDao.persist(order);
+		try {
+			orderDao.persist(order);
+		} catch (Exception e) {
+			throw new IllegalArgumentException("订单号生成失败或重复，请刷新页面");
+		}
 
 		OrderLog orderLog = new OrderLog();
 		orderLog.setType(OrderLog.Type.create);
@@ -829,7 +837,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 //		order.setPrice(order.getAmount());
 		order.setPromotionDiscount(BigDecimal.ZERO);
 		order.setCouponAmountPaid(BigDecimal.ZERO);
-		order.setCouponPricePaid(BigDecimal.ZERO);
+		//order.setCouponPricePaid(BigDecimal.ZERO);
 		BigDecimal amount = order.getAmount();
 		BigDecimal couponAmount = order.getCouponAmount();
 		// 获取用户余额

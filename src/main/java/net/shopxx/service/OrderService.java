@@ -395,6 +395,6 @@ public interface OrderService extends BaseService<Order, Long> {
 	 * 			订单
 	 * @return
 	 */
-	String orderInterface(Order order);
+	boolean orderInterface(Order order);
 
 }
