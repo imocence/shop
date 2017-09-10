@@ -1285,7 +1285,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			throw new Exception(SpringUtils.getMessage("admin.common.session.lost"));
 		}
 		if (ids != null) {
-			// 待审核状态，待发货  状态改为“已发货”，减少库存->推单到直销
+			// 待审核状态  状态改为“待发货”，->推单到直销
 			for (Long id : ids) {
 				Order order = find(id);
 				if (null == order || order.isNew() || !acquireLock(order)) {

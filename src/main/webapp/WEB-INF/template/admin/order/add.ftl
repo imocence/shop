@@ -49,7 +49,7 @@ $().ready(function() {
 		width: 218,
 		scrollHeight: 300,
 		extraParams: { 
-			countryId: function() {
+			country: function() {
 				 return $country.val();
 			}
 		}, 

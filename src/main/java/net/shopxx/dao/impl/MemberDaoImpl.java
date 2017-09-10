@@ -9,13 +9,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Repository;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
@@ -23,6 +21,9 @@ import net.shopxx.dao.MemberDao;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Repository;
 
 /**
  * Dao - 会员
@@ -113,5 +114,24 @@ public class MemberDaoImpl extends BaseDaoImpl<Member, Long> implements MemberDa
 		restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.or(criteriaBuilder.like(root.<String>get("username"), "%" + keyword + "%"), criteriaBuilder.like(root.<String>get("usercode"), "%" + keyword + "%")));
 		criteriaQuery.where(restrictions);
 		return super.findList(criteriaQuery, null, count, null, null);
+	}
+	
+	/**
+	 * 根据usercode查找会员
+	 * 
+	 * @param usercode
+	 *            用户编号
+	 * @return 会员，若不存在则返回null
+	 */
+	public Member findByUsercode(String usercode){
+		String jpql = "SELECT t FROM Member t WHERE t.usercode=:usercode";
+		TypedQuery<Member> query = entityManager.createQuery(jpql, Member.class);
+		query.setParameter("usercode", usercode);
+		query.setMaxResults(1);
+		List<Member> list= query.getResultList();
+		if (null != list && !list.isEmpty()) {
+			return list.get(0);
+		}
+		return null;
 	}
 }

@@ -148,6 +148,7 @@ public class FiBankbookJournalServiceImpl extends BaseServiceImpl<FiBankbookJour
 		}
 		// 更新用户余额
 		else {
+			fiBankbookBalance.setMember(member);
 			// 最近一笔交易记录不存在，则需要交易余额是否为0，为0则可以更新用户余额
 			if (null == lastFiBankbookJournal) {
 				if (fiBankbookBalance.getBalance().doubleValue() != 0){

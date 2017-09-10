@@ -548,7 +548,7 @@ public class OrderController extends BaseController {
 	}
 	
 	/**
-	 * 发货推单
+	 * 审核推单
 	 */
 	@PostMapping("/shippingReview")
 	public @ResponseBody Message shippingReview(Long[] ids) {
