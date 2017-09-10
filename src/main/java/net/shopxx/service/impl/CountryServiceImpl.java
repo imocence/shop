@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +22,9 @@ import net.sf.ehcache.Element;
 import net.shopxx.dao.CountryDao;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.Language;
+import net.shopxx.entity.Member;
 import net.shopxx.service.CountryService;
+import net.shopxx.util.PropertyUtil;
 
 /**
  * Service - 地区
@@ -102,6 +106,23 @@ public class CountryServiceImpl extends BaseServiceImpl<Country, Long> implement
 	public void delete(Country area) {
 		super.delete(area);
 	}
+
+    @Override
+    public Country getDefaultCountry() {
+        Subject s  = SecurityUtils.getSubject();
+        Member currentUser = null;
+        if (s.isAuthenticated()) {
+            currentUser =  (Member) s.getPrincipal();
+        }
+        Country country = null;
+        if (currentUser == null) {
+           String countryId =  PropertyUtil.getProperty("default.country.id");
+           country = find(Long.valueOf(countryId));
+        } else {
+            country =   currentUser.getCountry();
+        }
+        return country;
+    }
 
 	
 

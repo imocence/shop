@@ -116,13 +116,13 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		} else if (MOBILE_PRINCIPAL_PATTERN.matcher(value).matches()) {
 			return findByMobile(value);
 		} else {
-			List<Member> memberList = getListMember("'"+value+"'");
+			/*List<Member> memberList = getListMember("'"+value+"'");
 			if(memberList.size() > 0){
 				return memberList.get(0);
 			}else{
 				return null;
-			}
-			
+			}*/
+		    return findByUsername(value);
 		}
 	}
 
