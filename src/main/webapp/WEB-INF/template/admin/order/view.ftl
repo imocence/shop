@@ -150,13 +150,13 @@ $().ready(function() {
 							<\/tr>
 							<tr>
 								<th>
-									订单购物券:
+									${message("admin.order.couponPrice")}:
 								<\/th>
 								<td>
 									${currency(order.couponAmount)}
 								<\/td>
 								<th>
-									应付购物券:
+									${message("admin.order.couponPrice.payable")}:
 								<\/th>
 								<td>
 									${currency(order.couponAmountPayable)}
@@ -170,7 +170,7 @@ $().ready(function() {
 									<input type="text" name="amount" class="text"[#if order.amountPayable gte 0] value="${order.amountPayable}"[/#if] maxlength="16" \/>
 								<\/td>
 								<th>
-									付款购物券:
+									${message("admin.order.couponPrice.pay")}:
 								<\/th>
 								<td>
 									<input type="text" name="couponAmount" class="text"[#if order.couponAmountPayable gte 0] value="${order.couponAmountPayable}"[/#if] maxlength="16" \/>
@@ -255,7 +255,7 @@ $().ready(function() {
 					},
 					submitHandler: function(form) {
 						if ($amount.val() == 0 && $couponAmount.val()==0){
-							$.message("warn", "付款金额和付款购物券不能都为0");
+							$.message("warn", "${message("admin.order.pay.zero")}");
 							return false;
 						}
 						if ((parseFloat($amount.val()) <= ${order.amountPayable} && parseFloat($couponAmount.val()) <= ${order.couponAmountPayable}) || confirm("${message("admin.order.paymentConfirm")}")) {
@@ -313,13 +313,13 @@ $().ready(function() {
 								<\/tr>
 								<tr>
 									<th>
-										订单购物券:
+										${message("admin.order.couponPrice")}:
 									<\/th>
 									<td>
 										${currency(order.couponAmount)}
 									<\/td>
 									<th>
-										应退购物券:
+										${message("admin.order.couponPrice.refundable")}:
 									<\/th>
 									<td>
 										${currency(order.refundableCouponAmount)}
@@ -333,7 +333,7 @@ $().ready(function() {
 										<input type="text" name="amount" class="text" value="${order.refundableAmount}" maxlength="16" \/>
 									<\/td>
 									<th>
-										退款购物券:
+										${message("admin.order.couponPrice.refund")}:
 									<\/th>
 									<td>
 										<input type="text" name="couponAmount" class="text" value="${order.refundableCouponAmount}" maxlength="16" \/>
@@ -1136,18 +1136,18 @@ $().ready(function() {
 		</tr>
 		<tr>
 			<th>
-				订单购物券:
+				${message("admin.order.couponPrice")}:
 			</th>
 			<td>
 				<span class="red">${currency(order.couponAmount, true)}</span>
 			</td>
 			<th>
-				已付购物券:
+				${message("admin.order.couponPrice.paid")}:
 			</th>
 			<td>
 				${currency(order.couponAmountPaid, true)}
 				[#if order.couponAmountPayable > 0]
-					<span class="silver">(应付购物券: ${currency(order.couponAmountPayable, true)})</span>
+					<span class="silver">(${message("admin.order.couponPrice.payable")}: ${currency(order.couponAmountPayable, true)})</span>
 				[/#if]
 			</td>
 		</tr>
@@ -1349,7 +1349,7 @@ $().ready(function() {
 				${message("OrderItem.price")}
 			</th>
 			<th>
-				购物券
+				${message("admin.order.coupon")}
 			</th>
 			<th>
 				${message("OrderItem.quantity")}
@@ -1358,7 +1358,7 @@ $().ready(function() {
 				${message("OrderItem.subtotal")}
 			</th>
 			<th>
-				购物券小计
+				${message("admin.order.product.coupon.total")}
 			</th>
 		</tr>
 		[#list order.orderItems as orderItem]
@@ -1429,7 +1429,7 @@ $().ready(function() {
 				${message("OrderPayment.amount")}
 			</th>
 			<th>
-				付款购物券
+				${message("admin.order.couponPrice.pay")}
 			</th>
 			<th>
 				${message("OrderPayment.fee")}
@@ -1480,7 +1480,7 @@ $().ready(function() {
 				${message("OrderRefunds.amount")}
 			</th>
 			<th>
-				退款购物券
+				${message("admin.order.couponPrice.refund")}
 			</th>
 			<th>
 				${message("admin.common.createdDate")}
