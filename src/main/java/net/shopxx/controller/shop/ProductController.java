@@ -36,11 +36,13 @@ import net.shopxx.Results;
 import net.shopxx.entity.Attribute;
 import net.shopxx.entity.BaseEntity;
 import net.shopxx.entity.Brand;
+import net.shopxx.entity.Member;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.ProductCategory;
 import net.shopxx.entity.ProductTag;
 import net.shopxx.entity.Promotion;
 import net.shopxx.exception.ResourceNotFoundException;
+import net.shopxx.security.CurrentUser;
 import net.shopxx.service.AttributeService;
 import net.shopxx.service.BrandService;
 import net.shopxx.service.ProductCategoryService;
@@ -85,12 +87,13 @@ public class ProductController extends BaseController {
 	 * 详情
 	 */
 	@GetMapping("/detail/{productId}")
-	public String detail(@PathVariable Long productId, ModelMap model) {
+	public String detail(@PathVariable Long productId, @CurrentUser Member currentUser,ModelMap model) {
 		Product product = productService.find(productId);
 		if (product == null || BooleanUtils.isNotTrue(product.getIsMarketable())) {
 			throw new ResourceNotFoundException();
 		}
 		model.addAttribute("product", product);
+		model.addAttribute("currentUser", currentUser);
 		return "shop/product/detail";
 	}
 
@@ -168,7 +171,7 @@ public class ProductController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list/{productCategoryId}")
-	public String list(@PathVariable Long productCategoryId, Product.Type type, Long brandId, Long promotionId, Long productTagId, BigDecimal startPrice, BigDecimal endPrice, Product.OrderType orderType, Integer pageNumber, Integer pageSize, HttpServletRequest request, ModelMap model) {
+	public String list(@CurrentUser Member currentUser,@PathVariable Long productCategoryId, Product.Type type, Long brandId, Long promotionId, Long productTagId, BigDecimal startPrice, BigDecimal endPrice, Product.OrderType orderType, Integer pageNumber, Integer pageSize, HttpServletRequest request, ModelMap model) {
 		ProductCategory productCategory = productCategoryService.find(productCategoryId);
 		if (productCategory == null) {
 			throw new ResourceNotFoundException();
@@ -208,6 +211,7 @@ public class ProductController extends BaseController {
 		model.addAttribute("orderType", orderType);
 		model.addAttribute("pageNumber", pageNumber);
 		model.addAttribute("pageSize", pageSize);
+		model.addAttribute("currentUser", currentUser);
 		model.addAttribute("page", productService.findPage(type, productCategory,null, brand, promotion, productTag, attributeValueMap, startPrice, endPrice, true, true, null, null, null, null, orderType, pageable));
 		return "shop/product/list";
 	}
@@ -216,7 +220,7 @@ public class ProductController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping("/list")
-	public String list(Product.Type type, Long brandId, Long promotionId, Long productTagId, BigDecimal startPrice, BigDecimal endPrice, Product.OrderType orderType, Integer pageNumber, Integer pageSize, ModelMap model) {
+	public String list(@CurrentUser Member currentUser,Product.Type type, Long brandId, Long promotionId, Long productTagId, BigDecimal startPrice, BigDecimal endPrice, Product.OrderType orderType, Integer pageNumber, Integer pageSize, ModelMap model) {
 		Brand brand = brandService.find(brandId);
 		Promotion promotion = promotionService.find(promotionId);
 		ProductTag productTag = productTagService.find(productTagId);
@@ -238,6 +242,7 @@ public class ProductController extends BaseController {
 		model.addAttribute("orderType", orderType);
 		model.addAttribute("pageNumber", pageNumber);
 		model.addAttribute("pageSize", pageSize);
+		model.addAttribute("currentUser", currentUser);
 		model.addAttribute("page", productService.findPage(type, null,null, brand, promotion, productTag, null, startPrice, endPrice, true, true, null, null, null, null, orderType, pageable));
 		return "shop/product/list";
 	}
@@ -280,7 +285,7 @@ public class ProductController extends BaseController {
 	 * 搜索
 	 */
 	@GetMapping("/search")
-	public String search(String keyword, BigDecimal startPrice, BigDecimal endPrice, Product.OrderType orderType, Integer pageNumber, Integer pageSize, ModelMap model) {
+	public String search(String keyword,@CurrentUser Member currentUser, BigDecimal startPrice, BigDecimal endPrice, Product.OrderType orderType, Integer pageNumber, Integer pageSize, ModelMap model) {
 		if (StringUtils.isEmpty(keyword)) {
 			return UNPROCESSABLE_ENTITY_VIEW;
 		}
@@ -297,6 +302,7 @@ public class ProductController extends BaseController {
 		model.addAttribute("startPrice", startPrice);
 		model.addAttribute("endPrice", endPrice);
 		model.addAttribute("orderType", orderType);
+		model.addAttribute("currentUser", currentUser);
 		model.addAttribute("page", productService.search(keyword, startPrice, endPrice, orderType, pageable));
 		return "shop/product/search";
 	}

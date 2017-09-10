@@ -623,7 +623,19 @@ $().ready(function() {
 										</a>
 										<strong>
 											[#if product.type == "general"]
-												${currency(defaultSku.price, true)}
+												[#if currentUser == null] 
+												   [#list product.productGrades as pg]
+														[#if pg.grade.isDefault == true]
+														   ${currency(pg.price, true)}
+														[/#if]
+												    [/#list]
+												[#else]
+													[#list product.productGrades as pg]
+														[#if pg.grade.id == currentUser.memberRank.id]
+														  ${currency(pg.price, true)}
+														[/#if]
+												    [/#list]
+												[/#if]
 												[#if setting.isShowMarketPrice]
 													<del>${currency(defaultSku.marketPrice, true)}</del>
 												[/#if]
@@ -633,7 +645,18 @@ $().ready(function() {
 											[/#if]
 										</strong>
 										<!-- 券  -->
-										<em>${message("shop.index.coupon")}${currency(defaultSku.coupon, true)}</em>
+										[#if currentUser == null] 
+							
+										[#else]
+											<em>
+												${message("shop.index.coupon")}
+												[#list product.productGrades as pg]
+													[#if pg.grade.id == currentUser.memberRank.id]
+													 ${pg.coupon}
+													[/#if]
+											    [/#list]
+											</em>
+										[/#if]
 										<div class="action">
 											[#if product.type == "general"]
 												<a href="javascript:;" class="addCart" skuId="${defaultSku.id}">${message("shop.product.addCart")}</a>
