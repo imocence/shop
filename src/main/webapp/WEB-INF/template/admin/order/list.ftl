@@ -37,6 +37,13 @@ $().ready(function() {
 	var $filterMenuItem = $("#filterMenu li");
 	var $moreButton = $("#moreButton");
 	var $print = $("#listTable select[name='print']");
+	var $shippingButton = $("#shippingButton");
+	var $refundsButton = $("#refundsButton");
+	var $completeButton = $("#completeButton");
+	var $ids = $("#listTable input[name='ids']");
+	var $contentRow = $("#listTable tr:gt(0)");
+	var $listTable = $("#listTable");
+	var $selectAll = $("#selectAll");
 	
 	[@flash_message /]
 	
@@ -126,6 +133,161 @@ $().ready(function() {
 			window.open($this.val());
 		}
 	});
+	
+	// 发货推单
+	$shippingButton.click( function() {
+		var $this = $(this);
+		if ($this.hasClass("disabled")) {
+			return false;
+		}
+		var $checkedIds = $("#listTable input[name='ids']:enabled:checked");
+		$.dialog({
+			type: "warn",
+			content: "${message("admin.dialog.verifyConfirm")}",
+			ok: "${message("admin.dialog.ok")}",
+			cancel: "${message("admin.dialog.cancel")}",
+			onOk: function() {
+				$.ajax({
+					url: "shippingReview",
+					type: "POST",
+					data: $checkedIds.serialize(),
+					dataType: "json",
+					cache: false,
+					success: function(message) {
+						$.message(message);
+						if (message.type == "success") {
+							setTimeout(function() {
+									location.reload(true);
+								}, 3000);
+						}
+						$shippingButton.addClass("disabled");
+						$selectAll.prop("checked", false);
+						$checkedIds.prop("checked", false);
+					}
+				});
+			}
+		});
+		return false;
+	});
+	
+	// 退单退款
+	$refundsButton.click( function() {
+		var $this = $(this);
+		if ($this.hasClass("disabled")) {
+			return false;
+		}
+		var $checkedIds = $("#listTable input[name='ids']:enabled:checked");
+		$.dialog({
+			type: "warn",
+			content: "${message("admin.dialog.verifyConfirm")}",
+			ok: "${message("admin.dialog.ok")}",
+			cancel: "${message("admin.dialog.cancel")}",
+			onOk: function() {
+				$.ajax({
+					url: "returnsReview",
+					type: "POST",
+					data: $checkedIds.serialize(),
+					dataType: "json",
+					cache: false,
+					success: function(message) {
+						$.message(message);
+						if (message.type == "success") {
+							setTimeout(function() {
+									location.reload(true);
+								}, 3000);
+						}
+						$refundsButton.addClass("disabled");
+						$selectAll.prop("checked", false);
+						$checkedIds.prop("checked", false);
+					}
+				});
+			}
+		});
+		return false;
+	});
+	
+	// 完成
+	$completeButton.click( function() {
+		var $this = $(this);
+		if ($this.hasClass("disabled")) {
+			return false;
+		}
+		var $checkedIds = $("#listTable input[name='ids']:enabled:checked");
+		$.dialog({
+			type: "warn",
+			content: "${message("admin.dialog.verifyConfirm")}",
+			ok: "${message("admin.dialog.ok")}",
+			cancel: "${message("admin.dialog.cancel")}",
+			onOk: function() {
+				$.ajax({
+					url: "completeReview",
+					type: "POST",
+					data: $checkedIds.serialize(),
+					dataType: "json",
+					cache: false,
+					success: function(message) {
+						$.message(message);
+						if (message.type == "success") {
+							setTimeout(function() {
+									location.reload(true);
+								}, 3000);
+						}
+						$completeButton.addClass("disabled");
+						$selectAll.prop("checked", false);
+						$checkedIds.prop("checked", false);
+					}
+				});
+			}
+		});
+		return false;
+	});
+	
+	// 选择
+	$ids.click( function() {
+		var $this = $(this);
+		if ($this.prop("checked")) {
+			$this.closest("tr").addClass("selected");
+			$shippingButton.removeClass("disabled");
+			$refundsButton.removeClass("disabled");
+			$completeButton.removeClass("disabled");
+		} else {
+			$this.closest("tr").removeClass("selected");
+			if ($("#listTable input[name='ids']:enabled:checked").size() > 0) {
+				$shippingButton.removeClass("disabled");
+				$refundsButton.removeClass("disabled");
+				$completeButton.removeClass("disabled");
+			} else {
+				$shippingButton.addClass("disabled");
+				$refundsButton.addClass("disabled");
+				$completeButton.addClass("disabled");
+			}
+		}
+	});
+	
+	// 全选
+	$selectAll.click( function() {
+		var $this = $(this);
+		var $enabledIds = $("#listTable input[name='ids']:enabled");
+		if ($this.prop("checked")) {
+			$enabledIds.prop("checked", true);
+			if ($enabledIds.filter(":checked").size() > 0) {
+				$shippingButton.removeClass("disabled");
+				$refundsButton.removeClass("disabled");
+				$completeButton.removeClass("disabled");
+				$contentRow.addClass("selected");
+			} else {
+				$shippingButton.addClass("disabled");
+				$refundsButton.addClass("disabled");
+				$completeButton.addClass("disabled");
+			}
+		} else {
+			$enabledIds.prop("checked", false);
+			$shippingButton.addClass("disabled");
+			$refundsButton.addClass("disabled");
+			$completeButton.addClass("disabled");
+			$contentRow.removeClass("selected");
+		}
+	});
 
 });
 </script>
@@ -209,6 +371,11 @@ $().ready(function() {
 					<li[#if page.searchProperty == "zipCode"] class="current"[/#if] val="zipCode">${message("Order.zipCode")}</li>
 					<li[#if page.searchProperty == "phone"] class="current"[/#if] val="phone">${message("Order.phone")}</li>
 				</ul>
+			</div>
+			<div class="buttonGroup">
+				<input id="shippingButton" type="button" class="button disabled" value="${message("admin.order.button.review")}" />
+				<input id="refundsButton" type="button" class="button disabled" value="${message("admin.order.button.returns.review")}" />
+				<input id="completeButton" type="button" class="button disabled" value="${message("admin.order.button.complate")}" />
 			</div>
 		</div>
 		<table id="listTable" class="list">
