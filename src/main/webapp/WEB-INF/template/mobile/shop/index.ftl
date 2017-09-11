@@ -194,16 +194,16 @@
 					</div>
 					<div class="col-xs-3 text-center">
 						<a href="${base}/product/list/1">
-							<img src="${base}/upload/image/index_nav_2.png" alt="充值中心">
-							充值中心
+							<img src="${base}/upload/image/品牌套餐.png" alt="品牌套餐">
+                            品牌套餐
 						</a>
 					</div>
-					<div class="col-xs-3 text-center">
-						<a href="${base}/product/list/1">
-							<img src="${base}/upload/image/index_nav_3.png" alt="办公电器">
-							办公电器
-						</a>
-					</div>
+                    <div class="col-xs-3 text-center">
+                        <a href="${base}/product/list/1">
+                            <img src="${base}/upload/image/新品预告.png" alt="新品预告">
+                            新品预告
+                        </a>
+                    </div>
 					<div class="col-xs-3 text-center">
 						<a href="${base}/product/list/1">
 							<img src="${base}/upload/image/热门.png" alt="热门搜索">
