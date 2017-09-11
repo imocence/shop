@@ -26,11 +26,28 @@
 	<script src="${base}/resources/mobile/member/js/common.js"></script>
 	<script type="text/javascript">
 		$().ready(function() {
-			var $change = $(".change div");
+
+            var $change = $(".change button");
             $change.click(function () {
-                $(this).addClass('active').siblings().removeClass('active');
-                console.log($(this).text())
-            })
+                var language = $(this).val();
+                changeLanguage(language);
+                $(this).addClass('btn-primary').siblings().removeClass('btn-primary');
+
+            });
+
+            function changeLanguage(language){
+
+                $.ajax({
+                    url: "${base}/common/language/change",
+                    type: "POST",
+                    data: {code: language},
+                    dataType: "json",
+                    cache: false,
+                    success: function(message) {
+                        window.location.reload();
+                    }
+                });
+            }
 		
 		});
 	</script>
@@ -56,9 +73,11 @@
 	</header>
 	<main>
 		<div class="change container-fluid" style="padding-top: 10px">
-			<div class="list-group list-group-flat language" >English</div>
-            <div class="list-group list-group-flat language" >中文(简体)</div>
-            <div class="list-group list-group-flat language" >中文(繁体)</div>
+		[@language]
+			[#list languages as language]
+                <button class="btn btn-default btn-block" value="${language.code}">${message("${language.message}")}</button>
+			[/#list]
+		[/@language]
 		</div>
 	</main>
 
