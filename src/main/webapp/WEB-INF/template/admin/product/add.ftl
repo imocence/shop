@@ -14,6 +14,7 @@
 <script type="text/javascript" src="${base}/resources/admin/ueditor/ueditor.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/common.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/input.js"></script>
+<script type="text/javascript" src="${base}/resources/admin/js/simpleuploader.js"></script>
 <style type="text/css">
 	.parameterTable table th {
 		width: 146px;
@@ -69,7 +70,7 @@ $().ready(function() {
 	loadAttribute();
 	loadSpecification();
 	
-	$filePicker.uploader();
+	$filePicker.initUploader("image");
 	
 	$introduction.editor();
 	
@@ -718,7 +719,7 @@ $().ready(function() {
 	$countrySelect.change(function(){ 
         $countryId.val($(this).children('option:selected').val());
         $("#name").val("test");
-        $("#stock").val(20);
+        $("#stock").val(0);
         $("#price").val(0);
         $("#coupon").val(0);
         $("input[name='gradePrices']").val(0);
@@ -891,7 +892,7 @@ $().ready(function() {
 				</th>
 				<td>
 					<span class="fieldSet">
-						<input type="text" name="image" class="text" maxlength="200" title="${message("admin.product.imageTitle")}" />
+						<input type="text" id="image" name="image" class="text" maxlength="200" title="${message("admin.product.imageTitle")}" />
 						<a href="javascript:;" id="filePicker" class="button">${message("admin.upload.filePicker")}</a>
 					</span>
 				</td>
@@ -933,7 +934,7 @@ $().ready(function() {
 					<span class="requiredField">*</span>${message("Sku.stock")}:
 				</th>
 				<td>
-					<input type="text" id="stock" name="sku.stock" class="text" value="1" maxlength="9" value="0"/>
+					<input type="text" id="stock" name="sku.stock" class="text"  maxlength="9" value="0"/>
 				</td>
 			</tr>
 			<tr>
