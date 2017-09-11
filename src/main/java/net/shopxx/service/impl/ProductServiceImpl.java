@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +30,8 @@ import org.apache.commons.lang.time.DateUtils;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
@@ -61,8 +64,10 @@ import net.shopxx.dao.StockLogDao;
 import net.shopxx.entity.Attribute;
 import net.shopxx.entity.Brand;
 import net.shopxx.entity.Country;
+import net.shopxx.entity.Member;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.ProductCategory;
+import net.shopxx.entity.ProductGrade;
 import net.shopxx.entity.ProductTag;
 import net.shopxx.entity.Promotion;
 import net.shopxx.entity.Sku;
@@ -226,10 +231,16 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 				break;
 			case priceAsc:
 				sortFields = new SortField[] { new SortField("price", SortField.Type.DOUBLE, false), new SortField("createdDate", SortField.Type.LONG, true) };
-				break;
+				List<Product> ps = fullTextQuery.getResultList();
+		        sortProduct(ps,true);
+		        ps = getPage(ps,pageable.getPageNumber(),pageable.getPageSize());
+		        return new Page<>(ps, ps.size(), pageable);
 			case priceDesc:
 				sortFields = new SortField[] { new SortField("price", SortField.Type.DOUBLE, true), new SortField("createdDate", SortField.Type.LONG, true) };
-				break;
+				List<Product> ps1 = fullTextQuery.getResultList();
+                sortProduct(ps1,false);
+                ps1 = getPage(ps1,pageable.getPageNumber(),pageable.getPageSize());
+                return new Page<>(ps1, ps1.size(), pageable);
 			case salesDesc:
 				sortFields = new SortField[] { new SortField("sales", SortField.Type.LONG, true), new SortField("createdDate", SortField.Type.LONG, true) };
 				break;
@@ -246,7 +257,63 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 		fullTextQuery.setSort(new Sort(sortFields));
 		fullTextQuery.setFirstResult((pageable.getPageNumber() - 1) * pageable.getPageSize());
 		fullTextQuery.setMaxResults(pageable.getPageSize());
+		
 		return new Page<>(fullTextQuery.getResultList(), fullTextQuery.getResultSize(), pageable);
+	}
+	
+	private List<Product> getPage(List<Product> pgs,int pageNumber,int pageSize) {
+	    int size = pgs.size();
+	    int from = (pageNumber - 1) * pageSize;
+	    int to = from + pageSize;
+	    if (from > size) {
+	        from = size/pageSize * pageSize;
+	    }
+	    if (to >= size) {
+	        to = size;
+	    }
+        return pgs.subList(from, to);
+	    
+	}
+	private List<Product> sortProduct(List<Product> ps,final boolean asc) {
+	    Subject s  = SecurityUtils.getSubject();
+        if (s.isAuthenticated() && s.getPrincipal() instanceof Member) {
+            final Member   currentUser =  (Member) s.getPrincipal();
+            Collections.sort(ps, new Comparator<Product>(){
+                public int compare(Product arg0, Product arg1) {
+                    for (ProductGrade pg : arg0.getProductGrades()) {
+                        for (ProductGrade pg1 : arg1.getProductGrades()) {
+                            if( currentUser.getMemberRank().getId() == pg.getGrade().getId() && pg.getGrade().getId() == pg1.getGrade().getId().longValue()) {
+                                if(asc) {
+                                    return pg.getPrice().compareTo(pg1.getPrice());
+                                } else {
+                                    return pg1.getPrice().compareTo(pg.getPrice());
+                                }
+                            }
+                        }
+                    }
+                    return 0;
+                }
+            });
+        } else {
+            Collections.sort(ps, new Comparator<Product>(){
+                public int compare(Product arg0, Product arg1) {
+                    for (ProductGrade pg : arg0.getProductGrades()) {
+                        for (ProductGrade pg1 : arg1.getProductGrades()) {
+                            if( pg.getGrade().getIsDefault() && pg.getGrade().getId() == pg1.getGrade().getId().longValue()) {
+                                if(asc) {
+                                    return pg.getPrice().compareTo(pg1.getPrice());
+                                } else {
+                                    return pg1.getPrice().compareTo(pg.getPrice());
+                                }
+                            }
+                        }
+                    }
+                    return 0;
+                }
+            });
+        }
+	 
+        return ps;
 	}
 
 	@Transactional(readOnly = true)
