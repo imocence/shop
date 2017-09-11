@@ -191,7 +191,7 @@ public class OrderController extends BaseController {
 	 * @return
 	 */
 	@PostMapping("/save")
-	public String save(Order order, String countryName, String usercode, String consignee, String phone, String address, Long paymentMethodId, Long shippingMethodId, String memo, BigDecimal freight, BigDecimal amount, BigDecimal couponAmount, @CurrentUser Admin currentUser, RedirectAttributes redirectAttributes){
+	public String save(Order order, Long areaId, String countryName, String usercode, String consignee, String phone, String address, Long paymentMethodId, Long shippingMethodId, String memo, BigDecimal freight, BigDecimal amount, BigDecimal couponAmount, @CurrentUser Admin currentUser, RedirectAttributes redirectAttributes){
 		ShippingMethod shippingMethod = shippingMethodService.find(shippingMethodId);
 		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
 		Member member = memberService.findByUsercode(usercode);
@@ -209,6 +209,9 @@ public class OrderController extends BaseController {
 		}
 		try {
 			order.setCountry(countryService.findByName(countryName));
+			if (null != areaId) {
+				order.setArea(areaService.find(areaId));
+			}
 			orderService.create(order, member, paymentMethod, shippingMethod, null, null);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -543,6 +546,48 @@ public class OrderController extends BaseController {
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:view?id=" + id;
 	}
+	
+	/**
+	 * 审核推单
+	 */
+	@PostMapping("/shippingReview")
+	public @ResponseBody Message shippingReview(Long[] ids) {
+		try {
+			orderService.shippingReview(ids);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Message(Message.Type.error, e.getMessage());
+		}
+		return Message.success(SUCCESS_MESSAGE);
+	}
+	
+	/**
+	 * 退单退款
+	 */
+	@PostMapping("/returnsReview")
+	public @ResponseBody Message returnsReview(Long[] ids) {
+		try {
+			orderService.returnsReview(ids);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Message(Message.Type.error, e.getMessage());
+		}
+		return Message.success(SUCCESS_MESSAGE);
+	}
+	
+	/**
+	 * 一键完成
+	 */
+	@PostMapping("/completeReview")
+	public @ResponseBody Message completeReview(Long[] ids) {
+		try {
+			orderService.completeReview(ids);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Message(Message.Type.error, e.getMessage());
+		}
+		return Message.success(SUCCESS_MESSAGE);
+	}
 
 	/**
 	 * 列表
@@ -735,7 +780,7 @@ public class OrderController extends BaseController {
 	 * @param productId 商品ID
 	 */
 	@GetMapping("/getFreight")
-	public @ResponseBody BigDecimal getFreight(Long shippingMethodId, Integer weight) {
+	public @ResponseBody BigDecimal getFreight(Long shippingMethodId, Integer weight, Long areaId) {
 		if (null == shippingMethodId) {
 			return new BigDecimal(0);
 		}
@@ -743,7 +788,10 @@ public class OrderController extends BaseController {
 		if (null == shippingMethod) {
 			return new BigDecimal(0);
 		}
-		Area area  = null;
+		Area area = null;
+		if (null != areaId) {
+			area = areaService.find(areaId);
+		}
 		return shippingMethodService.calculateFreight(shippingMethod, area, weight);
 	}
 	

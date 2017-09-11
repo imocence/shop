@@ -19,6 +19,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.SocialUser;
 import net.shopxx.security.CurrentUser;
@@ -105,7 +106,7 @@ public class LoginController extends BaseController {
 					userService.login(new UserAuthenticationToken(Member.class,userCode , "a123456", false, request.getRemoteAddr()));	
 					String uniqueCode = "ZC"+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
 					//添加一条注册赠送记录
-					String success = fiBankbookJournalService.recharge(userCode, new BigDecimal("10000"), uniqueCode, 1, 0, 1, "用户注册赠送");
+					String success = fiBankbookJournalService.recharge(userCode, new BigDecimal("10000"), uniqueCode, FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.recharge, "用户注册赠送");
 					if(!"success".equals(success)){
 						System.out.println("注册赠送券未成功，提醒手动添加，会员编码为："+userCode);
 					}

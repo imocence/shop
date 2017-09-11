@@ -928,12 +928,12 @@ $().ready(function() {
 					<input type="text" id="exchangePoint" name="sku.exchangePoint" class="text" maxlength="9" disabled="disabled" />
 				</td>
 			</tr>
-			<tr>
+			<tr class="hidden">
 				<th>
 					<span class="requiredField">*</span>${message("Sku.stock")}:
 				</th>
 				<td>
-					<input type="text" id="stock" name="sku.stock" class="text" value="1" maxlength="9" />
+					<input type="text" id="stock" name="sku.stock" class="text" value="1" maxlength="9" value="0"/>
 				</td>
 			</tr>
 			<tr>

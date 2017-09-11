@@ -52,12 +52,14 @@ public class StockController extends BaseController {
 	 * SKU选择
 	 */
 	@GetMapping("/sku_select")
-	public @ResponseBody List<Map<String, Object>> skuSelect(@RequestParam("q") String keyword, @RequestParam("limit") Integer count) {
+	public @ResponseBody List<Map<String, Object>> skuSelect(@RequestParam("q") String keyword, @RequestParam("countryId") Long countryId, @RequestParam("limit") Integer count) {
 		List<Map<String, Object>> data = new ArrayList<>();
 		if (StringUtils.isEmpty(keyword)) {
 			return data;
 		}
-		List<Sku> skus = skuService.search(null, keyword, null, count);
+		Country country = countryService.find(countryId);
+		//Country countryB = countryService.findByName(country);
+		List<Sku> skus = skuService.search(null, keyword,country, null, count);
 		for (Sku sku : skus) {
 			Map<String, Object> item = new HashMap<>();
 			item.put("id", sku.getId());
@@ -76,6 +78,13 @@ public class StockController extends BaseController {
 	 */
 	@GetMapping("/stock_in")
 	public String stockIn(Long skuId, ModelMap model) {
+		List<Country> countries = countryService.findRoots();
+		model.addAttribute("countries", countries);
+		if (countries != null && !countries.isEmpty()) {
+           Long countryId = countries.get(0).getId();
+           model.addAttribute("countryId", countryId);
+        }
+		
 		model.addAttribute("sku", skuService.find(skuId));
 		return "admin/stock/stock_in";
 	}
@@ -85,6 +94,7 @@ public class StockController extends BaseController {
 	 */
 	@PostMapping("/stock_in")
 	public String stockIn(Long skuId, Integer quantity, String memo, RedirectAttributes redirectAttributes) {
+
 		Sku sku = skuService.find(skuId);
 		if (sku == null) {
 			return ERROR_VIEW;
@@ -102,6 +112,12 @@ public class StockController extends BaseController {
 	 */
 	@GetMapping("/stock_out")
 	public String stockOut(Long skuId, ModelMap model) {
+		List<Country> countries = countryService.findRoots();
+		model.addAttribute("countries", countries);
+		if (countries != null && !countries.isEmpty()) {
+           Long countryId = countries.get(0).getId();
+           model.addAttribute("countryId", countryId);
+        }
 		model.addAttribute("sku", skuService.find(skuId));
 		return "admin/stock/stock_out";
 	}

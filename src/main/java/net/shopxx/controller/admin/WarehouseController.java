@@ -1,5 +1,7 @@
 package net.shopxx.controller.admin;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Controller;
@@ -39,7 +41,12 @@ public class WarehouseController extends BaseController {
 	 */
 	@GetMapping("/add")
 	public String add(ModelMap model) {
-		model.addAttribute("countries", countryService.findRoots());
+		List<Country> countries = countryService.findRoots();
+		model.addAttribute("countries", countries);
+		if (countries != null && !countries.isEmpty()) {
+	           Long countryId = countries.get(0).getId();
+	           model.addAttribute("countryId", countryId);
+	        }
 		return "admin/warehouse/add";
 	}
 

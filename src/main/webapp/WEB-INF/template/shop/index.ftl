@@ -249,7 +249,7 @@ $().ready(function() {
 														[/#if]
 													</div>
 													<strong>${currency(product.price, true)}</strong>
-													<em>${message("shop.index.coupon")}${currency(product.coupon, true)}</em>
+													<em [#if currentUser == null] style="display:none"[/#if]>${message("shop.index.coupon")}${currency(product.coupon, true)}</em>
 													<img src="${base}/upload/image/blank.gif" data-original="${product.image!setting.defaultThumbnailProductImage}" />
 												</a>
 											</li>
@@ -259,7 +259,7 @@ $().ready(function() {
 													<img src="${base}/upload/image/blank.gif" data-original="${product.image!setting.defaultThumbnailProductImage}" />
 													<span title="${product.name}">${abbreviate(product.name, 24)}</span>
 													<strong>${currency(product.price, true)}</strong>
-													<em>${message("shop.index.coupon")}${currency(product.coupon, true)}</em>
+													<em [#if currentUser == null] style="display:none"[/#if]>${message("shop.index.coupon")}${currency(product.coupon, true)}</em>
 												</a>
 											</li>
 										[/#if]

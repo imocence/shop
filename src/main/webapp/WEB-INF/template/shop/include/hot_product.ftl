@@ -10,13 +10,33 @@
 							<span title="${product.name}">${abbreviate(product.name, 52)}</span>
 						</a>
 						<strong>
-							${currency(product.price, true)}
+							 [#if currentUser == null] 
+								   [#list product.productGrades as pg]
+										[#if pg.grade.isDefault == true]
+										 ${currency(pg.price, true)}
+										[/#if]
+								   [/#list]
+							[#else]
+									[#list product.productGrades as pg]
+										[#if pg.grade.id == currentUser.memberRank.id]
+										 ${currency(pg.price, true)}
+										[/#if]
+								    [/#list]
+							[/#if]
 							[#if setting.isShowMarketPrice]
 								<del>${currency(product.marketPrice, true)}</del>
 							[/#if]
 						</strong>
 						<!-- 券  -->
-						<em>${message("shop.index.coupon")}${currency(product.coupon, true)}</em>
+						[#if currentUser == null] 
+							
+						[#else]
+								[#list product.productGrades as pg]
+									[#if pg.grade.id == currentUser.memberRank.id]
+										<em> ${message("shop.index.coupon")}${pg.coupon}</em>
+									[/#if]
+							    [/#list]
+						[/#if]
 					</dd>
 				[/#list]
 			</dl>

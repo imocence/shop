@@ -20,7 +20,9 @@ import org.springframework.util.Assert;
 
 import net.shopxx.dao.SkuDao;
 import net.shopxx.dao.StockLogDao;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Product;
+import net.shopxx.entity.Product.Type;
 import net.shopxx.entity.Sku;
 import net.shopxx.entity.StockLog;
 import net.shopxx.service.SkuService;
@@ -110,6 +112,11 @@ public class SkuServiceImpl extends BaseServiceImpl<Sku, Long> implements SkuSer
 				return sku != null && sku.getStock() != null;
 			}
 		});
+	}
+
+	@Override
+	public List<Sku> search(Type type, String keyword, Country country, Set<Sku> excludes, Integer count) {
+		return skuDao.search(type, keyword,country, excludes, count);
 	}
 
 }

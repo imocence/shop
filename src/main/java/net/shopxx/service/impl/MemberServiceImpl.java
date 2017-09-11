@@ -17,35 +17,23 @@ import javax.inject.Inject;
 import javax.persistence.LockModeType;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
-import net.shopxx.controller.admin.BaseController;
 import net.shopxx.dao.DepositLogDao;
 import net.shopxx.dao.MemberDao;
 import net.shopxx.dao.MemberRankDao;
 import net.shopxx.dao.PointLogDao;
-import net.shopxx.entity.BaseEntity;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.DepositLog;
 import net.shopxx.entity.FiBankbookBalance;
+import net.shopxx.entity.FiBankbookBalance.Type;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
-import net.shopxx.entity.MemberRank;
 import net.shopxx.entity.NapaStores;
 import net.shopxx.entity.PointLog;
 import net.shopxx.entity.User;
-import net.shopxx.entity.FiBankbookBalance.Type;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.FiBankbookBalanceService;
 import net.shopxx.service.MailService;
@@ -56,6 +44,14 @@ import net.shopxx.service.NapaStoresService;
 import net.shopxx.service.SmsService;
 import net.shopxx.util.TimeUtil;
 import net.shopxx.util.WebUtils;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 /**
@@ -116,13 +112,13 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		} else if (MOBILE_PRINCIPAL_PATTERN.matcher(value).matches()) {
 			return findByMobile(value);
 		} else {
-			List<Member> memberList = getListMember("'"+value+"'");
+			/*List<Member> memberList = getListMember("'"+value+"'");
 			if(memberList.size() > 0){
 				return memberList.get(0);
 			}else{
 				return null;
-			}
-			
+			}*/
+		    return findByUsername(value);
 		}
 	}
 
@@ -275,13 +271,13 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		
 		member.setAmount(member.getAmount().add(amount));
 		member.setCouponAmount(member.getCouponAmount().add(couponAmount));
-		MemberRank memberRank = member.getMemberRank();
-		if (memberRank != null && BooleanUtils.isFalse(memberRank.getIsSpecial())) {
-			MemberRank newMemberRank = memberRankDao.findByAmount(member.getAmount());
-			if (newMemberRank != null && newMemberRank.getAmount() != null && newMemberRank.getAmount().compareTo(memberRank.getAmount()) > 0) {
-				member.setMemberRank(newMemberRank);
-			}
-		}
+//		MemberRank memberRank = member.getMemberRank();
+//		if (memberRank != null && BooleanUtils.isFalse(memberRank.getIsSpecial())) {
+//			MemberRank newMemberRank = memberRankDao.findByAmount(member.getAmount());
+//			if (newMemberRank != null && newMemberRank.getAmount() != null && newMemberRank.getAmount().compareTo(memberRank.getAmount()) > 0) {
+//				member.setMemberRank(newMemberRank);
+//			}
+//		}
 		memberDao.flush();
 	}
 	

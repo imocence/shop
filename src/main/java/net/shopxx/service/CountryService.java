@@ -30,4 +30,6 @@ public interface CountryService extends BaseService<Country, Long> {
 	 * @return
 	 */
 	Country findByName(String name);
+
+    Country getDefaultCountry();
 }

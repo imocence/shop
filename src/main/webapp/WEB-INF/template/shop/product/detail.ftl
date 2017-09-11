@@ -427,7 +427,7 @@ $().ready(function() {
 						'<dd>
 							<img src="' + escapeHtml(thumbnail) + '" \/>
 							<a href="${base}' + escapeHtml(item.path) + '" title="' + escapeHtml(item.name) + '">' + escapeHtml(abbreviate(item.name, 30)) + '<\/a>
-							<strong>' + currency(item.price, true) + '<\/strong>
+							<strong>' + '<\/strong>
 						<\/dd>'
 					[/@compress]
 				);
@@ -558,7 +558,19 @@ $().ready(function() {
 						<dl>
 							<dt>${message("Sku.price")}:</dt>
 							<dd>
-								<strong id="price">${currency(defaultSku.price, true)}</strong>
+							    [#if currentUser == null] 
+								   [#list product.productGrades as pg]
+										[#if pg.grade.isDefault == true]
+										 <strong id="price">${pg.price}</strong>
+										[/#if]
+								    [/#list]
+								[#else]
+									[#list product.productGrades as pg]
+										[#if pg.grade.id == currentUser.memberRank.id]
+										 <strong id="price">${pg.price}</strong>
+										[/#if]
+								    [/#list]
+								[/#if]
 							</dd>
 							[#if setting.isShowMarketPrice]
 								<dd>
@@ -588,10 +600,18 @@ $().ready(function() {
 							</dl> -->
 						[/#if]
 						<!-- 券 -->
-						<dl>
-							<dt>${message("Sku.coupon")}:</dt>
-							<dd>${currency(product.coupon, true)}</dd>
-						</dl>
+						[#if currentUser == null] 
+							
+						[#else]
+							<dl>
+								<dt>${message("Sku.coupon")}:</dt>
+								[#list product.productGrades as pg]
+									[#if pg.grade.id == currentUser.memberRank.id]
+									 <dd>${pg.coupon}</dd>
+									[/#if]
+							    [/#list]
+							</dl>
+						[/#if]
 					[#else]
 						[#if product.type == "exchange"]
 							<dl>
