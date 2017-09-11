@@ -111,7 +111,7 @@ public class CountryServiceImpl extends BaseServiceImpl<Country, Long> implement
     public Country getDefaultCountry() {
         Subject s  = SecurityUtils.getSubject();
         Member currentUser = null;
-        if (s.isAuthenticated()) {
+        if (s.isAuthenticated() && s.getPrincipal() instanceof Member) {
             currentUser =  (Member) s.getPrincipal();
         }
         Country country = null;

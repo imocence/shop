@@ -1316,7 +1316,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	@Transactional(rollbackFor = Exception.class)
 	public String shippedReview(String sn, String shippingMethod, String deliveryCorp, String deliveryCorpCode, String deliveryCorpUrl, BigDecimal freight, String trackingNo, Map<String, Integer> items) throws Exception{
 		Order order = findBySn(sn);
-		if (null == order || order.isNew() || !acquireLock(order)) {
+		if (null == order || order.isNew()) {
 			return "";
 		}
 		if (order.getShippableQuantity() <= 0) {
@@ -1518,23 +1518,21 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 						}
 						orderItem.setReturnedQuantity(orderItem.getReturnedQuantity() + orderReturnsItem.getQuantity());
 					}
-					
 					order.setReturnedQuantity(order.getReturnedQuantity() + orderReturns.getQuantity());
-					
-					order.setStatus(Order.Status.failed);
-
-					undoUseCouponCode(order);
-					undoExchangePoint(order);
-					releaseAllocatedStock(order);
-
-					OrderLog orderLog = new OrderLog();
-					orderLog.setType(OrderLog.Type.fail);
-					orderLog.setOrder(order);
-					orderLogDao.persist(orderLog);
-
-					mailService.sendFailOrderMail(order);
-					smsService.sendFailOrderSms(order);
 				}
+				order.setStatus(Order.Status.failed);
+				
+				undoUseCouponCode(order);
+				undoExchangePoint(order);
+				releaseAllocatedStock(order);
+				
+				OrderLog orderLog = new OrderLog();
+				orderLog.setType(OrderLog.Type.fail);
+				orderLog.setOrder(order);
+				orderLogDao.persist(orderLog);
+				
+				mailService.sendFailOrderMail(order);
+				smsService.sendFailOrderSms(order);
 			}
 		}
 		return "";
