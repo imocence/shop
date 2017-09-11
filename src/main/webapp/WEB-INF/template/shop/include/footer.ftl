@@ -73,7 +73,7 @@
 			</dd>
 		</dl>
 		<div class="qrCode">
-			<img src="${base}/resources/shop/images/qr_code.gif" alt="${message("shop.footer.weixin")}" />
+			<img src="${base}/resources/shop/images/greenleafld.jpg" alt="${message("shop.footer.weixin")}" />
 			${message("shop.footer.weixin")}
 		</div>
 	</div>

@@ -122,11 +122,11 @@ function changeLanguage(){
 					<span id="headerName" class="headerName">&nbsp;</span>
 				</li>
 				<li id="headerLogin" class="headerLogin">
-					<a href="${base}/member/login">${message("shop.header.login")}</a>|
+					<a href="${base}/member/login">${message("shop.header.login")}</a>
 				</li>
-				<li id="headerRegister" class="headerRegister">
-					<a href="${base}/member/register">${message("shop.header.register")}</a>
-				</li>
+				[#--<li id="headerRegister" class="headerRegister">--]
+					[#--<a href="${base}/member/register">${message("shop.header.register")}</a>--]
+				[#--</li>--]
 				<li id="headerLogout" class="headerLogout">
 					<a href="${base}/member/logout">[${message("shop.header.logout")}]</a>
 				</li>
