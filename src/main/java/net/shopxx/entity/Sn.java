@@ -57,7 +57,11 @@ public class Sn extends BaseEntity<Long> {
 		/**
 		 * 支付事务
 		 */
-		paymentTransaction
+		paymentTransaction,
+		/**
+		 * 获取赠送
+		 */
+		getGift
 	}
 
 	/**

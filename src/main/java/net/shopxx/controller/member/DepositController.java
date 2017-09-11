@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,15 +25,23 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import net.shopxx.Pageable;
 import net.shopxx.Results;
+import net.shopxx.dao.SnDao;
 import net.shopxx.entity.BaseEntity;
+import net.shopxx.entity.Cart;
+import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.FiBankbookJournal;
+import net.shopxx.entity.Sn;
 import net.shopxx.entity.FiBankbookJournal.Type;
 import net.shopxx.entity.Member;
 import net.shopxx.plugin.PaymentPlugin;
+import net.shopxx.security.CurrentCart;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.service.DepositLogService;
+import net.shopxx.service.FiBankbookBalanceService;
 import net.shopxx.service.FiBankbookJournalService;
+import net.shopxx.service.MemberService;
 import net.shopxx.service.PluginService;
+import net.shopxx.util.TimeUtil;
 import net.shopxx.util.WebUtils;
 
 /**
@@ -56,6 +65,12 @@ public class DepositController extends BaseController {
 	private PluginService pluginService;
 	@Inject
 	FiBankbookJournalService fiBankbookJournalService;
+	@Inject
+	FiBankbookBalanceService fiBankbookBalanceService;
+	@Inject
+	MemberService memberService;
+	@Inject
+	private SnDao snDao;
 	/**
 	 * 计算支付手续费
 	 */
@@ -79,10 +94,20 @@ public class DepositController extends BaseController {
 	@PostMapping("/check_balance")
 	public ResponseEntity<?> checkBalance(@CurrentUser Member currentUser) {
 		Map<String, Object> data = new HashMap<>();
-		data.put("balance", currentUser.getBalance());
+		//data.put("balance", currentUser.getBalance());
+		data.put("balance", fiBankbookBalanceService.find(currentUser, FiBankbookBalance.Type.balance).getBalance());
 		return ResponseEntity.ok(data);
 	}
-
+	/**
+	 * 检查余额
+	 */
+	@PostMapping("/check_coupon")
+	public ResponseEntity<?> check_coupon(@CurrentUser Member currentUser) {
+		Map<String, Object> data = new HashMap<>();
+		//data.put("balance", currentUser.getBalance());
+		data.put("coupon", fiBankbookBalanceService.find(currentUser, FiBankbookBalance.Type.coupon).getBalance());
+		return ResponseEntity.ok(data);
+	}
 	/**
 	 * 充值
 	 */
@@ -95,7 +120,51 @@ public class DepositController extends BaseController {
 		}
 		return "member/deposit/recharge";
 	}
-
+	/**
+	 * 转券
+	 */
+	@GetMapping("/gift")
+	public String gift(ModelMap model,@CurrentUser Member currentUser) {
+		model.addAttribute("coupon", fiBankbookBalanceService.find(currentUser, FiBankbookBalance.Type.coupon));
+		return "member/deposit/gift";
+	}
+	/**
+	 * 转券执行
+	 */
+	@PostMapping("/gift_do")
+	public ResponseEntity<?> gift_do(String giftMemberCode, BigDecimal giftAmount,@CurrentUser Member currentUser) {
+		Map<String, Object> data = new HashMap<>();
+		Member member = memberService.findByUsercode(StringUtils.upperCase(giftMemberCode.replace(" ", "")));
+		if (giftMemberCode == null || member == null) {
+			return Results.unprocessableEntity("shop.deposit.memberCodeNullOrMemberNull");
+		}
+		if (giftAmount != null && giftAmount.compareTo(BigDecimal.ZERO) < 0) {
+			return Results.UNPROCESSABLE_ENTITY;
+		}
+		if (giftAmount != null && giftAmount.compareTo(fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.coupon).getBalance()) > 0) {
+			return Results.unprocessableEntity("shop.order.insufficientCoupon");
+		}
+		String outCoupon = "OUT"+currentUser.getUsercode().substring(4, 10)+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
+		String inCoupon =  "IN"+member.getUsercode().substring(4, 10)+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
+		//当前会员券减
+		String outNotes = "用户编号[" + currentUser.getUsercode() + "] 操作编号[" + outCoupon + "] 赠送券" + giftAmount;
+		String inNotes = "用户编号[" + member.getUsercode() + "] 操作编号[" + inCoupon + "] 获取赠送券" + giftAmount;
+		if (giftAmount.compareTo(BigDecimal.ZERO) > 0) {
+			try {
+				fiBankbookJournalService.recharge(currentUser.getUsercode(), giftAmount, outCoupon, 
+						FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.takeout, FiBankbookJournal.MoneyType.couponOut, outNotes);
+				fiBankbookJournalService.recharge(member.getUsercode(), giftAmount, inCoupon, 
+						FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.couponIn, inNotes);
+				data.put("msg", "操作成功！");
+			} catch (Exception e) {
+				data.put("msg", "操作失败，查看交易记录！");
+				e.printStackTrace();
+			}
+		}else{
+			data.put("msg", "操作失败，金额必须大于0！");
+		}
+		return ResponseEntity.ok(data);		
+	}
 	/**
 	 * 记录
 	 */
@@ -110,6 +179,7 @@ public class DepositController extends BaseController {
 			typeF = FiBankbookJournal.Type.coupon;
 		}
 		model.addAttribute("page", fiBankbookJournalService.findPageByMemberId(typeF,currentUser, pageable));
+		model.addAttribute("type", type);
 		if("1".equals(type)){
 			return "member/deposit/coupon";
 		}else{
