@@ -60,5 +60,14 @@ public interface MemberDao extends BaseDao<Member, Long> {
 	 * @return
 	 */
 	List<Member> search(String keyword, Country country, Integer count);
+	
+	/**
+	 * 根据usercode查找会员
+	 * 
+	 * @param usercode
+	 *            用户编号
+	 * @return 会员，若不存在则返回null
+	 */
+	Member findByUsercode(String usercode);
 
 }
