@@ -607,7 +607,7 @@ $().ready(function() {
 								<dt>${message("Sku.coupon")}:</dt>
 								[#list product.productGrades as pg]
 									[#if pg.grade.id == currentUser.memberRank.id]
-									 <dd>${pg.coupon}</dd>
+									 <dd class="red"><strong style="font-size: 12px">${pg.coupon}</strong></dd>
 									[/#if]
 							    [/#list]
 							</dl>

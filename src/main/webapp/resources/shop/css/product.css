@@ -885,7 +885,8 @@
 }
 
 .productList .grid strong {
-	line-height: 30px;
+	line-height: 20px;
+	padding-bottom: 8px;
 	display: block;
 	color: #c4161c;
 	font-size: 14px;
@@ -983,13 +984,14 @@
 }
 
 .productList .list strong {
-	line-height: 24px;
+	/*line-height: 24px;*/
 	display: block;
 	float: right;
 	padding: 38px 0px;
 	color: #c4161c;
 	font-size: 14px;
 	font-weight: bold;
+	width: 170px;
 }
 
 .productList .list strong em {
