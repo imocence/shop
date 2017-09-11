@@ -54,8 +54,8 @@ public class MemberRankDaoImpl extends BaseDaoImpl<MemberRank, Long> implements 
 	public void clearDefault(MemberRank exclude) {
 		Assert.notNull(exclude);
 
-		String jpql = "update MemberRank memberRank set memberRank.isDefault = false where memberRank.isDefault = true and memberRank != :exclude";
-		entityManager.createQuery(jpql).setParameter("exclude", exclude).executeUpdate();
+		String jpql = "update MemberRank memberRank set memberRank.isDefault = false where memberRank.isDefault = true and memberRank != :exclude and country =:country";
+		entityManager.createQuery(jpql).setParameter("exclude", exclude).setParameter("country", exclude.getCountry()).executeUpdate();
 	}
 
     @Override
