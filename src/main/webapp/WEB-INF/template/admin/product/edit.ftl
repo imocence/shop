@@ -14,6 +14,7 @@
 <script type="text/javascript" src="${base}/resources/admin/ueditor/ueditor.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/common.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/input.js"></script>
+<script type="text/javascript" src="${base}/resources/admin/js/simpleuploader.js"></script>
 <style type="text/css">
 	.parameterTable table th {
 		width: 146px;
@@ -88,7 +89,7 @@ $().ready(function() {
 		loadSpecification();
 	[/#if]
 	
-	$filePicker.uploader();
+	$filePicker.initUploader("image");
 	
 	$introduction.editor();
 	
@@ -907,7 +908,7 @@ $().ready(function() {
 				</th>
 				<td>
 					<span class="fieldSet">
-						<input type="text" name="image" class="text" value="${product.image}" maxlength="200" title="${message("admin.product.imageTitle")}" />
+						<input type="text" id="image" name="image" class="text" value="${product.image}" maxlength="200" title="${message("admin.product.imageTitle")}" />
 						<a href="javascript:;" id="filePicker" class="button">${message("admin.upload.filePicker")}</a>
 						[#if product.image??]
 							<a href="${product.image}" target="_blank">${message("admin.common.view")}</a>
@@ -967,8 +968,6 @@ $().ready(function() {
 					</th>
 					<td>
 						<input type="text" id="stock" name="sku.stock" class="text" value="${product.defaultSku.stock}" maxlength="9" title="${message("Sku.allocatedStock")}: ${product.defaultSku.allocatedStock}" readonly="readonly" />
-						<a href="../stock/stock_in?skuId=${product.defaultSku.id}" title="${message("admin.product.stockIn")}">+</a>
-						<a href="../stock/stock_out?skuId=${product.defaultSku.id}" title="${message("admin.product.stockOut")}">-</a>
 					</td>
 				</tr>
 				<tr>
