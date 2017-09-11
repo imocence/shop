@@ -76,7 +76,6 @@ function changeLanguage(){
         background: transparent
         background: rgba(0, 0, 0, 0);
         border: 0;
-        -webkit-appearance: none;
 	}
     .select {
 		margin-top: 4px;
@@ -96,23 +95,23 @@ function changeLanguage(){
         -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
     }
-	.select:before{
-        top: 7px;
-        border-bottom: 3px solid #7f9298;
-	}
-    .select:after {
-        top: 13px;
-        border-top: 3px solid #7f9298;
-    }
-    .select:before, .select:after {
-        content: '';
-        position: absolute;
-        right: 11px;
-        width: 0;
-        height: 0;
-        border-left: 3px outset transparent;
-        border-right: 3px outset transparent;
-    }
+	/*.select:before{*/
+        /*top: 7px;*/
+        /*border-bottom: 3px solid #7f9298;*/
+	/*}*/
+    /*.select:after {*/
+        /*top: 13px;*/
+        /*border-top: 3px solid #7f9298;*/
+    /*}*/
+    /*.select:before, .select:after {*/
+        /*content: '';*/
+        /*position: absolute;*/
+        /*right: 11px;*/
+        /*width: 0;*/
+        /*height: 0;*/
+        /*border-left: 3px outset transparent;*/
+        /*border-right: 3px outset transparent;*/
+    /*}*/
 </style>
 <div class="header">
 	<div class="top">

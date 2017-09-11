@@ -198,7 +198,7 @@ $().ready(function() {
 				[/@ad_position]
 			</div>
 		</div>
-		[@product_category_root_list count = 3]
+		[@product_category_root_list count = 6]
 			[@ad_position id = 4]
 				[#if adPosition??]
 					[#assign adIterator = adPosition.ads.iterator() /]
