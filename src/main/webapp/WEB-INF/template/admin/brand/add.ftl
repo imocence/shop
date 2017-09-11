@@ -13,6 +13,7 @@
 <script type="text/javascript" src="${base}/resources/admin/ueditor/ueditor.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/common.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/input.js"></script>
+<script type="text/javascript" src="${base}/resources/admin/js/simpleuploader.js"></script>
 <script type="text/javascript">
 $().ready(function() {
 
@@ -24,7 +25,8 @@ $().ready(function() {
 	
 	[@flash_message /]
 	
-	$filePicker.uploader();
+	$filePicker.initUploader("logo");
+	
 	
 	$introduction.editor();
 	

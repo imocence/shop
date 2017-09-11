@@ -1,12 +1,10 @@
 package net.shopxx.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import net.shopxx.Filter;
 import net.shopxx.Order;
-
-import java.math.BigDecimal;
-
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Country;
@@ -60,4 +58,11 @@ public interface FiBankbookBalanceService extends BaseService<FiBankbookBalance,
 	 * @param amount
 	 */
 	void addBalance(FiBankbookBalance fiBankbookBalance, BigDecimal amount) throws Exception;
+	
+	/**
+	 * 余额更新
+	 * @param fiBankbookBalance
+	 * @param amount
+	 */
+	void addBalance(FiBankbookBalance fiBankbookBalance, Member member, BigDecimal amount) throws Exception;
 }
