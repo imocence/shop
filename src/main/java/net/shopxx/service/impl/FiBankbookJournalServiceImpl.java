@@ -17,6 +17,7 @@ import net.shopxx.service.FiBankbookJournalService;
 import net.shopxx.service.MemberService;
 import net.shopxx.util.SpringUtils;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,10 +109,12 @@ public class FiBankbookJournalServiceImpl extends BaseServiceImpl<FiBankbookJour
 //		}
 		
 		// 获取会员
-		Member member = memberService.findByUsercode(usercode);
-		if (null == member) {
+		Member memberTemp = memberService.findByUsercode(usercode);
+		if (null == memberTemp) {
 			throw new Exception("member is not exist");
 		}
+		Member member = new Member();
+		BeanUtils.copyProperties(member, memberTemp);
 		// 金额不可以为0
 		if (money.compareTo(BigDecimal.ZERO) == 0) {
 			throw new Exception("amount is 0");
@@ -155,7 +158,7 @@ public class FiBankbookJournalServiceImpl extends BaseServiceImpl<FiBankbookJour
 					throw new Exception(SpringUtils.getMessage("admin.fiBankbookJournalTemp.error.balance.zero", member.getUsercode()));
 				}
 				// 更新用户的余额
-				fiBankbookBalanceService.addBalance(fiBankbookBalance, amount);
+				fiBankbookBalanceService.addBalance(fiBankbookBalance, member, amount);
 			}
 			// 如果最近的一条记录不为空并且用户余额不为空，校验交易记录的最近一条的余额和用户的余额是否一致
 			else {
@@ -163,7 +166,7 @@ public class FiBankbookJournalServiceImpl extends BaseServiceImpl<FiBankbookJour
 					throw new Exception(SpringUtils.getMessage("admin.fiBankbookJournalTemp.error.balance.error", member.getUsercode(), fiBankbookBalance.getBalance(), lastFiBankbookJournal.getBalance()));
 				}
 				// 更新用户的余额
-				fiBankbookBalanceService.addBalance(fiBankbookBalance, amount);
+				fiBankbookBalanceService.addBalance(fiBankbookBalance, member, amount);
 			}
 		}
 		
