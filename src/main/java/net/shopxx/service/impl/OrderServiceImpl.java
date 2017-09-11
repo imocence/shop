@@ -387,7 +387,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				//List<SpecificationValue> specificationValue  = sku.getSpecificationValues();
 				goods.put("unit", sku.getUnit());
 				goods.put("optiontitle", "");//规格
-				goods.put("goodssn", sku.getProduct().getSn());
+				goods.put("goodssn", sku.getProduct().getSn());//"testaa1"商品编号
 				goods.put("price", orderItem.getPrice());
 				goods.put("total", orderItem.getQuantity());//数量
 				goods.put("weight", orderItem.getWeight());
@@ -397,7 +397,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 		}
 		
-		parameterMap.put("usercode", order.getMember().getNapaStores().getNapaCode());
+		parameterMap.put("usercode", order.getMember().getNapaStores().getNapaCode());//"G006682"区代编号
 		parameterMap.put("ordersn", order.getSn());		
 		
 		if(Order.Status.pendingPayment.equals(order.getStatus())){
@@ -421,8 +421,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		}
 
 		parameterMap.put("price", calculateAmount(order));//总金额+运费
-		parameterMap.put("jifen", calculateAmount(order));//券金额
-		parameterMap.put("payTime", TimeUtil.getNowTime());//支付时间
+		parameterMap.put("jifen", order.getCouponAmountPaid());//券金额
+		parameterMap.put("payTime", TimeUtil.getDate(order.getCreatedDate()));//支付时间
 		
 		parameterMap.put("realname", "");//收货人
 		parameterMap.put("mobile", "");//收货人电话
@@ -433,12 +433,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		
 		parameterMap.put("expresscom", "");//快递公司
 		parameterMap.put("expresssn", "");//快递单号
-		parameterMap.put("shipFee", "");//运费
+		parameterMap.put("shipFee", order.getFreight());//运费
 		parameterMap.put("expressTime", "");//发货时间
 		parameterMap.put("WarehouseName", "");//发货仓库
 
 		parameterMap.put("goods_data", data);//商品信息
-		
 		
 		parameterMap.put("timestamp", TimeUtil.getTimestamp());
 		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getTimestamp()+urlSignature));

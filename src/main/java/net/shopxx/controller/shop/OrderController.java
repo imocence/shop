@@ -66,7 +66,8 @@ import net.shopxx.util.WebUtils;
 @Controller("shopOrderController")
 @RequestMapping("/order")
 public class OrderController extends BaseController {
-
+	
+	
 	@Inject
 	private SkuService skuService;
 	@Inject

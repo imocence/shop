@@ -5,6 +5,9 @@
  */
 package net.shopxx.controller.admin;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +18,10 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder.In;
+import javax.servlet.http.HttpServletRequest;
 
+import net.sf.json.JSONObject;
 import net.shopxx.Filter;
 import net.shopxx.Message;
 import net.shopxx.Page;
@@ -57,7 +63,9 @@ import net.shopxx.util.NumberUtil;
 import net.shopxx.util.StringUtil;
 import net.shopxx.util.SystemUtils;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,8 +75,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+
 
 /**
  * Controller - 订单
@@ -100,7 +109,90 @@ public class OrderController extends BaseController {
 	private ProductCategoryService productCategoryService;
 	@Inject
 	private ProductService productService;
-	
+	@Value("${url.signature}")
+	private String urlSignature;
+	/**
+	 * 订单发货回调
+	 */
+	@PostMapping(value="/shippedReview",produces = {"application/json;charset=utf-8"})
+	public  @ResponseBody JSONObject shippedReview(Member member,HttpServletRequest request, RedirectAttributes redirectAttributes){
+		Map<String,Object> map = new HashMap<String, Object>();
+		String errCode = "\"0000\"";		
+		String state = "\"success\"";
+				
+		StringBuilder sb = new StringBuilder();
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+	        String line = null;
+	        while((line = br.readLine())!=null){
+	            sb.append(line);
+	        }
+		} catch (Exception e) {
+			 System.out.println("获取post参数请求出现异常！" + e);
+	         e.printStackTrace();
+			 map.put("errCode", "\"2001\"");
+			 map.put("state", "\"异常:\"");
+			 JSONObject jsonObject = (JSONObject) JSON.parse(map.toString());
+			 return jsonObject;
+		}finally{
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		Map map1 = (Map) JSON.parse(sb.toString());
+		System.out.println(map1);
+		String sn = map1.get("sn").toString();//订单号
+		String shippingMethod = orderService.findBySn(sn).getShippingMethod().toString(); //配送方式
+		String deliveryCorp = map1.get("deliveryCorp").toString();//物流公司
+		String deliveryCorpCode = map1.get("deliveryCorpCode").toString();//物流代码
+		BigDecimal freight = orderService.findBySn(sn).getFreight(); //运费
+		String deliveryCorpUrl = orderService.findBySn(sn).getAddress();//收货地址
+		String trackingNo = map1.get("trackingNo").toString();//运单号
+		
+		List<Object> items = (List<Object>) map1.get("items");//订单的商品编号和发货数量集合
+		Map<String,Integer> itemMap = new HashMap<String,Integer>();
+		net.sf.json.JSONArray memberJson = net.sf.json.JSONArray.fromObject(items); 
+		if(memberJson.size()>0){
+			
+			for(int i=0;i<memberJson.size();i++){
+				//获取每一个JsonObject对象
+				net.sf.json.JSONObject job = memberJson.getJSONObject(i);
+				
+				//获取每一个对象中的值
+				String productno = job.getString("productno");
+				int qty = job.getInt("qty");
+				itemMap.put(productno, qty);
+			}
+			
+			String signature = map1.get("signature").toString();//约定验证码
+			String timestamp = map1.get("timestamp").toString();//时间戳
+			
+			String signature0 = DigestUtils.md5Hex(timestamp+urlSignature);
+			if (!signature0.equals(signature)) {			
+				errCode = "\"1001\"";
+				state = "\"验签错误\"";
+			}else{	
+				try {
+					orderService.shippedReview( sn,  shippingMethod,  deliveryCorp,  deliveryCorpCode,  deliveryCorpUrl,  freight,  trackingNo,  itemMap);
+					errCode = "\"0000\"";
+					state = "\"成功\"";
+				} catch (Exception e) {
+					errCode = "\"2001\"";
+					state = "\"异常\"";
+				}
+			}
+		}else{
+			errCode = "\"2001\"";
+			state = "\"异常:商品数量不能为空\"";
+		}
+		map.put("errCode", errCode);
+		map.put("state", state);
+		JSONObject jsonObject = JSONObject.fromObject(map.toString());
+		return jsonObject;
+	}
 	/**
 	 * 获取订单锁
 	 */
