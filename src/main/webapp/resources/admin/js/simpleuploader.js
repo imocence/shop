@@ -29,20 +29,27 @@ $().ready( function() {
 			var uploader = WebUploader.create({
 				auto: true,
 			    // swf文件路径
-			    swf: shopxx.base + '/resources/admin/ueditor/third-party/webuploader/Uploader.swf',
+			    swf: shopxx.base + '/resources/admin/flash/webuploader.swf',
 			
 			    // 文件接收服务端。
 			    server: shopxx.base + '/admin/file/upload?fileType=image&csrfToken='+ getCookie('csrfToken'),
 			
 			    // 选择文件的按钮。可选。
 			    // 内部根据当前运行是创建，可能是input元素，也可能是flash.
-			    pick: '#' + $(this).attr("id"),
-			
+			    pick: {
+					id: this,
+					multiple: false
+				},
 			    accept: {
 			        title: 'Images',
 			        extensions: 'gif,jpg,jpeg,bmp,png',
-			        mimeTypes: 'image/*'
-			    }
+			        mimeTypes: 'image/jpg,image/jpeg,image/png'
+			    },
+				fileNumLimit: 1,
+				auto: true
+			});
+			$(this).mouseover(function() {
+				uploader.refresh();
 			});
 			uploader.on( 'uploadSuccess', function( file, response) {   
 				$("#" + urlId).val(response.url);

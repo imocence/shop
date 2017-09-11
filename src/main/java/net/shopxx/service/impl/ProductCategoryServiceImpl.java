@@ -45,7 +45,7 @@ public class ProductCategoryServiceImpl extends BaseServiceImpl<ProductCategory,
 	 * @return
 	 */
 	public List<ProductCategory> findRoots(Country country, Integer count){
-		return productCategoryDao.findRoots(country, null);
+		return productCategoryDao.findRoots(country, count);
 	}
 	
 	@Transactional(readOnly = true)

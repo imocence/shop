@@ -7,6 +7,7 @@ package net.shopxx.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import net.shopxx.Filter;
 import net.shopxx.Page;
@@ -389,6 +390,48 @@ public interface OrderService extends BaseService<Order, Long> {
 	 *            订单
 	 */
 	void fail(Order order);
+	
+	/**
+	 * 发货推单
+	 * 
+	 * @param order
+	 *            订单
+	 */
+	String shippingReview(Long... ids) throws Exception;
+	
+	/**
+	 * 直销发货接口回调
+	 * 1：减少实际库存
+	 * 2：全部发货完成状态改为“已发货”
+	 * @param sn 订单编号
+	 * @param shippingMethod 配送方式
+	 * @param deliveryCorp 物流名称
+	 * @param deliveryCorpCode 物流代码
+	 * @param deliveryCorpUrl 物流地址
+	 * @param freight 运费
+	 * @param trackingNo 运单号
+	 * @param items 订单的商品编号和发货数量集合
+	 * @return
+	 * @throws Exception
+	 */
+	String shippedReview(String sn, String shippingMethod, String deliveryCorp, String deliveryCorpCode, String deliveryCorpUrl, BigDecimal freight, String trackingNo, Map<String, Integer> items) throws Exception;
+	
+	/**
+	 * 退单退款
+	 * 
+	 * @param order
+	 *            订单
+	 */
+	String returnsReview(Long... ids) throws Exception;
+	
+	/**
+	 * 一键完成
+	 * 
+	 * @param order
+	 *            订单
+	 */
+	String completeReview(Long... ids) throws Exception;
+	
 	/**
 	 * 
 	 * @param order

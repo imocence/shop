@@ -78,9 +78,9 @@ public class FiBankbookBalanceDaoImpl extends BaseDaoImpl<FiBankbookBalance, Lon
 	 * @return
 	 */
 	public FiBankbookBalance find(Member member, FiBankbookBalance.Type type){
-		String jpql = "SELECT fiBankbookBalance FROM FiBankbookBalance fiBankbookBalance WHERE fiBankbookBalance.member=:member AND fiBankbookBalance.type=:type";
+		String jpql = "SELECT fiBankbookBalance FROM FiBankbookBalance fiBankbookBalance WHERE fiBankbookBalance.member.usercode=:usercode AND fiBankbookBalance.type=:type";
 		TypedQuery<FiBankbookBalance> query = entityManager.createQuery(jpql, FiBankbookBalance.class);
-		query.setParameter("member", member);
+		query.setParameter("usercode", member.getUsercode());
 		query.setParameter("type", type);
 		query.setMaxResults(1);
 		List<FiBankbookBalance> list= query.getResultList();

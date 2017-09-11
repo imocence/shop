@@ -11,8 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import net.shopxx.entity.BaseEntity.BaseView;
-
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.DateBridge;
 import org.hibernate.search.annotations.Field;
@@ -81,11 +79,54 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 		 * 现金
 		 */
 		cash,
-		
+		/**
+		 * Pos刷卡
+		 */
+		pos,
+		/**
+		 * 线下转账
+		 */
+		offline,
+		/**
+		 * 余额退款
+		 */
+		balanceRefund,
+		/**
+		 * 财务冲账
+		 */
+		financeBalance,
+		/**
+		 * 保证金
+		 */
+		depositCash,
+		/**
+		 * 手续费
+		 */
+		fee,
+		/**
+		 * 退单退款
+		 */
+		orderRefund,
+		/**
+		 * 订单审核
+		 */
+		orderAudit,
+		/**
+		 * 物流费
+		 */
+		logisticsFee,
 		/**
 		 * 在线充值
 		 */
-		recharge;
+		recharge,
+		/**
+		 * 购物券转入
+		 */
+		couponIn,
+		/**
+		 * 购物券转出
+		 */
+		couponOut;
 	}
 	
 	/**

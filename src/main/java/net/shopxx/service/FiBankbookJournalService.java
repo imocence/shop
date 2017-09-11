@@ -53,12 +53,12 @@ public interface FiBankbookJournalService extends BaseService<FiBankbookJournal,
 	 * @param uniqueCode 交易单号
 	 * @param type 0:电子币账户  1:购物券账户
 	 * @param dealType 0:存入  1取出
-	 * @param moneyType 0:现金  1:在线充值
+	 * @param moneyType 0:现金  1:Pos刷卡  2:线下转账 3:余额退款  4:财务冲账 5:保证金 6:手续费 7:退单退款  8:订单审核 9:物流费 10:在线充值 11:购物券转入 12:购物券转出
 	 * @param notes 摘要
 	 * @return
 	 * @throws Exception
 	 */
-	String recharge(String usercode, BigDecimal money, String uniqueCode, int type, int dealType, int moneyType, String notes) throws Exception;
+	String recharge(String usercode, BigDecimal money, String uniqueCode, FiBankbookJournal.Type type, FiBankbookJournal.DealType dealType, FiBankbookJournal.MoneyType moneyType, String notes) throws Exception;
 	/**
 	 * 根据会员编号查找充值记录接口
 	 * @param type 

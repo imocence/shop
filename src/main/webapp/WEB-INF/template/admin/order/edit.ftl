@@ -254,18 +254,18 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					订单购物券:
+					${message("admin.order.couponPrice")}:
 				</th>
 				<td>
 					<span id="couponAmount" class="red">${currency(order.couponAmount)}</span>
 				</td>
 				<th>
-					已付购物券:
+					${message("admin.order.couponPrice.paid")}:
 				</th>
 				<td>
 					${currency(order.couponAmountPaid)}
 					[#if order.couponAmountPayable > 0]
-						<span class="silver">(应付购物券: ${currency(order.couponAmountPayable)})</span>
+						<span class="silver">(${message("admin.order.couponPrice.payable")}: ${currency(order.couponAmountPayable)})</span>
 					[/#if]
 				</td>
 			</tr>
@@ -349,7 +349,7 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					调整购物券:
+					${message("admin.order.couponPrice.adjusted")}:
 				</th>
 				<td colspan="3">
 					<input type="text" id="offsetCouponAmount" name="offsetCouponAmount" class="text" value="${order.offsetCouponAmount}" maxlength="16" />
@@ -447,6 +447,14 @@ $().ready(function() {
 						<input type="text" name="memo" class="text" value="${order.memo}" maxlength="200" />
 					</td>
 				</tr>
+				<tr>
+					<th>
+						${message("admin.order.source")}:
+					</th>
+					<td colspan="3">
+						${message("admin.order.source." + order.source)}
+					</td>
+				</tr>
 			[/#if]
 		</table>
 		<table class="item tabContent">
@@ -461,7 +469,7 @@ $().ready(function() {
 					${message("OrderItem.price")}
 				</th>
 				<th>
-					购物券
+					${message("admin.order.coupon")}
 				</th>
 				<th>
 					${message("OrderItem.quantity")}
@@ -470,7 +478,7 @@ $().ready(function() {
 					${message("OrderItem.subtotal")}
 				</th>
 				<th>
-					购物券小计
+					${message("admin.order.product.coupon.total")}
 				</th>
 			</tr>
 			[#list order.orderItems as orderItem]
