@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>订单新增 - Powered By SHOP++</title>
+<title>${message("admin.order.add")} - Powered By SHOP++</title>
 <meta name="author" content="SHOP++ Team" />
 <meta name="copyright" content="SHOP++" />
 <link href="${base}/resources/admin/css/common.css" rel="stylesheet" type="text/css" />
@@ -49,7 +49,7 @@ $().ready(function() {
 		width: 218,
 		scrollHeight: 300,
 		extraParams: { 
-			countryId: function() {
+			country: function() {
 				 return $country.val();
 			}
 		}, 
@@ -117,7 +117,7 @@ $().ready(function() {
 				return false;
 			}
 			if ($totalQuantity.val() < 1){
-				$.message("warn", "商品数量不能为0");
+				$.message("warn", "${message("admin.order.product.zero")}");
 				return false;
 			}
 			$(form).find("input:submit").prop("disabled", true);
@@ -318,6 +318,11 @@ $().ready(function() {
 		});
 		// 获取商品信息
 		$selectProductId.change(function(){
+			// 同一个商品只能添加一次
+			if (checkProduct()){
+				$.message("warn", "${message("admin.order.product.repeat.add")}");
+				return;
+			}
 			var index = $(this).attr("data");
 			$("#product" + index + "image").empty();
 			$("#product" + index + "sn").val('');
@@ -460,7 +465,7 @@ $().ready(function() {
 		$.ajax({
 			url: "${base}/admin/order/getFreight",
 			type: "GET",
-			data: {shippingMethodId: $("#shippingMethod").val(), weight:totalWeight},
+			data: {shippingMethodId: $("#shippingMethod").val(), weight:totalWeight, areaId:$("#areaId").val()},
 			dataType: "json",
 			async: false,
 			cache: false,
@@ -479,7 +484,29 @@ $().ready(function() {
 		$("#freight").val(totalFreight);
 		$("#totalQuantity").val(totalQuantity);
 	}
-
+	
+	function checkProduct(){
+		var productIds = '';
+		var indexArray = new Array();
+		$("tr.product").each(function(index, item){
+			indexArray[index] = $(item).attr("data");
+		});
+		var size = indexArray.length;
+		for(var i=0;i<size;i++){
+			var index = indexArray[i];
+			var productId = $("#productId" + i).val();
+			if (productId == null){
+				continue;
+			}
+			productId += ",";
+			if (productIds.indexOf(productId)>=0){
+				return true;
+			}
+			productIds += productId;
+		}
+		return false;
+	}
+	
 	// 删除商品
 	$productTable.on("click", "a.remove", function() {
 		$(this).closest("tr").remove();
@@ -493,7 +520,7 @@ $().ready(function() {
 </head>
 <body>
 	<div class="breadcrumb">
-		订单新增
+		${message("admin.order.add")}
 	</div>
 	<ul id="tab" class="tab">
 		<li>
@@ -625,7 +652,7 @@ $().ready(function() {
 			<!-- 重量 -->
 			<tr>
 				<th>
-					重量:
+					${message("admin.order.product.weight")}:
 				</th>
 				<td>
 					<em id="weight"></em>
@@ -643,14 +670,14 @@ $().ready(function() {
 			<!-- 订单总金额-->
 			<tr>
 				<th>
-					订单电子币总额:
+					${message("admin.order.price.total")}:
 				</th>
 				<td>
 					<input type="text" style='border:none;' id="balance" name="amount" class="text" maxlength="200" />
 				</td>
 			<!-- 订单总购物券金额-->
 				<th>
-					订单购物券总额:
+					${message("admin.order.couponPrice.total")}:
 				</th>
 				<td>
 					<input type="text" style='border:none;' id="couponbalance" name="couponAmount" class="text" maxlength="200" />
@@ -661,12 +688,12 @@ $().ready(function() {
 			<!-- 订单总金额--> 
 			<!-- 订单总购物券金额-->
 			<tr>
-				<td>商品电子币总额:</td>
+				<td>${message("admin.order.product.price.total")}:</td>
 				<td>
 					<span id="totalPriceSpan"></span>
 					<input type="hidden" id="totalPrice" name="price" value="0"/>
 				</td>
-				<td>商品购物券总额:</td>
+				<td>${message("admin.order.product.couponPrice.total")}:</td>
 				<td>
 					<span id="totalCouponPriceSpan"></span>
 					<input type="hidden" id="totalCouponPrice" name="couponPrice" value="0"/>
@@ -676,39 +703,39 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<td colspan="11">
-					<a href="javascript:;" id="addProduct" class="button">新增商品</a>
+					<a href="javascript:;" id="addProduct" class="button">${message("admin.order.product.add")}</a>
 				</td>
 			</tr>
 			<tr>
 				<th>
-					商品分类
+					${message("admin.order.product.category")}
 				</th>
 				<th>
-					商品选择
+					${message("admin.order.product.select")}
 				</th>
 				<th>
-					商品图片
+					${message("admin.order.product.image")}
 				</th>
 				<th>
-					商品编号
+					${message("admin.order.product.sn")}
 				</th>
 				<th>
-					商品名称
+					${message("admin.order.product.name")}
 				</th>
 				<th>
-					电子币价格
+					${message("admin.order.product.price")}
 				</th>
 				<th>
-					购物券价格
+					${message("admin.order.product.couponPrice")}
 				</th>
 				<th>
-					商品数量
+					${message("admin.order.product.quantity")}
 				</th>
 				<th>
-					商品库存
+					${message("admin.order.product.stock")}
 				</th>
 				<th>
-					小计
+					${message("admin.order.product.total")}
 				</th>
 				<th>
 					${message("admin.common.action")}

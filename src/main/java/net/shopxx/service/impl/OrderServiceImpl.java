@@ -9,8 +9,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -31,10 +33,12 @@ import net.shopxx.dao.OrderRefundsDao;
 import net.shopxx.dao.OrderReturnsDao;
 import net.shopxx.dao.OrderShippingDao;
 import net.shopxx.dao.SnDao;
+import net.shopxx.entity.Admin;
 import net.shopxx.entity.Cart;
 import net.shopxx.entity.CartItem;
 import net.shopxx.entity.Coupon;
 import net.shopxx.entity.CouponCode;
+import net.shopxx.entity.DeliveryCorp;
 import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.Invoice;
@@ -59,7 +63,6 @@ import net.shopxx.entity.Sn;
 import net.shopxx.entity.StockLog;
 import net.shopxx.entity.User;
 import net.shopxx.service.CouponCodeService;
-import net.shopxx.service.FiBankbookBalanceService;
 import net.shopxx.service.FiBankbookJournalService;
 import net.shopxx.service.MailService;
 import net.shopxx.service.MemberService;
@@ -71,6 +74,7 @@ import net.shopxx.service.SkuService;
 import net.shopxx.service.SmsService;
 import net.shopxx.service.UserService;
 import net.shopxx.util.NumberUtil;
+import net.shopxx.util.SpringUtils;
 import net.shopxx.util.SystemUtils;
 import net.shopxx.util.TimeUtil;
 import net.shopxx.util.WebUtils;
@@ -137,8 +141,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	private String urlSignature;
 	@Value("${url.path}")
 	private String urlPath;
-	@Inject
-	private FiBankbookBalanceService fiBankbookBalanceService;
 
 	@Transactional(readOnly = true)
 	public Order findBySn(String sn) {
@@ -878,6 +880,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		Integer totalWeight = BigDecimal.ZERO.intValue();
 		if (null != curOrderItems) {
 			for (OrderItem curOrderItem : curOrderItems) {
+				if (null == curOrderItem.getQuantity() || curOrderItem.getQuantity() == 0) {
+					continue;
+				}
 				OrderItem orderItem = new OrderItem();
 				String sn = curOrderItem.getSn();
 				Product product = productService.findBySn(sn);
@@ -890,7 +895,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				Integer weight = NumberUtil.getInt(product.getWeight()) * curOrderItem.getQuantity();
 				totalWeight += weight;
 				totalQuantity += curOrderItem.getQuantity();
-				orderItem.setWeight(weight);
+				orderItem.setWeight(sku.getWeight());
 				orderItem.setIsDelivery(sku.getIsDelivery());
 				orderItem.setThumbnail(product.getThumbnail());
 				orderItem.setQuantity(curOrderItem.getQuantity());
@@ -1264,6 +1269,336 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 		mailService.sendFailOrderMail(order);
 		smsService.sendFailOrderSms(order);
+	}
+	
+	/**
+	 * 发货推单
+	 * 状态改为“待发货”
+	 * @param order
+	 *            订单
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	public String shippingReview(Long... ids) throws Exception{
+		// 获取当前用户
+		Admin currentUser = userService.getCurrent(Admin.class);
+		if (null == currentUser) {
+			throw new Exception(SpringUtils.getMessage("admin.common.session.lost"));
+		}
+		if (ids != null) {
+			// 待审核状态  状态改为“待发货”，->推单到直销
+			for (Long id : ids) {
+				Order order = find(id);
+				if (null == order || order.isNew() || !acquireLock(order)) {
+					return "";
+				}
+				review(order, true);
+			}
+		}
+		return "";
+	}
+	
+	/**
+	 * 直销发货接口回调
+	 * 1：减少实际库存
+	 * 2：全部发货完成状态改为“已发货”
+	 * @param sn 订单编号
+	 * @param shippingMethod 配送方式
+	 * @param deliveryCorp 物流名称
+	 * @param deliveryCorpCode 物流代码
+	 * @param deliveryCorpUrl 物流地址
+	 * @param freight 运费
+	 * @param trackingNo 运单号
+	 * @param items 订单的商品编号和发货数量集合
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	public String shippedReview(String sn, String shippingMethod, String deliveryCorp, String deliveryCorpCode, String deliveryCorpUrl, BigDecimal freight, String trackingNo, Map<String, Integer> items) throws Exception{
+		Order order = findBySn(sn);
+		if (null == order || order.isNew() || !acquireLock(order)) {
+			return "";
+		}
+		if (order.getShippableQuantity() <= 0) {
+			return "";
+		}
+		// 只有待发货需要处理
+		if (Order.Status.pendingShipment != order.getStatus()) {
+			return "";
+		}
+		// 构建订单发货
+		OrderShipping orderShipping = new OrderShipping();
+		orderShipping.setOrder(order);
+		// 获取配送方式
+		orderShipping.setShippingMethod(shippingMethod);
+		orderShipping.setDeliveryCorp(deliveryCorp);
+		orderShipping.setDeliveryCorpUrl(deliveryCorpUrl);
+		orderShipping.setDeliveryCorpCode(deliveryCorpCode);
+		orderShipping.setArea(order.getArea());
+		
+		orderShipping.setTrackingNo(trackingNo);
+		orderShipping.setFreight(freight);
+		orderShipping.setConsignee(order.getConsignee());
+		orderShipping.setAddress(order.getAddress());
+		orderShipping.setZipCode(order.getZipCode());
+		orderShipping.setPhone(order.getPhone());
+		
+		orderShipping.setSn(snDao.generate(Sn.Type.orderShipping));
+		orderShipping.setOrder(order);
+		orderShipping.setCountry(order.getCountry());
+		
+		// 构建发货单子项
+		List<OrderShippingItem> orderShippingItems = new ArrayList<OrderShippingItem>();
+		if (null != items && !items.isEmpty()) {
+			Iterator<Entry<String, Integer>> iterator = items.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Entry<String, Integer> entry = iterator.next();
+				String itemSn = entry.getKey();
+				Integer quantity = entry.getValue();
+				OrderItem orderItem = order.getOrderItem(itemSn);
+				OrderShippingItem orderShippingItem = new OrderShippingItem();
+				// 设置 发货项的数量
+				orderShippingItem.setQuantity(quantity);
+				// 设置编号
+				orderShippingItem.setSn(orderItem.getSn());
+				
+				orderShippingItem.setName(orderItem.getName());
+				orderShippingItem.setIsDelivery(orderItem.getIsDelivery());
+				Sku sku = orderItem.getSku();
+				if (sku != null && orderShippingItem.getQuantity() > sku.getStock()) {
+					continue;
+				}
+				skuService.addStock(sku, -orderShippingItem.getQuantity(), StockLog.Type.stockOut, null);
+				if (BooleanUtils.isTrue(order.getIsAllocatedStock())) {
+					skuService.addAllocatedStock(sku, -orderShippingItem.getQuantity());
+				}
+				orderShippingItem.setSku(sku);
+				orderShippingItem.setOrderShipping(orderShipping);
+				orderShippingItem.setSpecifications(orderItem.getSpecifications());
+				// 设置 订单的已发货数量=订单已发货数量+发货项的数量
+				orderItem.setShippedQuantity(orderItem.getShippedQuantity() + quantity);
+				orderShippingItems.add(orderShippingItem);
+			}
+		}
+		orderShipping.setOrderShippingItems(orderShippingItems);
+		orderShippingDao.persist(orderShipping);
+
+		Setting setting = SystemUtils.getSetting();
+		if (Setting.StockAllocationTime.ship.equals(setting.getStockAllocationTime())) {
+			allocateStock(order);
+		}
+		
+		order.setShippedQuantity(order.getShippedQuantity() + orderShipping.getQuantity());
+		if (order.getShippedQuantity() >= order.getQuantity()) {
+			order.setStatus(Order.Status.shipped);
+			order.setIsAllocatedStock(false);
+		}
+
+		OrderLog orderLog = new OrderLog();
+		orderLog.setType(OrderLog.Type.shipping);
+		orderLog.setOrder(order);
+		orderLogDao.persist(orderLog);
+
+		mailService.sendShippingOrderMail(order);
+		smsService.sendShippingOrderSms(order);
+		return "";
+	}
+	
+	/**
+	 * 退单退款
+	 * 
+	 * @param order
+	 *            订单
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	public String returnsReview(Long... ids) throws Exception{
+		// 获取当前用户
+		Admin currentUser = userService.getCurrent(Admin.class);
+		if (null == currentUser) {
+			throw new Exception(SpringUtils.getMessage("admin.common.session.lost"));
+		}
+		if (ids != null) {
+			for (Long id : ids) {
+				Order order = find(id);
+				if (null == order || order.isNew()) {
+					continue;
+				}
+				// 状态是等待付款、等待审核、等待发货、已发货、已收货可以退货退款
+				if (Order.Status.pendingPayment != order.getStatus() && Order.Status.pendingReview != order.getStatus()
+						&& Order.Status.pendingShipment != order.getStatus() && Order.Status.shipped != order.getStatus()
+						&& Order.Status.received != order.getStatus()) {
+					continue;
+				}
+				// 修改状态为“已失败”，已分配库存和金额回退,减去的库存回退
+				// 退款 退款金额和电子币
+				if ((order.getAmountPaid().compareTo(BigDecimal.ZERO) > 0 && order.getCouponAmountPaid().compareTo(BigDecimal.ZERO) >= 0)
+					|| (order.getAmountPaid().compareTo(BigDecimal.ZERO) >= 0 && order.getCouponAmountPaid().compareTo(BigDecimal.ZERO) > 0)) {
+					OrderRefunds orderRefunds = new OrderRefunds();
+					Member member = order.getMember();
+					orderRefunds.setSn(snDao.generate(Sn.Type.orderRefunds));
+					orderRefunds.setOrder(order);
+					orderRefunds.setCountry(member.getCountry());
+					orderRefunds.setAmount(order.getAmountPaid());
+					orderRefunds.setCouponAmount(order.getCouponAmountPaid());
+					orderRefunds.setMemo("退单退款");
+					orderRefunds.setMethod(OrderRefunds.Method.deposit);
+					orderRefunds.setPaymentMethod(order.getPaymentMethod());
+					orderRefundsDao.persist(orderRefunds);
+					
+					if (member != null) {
+						String notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 电子币账户退款" + orderRefunds.getAmount();
+						if (orderRefunds.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+							fiBankbookJournalService.recharge(member.getUsercode(), orderRefunds.getAmount(), null, 
+									FiBankbookJournal.Type.balance, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.balanceRefund, notes);
+						}
+						if (orderRefunds.getCouponAmount().compareTo(BigDecimal.ZERO) > 0) {
+							notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 购物券账户退款" + orderRefunds.getCouponAmount();
+							fiBankbookJournalService.recharge(member.getUsercode(), orderRefunds.getCouponAmount(), null, 
+									FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.balanceRefund, notes);
+						}
+					}
+					
+					order.setAmountPaid(order.getAmountPaid().subtract(orderRefunds.getAmount()));
+					order.setCouponAmountPaid(order.getCouponAmountPaid().subtract(orderRefunds.getCouponAmount()));
+					order.setRefundAmount(order.getRefundAmount().add(orderRefunds.getAmount()));
+					order.setCouponRefundAmount(order.getCouponRefundAmount().add(orderRefunds.getCouponAmount()));
+					
+					OrderLog orderLog = new OrderLog();
+					orderLog.setType(OrderLog.Type.refunds);
+					orderLog.setOrder(order);
+					orderLogDao.persist(orderLog);
+					
+					mailService.sendRefundsOrderMail(order);
+					smsService.sendRefundsOrderSms(order);
+				}
+				// 退货
+				if (order.getReturnableQuantity() > 0) {
+					OrderReturns orderReturns = new OrderReturns();
+					Integer totalWeight = 0;
+					// 构建订单退货项
+					List<OrderItem> orderItems = order.getOrderItems();
+					List<OrderReturnsItem> orderReturnsItems = new ArrayList<OrderReturnsItem>();
+					if (null != orderItems) {
+						for (OrderItem orderItem : orderItems) {
+							OrderReturnsItem orderReturnsItem = new OrderReturnsItem();
+							orderReturnsItem.setName(orderItem.getName());
+							orderReturnsItem.setOrderReturns(orderReturns);
+							orderReturnsItem.setSpecifications(orderItem.getSpecifications());
+							orderReturnsItem.setQuantity(orderItem.getReturnableQuantity());
+							orderReturnsItem.setSn(orderItem.getSn());
+							orderReturnsItems.add(orderReturnsItem);
+							totalWeight += NumberUtil.getInt(orderItem.getWeight()) * orderReturnsItem.getQuantity();
+						}
+					}
+					orderReturns.setOrderReturnsItems(orderReturnsItems);
+					// 获取配送方式
+					ShippingMethod shippingMethod = order.getShippingMethod();
+					DeliveryCorp deliveryCorp = null;
+					if (null != shippingMethod) {
+						deliveryCorp = shippingMethod.getDefaultDeliveryCorp();
+					}
+					orderReturns.setShippingMethod(shippingMethod);
+					orderReturns.setDeliveryCorp(deliveryCorp);
+					orderReturns.setArea(order.getArea());
+					orderReturns.setSn(snDao.generate(Sn.Type.orderReturns));
+					orderReturns.setOrder(order);
+					orderReturns.setCountry(order.getCountry());
+					orderReturns.setMemo("退单退款");
+					orderReturns.setFreight(shippingMethodService.calculateFreight(shippingMethod, order.getArea(), totalWeight));
+					orderReturns.setPhone(order.getPhone());
+					orderReturns.setShipper(order.getConsignee());
+					orderReturns.setTrackingNo(null);
+					orderReturns.setZipCode(order.getZipCode());
+					orderReturnsDao.persist(orderReturns);
+					
+					for (OrderReturnsItem orderReturnsItem : orderReturns.getOrderReturnsItems()) {
+						OrderItem orderItem = order.getOrderItem(orderReturnsItem.getSn());
+						if (orderItem == null || orderReturnsItem.getQuantity() > orderItem.getReturnableQuantity()) {
+							throw new IllegalArgumentException();
+						}
+						orderItem.setReturnedQuantity(orderItem.getReturnedQuantity() + orderReturnsItem.getQuantity());
+					}
+					
+					order.setReturnedQuantity(order.getReturnedQuantity() + orderReturns.getQuantity());
+					
+					order.setStatus(Order.Status.failed);
+
+					undoUseCouponCode(order);
+					undoExchangePoint(order);
+					releaseAllocatedStock(order);
+
+					OrderLog orderLog = new OrderLog();
+					orderLog.setType(OrderLog.Type.fail);
+					orderLog.setOrder(order);
+					orderLogDao.persist(orderLog);
+
+					mailService.sendFailOrderMail(order);
+					smsService.sendFailOrderSms(order);
+				}
+			}
+		}
+		return "";
+	}
+	
+	/**
+	 * 一键完成
+	 * 
+	 * @param order
+	 *            订单
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	public String completeReview(Long... ids) throws Exception{
+		// 获取当前用户
+		Admin currentUser = userService.getCurrent(Admin.class);
+		if (null == currentUser) {
+			throw new Exception(SpringUtils.getMessage("admin.common.session.lost"));
+		}
+		if (ids != null) {
+			for (Long id : ids) {
+				Order order = find(id);
+				if (null == order || order.isNew() || !acquireLock(order)) {
+					continue;
+				}
+				if (order.hasExpired()) {
+					continue;
+				}
+				// 状态是已收货、已发货可以完成
+				if (Order.Status.shipped != order.getStatus() && Order.Status.received != order.getStatus()) {
+					continue;
+				}
+
+				Member member = order.getMember();
+				if (order.getRewardPoint() > 0) {
+					memberService.addPoint(member, order.getRewardPoint(), PointLog.Type.reward, null);
+				}
+				if (CollectionUtils.isNotEmpty(order.getCoupons())) {
+					for (Coupon coupon : order.getCoupons()) {
+						couponCodeService.generate(coupon, member);
+					}
+				}
+				if ((order.getAmountPaid().compareTo(BigDecimal.ZERO) > 0 && order.getCouponAmountPaid().compareTo(BigDecimal.ZERO) >= 0)
+					|| (order.getAmountPaid().compareTo(BigDecimal.ZERO) >= 0 && order.getCouponAmountPaid().compareTo(BigDecimal.ZERO) > 0)) {
+					memberService.addAmount(member, order.getAmountPaid(), order.getCouponAmountPaid());
+				}
+				for (OrderItem orderItem : order.getOrderItems()) {
+					Sku sku = orderItem.getSku();
+					if (sku != null && sku.getProduct() != null) {
+						productService.addSales(sku.getProduct(), orderItem.getQuantity());
+					}
+				}
+
+				order.setStatus(Order.Status.completed);
+				order.setCompleteDate(new Date());
+
+				OrderLog orderLog = new OrderLog();
+				orderLog.setType(OrderLog.Type.complete);
+				orderLog.setOrder(order);
+				orderLogDao.persist(orderLog);
+
+				mailService.sendCompleteOrderMail(order);
+				smsService.sendCompleteOrderSms(order);
+			}
+		}
+		return "";
 	}
 
 	@Override
