@@ -308,7 +308,7 @@
 }
 
 .product-detail .summary .product-image {
-	height: 300px;
+	/*height: 300px;*/
 }
 
 .product-detail .summary .product-image .carousel-indicators {

@@ -359,13 +359,13 @@
 }
 
 .index .hotProduct li.low span {
-	height: 36px;
+	height: auto;
 	padding-top: 5px;
 	font-size: 12px;
 }
 
 .index .hotProduct li.low strong {
-	color: #333333;
+	color: #ff0000;
 }
 
 .index .bottomAd {

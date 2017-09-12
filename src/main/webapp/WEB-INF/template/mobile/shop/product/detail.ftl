@@ -726,7 +726,7 @@
                         [#if product.productImages?has_content]
                             [#list product.productImages as productImage]
                                 <li class="item[#if productImage_index == 0] active[/#if]">
-                                    <img class="img-responsive center-block" src="${productImage.medium}"
+                                    <img style="width: 100%" class="img-responsive center-block" src="${productImage.medium}"
                                          alt="${productImage.title}">
                                 </li>
                             [/#list]

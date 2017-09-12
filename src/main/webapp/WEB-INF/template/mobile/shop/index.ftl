@@ -97,6 +97,15 @@
 	}
 	</script>
 </head>
+<style>
+    #language{
+    	margin-left: 12px;
+        width: 54%;
+        padding: 0px;
+        color: #999999;
+        border-radius: 3px;
+    }
+</style>
 <body class="index">
 	<header>
 		<div class="container-fluid">
@@ -321,7 +330,6 @@
 																[/#if]
 															[/#list]
 														[/#if]
-
                                                     </strong>
                                                     <!-- 券  -->
 													[#if currentUser == null]

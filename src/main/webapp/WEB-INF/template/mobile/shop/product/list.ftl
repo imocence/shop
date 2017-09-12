@@ -52,6 +52,7 @@
 							<span class="small">${message("Sku.exchangePoint")}:</span>
 							<strong class="text-overflow red"><%-product.exchangePoint%></strong>
 						<%}%>
+
 					</a>
 				</div>
 			</div>
@@ -59,7 +60,7 @@
 	</script>
 	<script type="text/javascript">
 	$().ready(function() {
-		
+
 		var $filter = $("#filter");
 		var $filterContent = $("#filter div.filter-content");
 		var $filterBrand = $("#filter a.brand");
@@ -78,32 +79,32 @@
 			promotionId: ${(promotion.id)!"null"},
 			orderType: null
 		}
-		
+
 		// 搜索
 		$searchForm.submit(function() {
 			if ($.trim($keyword.val()) == "") {
 				return false;
 			}
 		});
-		
+
 		// 排序
 		$orderType.click(function() {
 			var $element = $(this);
 			if ($element.hasClass("active")) {
 				return;
 			}
-			
+
 			$order.find(".active").removeClass("active");
 			$element.addClass("active");
 			var $dropdown = $element.closest(".dropdown");
 			if ($dropdown.size() > 0) {
 				$dropdown.find("a[data-toggle='dropdown'] strong").text($element.data("title")).addClass("active");
 			}
-			
+
 			data.orderType = $element.data("order-type");
 			$productItems.infiniteScroll("refresh");
 		});
-		
+
 		// 筛选
 		$filterButton.click(function() {
 			var $element = $(this);
@@ -112,16 +113,16 @@
 			}
 			$filter.velocity("transition.slideRightBigIn").parent().velocity("fadeIn");
 		});
-		
+
 		// 筛选
 		$filterComplete.click(function() {
 			$filter.velocity("transition.slideRightBigOut").parent().velocity("fadeOut");
 		});
-		
+
 		// 筛选品牌
 		$filterBrand.click(function() {
 			var $element = $(this);
-			
+
 			if ($element.hasClass("active")) {
 				$element.removeClass("active");
 				data.brandId = null;
@@ -129,17 +130,17 @@
 				$element.addClass("active").parent().siblings("dd").find("a.active").removeClass("active");
 				data.brandId = $element.data("brand-id");
 			}
-			
+
 			$productItems.infiniteScroll("refresh");
 			return false;
 		});
-		
+
 		// 筛选属性
 		$filterAttribute.click(function() {
 			var $element = $(this);
 			var attributeName = $element.data("attribute-name");
 			var attributeOption = $element.data("attribute-option");
-			
+
 			if ($element.hasClass("active")) {
 				$element.removeClass("active");
 				data[attributeName] = null;
@@ -147,11 +148,11 @@
 				$element.addClass("active").parent().siblings("dd").find("a.active").removeClass("active");
 				data[attributeName] = attributeOption;
 			}
-			
+
 			$productItems.infiniteScroll("refresh");
 			return false;
 		});
-		
+
 		// 无限滚动加载
 		$productItems.infiniteScroll({
 			url: function(pageNumber) {
@@ -165,7 +166,7 @@
 				});
 			}
 		});
-	
+
 	});
 	</script>
 </head>
