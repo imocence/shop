@@ -34,6 +34,7 @@ public class IndexController extends BaseController {
 	 */
 	@GetMapping
 	public String index(@CurrentUser Member currentUser,ModelMap model) {
+	    model.addAttribute("currentUser", currentUser);
 		return "shop/index";
 	}
 

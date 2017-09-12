@@ -87,6 +87,9 @@ $().ready(function() {
 		<table id="listTable" class="list">
 			<tr>
 				<th>
+					<a href="javascript:;" class="sort" name="country">${message("common.country")}</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="sku">${message("Sku.sn")}</a>
 				</th>
 				<th>
@@ -105,6 +108,9 @@ $().ready(function() {
 					<a href="javascript:;" class="sort" name="stock">${message("StockLog.stock")}</a>
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" name="allocatedStock">${message("StockLog.allocatedStock")}</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="memo">${message("StockLog.memo")}</a>
 				</th>
 				<th>
@@ -113,6 +119,9 @@ $().ready(function() {
 			</tr>
 			[#list page.content as stockLog]
 				<tr>
+					<td>
+						${stockLog.sku.product.productCategory.country.name}
+					</td>
 					<td>
 						${stockLog.sku.sn}
 					</td>
@@ -133,6 +142,9 @@ $().ready(function() {
 					</td>
 					<td>
 						${stockLog.stock}
+					</td>
+					<td>
+						${stockLog.sku.allocatedStock}
 					</td>
 					<td>
 						[#if stockLog.memo??]

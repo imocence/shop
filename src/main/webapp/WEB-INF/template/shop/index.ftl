@@ -248,8 +248,30 @@ $().ready(function() {
 															${abbreviate(product.name, 48)}
 														[/#if]
 													</div>
-													<strong>${currency(product.price, true)}</strong>
-													<em [#if currentUser == null] style="display:none"[/#if]>${message("shop.index.coupon")}${currency(product.coupon, true)}</em>
+													  [#if currentUser == null] 
+														   [#list product.productGrades as pg]
+																[#if pg.grade.isDefault == true]
+																 <strong >${pg.price}</strong>
+																[/#if]
+														    [/#list]
+													   [#else]
+															[#list product.productGrades as pg]
+																[#if pg.grade.id == currentUser.memberRank.id]
+																 <strong >${pg.price}</strong>
+																[/#if]
+														    [/#list]
+													   [/#if]
+													<!-- 券 -->
+													[#if currentUser == null] 
+														
+													[#else]
+															[#list product.productGrades as pg]
+																[#if pg.grade.id == currentUser.memberRank.id]
+																	<em>${message("shop.index.coupon")}${pg.coupon}</em>
+																[/#if]
+														    [/#list]
+														</dl>
+													[/#if]
 													<img src="${base}/upload/image/blank.gif" data-original="${product.image!setting.defaultThumbnailProductImage}" />
 												</a>
 											</li>
@@ -258,8 +280,28 @@ $().ready(function() {
 												<a href="${base}${product.path}" title="${product.name}" target="_blank">
 													<img src="${base}/upload/image/blank.gif" data-original="${product.image!setting.defaultThumbnailProductImage}" />
 													<span title="${product.name}">${abbreviate(product.name, 24)}</span>
-													<strong>${currency(product.price, true)}</strong>
-													<em [#if currentUser == null] style="display:none"[/#if]>${message("shop.index.coupon")}${currency(product.coupon, true)}</em>
+													 [#if currentUser == null] 
+														   [#list product.productGrades as pg]
+																[#if pg.grade.isDefault == true]
+																 <strong >${pg.price}</strong>
+																[/#if]
+														    [/#list]
+													   [#else]
+															[#list product.productGrades as pg]
+																[#if pg.grade.id == currentUser.memberRank.id]
+																 <strong >${pg.price}</strong>
+																[/#if]
+														    [/#list]
+													   [/#if]
+													<!-- 券 -->
+													[#if currentUser == null] 
+													[#else]
+															[#list product.productGrades as pg]
+																[#if pg.grade.id == currentUser.memberRank.id]
+																	<em>${message("shop.index.coupon")}${pg.coupon}</em>
+																[/#if]
+														    [/#list]
+													[/#if]
 												</a>
 											</li>
 										[/#if]
