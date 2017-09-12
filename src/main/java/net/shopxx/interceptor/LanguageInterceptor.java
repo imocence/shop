@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.shopxx.controller.common.LanguageController;
 import net.shopxx.entity.Language;
+import net.shopxx.entity.Member;
 import net.shopxx.service.LanguageService;
+import net.shopxx.service.UserService;
 import net.shopxx.util.SpringUtils;
 import net.shopxx.util.WebUtils;
 
@@ -25,6 +27,8 @@ public class LanguageInterceptor extends HandlerInterceptorAdapter {
 
 	@Inject
 	private LanguageService languageService;
+	@Inject
+	private UserService userService;
 	
 	/**
 	 * 请求前处理,设置languageCode到session中
@@ -41,13 +45,20 @@ public class LanguageInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		String code = (String)WebUtils.getRequest().getSession().getAttribute(LanguageController.CODE);
 		if (null == code) {
-			LocaleResolver localeResolver = SpringUtils.getBean("localeResolver", LocaleResolver.class);
-			Locale locale = localeResolver.resolveLocale(WebUtils.getRequest());
-			if (null  == locale) {
-				locale = Locale.getDefault();
+			// 默认获取该用户的语言
+			Language language = null;
+			Member currentUser = userService.getCurrent(Member.class);
+			if (currentUser != null && currentUser.getLanguage() != null) {
+				language = currentUser.getLanguage();
+			}else {
+				LocaleResolver localeResolver = SpringUtils.getBean("localeResolver", LocaleResolver.class);
+				Locale locale = localeResolver.resolveLocale(WebUtils.getRequest());
+				if (null  == locale) {
+					locale = Locale.getDefault();
+				}
+				String localeStr = locale.getLanguage() + "_" + locale.getCountry();
+				language = languageService.findByLocale(localeStr);
 			}
-			String localeStr = locale.getLanguage() + "_" + locale.getCountry();
-			Language language = languageService.findByLocale(localeStr);
 			if (null == language) {
 				language = languageService.findByLocale(Locale.US.toString());
 			}

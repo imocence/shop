@@ -400,6 +400,10 @@ public class Member extends User {
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
 	private Set<FiBankbookBalance> fiBankbookBalances = new HashSet<>();	
 	
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="language", referencedColumnName="locale")
+	private Language language;
 	
 	/**
 	 * 获取用户名
@@ -1177,6 +1181,14 @@ public class Member extends User {
 	 */
 	public void setPointLogs(Set<PointLog> pointLogs) {
 		this.pointLogs = pointLogs;
+	}
+	
+	public Language getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(Language language) {
+		this.language = language;
 	}
 
 	/**
