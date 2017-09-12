@@ -227,7 +227,7 @@
 }
 
 .hotProduct dd a {
-	height: 220px;
+	/*height: 220px;*/
 	display: block;
 	color: #999999;
 	overflow: hidden;

@@ -305,7 +305,33 @@
 													<img class="img-responsive center-block" src="${base}/upload/image/blank.gif" data-original="${product.image!setting.defaultThumbnailProductImage}">
 													<h4 class="text-overflow">${product.name}</h4>
 													[#if product.caption?has_content]
-														<span class="text-overflow text-muted small">${product.caption}</span>
+														<div class="text-overflow text-muted small">${product.caption}</div>
+													[/#if]
+                                                    <strong style="font-size: 12px;color: red;">
+														[#if currentUser == null]
+															[#list product.productGrades as pg]
+																[#if pg.grade.isDefault == true]
+																${currency(pg.price, true)}
+																[/#if]
+															[/#list]
+														[#else]
+															[#list product.productGrades as pg]
+																[#if pg.grade.id == currentUser.memberRank.id]
+																${currency(pg.price, true)}
+																[/#if]
+															[/#list]
+														[/#if]
+
+                                                    </strong>
+                                                    <!-- 券  -->
+													[#if currentUser == null]
+
+													[#else]
+														[#list product.productGrades as pg]
+															[#if pg.grade.id == currentUser.memberRank.id]
+                                                                <strong style="font-size: 10px;color: #ff7700;margin-left: 4px"> ${message("shop.index.coupon")}${pg.coupon}</strong>
+															[/#if]
+														[/#list]
 													[/#if]
 												</a>
 											</div>
