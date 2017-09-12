@@ -297,6 +297,14 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 		return new Page<>(fullTextQuery.getResultList(), fullTextQuery.getResultSize(), pageable);*/
 	}
 	
+	/**
+	 * 按照价格排序
+	 * 
+	 * @param results
+	 * @param startPrice
+	 * @param endPrice
+	 * @return
+	 */
 	private List<Product> filterPrice(List<Product> results,BigDecimal startPrice,BigDecimal endPrice) {
 	    if (results == null || results.isEmpty()) {
             return results;
