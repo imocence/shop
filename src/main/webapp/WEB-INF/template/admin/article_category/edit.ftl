@@ -15,6 +15,8 @@
 $().ready(function() {
 
 	var $inputForm = $("#inputForm");
+	var $country = $("#country");
+	var $parentId = $("#parentId");
 	
 	[@flash_message /]
 	
@@ -25,6 +27,28 @@ $().ready(function() {
 			order: "digits"
 		}
 	});
+	
+	$country.change(function(){
+		// ajax获取paymentMethod
+		$.ajax({
+			url: "${base}/admin/article_category/listByCountry",
+			type: "GET",
+			data: {countryName: $country.val()},
+			dataType: "json",
+			cache: false,
+			success: function(articleCategoryTree) {
+				$parentId.empty();
+				$parentId.append('<option value="">${message("admin.articleCategory.root")}</option>');
+				$.each(articleCategoryTree, function (index,item){
+					var space = '';
+					for(var i=0;i<item.grade;i++){
+						space += '&nbsp;&nbsp';
+					}
+					$parentId.append('<option value=' + item.id + '>' + space + item.name + '</option>');
+				});
+			}
+		});
+	});	
 
 });
 </script>
@@ -41,7 +65,7 @@ $().ready(function() {
 					<span class="requiredField">*</span>${message("common.country")}:
 				</th>
 				<td>
-					<select name="countryName">
+					<select id="country" name="countryName">
 						[@country_list]
 							[#list countrys as country]
 								<option value="${country.name}"[#if country.name == articleCategory.country.name] selected="selected"[/#if]>${message("${country.nameLocal}")}</option>
@@ -63,7 +87,7 @@ $().ready(function() {
 					${message("ArticleCategory.parent")}:
 				</th>
 				<td>
-					<select name="parentId">
+					<select id="parentId" name="parentId">
 						<option value="">${message("admin.articleCategory.root")}</option>
 						[#list articleCategoryTree as category]
 							[#if category != articleCategory && !children?seq_contains(category)]

@@ -124,6 +124,7 @@ $().ready(function() {
 				<ul>
 					<li[#if page.searchProperty == "member.usercode"] class="current"[/#if] val="member.usercode">${message("common.member.code")}</li>
 					<li[#if page.searchProperty == "uniqueCode"] class="current"[/#if] val="uniqueCode">${message("admin.fiBankbookJournal.uniqueCode")}</li>
+					<li[#if page.searchProperty == "notes"] class="current"[/#if] val="notes">${message("admin.fiBankbookJournal.notes")}</li>
 				</ul>
 			</div>
 			${message("admin.fiBankbookJournal.date")}:

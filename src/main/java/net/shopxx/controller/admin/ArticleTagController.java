@@ -5,7 +5,20 @@
  */
 package net.shopxx.controller.admin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
+
+import net.shopxx.Filter;
+import net.shopxx.Message;
+import net.shopxx.Pageable;
+import net.shopxx.entity.ArticleTag;
+import net.shopxx.entity.BaseEntity;
+import net.shopxx.entity.Country;
+import net.shopxx.service.ArticleTagService;
+import net.shopxx.service.CountryService;
+import net.shopxx.util.StringUtil;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -15,14 +28,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import net.shopxx.Message;
-import net.shopxx.Pageable;
-import net.shopxx.entity.ArticleTag;
-import net.shopxx.entity.BaseEntity;
-import net.shopxx.entity.Country;
-import net.shopxx.service.ArticleTagService;
-import net.shopxx.service.CountryService;
-import net.shopxx.util.StringUtil;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * Controller - 文章标签
@@ -106,6 +113,34 @@ public class ArticleTagController extends BaseController {
 	public @ResponseBody Message delete(Long[] ids) {
 		articleTagService.delete(ids);
 		return Message.success(SUCCESS_MESSAGE);
+	}
+	
+	/**
+	 * 根据国家选择上级文章分类
+	 */
+	@GetMapping("/listByCountry")
+	public @ResponseBody JSONArray listByCountry(String countryName) {
+		List<Filter> filters = new ArrayList<Filter>();
+		Country country = null;
+		if (StringUtil.isNotEmpty(countryName)) {
+			country = countryService.findByName(countryName);
+			Filter filter = new Filter();
+			filter.setProperty("country");
+			filter.setValue(country);
+			filter.setOperator(Filter.Operator.eq);
+			filters.add(filter);
+		}
+		List<ArticleTag> list = articleTagService.findList(null, filters, null);
+		JSONArray jsonArray = new JSONArray();
+		if (null != list) {
+			for (ArticleTag bean : list) {
+				JSONObject object = new JSONObject();
+				object.put("id", bean.getId());
+				object.put("name", bean.getName());
+				jsonArray.add(object);
+			}
+		}
+		return jsonArray;
 	}
 
 }
