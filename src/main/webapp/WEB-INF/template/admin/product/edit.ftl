@@ -1202,8 +1202,8 @@ $().ready(function() {
 						<input type="hidden" name="gradeIds"  value="${productGrade.grade.id}"/>
 					</th>
 					<td>
-						<span>${message("Sku.price")}：<input type="text" name="gradePrices" id="gradePrices" class="text" value="${productGrade.price}"/></span>
-						<span>${message("Sku.coupon")}：<input type="text" name="coupons" id="coupons" class="text" value="${productGrade.coupon}"/></span>
+						<span>${message("Sku.price")}：<input type="text" name="gradePrices" id="gradePrices" class="text" value="${currency(productGrade.price)}"/></span>
+						<span>${message("Sku.coupon")}：<input type="text" name="coupons" id="coupons" class="text" value="${currency(productGrade.coupon)}"/></span>
 						<span>${message("admin.grade.buy")}：
 							<select name="buys">
 							  <option value ="1" [#if 1 == productGrade.buy] selected="selected"[/#if]>${message("admin.common.true")}</option>
