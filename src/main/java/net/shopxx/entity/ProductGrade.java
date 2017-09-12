@@ -24,6 +24,7 @@ import org.hibernate.search.annotations.Store;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import net.shopxx.BigDecimalNumericFieldBridge;
+import net.shopxx.entity.BaseEntity.BaseView;
 
 /**
  * Entity - 产品等级表
@@ -40,6 +41,7 @@ public class ProductGrade extends BaseEntity<Long> {
     /**
      * 国家
      */
+    @JsonView(BaseView.class)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(nullable = true)
     private MemberRank           grade;
@@ -75,12 +77,14 @@ public class ProductGrade extends BaseEntity<Long> {
     /**
      * 是否可购买 1，可以，非0，可以
      */
+    @JsonView(BaseView.class)
     @Column(nullable = false)
     private Integer   buy;
     
     /**
      * 是否可查看 1，可以，非0，可以
      */
+    @JsonView(BaseView.class)
     @Column(nullable = false)
     private Integer   see;
     

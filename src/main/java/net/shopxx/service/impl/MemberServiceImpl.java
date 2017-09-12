@@ -375,6 +375,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 					rankName = "中心店";
 				}
 				//MemberRank memberRank = memberRankService.findByCountry(countryService.findByName(locale), rankName);
+
 				member.setMemberRank(memberRankService.findByCountry(countryService.findByName(locale), rankName));	
 				//更新区代信息
 				NapaStores napaStores = napaStoresService.find(member.getNapaStores().getId());
@@ -388,7 +389,8 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 				napaStores.setMobile(mobile);
 				napaStoresService.update(napaStores);
 				
-				member.setNapaStores(napaStores);		
+				member.setNapaStores(napaStores);
+				update(member);
 				members.add(member);
 			  }
 			}

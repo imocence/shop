@@ -56,9 +56,9 @@
         <li>
             <p>
                 <%if (consultation.member != null) {%>
-                <%-consultation.member.username%>
+                	<%-consultation.member.username%>
                 <%} else {%>
-            ${message("shop.product.anonymous")}
+            		${message("shop.product.anonymous")}
                 <%}%>
                 <span class="pull-right small gray-darker"><%-moment(new Date(consultation.createdDate)).format('YYYY-MM-DD HH:mm:ss')%></span>
             </p>
@@ -653,14 +653,41 @@
                 <span>&times;</span>
             </button>
         [#if product.type == "general"]
-            <strong class="price red">${currency(defaultSku.price, true)}</strong>
+            <strong class="price red">
+            	[#if currentUser == null]
+                    [#list product.productGrades as pg]
+                        [#if pg.grade.isDefault == true]
+                        ${currency(pg.price, true)}
+                        [/#if]
+                    [/#list]
+                [#else]
+                    [#list product.productGrades as pg]
+                        [#if pg.grade.id == currentUser.memberRank.id]
+                        ${currency(pg.price, true)}
+                        [/#if]
+                    [/#list]
+                [/#if]
+            </strong>
             [#if setting.isShowMarketPrice]
                 <del class="market-price gray-darker">${currency(defaultSku.marketPrice, true)}</del>
             [/#if]
-            <dd [#if currentUser == null] class="hidden"[/#if]>${message("Sku.coupon")}
-                :${currency(defaultSku.coupon, true)}</dd>
+            <dd [#if currentUser == null] class="hidden"[/#if]>
+            	${message("Sku.coupon")}:
+            	<!-- 券  -->
+	            [#if currentUser == null]
+	
+	            [#else]
+	                [#list product.productGrades as pg]
+	                    [#if pg.grade.id == currentUser.memberRank.id]
+	                        ${pg.coupon}
+	                    [/#if]
+	                [/#list]
+	            [/#if]
+            </dd>
+                
+            
         [#elseif product.type == "exchange"]
-        ${message("Sku.exchangePoint")}:
+        	${message("Sku.exchangePoint")}:
             <strong class="exchange-point red">${defaultSku.exchangePoint}</strong>
         [/#if]
             <span id="specificationTips" class="specification-tips red-dark"></span>
@@ -775,15 +802,15 @@
                         [/#if]
                         </strong>
                         <!-- 券  -->
-                    [#if currentUser == null]
-
-                    [#else]
-                        [#list product.productGrades as pg]
-                            [#if pg.grade.id == currentUser.memberRank.id]
-                                <strong style="font-size: 14px;margin-left: 5px;color: #ff6100"> ${message("shop.index.coupon")}${pg.coupon}</strong>
-                            [/#if]
-                        [/#list]
-                    [/#if]
+	                    [#if currentUser == null]
+	
+	                    [#else]
+	                        [#list product.productGrades as pg]
+	                            [#if pg.grade.id == currentUser.memberRank.id]
+	                                <strong style="font-size: 14px;margin-left: 5px;color: #ff6100"> ${message("shop.index.coupon")}${pg.coupon}</strong>
+	                            [/#if]
+	                        [/#list]
+	                    [/#if]
                     </section>
                 [#if product.parameterValues?has_content]
                     <section>
@@ -801,9 +828,9 @@
                     </section>
                 </div>
                 <div id="detail" class="detail tab-pane">
-                [#noautoesc]
-							${product.introduction}
-						[/#noautoesc]
+                	[#noautoesc]
+						${product.introduction}
+					[/#noautoesc]
                 </div>
                 <div id="review" class="review tab-pane">
                     <ul></ul>

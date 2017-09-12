@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.Results;
 import net.shopxx.entity.Attribute;
@@ -39,6 +40,7 @@ import net.shopxx.entity.Brand;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.ProductCategory;
+import net.shopxx.entity.ProductGrade;
 import net.shopxx.entity.ProductTag;
 import net.shopxx.entity.Promotion;
 import net.shopxx.exception.ResourceNotFoundException;
@@ -252,7 +254,7 @@ public class ProductController extends BaseController {
 	 */
 	@GetMapping(path = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
 	@JsonView(BaseEntity.BaseView.class)
-	public ResponseEntity<?> list(Long productCategoryId, Product.Type type, Long brandId, Long promotionId, Long productTagId, BigDecimal startPrice, BigDecimal endPrice, Product.OrderType orderType, Integer pageNumber, Integer pageSize, HttpServletRequest request) {
+	public ResponseEntity<?> list(@CurrentUser Member currentUser,Long productCategoryId, Product.Type type, Long brandId, Long promotionId, Long productTagId, BigDecimal startPrice, BigDecimal endPrice, Product.OrderType orderType, Integer pageNumber, Integer pageSize, HttpServletRequest request) {
 		ProductCategory productCategory = productCategoryService.find(productCategoryId);
 		Brand brand = brandService.find(brandId);
 		Promotion promotion = promotionService.find(promotionId);
@@ -278,7 +280,31 @@ public class ProductController extends BaseController {
 		}
 
 		Pageable pageable = new Pageable(pageNumber, pageSize);
-		return ResponseEntity.ok(productService.findPage(type, productCategory,null, brand, promotion, productTag, attributeValueMap, startPrice, endPrice, true, true, null, null, null, null, orderType, pageable).getContent());
+ 		List<Product> products = productService.findPage(type, productCategory,null, brand, promotion, productTag, attributeValueMap, startPrice, endPrice, true, true, null, null, null, null, orderType, pageable).getContent();
+ 		ProductGrade newProductGrade = null;
+ 		for(Product product : products){
+			Set<ProductGrade> productGrades = product.getProductGrades();
+			if(currentUser == null){
+				for(ProductGrade productGrade : productGrades){
+					if(productGrade.getGrade().getIsDefault()){
+						newProductGrade = productGrade;
+					}
+				}
+				productGrades.clear();
+				productGrades.add(newProductGrade);
+			}else{
+				for(ProductGrade productGrade : productGrades){
+					if(productGrade.getGrade().getId().equals(currentUser.getMemberRank().getId())){
+						newProductGrade = productGrade;
+					}
+				}
+				productGrades.clear();
+				productGrades.add(newProductGrade);
+			}
+			product.setProductGrades(productGrades);
+		}
+ 		
+ 		return ResponseEntity.ok(products);
 	}
 
 	/**

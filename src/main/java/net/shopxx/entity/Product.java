@@ -56,6 +56,7 @@ import freemarker.core.Environment;
 import freemarker.template.TemplateException;
 import net.shopxx.BaseAttributeConverter;
 import net.shopxx.BigDecimalNumericFieldBridge;
+import net.shopxx.entity.BaseEntity.BaseView;
 import net.shopxx.util.FreeMarkerUtils;
 
 /**
@@ -640,6 +641,7 @@ public class Product extends BaseEntity<Long> {
 	/**
      * SKU
      */
+	@JsonView(BaseView.class)
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<ProductGrade> productGrades = new HashSet<>();
 

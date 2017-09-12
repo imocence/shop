@@ -46,8 +46,17 @@
 					<a href="${base}<%-product.path%>">
 						<img class="img-responsive center-block" src="<%-product.thumbnail != null ? product.thumbnail : "${setting.defaultThumbnailProductImage}"%>" alt="<%-product.name%>">
 						<h4 class="text-overflow"><%-product.name%></h4>
-						<%if (product.type == "general") {%>
-							<strong class="text-overflow red"><%-currency(product.price, true)%></strong>
+						<%if (product.type == "general") {%>					
+							<%if (product.productGrades != null) {%>								
+								<%_.each(product.productGrades, function(productGrade, i) {%>
+									<%if (productGrade.grade.isDefault) {%>
+										<strong class="text-overflow red"><%-currency(productGrade.price, true)%></strong>
+									<%} else {%>
+										<strong class="text-overflow red"><%-currency(productGrade.price, true)%></strong>
+										<strong class="text-overflow red"><%-currency(productGrade.coupon, true)%></strong>
+									<%}%>						            
+								<%})%>
+							<%}%>
 						<%} else if (product.type == "exchange") {%>
 							<span class="small">${message("Sku.exchangePoint")}:</span>
 							<strong class="text-overflow red"><%-product.exchangePoint%></strong>

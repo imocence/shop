@@ -25,6 +25,8 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 /**
  * Entity - 会员等级
  * 
@@ -64,6 +66,7 @@ public class MemberRank extends BaseEntity<Long> {
 	/**
 	 * 是否默认
 	 */
+	@JsonView(BaseView.class)
 	@NotNull
 	@Column(nullable = false)
 	private Boolean isDefault;
