@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.alibaba.fastjson.JSON;
@@ -34,19 +36,24 @@ import net.sf.json.JSONObject;
 import net.shopxx.Message;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
+import net.shopxx.controller.common.LanguageController;
 import net.shopxx.entity.BaseEntity;
 import net.shopxx.entity.FiBankbookJournal;
+import net.shopxx.entity.Language;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.FiBankbookBalanceService;
 import net.shopxx.service.FiBankbookJournalService;
+import net.shopxx.service.LanguageService;
 import net.shopxx.service.MemberAttributeService;
 import net.shopxx.service.MemberRankService;
 import net.shopxx.service.MemberService;
 import net.shopxx.service.NapaStoresService;
 import net.shopxx.service.UserService;
+import net.shopxx.util.SpringUtils;
 import net.shopxx.util.TimeUtil;
+import net.shopxx.util.WebUtils;
 
 /**
  * Controller - 会员
@@ -78,6 +85,8 @@ public class MemberController extends BaseController {
 	FiBankbookJournalService fiBankbookJournalService;
 	@Inject
 	CountryService countryService;
+	@Inject
+	LanguageService languageService;
 	/**
 	 * 检查用户名是否存在
 	 */
@@ -171,7 +180,27 @@ public class MemberController extends BaseController {
 			state = "\"验签错误\"";
 		}else{	
 			try {
-				memberService.create(member,companyCode,userCode,signature,timestamp,request,redirectAttributes);
+				//获取国家语言
+				String code = (String)WebUtils.getRequest().getSession().getAttribute(LanguageController.CODE);
+				Language language = null;
+				if (null == code) {
+					LocaleResolver localeResolver = SpringUtils.getBean("localeResolver", LocaleResolver.class);
+					Locale locale = localeResolver.resolveLocale(WebUtils.getRequest());
+					if (null  == locale) {
+						locale = Locale.getDefault();
+					}
+					String localeStr = locale.getLanguage() + "_" + locale.getCountry();
+					language = languageService.findByLocale(localeStr);
+					if (null == language) {
+						language = languageService.findByLocale(Locale.US.toString());
+					}
+					/*if (null != language) {
+						WebUtils.getRequest().getSession().setAttribute(LanguageController.CODE, language.getCode());
+					}*/
+				}else{
+					language = languageService.findByLocale(code);
+				}
+				memberService.create(member,companyCode,userCode,signature,timestamp,request,redirectAttributes,language);
 				//流水号格式：类型首字母+时间
 				String uniqueCode = "ZC"+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
 				//添加一条注册赠送记录
@@ -221,6 +250,8 @@ public class MemberController extends BaseController {
 		member.setPoint(0L);
 		member.setBalance(BigDecimal.ZERO);
 		member.setAmount(BigDecimal.ZERO);
+		
+		member.setCouponAmount(BigDecimal.ZERO);
 		member.setIsLocked(false);
 		member.setLockDate(null);
 		member.setLastLoginIp(null);

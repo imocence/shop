@@ -90,6 +90,15 @@
 					<a href="${base}/member/deposit/log?type=1"[#if current == "depositLog"] class="current"[/#if]>${message("member.deposit.coupon")}</a>
 				</dd>
 			</dl>
+			<dl>
+				<dt>${message("member.navigation.remittanceLog")}</dt>
+				<dd>
+					<a href="${base}/member/remittance_log/add"[#if current == "remittanceAdd"] class="current"[/#if]>${message("member.remittanceLog.add")}</a>
+				</dd>
+				<dd>
+					<a href="${base}/member/remittance_log/list"[#if current == "remittanceList"] class="current"[/#if]>${message("member.remittanceLog.list")}</a>
+				</dd>
+			</dl>
 		</div>
 		<div class="bottom"></div>
 	</div>

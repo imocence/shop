@@ -395,6 +395,15 @@ public class Member extends User {
 	private Country country;
 	
 	/**
+	 * 语言
+	 */
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="language", referencedColumnName="locale")
+	private Language language;
+	
+	
+	/**
 	 * 余额
 	 */
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
@@ -1407,6 +1416,20 @@ public class Member extends User {
 
 	public void setCountry(Country country) {
 		this.country = country;
+	}
+	/**
+	 * 获取语言
+	 * @return
+	 */
+	public Language getLanguage() {
+		return language;
+	}
+	/**
+	 * 设置语言
+	 * @return
+	 */
+	public void setLanguage(Language language) {
+		this.language = language;
 	}
 
 	public Set<FiBankbookBalance> getFiBankbookBalances() {

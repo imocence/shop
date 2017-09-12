@@ -33,9 +33,16 @@ import net.shopxx.entity.Country;
 @Repository
 public class ArticleCategoryDaoImpl extends BaseDaoImpl<ArticleCategory, Long> implements ArticleCategoryDao {
 
-	public List<ArticleCategory> findRoots(Integer count) {
-		String jpql = "select articleCategory from ArticleCategory articleCategory where articleCategory.parent is null order by articleCategory.order asc";
+	public List<ArticleCategory> findRoots(Integer count,Country  country) {
+		String jpql = "select articleCategory from ArticleCategory articleCategory where articleCategory.parent is null ";
+		if (country != null) {
+			jpql += " and country=:country ";
+		}
+		jpql += " order by articleCategory.order asc ";
 		TypedQuery<ArticleCategory> query = entityManager.createQuery(jpql, ArticleCategory.class);
+		if (country != null) {
+			query.setParameter("country", country);
+		}
 		if (count != null) {
 			query.setMaxResults(count);
 		}

@@ -2156,7 +2156,7 @@ public class Product extends BaseEntity<Long> {
 	 */
 	@PrePersist
 	public void prePersist() {
-		setSn(StringUtils.lowerCase(getSn()));
+//		setSn(StringUtils.lowerCase(getSn()));
 		if (CollectionUtils.isNotEmpty(getProductImages())) {
 			Collections.sort(getProductImages());
 		}

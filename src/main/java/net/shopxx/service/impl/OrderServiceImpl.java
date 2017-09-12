@@ -999,7 +999,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		if (passed) {
 			order.setStatus(Order.Status.pendingShipment);
 			// 审核通过之后向直销推送订单
-//			orderInterface(order);
+			orderInterface(order);
 		} else {
 			order.setStatus(Order.Status.denied);
 

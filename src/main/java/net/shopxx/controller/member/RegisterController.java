@@ -125,6 +125,7 @@ public class RegisterController extends BaseController {
 		member.setPoint(0L);
 		member.setBalance(BigDecimal.ZERO);
 		member.setAmount(BigDecimal.ZERO);
+		member.setCouponAmount(BigDecimal.ZERO);
 		member.setIsEnabled(true);
 		member.setIsLocked(false);
 		member.setLockDate(null);
