@@ -334,7 +334,9 @@ $().ready(function() {
 						<label>
 							<input type="checkbox" name="permissions" value="admin:fiBankbookJournalTempAdd" />${message("admin.role.fiBankbookJournalTempAdd")}
 						</label>
-
+						<label>
+							<input type="checkbox" name="permissions" value="admin:remittanceLog" />${message("admin.role.remittanceLog")}
+						</label>
 					</span>
 				</td>
 			</tr>
