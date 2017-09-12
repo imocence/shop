@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.mysql.fabric.xmlrpc.base.Data;
+
 public class TimeUtil { 
 	/**
 	 * 传递的时间戳与当前时间的差
@@ -35,7 +37,18 @@ public class TimeUtil {
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar
 				.getInstance().getTime());
 	}
-	
+	/**
+	 * data转String
+	 * @param format
+	 * @return
+	 */
+	public static String getDate(Date date){
+		//时间戳转化为Sting或Date  
+	    SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+
+	    String dataString = format.format(date);  
+	    return dataString;
+	}
 	public static String getFormatNowTime(String format) {
 		return new SimpleDateFormat(format).format(Calendar
 				.getInstance().getTime());
@@ -183,5 +196,5 @@ public class TimeUtil {
 		long timeDelta=(date1.getTime()-date2.getTime())/1000;//单位是秒
 		int minutesDelta=timeDelta>0?(int)timeDelta:(int)Math.abs(timeDelta);  
 		return minutesDelta;  
-	} 
+	}
 }

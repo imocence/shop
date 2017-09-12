@@ -365,6 +365,10 @@
 			
 			// 订单提交
 			$submit.click(function() {
+				[#if !(currentUser.napaStores.napaAddress?has_content)]
+					$.alert("${message("shop.order.newAddres")}");
+					return false;
+				[/#if]
 				[#if order.isDelivery]
 					if ($receiverId.val() == "") {
 						$.alert("${message("shop.order.receiverRequired")}");

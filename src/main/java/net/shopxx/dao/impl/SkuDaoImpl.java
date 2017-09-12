@@ -69,6 +69,7 @@ public class SkuDaoImpl extends BaseDaoImpl<Sku, Long> implements SkuDao {
 			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("product").get("type"), type));
 		}
 		if (country != null) {
+			//restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("product").get("productCategory").get("country"), country));
 			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("product").get("productCategory").get("country"), country));
 		}
 		restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.or(criteriaBuilder.like(root.<String>get("sn"), "%" + keyword + "%"), criteriaBuilder.like(root.get("product").<String>get("name"), "%" + keyword + "%")));

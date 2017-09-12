@@ -77,11 +77,17 @@
 			</dl>
 			<dl>
 				<dt>${message("member.navigation.deposit")}</dt>
-				<dd>
+				<!--<dd>
 					<a href="${base}/member/deposit/recharge"[#if current == "depositRecharge"] class="current"[/#if]>${message("member.deposit.recharge")}</a>
+				</dd>-->
+				<dd>
+					<a href="${base}/member/deposit/gift"[#if current == "depositRecharge"] class="current"[/#if]>${message("member.deposit.gift")}</a>
 				</dd>
 				<dd>
-					<a href="${base}/member/deposit/log"[#if current == "depositLog"] class="current"[/#if]>${message("member.deposit.log")}</a>
+					<a href="${base}/member/deposit/log?type=0"[#if current == "depositLog"] class="current"[/#if]>${message("member.deposit.log")}</a>
+				</dd>
+				<dd>
+					<a href="${base}/member/deposit/log?type=1"[#if current == "depositLog"] class="current"[/#if]>${message("member.deposit.coupon")}</a>
 				</dd>
 			</dl>
 			<dl>

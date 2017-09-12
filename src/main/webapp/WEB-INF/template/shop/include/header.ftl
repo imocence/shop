@@ -66,6 +66,53 @@ function changeLanguage(){
 	});
 }
 </script>
+<style>
+	.languageSelect{
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        padding: 2px;
+        color: #80989f;
+        background: transparent
+        background: rgba(0, 0, 0, 0);
+        border: 0;
+	}
+    .select {
+		margin-top: 4px;
+        margin-left: 10px;
+        width: 100%;
+        display: block;
+        position: relative;
+        overflow: hidden;
+        background: white;
+        border: 1px solid #d2e2e7;
+        border-bottom-color: #c5d4d9;
+        border-radius: 2px;
+        background-image: -webkit-linear-gradient(top, #fcfdff, #f2f7f7);
+        background-image: -moz-linear-gradient(top, #fcfdff, #f2f7f7);
+        background-image: -o-linear-gradient(top, #fcfdff, #f2f7f7);
+        background-image: linear-gradient(to bottom, #fcfdff, #f2f7f7);
+        -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+	/*.select:before{*/
+        /*top: 7px;*/
+        /*border-bottom: 3px solid #7f9298;*/
+	/*}*/
+    /*.select:after {*/
+        /*top: 13px;*/
+        /*border-top: 3px solid #7f9298;*/
+    /*}*/
+    /*.select:before, .select:after {*/
+        /*content: '';*/
+        /*position: absolute;*/
+        /*right: 11px;*/
+        /*width: 0;*/
+        /*height: 0;*/
+        /*border-left: 3px outset transparent;*/
+        /*border-right: 3px outset transparent;*/
+    /*}*/
+</style>
 <div class="header">
 	<div class="top">
 		<div class="topNav">
@@ -75,11 +122,11 @@ function changeLanguage(){
 					<span id="headerName" class="headerName">&nbsp;</span>
 				</li>
 				<li id="headerLogin" class="headerLogin">
-					<a href="${base}/member/login">${message("shop.header.login")}</a>|
+					<a href="${base}/member/login">${message("shop.header.login")}</a>
 				</li>
-				<li id="headerRegister" class="headerRegister">
-					<a href="${base}/member/register">${message("shop.header.register")}</a>
-				</li>
+				[#--<li id="headerRegister" class="headerRegister">--]
+					[#--<a href="${base}/member/register">${message("shop.header.register")}</a>--]
+				[#--</li>--]
 				<li id="headerLogout" class="headerLogout">
 					<a href="${base}/member/logout">[${message("shop.header.logout")}]</a>
 				</li>
@@ -96,14 +143,16 @@ function changeLanguage(){
 					<a href="${base}/cart/list">${message("shop.header.cart")}</a>
 					(<em></em>)
 				</li>
-				<li>
-					<select id="language" name="language" onchange="changeLanguage();">
+				<li style="width: 160px">
+                    <label class="select" for="select">
+					<select class="languageSelect" id="language" name="language" onchange="changeLanguage();">
 						[@language]
 							[#list languages as language]
 								<option value="${language.code}"[#if language.code == languageCode] selected="selected"[/#if]>${message("${language.message}")}</option>
 							[/#list]
 						[/@language]
 					</select>
+					</label>
 				</li>
 			</ul>
 		</div>
@@ -112,7 +161,7 @@ function changeLanguage(){
 		<div class="row">
 			<div class="span3">
 				<a href="${base}/">
-					<img src="${setting.logo}" alt="${setting.siteName}" />
+					<img src="${base}/${setting.logo}" style="width: 200px" alt="${setting.siteName}" />
 				</a>
 			</div>
 			<div class="span6">

@@ -26,18 +26,18 @@ $().ready(function() {
 	var $clear = $("#clear");
 	var $checkout = $("#checkout");
 	var timeouts = {};
-	
+
 	// 初始数量
 	$quantity.each(function() {
 		var $this = $(this);
 		$this.data("value", $this.val());
 	});
-	
+
 	// 数量
 	$quantity.keypress(function(event) {
 		return (event.which >= 48 && event.which <= 57) || event.which == 8;
 	});
-	
+
 	// 增加数量
 	$increase.click(function() {
 		var $quantity = $(this).parent().siblings("input");
@@ -49,7 +49,7 @@ $().ready(function() {
 		}
 		modify($quantity);
 	});
-	
+
 	// 减少数量
 	$decrease.click(function() {
 		var $quantity = $(this).parent().siblings("input");
@@ -61,14 +61,14 @@ $().ready(function() {
 		}
 		modify($quantity);
 	});
-	
+
 	// 修改
 	$quantity.on("input propertychange change", function(event) {
 		if (event.type != "propertychange" || event.originalEvent.propertyName == "value") {
 			modify($(this));
 		}
 	});
-	
+
 	// 修改
 	function modify($quantity) {
 		var quantity = $quantity.val();
@@ -118,7 +118,7 @@ $().ready(function() {
 			$quantity.val($quantity.data("value"));
 		}
 	}
-	
+
 	// 移除
 	$remove.click(function() {
 		if (confirm("${message("shop.dialog.deleteConfirm")}")) {
@@ -160,7 +160,7 @@ $().ready(function() {
 		}
 		return false;
 	});
-	
+
 	// 清空
 	$clear.click(function() {
 		if (confirm("${message("shop.dialog.clearConfirm")}")) {

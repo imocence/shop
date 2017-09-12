@@ -148,15 +148,21 @@
 						<div class="list-group-item">
 							<div class="row">
 								<div class="col-xs-4 text-center">
-									<a class="icon" href="deposit/recharge">
+									<a class="icon" href="deposit/gift">
 										<span class="fa fa-money magenta"></span>
-										${message("member.deposit.recharge")}
+										${message("member.deposit.gift")}
 									</a>
 								</div>
 								<div class="col-xs-4 text-center">
-									<a class="icon" href="deposit/log">
+									<a class="icon" href="deposit/log?type=0">
 										<span class="fa fa-rmb blue-dark"></span>
 										${message("member.deposit.log")}
+									</a>
+								</div>
+								<div class="col-xs-4 text-center">
+									<a class="icon" href="deposit/log?type=1">
+										<span class="fa fa-ticket orange-lighter"></span>
+										${message("member.couponCode.list")}
 									</a>
 								</div>
 							</div>

@@ -86,7 +86,7 @@
 		// 无限滚动加载
 		$fiBankbookJournalItems.infiniteScroll({
 			url: function(pageNumber) {
-				return "${base}/member/deposit/log?pageNumber=" + pageNumber;
+				return "${base}/member/deposit/log?pageNumber=" + pageNumber+"&type=${type!'0'}";
 			},
 			pageSize: 10,
 			template: function(pageNumber, data) {

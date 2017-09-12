@@ -337,6 +337,7 @@
 	-moz-transition: ease-in-out 0.2s;
 	transition: ease-in-out 0.2s;
 	margin-top:-10px;
+	width: 100%;
 }
 
 .index .hotProduct li:hover img {
@@ -354,17 +355,16 @@
 	height: 80px;
 	float: left;
 	margin-right: 4px;
-	margin-top:0px;
 }
 
 .index .hotProduct li.low span {
-	height: 36px;
+	height: auto;
 	padding-top: 5px;
 	font-size: 12px;
 }
 
 .index .hotProduct li.low strong {
-	color: #333333;
+	color: #ff0000;
 }
 
 .index .bottomAd {
