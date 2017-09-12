@@ -200,10 +200,12 @@ $().ready(function() {
 							<th>${message("shop.cart.image")}</th>
 							<th>${message("shop.cart.sku")}</th>
 							<th>${message("shop.cart.price")}</th>
-							<th>${message("shop.cart.coupon")}</th>
 							<th>${message("shop.cart.quantity")}</th>
 							<th>${message("shop.cart.subtotal")}</th>
-							<th>${message("shop.cart.totalCoupon")}</th>
+							[#if currentUser != null] 
+								<th>${message("shop.cart.coupon")}</th>
+								<th>${message("shop.cart.totalCoupon")}</th>
+							[/#if]
 							<th>${message("shop.cart.action")}</th>
 						</tr>
 						[#list currentCart.cartItems as cartItem]
@@ -227,9 +229,6 @@ $().ready(function() {
 								<td>
 									${currency(cartItem.price, true)}
 								</td>
-								<td>
-									${currency(cartItem.couponPrice, true)}
-								</td>
 								<td class="quantity" width="60">
 									<input type="text" name="quantity" value="${cartItem.quantity}" maxlength="4" onpaste="return false;" />
 									<div>
@@ -240,9 +239,15 @@ $().ready(function() {
 								<td width="100">
 									<span class="subtotal">${currency(cartItem.subtotal, true)}</span>
 								</td>
-								<td width="100">
-									<span class="totalCoupon">${currency(cartItem.totalCoupon, true)}</span>
-								</td>
+								[#if currentUser != null] 
+									<td>
+										${currency(cartItem.couponPrice, true)}
+									</td>
+									<td width="100">
+										<span class="totalCoupon">${currency(cartItem.totalCoupon, true)}</span>
+									</td>
+								[/#if]
+								
 								<td>
 									<a href="javascript:;" class="remove">${message("shop.cart.remove")}</a>
 								</td>
@@ -275,7 +280,9 @@ $().ready(function() {
 							<em>${message("shop.cart.promotionTips")}</em>
 						[/#if]
 						<!-- ${message("shop.cart.effectiveRewardPoint")}: <em id="effectiveRewardPoint">${currentCart.effectiveRewardPoint}</em> -->
-						${message("shop.cart.effectiveCoupon")}: <em id="effectiveCoupon">${currency(currentCart.effectiveCoupon, true, true)}</em>
+						[#if currentUser != null] 
+							${message("shop.cart.effectiveCoupon")}: <em id="effectiveCoupon">${currency(currentCart.effectiveCoupon, true, true)}</em>
+						[/#if]						
 						${message("shop.cart.effectivePrice")}: <strong id="effectivePrice">${currency(currentCart.effectivePrice, true, true)}</strong>
 					</div>
 				</div>
