@@ -234,13 +234,13 @@ public class Product extends BaseEntity<Long> {
 	/**
 	 * 券
 	 */
-	@Column(precision = 21, scale = 6)
+	@Column(precision = 21, scale = 2)
 	private BigDecimal coupon;
 	
 	   /**
      * 销售价
      */
-	@Column(precision = 21, scale = 6)
+	@Column(precision = 21, scale = 2)
     private BigDecimal price;
 
 	/**

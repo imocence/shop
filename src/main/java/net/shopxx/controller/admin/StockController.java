@@ -80,10 +80,10 @@ public class StockController extends BaseController {
 	public String stockIn(Long skuId, ModelMap model) {
 		List<Country> countries = countryService.findRoots();
 		model.addAttribute("countries", countries);
-		if (countries != null && !countries.isEmpty()) {
+		/*if (countries != null && !countries.isEmpty()) {
            Long countryId = countries.get(0).getId();
            model.addAttribute("countryId", countryId);
-        }
+        }*/
 		
 		model.addAttribute("sku", skuService.find(skuId));
 		return "admin/stock/stock_in";
@@ -114,10 +114,10 @@ public class StockController extends BaseController {
 	public String stockOut(Long skuId, ModelMap model) {
 		List<Country> countries = countryService.findRoots();
 		model.addAttribute("countries", countries);
-		if (countries != null && !countries.isEmpty()) {
+		/*if (countries != null && !countries.isEmpty()) {
            Long countryId = countries.get(0).getId();
            model.addAttribute("countryId", countryId);
-        }
+        }*/
 		model.addAttribute("sku", skuService.find(skuId));
 		return "admin/stock/stock_out";
 	}

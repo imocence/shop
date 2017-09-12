@@ -58,7 +58,7 @@ public class ProductGrade extends BaseEntity<Long> {
     @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
     @NumericField
     @FieldBridge(impl = BigDecimalNumericFieldBridge.class)
-    @Column(nullable = false, precision = 21, scale = 6)
+    @Column(nullable = false, precision = 21, scale = 2)
     private BigDecimal price;
     
     /**
@@ -68,7 +68,7 @@ public class ProductGrade extends BaseEntity<Long> {
     @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
     @NumericField
     @FieldBridge(impl = BigDecimalNumericFieldBridge.class)
-    @Column(nullable = false, precision = 21, scale = 6)
+    @Column(nullable = false, precision = 21, scale = 2)
     private BigDecimal coupon;
     
     

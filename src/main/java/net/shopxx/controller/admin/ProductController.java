@@ -204,7 +204,6 @@ public class ProductController extends BaseController {
 	 */
 	@PostMapping("/save")
 	public String save(Product product, SkuForm skuForm, SkuListForm skuListForm, Long productCategoryId, Long brandId, Long[] promotionIds, Long[] productTagIds,Long[] gradeIds,Float[] gradePrices,Float[] coupons,Integer[] buys,Integer[] sees, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-	    product.setName(product.getName().toLowerCase());
 	    productImageService.filter(product.getProductImages());
 		parameterValueService.filter(product.getParameterValues());
 		specificationItemService.filter(product.getSpecificationItems());

@@ -274,6 +274,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
         return pgs.subList(from, to);
 	    
 	}
+	//按照产品价格排序
 	private List<Product> sortProduct(List<Product> ps,final boolean asc) {
 	    Subject s  = SecurityUtils.getSubject();
         if (s.isAuthenticated() && s.getPrincipal() instanceof Member) {
@@ -281,12 +282,14 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
             Collections.sort(ps, new Comparator<Product>(){
                 public int compare(Product arg0, Product arg1) {
                     for (ProductGrade pg : arg0.getProductGrades()) {
-                        for (ProductGrade pg1 : arg1.getProductGrades()) {
-                            if( currentUser.getMemberRank().getId() == pg.getGrade().getId() && pg.getGrade().getId() == pg1.getGrade().getId().longValue()) {
-                                if(asc) {
-                                    return pg.getPrice().compareTo(pg1.getPrice());
-                                } else {
-                                    return pg1.getPrice().compareTo(pg.getPrice());
+                        if (currentUser.getMemberRank().getId() == pg.getGrade().getId()) {
+                            for (ProductGrade pg1 : arg1.getProductGrades()) {
+                                if( pg.getGrade().getId() == pg1.getGrade().getId().longValue()) {
+                                    if(asc) {
+                                        return pg.getPrice().compareTo(pg1.getPrice());
+                                    } else {
+                                        return pg1.getPrice().compareTo(pg.getPrice());
+                                    }
                                 }
                             }
                         }
@@ -298,12 +301,14 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
             Collections.sort(ps, new Comparator<Product>(){
                 public int compare(Product arg0, Product arg1) {
                     for (ProductGrade pg : arg0.getProductGrades()) {
-                        for (ProductGrade pg1 : arg1.getProductGrades()) {
-                            if( pg.getGrade().getIsDefault() && pg.getGrade().getId() == pg1.getGrade().getId().longValue()) {
-                                if(asc) {
-                                    return pg.getPrice().compareTo(pg1.getPrice());
-                                } else {
-                                    return pg1.getPrice().compareTo(pg.getPrice());
+                        if (pg.getGrade().getIsDefault()) {
+                            for (ProductGrade pg1 : arg1.getProductGrades()) {
+                                if(pg.getGrade().getId() == pg1.getGrade().getId().longValue()) {
+                                    if(asc) {
+                                        return pg.getPrice().compareTo(pg1.getPrice());
+                                    } else {
+                                        return pg1.getPrice().compareTo(pg.getPrice());
+                                    }
                                 }
                             }
                         }
