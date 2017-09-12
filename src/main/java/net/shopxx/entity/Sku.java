@@ -754,7 +754,8 @@ public class Sku extends BaseEntity<Long> {
 	 */
 	@PrePersist
 	public void prePersist() {
-		setSn(StringUtils.lowerCase(getSn()));
+		//setSn(StringUtils.lowerCase(getSn()));
+		setSn(getSn());
 	}
 
 	/**
