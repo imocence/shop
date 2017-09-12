@@ -643,20 +643,21 @@ $().ready(function() {
 												<em>${message("Sku.exchangePoint")}:</em>
 												${defaultSku.exchangePoint}
 											[/#if]
-										</strong>
-										<!-- 券  -->
-										[#if currentUser == null] 
-							
-										[#else]
-											<em>
+                                            <!-- 券  -->
+											[#if currentUser == null]
+
+											[#else]
+                                                <div style="font-size: 12px">
 												${message("shop.index.coupon")}
 												[#list product.productGrades as pg]
 													[#if pg.grade.id == currentUser.memberRank.id]
-													 ${pg.coupon}
+													${pg.coupon}
 													[/#if]
-											    [/#list]
-											</em>
-										[/#if]
+												[/#list]
+                                                </div>
+											[/#if]
+										</strong>
+
 										<div class="action">
 											[#if product.type == "general"]
 												<a href="javascript:;" class="addCart" skuId="${defaultSku.id}">${message("shop.product.addCart")}</a>

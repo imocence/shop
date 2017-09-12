@@ -826,14 +826,14 @@ span.loadingBar {
 .header .mainNav {
 	height: 38px;
 	line-height: 38px;
-	background-color: #ff7700;
+	background-color: #48a738;
 }
 
 .header .mainNav dt {
 	width: 150px;
 	float: left;
 	padding-left: 40px;
-	background: url(../images/common.gif) -270px -270px no-repeat #f04400;
+	background: url(../images/common.gif) -270px -270px no-repeat #25671A;
 }
 
 .header .mainNav dt a {
@@ -854,7 +854,7 @@ span.loadingBar {
 }
 
 .header .mainNav dd:hover {
-	background-color: #d66400;
+	background-color: #25671A;
 }
 
 .header .mainNav dd a {

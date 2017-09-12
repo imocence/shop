@@ -561,13 +561,13 @@ $().ready(function() {
 							    [#if currentUser == null] 
 								   [#list product.productGrades as pg]
 										[#if pg.grade.isDefault == true]
-										 <strong id="price">${pg.price}</strong>
+										 <strong id="price">${currency(pg.price, true)}</strong>
 										[/#if]
 								    [/#list]
 								[#else]
 									[#list product.productGrades as pg]
 										[#if pg.grade.id == currentUser.memberRank.id]
-										 <strong id="price">${pg.price}</strong>
+										 <strong id="price">${currency(pg.price, true)}</strong>
 										[/#if]
 								    [/#list]
 								[/#if]
@@ -607,7 +607,7 @@ $().ready(function() {
 								<dt>${message("Sku.coupon")}:</dt>
 								[#list product.productGrades as pg]
 									[#if pg.grade.id == currentUser.memberRank.id]
-									 <dd>${pg.coupon}</dd>
+									 <dd class="red"><strong style="font-size: 12px">${pg.coupon}</strong></dd>
 									[/#if]
 							    [/#list]
 							</dl>

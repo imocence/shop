@@ -87,9 +87,9 @@ $().ready(function() {
 	});
 	$countrySelect.change(function(){ 
         $countryId.val($(this).children('option:selected').val());
-        $name.val("test");
-        $inputForm.attr('method','get');      
-        $inputForm.attr('action','listByCountry');      
+        //$name.val("test");
+        //$inputForm.attr('method','get');      
+        //$inputForm.attr('action','listByCountry');      
        	
         $inputForm.submit();
 	});

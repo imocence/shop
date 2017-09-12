@@ -251,13 +251,13 @@ $().ready(function() {
 													  [#if currentUser == null] 
 														   [#list product.productGrades as pg]
 																[#if pg.grade.isDefault == true]
-																 <strong >${pg.price}</strong>
+																 <strong>${currency(pg.price, true)}</strong>
 																[/#if]
 														    [/#list]
 													   [#else]
 															[#list product.productGrades as pg]
 																[#if pg.grade.id == currentUser.memberRank.id]
-																 <strong >${pg.price}</strong>
+																 <strong>${currency(pg.price, true)}</strong>
 																[/#if]
 														    [/#list]
 													   [/#if]
@@ -267,7 +267,7 @@ $().ready(function() {
 													[#else]
 															[#list product.productGrades as pg]
 																[#if pg.grade.id == currentUser.memberRank.id]
-																	<em>${message("shop.index.coupon")}${pg.coupon}</em>
+																	<strong style="color: #ff7700;margin-left: 5px">${message("shop.index.coupon")}${pg.coupon}</strong>
 																[/#if]
 														    [/#list]
 														</dl>
@@ -283,13 +283,13 @@ $().ready(function() {
 													 [#if currentUser == null] 
 														   [#list product.productGrades as pg]
 																[#if pg.grade.isDefault == true]
-																 <strong >${pg.price}</strong>
+																 <strong>${currency(pg.price, true)}</strong>
 																[/#if]
 														    [/#list]
 													   [#else]
 															[#list product.productGrades as pg]
 																[#if pg.grade.id == currentUser.memberRank.id]
-																 <strong >${pg.price}</strong>
+																 <strong >${currency(pg.price, true)}</strong>
 																[/#if]
 														    [/#list]
 													   [/#if]
