@@ -394,14 +394,6 @@ public class Member extends User {
 	@JoinColumn(nullable = false,name="locale", referencedColumnName="name_cn")
 	private Country country;
 	
-	/**
-	 * 语言
-	 */
-	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="language", referencedColumnName="locale")
-	private Language language;
-	
 	
 	/**
 	 * 余额
@@ -1190,14 +1182,6 @@ public class Member extends User {
 	 */
 	public void setPointLogs(Set<PointLog> pointLogs) {
 		this.pointLogs = pointLogs;
-	}
-	
-	public Language getLanguage() {
-		return language;
-	}
-
-	public void setLanguage(Language language) {
-		this.language = language;
 	}
 
 	/**

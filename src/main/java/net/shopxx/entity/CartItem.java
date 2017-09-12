@@ -6,6 +6,7 @@
 package net.shopxx.entity;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -159,15 +160,36 @@ public class CartItem extends BaseEntity<Long> {
 	 */
 	@Transient
 	public BigDecimal getPrice() {
-		if (getSku() != null && getSku().getPrice() != null) {
+		if (getSku() != null && getSku().getProduct().getProductGrades() != null) {
 			Setting setting = SystemUtils.getSetting();
-			if (getCart() != null && getCart().getMember() != null && getCart().getMember().getMemberRank() != null) {
+			/*if (getCart() != null && getCart().getMember() != null && getCart().getMember().getMemberRank() != null) {
 				MemberRank memberRank = getCart().getMember().getMemberRank();
 				if (memberRank.getScale() != null) {
 					return setting.setScale(getSku().getPrice().multiply(new BigDecimal(String.valueOf(memberRank.getScale()))));
 				}
 			}
-			return setting.setScale(getSku().getPrice());
+			return setting.setScale(getSku().getPrice());*/
+			//判断是不是会员
+			BigDecimal priceBigDecimal = BigDecimal.ZERO;
+			if(getCart().getMember() != null){//是会员返回会员价
+				Set<ProductGrade> productGrades = getSku().getProduct().getProductGrades();
+				for(ProductGrade productGrade : productGrades){
+					if(productGrade.getGrade().equals(getCart().getMember().getMemberRank())){
+						priceBigDecimal = productGrade.getPrice();
+						continue;
+					}
+				}
+				return setting.setScale(priceBigDecimal);
+			}else{
+				Set<ProductGrade> productGrades = getSku().getProduct().getProductGrades();
+				for(ProductGrade productGrade : productGrades){
+					if(productGrade.getGrade().getIsDefault()){
+						priceBigDecimal = productGrade.getPrice();
+						continue;
+					}
+				}
+				return setting.setScale(priceBigDecimal);
+			}
 		} else {
 			return BigDecimal.ZERO;
 		}
@@ -193,15 +215,29 @@ public class CartItem extends BaseEntity<Long> {
 	 */
 	@Transient
 	public BigDecimal getCouponPrice() {
-		if (getSku() != null && getSku().getCoupon() != null) {
+		if (getSku() != null && getSku().getProduct().getProductGrades() != null) {
 			Setting setting = SystemUtils.getSetting();
-			if (getCart() != null && getCart().getMember() != null && getCart().getMember().getMemberRank() != null) {
-				MemberRank memberRank = getCart().getMember().getMemberRank();
-				if (memberRank.getScale() != null) {					
-					return setting.setScale(getSku().getCoupon().multiply(new BigDecimal(String.valueOf(memberRank.getScale()))));
+			//判断是不是会员
+			BigDecimal couponBigDecimal = BigDecimal.ZERO;
+			if(getCart().getMember() != null){//是会员返回会员价
+				Set<ProductGrade> productGrades = getSku().getProduct().getProductGrades();
+				for(ProductGrade productGrade : productGrades){
+					if(productGrade.getGrade().equals(getCart().getMember().getMemberRank())){
+						couponBigDecimal = productGrade.getCoupon();
+						continue;
+					}
 				}
+				return setting.setScale(couponBigDecimal);
+			}else{
+				Set<ProductGrade> productGrades = getSku().getProduct().getProductGrades();
+				for(ProductGrade productGrade : productGrades){
+					if(productGrade.getGrade().getIsDefault()){
+						couponBigDecimal = productGrade.getCoupon();
+						continue;
+					}
+				}
+				return setting.setScale(couponBigDecimal);
 			}
-			return setting.setScale(getSku().getCoupon());
 		} else {
 			return BigDecimal.ZERO;
 		}

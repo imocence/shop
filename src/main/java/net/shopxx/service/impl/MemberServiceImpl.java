@@ -438,7 +438,8 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		member.setMemberRank(memberRankService.find(1L));
 		
 		member.setIsEnabled(true);
-		member.setCountry(countryService.findByName(companyCode));	
+		Country country = countryService.findByName(companyCode);
+		member.setCountry(country);	
 		
 		System.out.println(countryService.findByName(companyCode).getName());
 		member.removeAttributeValue();

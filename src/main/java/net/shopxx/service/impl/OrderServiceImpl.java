@@ -1033,9 +1033,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		orderPayment.setCountry(member.getCountry());
 		orderPayment.setOrder(order);
 		orderPaymentDao.persist(orderPayment);
-//		if (member != null && OrderPayment.Method.deposit.equals(orderPayment.getMethod())) {
 		if (member != null) {
-//			memberService.addBalance(order.getMember(), orderPayment.getEffectiveAmount().negate(), DepositLog.Type.orderPayment, null);
 			String notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 电子币账户消费" + orderPayment.getAmount();
 			if (orderPayment.getAmount().compareTo(BigDecimal.ZERO) > 0) {
 				fiBankbookJournalService.recharge(member.getUsercode(), orderPayment.getAmount(), null, 
