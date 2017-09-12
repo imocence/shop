@@ -34,19 +34,19 @@ public class ArticleCategoryServiceImpl extends BaseServiceImpl<ArticleCategory,
 	private ArticleCategoryDao articleCategoryDao;
 
 	@Transactional(readOnly = true)
-	public List<ArticleCategory> findRoots() {
-		return articleCategoryDao.findRoots(null);
+	public List<ArticleCategory> findRoots(Country  country) {
+		return articleCategoryDao.findRoots(null,country);
 	}
 
 	@Transactional(readOnly = true)
-	public List<ArticleCategory> findRoots(Integer count) {
-		return articleCategoryDao.findRoots(count);
+	public List<ArticleCategory> findRoots(Integer count,Country  country) {
+		return articleCategoryDao.findRoots(count,country);
 	}
 
 	@Transactional(readOnly = true)
 	@Cacheable(value = "articleCategory", condition = "#useCache")
-	public List<ArticleCategory> findRoots(Integer count, boolean useCache) {
-		return articleCategoryDao.findRoots(count);
+	public List<ArticleCategory> findRoots(Integer count, boolean useCache,Country  country) {
+		return articleCategoryDao.findRoots(count,country);
 	}
 
 	@Transactional(readOnly = true)

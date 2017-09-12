@@ -104,7 +104,7 @@
 		<a class="pull-left" href="${base}/member/index">
 			<span class="glyphicon glyphicon-menu-left"></span>
 		</a>
-		${message("member.deposit.log")}
+		${message("member.deposit.coupon")}
 	</header>
 	<main>
 		<div class="container-fluid">

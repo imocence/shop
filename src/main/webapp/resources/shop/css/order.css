@@ -356,6 +356,13 @@
 	padding: 2px;
 	border: 1px solid #cccccc;
 }
+.checkout .statistic .coupon {
+	width: 60px;
+	height: 18px;
+	line-height: 18px;
+	padding: 2px;
+	border: 1px solid #cccccc;
+}
 
 .checkout .bottom {
 	height: 36px;

@@ -66,7 +66,8 @@ import net.shopxx.util.WebUtils;
 @Controller("shopOrderController")
 @RequestMapping("/order")
 public class OrderController extends BaseController {
-
+	
+	
 	@Inject
 	private SkuService skuService;
 	@Inject
@@ -459,7 +460,8 @@ public class OrderController extends BaseController {
 		
 		data.put("sn", order.getSn());
 		//发送订单接口
-		boolean ss = orderService.orderInterface(order);
+		String ss = orderService.orderInterface(order);
+		System.out.println(ss);
 		
 		return ResponseEntity.ok(data);
 	}
@@ -535,9 +537,6 @@ public class OrderController extends BaseController {
 		cart.add(cartItem);
 
 		Order order = orderService.createNose(Order.Type.exchange, cart, receiver,napaStores, paymentMethod, shippingMethod, null, null, balance,coupon, memo);
-		
-		//发送订单接口
-		boolean ss = orderService.orderInterface(order);
 		
 		data.put("sn", order.getSn());
 		return ResponseEntity.ok(data);

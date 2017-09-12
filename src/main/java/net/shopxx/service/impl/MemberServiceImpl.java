@@ -29,6 +29,7 @@ import net.shopxx.entity.Country;
 import net.shopxx.entity.DepositLog;
 import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.FiBankbookBalance.Type;
+import net.shopxx.entity.Language;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
 import net.shopxx.entity.NapaStores;
@@ -416,7 +417,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	 * @return
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public boolean create(Member member,String companyCode, String userCode, String signature,String timestamp,HttpServletRequest request, RedirectAttributes redirectAttributes)throws Exception{
+	public boolean create(Member member,String companyCode, String userCode, String signature,String timestamp,HttpServletRequest request, RedirectAttributes redirectAttributes,Language language)throws Exception{
 		//区代账号创建
 		NapaStores napaStores = new NapaStores();
 		napaStores.setMobile(null);
@@ -429,13 +430,16 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		member.setUsername(userCode);
 		member.setUsercode(userCode);
 		
+		member.setLanguage(language);
+		
 		member.setPassword("a123456");
 		member.setEncodedPassword(DigestUtils.md5Hex("a123456"));
 		member.setEmail(null);
 		member.setMemberRank(memberRankService.find(1L));
 		
 		member.setIsEnabled(true);
-		member.setCountry(countryService.findByName(companyCode));	
+		Country country = countryService.findByName(companyCode);
+		member.setCountry(country);	
 		
 		System.out.println(countryService.findByName(companyCode).getName());
 		member.removeAttributeValue();
@@ -451,6 +455,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		member.setPoint(0L);
 		member.setBalance(BigDecimal.ZERO);
 		member.setAmount(BigDecimal.ZERO);
+		member.setCouponAmount(BigDecimal.ZERO);
 		member.setIsLocked(false);
 		member.setLockDate(null);
 		member.setLastLoginIp(null);
@@ -487,7 +492,6 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 			
 		}else{
 			napaStoresService.delete(napaStores);
-			throw new IllegalArgumentException("保存失败,已有用户");
 		}
 		return true;
 	}

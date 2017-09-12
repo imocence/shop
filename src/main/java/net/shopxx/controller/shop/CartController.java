@@ -63,6 +63,7 @@ public class CartController extends BaseController {
 				item.put("price", cartItem.getPrice());
 				item.put("couponPrice", cartItem.getCouponPrice());//券单价
 				item.put("quantity", cartItem.getQuantity());
+				item.put("subtotal", cartItem.getSubtotal());//钱总数
 				item.put("totalCoupon", cartItem.getTotalCoupon());//券总数
 				items.add(item);
 			}

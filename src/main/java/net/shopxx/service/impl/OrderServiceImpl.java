@@ -375,7 +375,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		volume 体积
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public boolean orderInterface(Order order){
+	public String orderInterface(Order order){
 		Map<String,Object> parameterMap = new HashMap<>();
 		Map<String,Object> goods = new HashMap<String,Object>();
 		List<Object> data = new ArrayList<>();
@@ -387,7 +387,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				//List<SpecificationValue> specificationValue  = sku.getSpecificationValues();
 				goods.put("unit", sku.getUnit());
 				goods.put("optiontitle", "");//规格
-				goods.put("goodssn", sku.getProduct().getSn());
+				goods.put("goodssn", sku.getProduct().getSn());//"testaa1"商品编号
 				goods.put("price", orderItem.getPrice());
 				goods.put("total", orderItem.getQuantity());//数量
 				goods.put("weight", orderItem.getWeight());
@@ -397,32 +397,32 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 		}
 		
-		parameterMap.put("usercode", order.getMember().getNapaStores().getNapaCode());
+		parameterMap.put("usercode", order.getMember().getNapaStores().getNapaCode());//"G006682"区代编号
 		parameterMap.put("ordersn", order.getSn());		
 		
-		if("pendingPayment".equals(order.getStatus())){
+		if(Order.Status.pendingPayment.equals(order.getStatus())){
 			parameterMap.put("status", "等待付款");//等待付款
-		}else if("pendingReview".equals(order.getStatus())){
+		}else if(Order.Status.pendingReview.equals(order.getStatus())){
 			parameterMap.put("status", "等待审核");//等待审核
-		}else if("pendingShipment".equals(order.getStatus())){
+		}else if(Order.Status.pendingShipment.equals(order.getStatus())){
 			parameterMap.put("status", "等待发货");//等待发货
-		}else if("shipped".equals(order.getStatus())){
+		}else if(Order.Status.shipped.equals(order.getStatus())){
 			parameterMap.put("status", "已发货");//已发货
-		}else if("received".equals(order.getStatus())){
+		}else if(Order.Status.received.equals(order.getStatus())){
 			parameterMap.put("status", "已收货");//已收货
-		}else if("completed".equals(order.getStatus())){
+		}else if(Order.Status.completed.equals(order.getStatus())){
 			parameterMap.put("status", "已完成");//已完成
-		}else if("failed".equals(order.getStatus())){
+		}else if(Order.Status.failed.equals(order.getStatus())){
 			parameterMap.put("status", "已失败");//已失败
-		}else if("canceled".equals(order.getStatus())){
+		}else if(Order.Status.canceled.equals(order.getStatus())){
 			parameterMap.put("status", "已取消");//已取消
-		}else if("denied".equals(order.getStatus())){
+		}else if(Order.Status.denied.equals(order.getStatus())){
 			parameterMap.put("status", "已拒绝");//已拒绝
 		}
 
 		parameterMap.put("price", calculateAmount(order));//总金额+运费
-		parameterMap.put("jifen", calculateAmount(order));//券金额
-		parameterMap.put("payTime", TimeUtil.getNowTime());//支付时间
+		parameterMap.put("jifen", order.getCouponAmountPaid());//券金额
+		parameterMap.put("payTime", TimeUtil.getDate(order.getCreatedDate()));//支付时间
 		
 		parameterMap.put("realname", "");//收货人
 		parameterMap.put("mobile", "");//收货人电话
@@ -433,31 +433,32 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		
 		parameterMap.put("expresscom", "");//快递公司
 		parameterMap.put("expresssn", "");//快递单号
-		parameterMap.put("shipFee", "");//运费
+		parameterMap.put("shipFee", order.getFreight());//运费
 		parameterMap.put("expressTime", "");//发货时间
 		parameterMap.put("WarehouseName", "");//发货仓库
 
 		parameterMap.put("goods_data", data);//商品信息
 		
-		
 		parameterMap.put("timestamp", TimeUtil.getTimestamp());
 		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getTimestamp()+urlSignature));
-		String orderMap = WebUtils.postJson(urlPath+"/shopMemberOrderCreate.html",parameterMap);
-		System.out.println(orderMap);
 		try {
-			JSONObject jsStr = JSONObject.fromObject(orderMap); 
-			String errKey = jsStr.getString("errCode");
-			if("0000".equals(errKey)){
-				return true;
-			}else{
-				System.out.println(jsStr.getString("msg"));
-				return false;
-			}
+			/**
+			 * errCode         msg
+			 * 0000 		成功：success
+			 * 1001 		验签错误
+			 * 1002 		会员编号已存在
+			 * 1003 		区代编号已存在
+			 * 1004 		链接超过有效时间
+			 * 1005                           商品编码不存在
+			 * 2001 		异常:xxx
+			 */
+			String orderMap = WebUtils.postJson(urlPath+"/shopMemberOrderCreate.html",parameterMap);
+			System.out.println(orderMap);
+			return orderMap;
 		} catch (Exception e) {
-			System.out.println("没有返回信息");
-			return false;
-		}
-				
+			System.out.println(order.getSn()+"推送失败");
+			return "{\"errCode\":\"2001\",\"msg\":\""+order.getSn()+"推送失败，网络连接超时\"}";
+		}				
 	}
 	
 	@Transactional(readOnly = true)
@@ -1032,9 +1033,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		orderPayment.setCountry(member.getCountry());
 		orderPayment.setOrder(order);
 		orderPaymentDao.persist(orderPayment);
-//		if (member != null && OrderPayment.Method.deposit.equals(orderPayment.getMethod())) {
 		if (member != null) {
-//			memberService.addBalance(order.getMember(), orderPayment.getEffectiveAmount().negate(), DepositLog.Type.orderPayment, null);
 			String notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 电子币账户消费" + orderPayment.getAmount();
 			if (orderPayment.getAmount().compareTo(BigDecimal.ZERO) > 0) {
 				fiBankbookJournalService.recharge(member.getUsercode(), orderPayment.getAmount(), null, 

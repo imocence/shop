@@ -323,9 +323,12 @@ $().ready(function() {
 	
 	// 订单提交
 	$submit.click(function() {
+		[#if !(currentUser.napaStores.napaAddress?has_content)]
+			$.alert("${message("shop.order.newAddres")}");
+			return false;
+		[/#if]
 		if((amountPayable - $balance.val()) > 0 && (fiBankbookBalance-amount) < 0 || (fiBankbookCoupon - couponPrice) < 0){
 			$.alert("${message("shop.order.credit")}");
-			//$submit.prop("disabled", false);
 			return false;
 		}else {
 			$paymentMethodId.prop("disabled", true);

@@ -28,11 +28,11 @@
 								<li>
 									${message("member.index.balance")}:
 									<!-- <strong>${currency(currentUser.balance, true, true)}</strong> -->
-									[#list fiBankbookBalanceList as fiBankbookBalance]
-										[#if fiBankbookBalance.type == 'balance']
-											<strong>${currency(fiBankbookBalance.balance, true, true)}</strong>
-										[/#if]
-									[/#list]
+									
+									[#if fiBankbookBalance.type == 'balance']
+										<strong>${currency(fiBankbookBalance.balance, true, true)}</strong>
+									[/#if]
+									
 								</li>
 								<li>
 									${message("member.index.amount")}:
@@ -46,11 +46,10 @@
 								<li>
 									${message("member.index.point")}:
 									<em>
-										[#list fiBankbookBalanceList as fiBankbookBalance]
-											[#if fiBankbookBalance.type == 'coupon']
-											${fiBankbookBalance.balance}
-											[/#if]
-										[/#list]
+										
+										[#if fiBankbookCoupon.type == 'coupon']
+											${currency(fiBankbookCoupon.balance, true)}
+										[/#if]
 									</em>
 									<!-- <a href="coupon_code/exchange" class="silver">${message("member.index.exchange")}</a> 购买券 -->
 								</li>

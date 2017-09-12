@@ -17,6 +17,7 @@ import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.DepositLog;
+import net.shopxx.entity.Language;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.PointLog;
 import net.shopxx.security.AuthenticationProvider;
@@ -194,9 +195,10 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	 * 			约定码：MD5加密，格式=时间戳+约定值
 	 * @param timestamp
 	 * 			时间戳
+	 * @param language 
 	 * @return
 	 * @throws Exception 
 	 */
-	boolean create(Member member,String companyCode, String userCode, String signature,String timestamp,HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception;
+	boolean create(Member member,String companyCode, String userCode, String signature,String timestamp,HttpServletRequest request, RedirectAttributes redirectAttributes, Language language) throws Exception;
 
 }
