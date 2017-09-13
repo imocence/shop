@@ -334,6 +334,9 @@ $().ready(function() {
 						<label>
 							<input type="checkbox" name="permissions" value="admin:fiBankbookJournalTempAdd"[#if role.permissions?seq_contains("admin:fiBankbookJournalTempAdd")] checked="checked"[/#if] />${message("admin.role.fiBankbookJournalTempAdd")}
 						</label>
+						<label>
+							<input type="checkbox" name="permissions" value="admin:remittanceLog"[#if role.permissions?seq_contains("admin:remittanceLog")] checked="checked"[/#if] />${message("admin.role.remittanceLog")}
+						</label>
 					</span>
 				</td>
 			</tr>

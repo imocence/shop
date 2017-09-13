@@ -17,6 +17,9 @@ $().ready(function() {
 
 	var $inputForm = $("#inputForm");
 	var $content = $("#content");
+	var $country = $("#country");
+	var $articleCategoryId = $("#articleCategoryId");
+	var $articleTagTd = $("#articleTagTd");
 	
 	[@flash_message /]
 	
@@ -29,7 +32,42 @@ $().ready(function() {
 			articleCategoryId: "required"
 		}
 	});
-
+	
+	$country.change(function(){
+		// ajax获取文章分类
+		$.ajax({
+			url: "${base}/admin/article_category/listByCountry",
+			type: "GET",
+			data: {countryName: $country.val()},
+			dataType: "json",
+			cache: false,
+			success: function(articleCategoryTree) {
+				$articleCategoryId.empty();
+				$.each(articleCategoryTree, function (index,item){
+					var space = '';
+					for(var i=0;i<item.grade;i++){
+						space += '&nbsp;&nbsp';
+					}
+					$articleCategoryId.append('<option value=' + item.id + '>' + space + item.name + '</option>');
+				});
+			}
+		});
+		// 获取文章标签
+		$.ajax({
+			url: "${base}/admin/article_tag/listByCountry",
+			type: "GET",
+			data: {countryName: $country.val()},
+			dataType: "json",
+			cache: false,
+			success: function(articleTags) {
+				$articleTagTd.empty();
+				$.each(articleTags, function (index,item){
+					$articleTagTd.append('<label><input type="checkbox" name="articleTagIds" value="' + item.id + '" />' + item.name + '</label>');
+				});
+			}
+		});
+	});	
+	$country.change();
 });
 </script>
 </head>
@@ -44,7 +82,7 @@ $().ready(function() {
 					<span class="requiredField">*</span>${message("common.country")}:
 				</th>
 				<td>
-					<select name="countryName">
+					<select id="country" name="countryName">
 						[@country_list]
 							[#list countrys as country]
 								<option value="${country.name}">${message("${country.nameLocal}")}</option>
@@ -66,17 +104,7 @@ $().ready(function() {
 					<span class="requiredField">*</span>${message("Article.articleCategory")}:
 				</th>
 				<td>
-					<select name="articleCategoryId">
-						[#list articleCategoryTree as articleCategory]
-							<option value="${articleCategory.id}">
-								[#if articleCategory.grade != 0]
-									[#list 1..articleCategory.grade as i]
-										&nbsp;&nbsp;
-									[/#list]
-								[/#if]
-								${articleCategory.name}
-							</option>
-						[/#list]
+					<select id="articleCategoryId" name="articleCategoryId">
 					</select>
 				</td>
 			</tr>
@@ -107,12 +135,7 @@ $().ready(function() {
 				<th>
 					${message("Article.articleTags")}:
 				</th>
-				<td>
-					[#list articleTags as articleTag]
-						<label>
-							<input type="checkbox" name="articleTagIds" value="${articleTag.id}" />${articleTag.name}
-						</label>
-					[/#list]
+				<td id="articleTagTd">
 				</td>
 			</tr>
 			<tr>

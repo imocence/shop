@@ -302,7 +302,7 @@ public class Member extends User {
 	 */
 	@JsonView(BaseView.class)
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(nullable = false)
 	private MemberRank memberRank;
 
