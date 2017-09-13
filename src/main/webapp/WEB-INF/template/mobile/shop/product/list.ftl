@@ -53,7 +53,7 @@
 										<strong class="text-overflow red"><%-currency(productGrade.price, true)%></strong>
 									<%} else {%>
 										<strong class="text-overflow red"><%-currency(productGrade.price, true)%></strong>
-										<strong class="text-overflow red"><%-currency(productGrade.coupon, true)%></strong>
+										<strong class="text-overflow" style="font-size: 12px;color: #ff7700"><%-currency(productGrade.coupon, true)%></strong>
 									<%}%>						            
 								<%})%>
 							<%}%>

@@ -753,13 +753,13 @@ span.loadingBar {
 	-moz-transition: border-color ease-in-out 0.15s;
 	transition: border-color ease-in-out 0.15s;
 	outline: none;
-	border: 1px solid #ffaa00;
+	border: 1px solid #6da762;
 	border-right: 0px;
 	background: none;
 }
 
 .header .search:hover .keyword {
-	border-color: #ff8800;
+	border-color: #48a738;
 }
 
 .header .search button {
@@ -817,7 +817,7 @@ span.loadingBar {
 	color: #888888;
 	font-size: 12px;
 	font-weight: normal;
-	background: url(../images/common.gif) -270px -240px no-repeat #ffffff;
+	background: url(../images/common.gif) -270px -245px no-repeat #ffffff;
 }
 
 .header .mainNav {

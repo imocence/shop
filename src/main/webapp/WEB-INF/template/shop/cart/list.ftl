@@ -229,13 +229,6 @@ $().ready(function() {
 								<td>
 									${currency(cartItem.price, true)}
 								</td>
-								<td class="quantity" width="60">
-									<input type="text" name="quantity" value="${cartItem.quantity}" maxlength="4" onpaste="return false;" />
-									<div>
-										<span class="increase">&nbsp;</span>
-										<span class="decrease">&nbsp;</span>
-									</div>
-								</td>
 								<td width="100">
 									<span class="subtotal">${currency(cartItem.subtotal, true)}</span>
 								</td>
@@ -247,7 +240,13 @@ $().ready(function() {
 										<span class="totalCoupon">${currency(cartItem.totalCoupon, true)}</span>
 									</td>
 								[/#if]
-								
+                                <td class="quantity" width="60">
+                                    <input type="text" name="quantity" value="${cartItem.quantity}" maxlength="4" onpaste="return false;" />
+                                    <div>
+                                        <span class="increase">&nbsp;</span>
+                                        <span class="decrease">&nbsp;</span>
+                                    </div>
+                                </td>
 								<td>
 									<a href="javascript:;" class="remove">${message("shop.cart.remove")}</a>
 								</td>

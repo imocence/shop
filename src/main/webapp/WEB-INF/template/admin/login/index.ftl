@@ -92,13 +92,25 @@ function changeLanguage(){
 }
 </script>
 </head>
+<style>
+    #language{
+        border: 1px solid #cccccc;
+        border-radius: 3px;
+        position: relative;
+        z-index: 2;
+        width: 77%;
+        padding: 2px;
+        color: #80989f;
+        background: transparent background: rgba(0, 0, 0, 0);
+    }
+</style>
 <body>
 	<div class="login">
 		<form id="loginForm" action="login" method="post">
 			<table>
 				<tr>
 					<td width="190" rowspan="2" align="center" valign="bottom">
-						<img src="${base}/resources/admin/images/login_logo.gif" alt="SHOP++" />
+						<img src="${base}/resources/admin/images/login_logo.png" alt="绿叶国际商城" />
 					</td>
 					<th>
 						${message("admin.login.username")}:
