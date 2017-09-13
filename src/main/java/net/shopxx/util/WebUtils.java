@@ -51,6 +51,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.alibaba.fastjson.JSON;
+
 import net.shopxx.Setting;
 
 /**
@@ -77,7 +78,7 @@ public final class WebUtils {
             return 20 * 1000; // tomcat默认keepAliveTimeout为20s
         }
     };
-	/*static {
+	static {
 		HTTP_CLIENT_CONNECTION_MANAGER = new PoolingHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().
 					register("http", PlainConnectionSocketFactory.getSocketFactory()).register("https", SSLConnectionSocketFactory.getSocketFactory()).build());
 		HTTP_CLIENT_CONNECTION_MANAGER.setDefaultMaxPerRoute(200);
@@ -89,17 +90,7 @@ public final class WebUtils {
 				.setKeepAliveStrategy(connectionKeepAliveStrategy)
 				.build();
 		
-	}*/
-	static {
-		HTTP_CLIENT_CONNECTION_MANAGER = new PoolingHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create()
-				.register("http", PlainConnectionSocketFactory.getSocketFactory()).register("https", SSLConnectionSocketFactory.getSocketFactory()).build());
-		HTTP_CLIENT_CONNECTION_MANAGER.setDefaultMaxPerRoute(100);
-		HTTP_CLIENT_CONNECTION_MANAGER.setMaxTotal(200);
-		RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(60000).setConnectTimeout(60000).setSocketTimeout(60000).build();
-		HTTP_CLIENT = HttpClientBuilder.create().setConnectionManager(HTTP_CLIENT_CONNECTION_MANAGER)
-				.setDefaultRequestConfig(requestConfig).build();
 	}
-
 	/**
 	 * 不可实例化
 	 */
