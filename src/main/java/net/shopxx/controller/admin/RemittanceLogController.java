@@ -1,7 +1,11 @@
 package net.shopxx.controller.admin;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 
+import org.apache.poi.ss.formula.functions.Now;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +15,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
+import net.shopxx.Results;
+import net.shopxx.entity.Admin;
+import net.shopxx.entity.Member;
 import net.shopxx.entity.RemittanceLog;
+import net.shopxx.entity.RemittanceLog.ConfirmStatus;
+import net.shopxx.security.CurrentUser;
 import net.shopxx.service.RemittanceLogService;
 
 /**
@@ -46,5 +55,36 @@ public class RemittanceLogController extends BaseController {
 			}
 		}
 		return net.shopxx.Message.success(SUCCESS_MESSAGE);
+	}
+	/**
+	 * 通过
+	 */
+	@PostMapping("/confirmedPass")
+	public ResponseEntity<?> confirmedPass(Long remittanceId, @CurrentUser Admin currentUser) {
+		if (remittanceId != null) {
+			RemittanceLog _remittanceLog = new RemittanceLog();
+			_remittanceLog.setId(remittanceId);
+			_remittanceLog.setAdmin(currentUser);
+			_remittanceLog.setConfirmDate(new Date());
+			_remittanceLog.setConfirmStatus(ConfirmStatus.confirmedPass);
+			remittanceLogService.update(_remittanceLog);
+		}
+		return Results.OK;
+	}
+	
+	/**
+	 * 不通过
+	 */
+	@PostMapping("/confirmedNoPass")
+	public ResponseEntity<?> confirmedNoPass(Long remittanceId, @CurrentUser Admin currentUser) {
+		if (remittanceId != null) {
+			RemittanceLog _remittanceLog = new RemittanceLog();
+			_remittanceLog.setId(remittanceId);
+			_remittanceLog.setAdmin(currentUser);
+			_remittanceLog.setConfirmDate(new Date());
+			_remittanceLog.setConfirmStatus(ConfirmStatus.confirmedNoPass);
+			remittanceLogService.update(_remittanceLog);
+		}
+		return Results.OK;
 	}
 }

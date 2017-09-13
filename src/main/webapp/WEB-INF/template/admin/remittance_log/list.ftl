@@ -12,9 +12,48 @@
 <script type="text/javascript" src="${base}/resources/admin/js/list.js"></script>
 <script type="text/javascript">
 $().ready(function() {
-
+	var $confirmedPass = $("#listTable a.confirmedPass");
+	var $confirmedNoPass = $("#listTable a.confirmedNoPass");
 	[@flash_message /]
 
+	// 通过
+	$confirmedPass.click(function() {
+		if (confirm("${message("shop.dialog.deleteConfirm")}")) {
+			var $element = $(this);
+			var remittanceId = $element.data("remittance-id");
+			$.ajax({
+				url: "confirmedPass",
+				type: "POST",
+				data: {remittanceId : remittanceId},
+				dataType: "json",
+				success: function() {
+					setTimeout(function() {
+							location.reload(true);
+						}, 500);
+				}
+			});
+		}
+		return false;
+	});
+	// 不通过
+	$confirmedNoPass.click(function() {
+		if (confirm("${message("shop.dialog.deleteConfirm")}")) {
+			var $element = $(this);
+			var remittanceId = $element.data("remittance-id");
+			$.ajax({
+				url: "confirmedNoPass",
+				type: "POST",
+				data: {remittanceId : remittanceId},
+				dataType: "json",
+				success: function() {
+					setTimeout(function() {
+							location.reload(true);
+						}, 500);
+				}
+			});
+		}
+		return false;
+	});
 });
 </script>
 </head>
@@ -69,7 +108,10 @@ $().ready(function() {
 					<span>${message("member.remittanceLog.number")}</span>
 				</th>
 				<th>
-					<span>创建人</span>
+					<span>${message("admin.remittance.creator")}</span>
+				</th>
+				<th>
+					<span>${message("admin.remittance.confirmStatus")}</span>
 				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="createdDate">${message("admin.common.createdDate")}</a>
@@ -98,10 +140,14 @@ $().ready(function() {
 						</a>
 					</td>
 					<td>
+						${message("admin.remittance.confirmStatus." + remittanceLog.confirmStatus)}
+					</td>
+					<td>
 						<span title="${remittanceLog.createdDate?string("yyyy-MM-dd HH:mm:ss")}">${remittanceLog.createdDate}</span>
 					</td>
 					<td>
-						<a href="view?id=${adminMessage.id}">[${message("admin.common.view")}]</a>
+						<a href="javascript:;" class="confirmedPass" data-remittance-id="${remittanceLog.id}">[${message("admin.remittance.confirmStatus.confirmedPass")}]</a>
+						<a href="javascript:;" class="confirmedNoPass" data-remittance-id="${remittanceLog.id}">[${message("admin.remittance.confirmStatus.confirmedNoPass")}]</a>
 					</td>
 				</tr>
 			[/#list]
