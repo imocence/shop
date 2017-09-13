@@ -12,6 +12,7 @@
 <script type="text/javascript" src="${base}/resources/member/js/jquery.js"></script>
 <script type="text/javascript" src="${base}/resources/member/js/jquery.validate.js"></script>
 <script type="text/javascript" src="${base}/resources/member/js/common.js"></script>
+<script type="text/javascript" src="${base}/resources/member/datePicker/WdatePicker.js"></script>
 <script type="text/javascript">
 $().ready(function() {
 
@@ -112,7 +113,7 @@ $().ready(function() {
 									<span class="requiredField">*</span>${message("member.remittanceLog.date")}:
 								</th>
 								<td>
-									<input type="text"  name="date" class="text" value="${(remittanceLog.remittanceLogDate)!}" />
+									<input type="text" name="date" class="text" value="${(remittanceLog.remittanceLogDate)!}" onfocus="WdatePicker({lang:'${message("Setting.locale.lang")}'});" />
 								</td>
 							</tr>
 							<tr>
