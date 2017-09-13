@@ -8,7 +8,9 @@ package net.shopxx.controller.admin;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
@@ -113,9 +114,10 @@ public class OrderController extends BaseController {
 	private String urlSignature;
 	/**
 	 * 订单发货回调
+	 * @throws UnsupportedEncodingException 
 	 */
 	@PostMapping(value="/shippedReview",produces = {"application/json;charset=utf-8"})
-	public  @ResponseBody JSONObject shippedReview(Member member,HttpServletRequest request, RedirectAttributes redirectAttributes){
+	public  @ResponseBody JSONObject shippedReview(Member member,HttpServletRequest request, RedirectAttributes redirectAttributes) throws UnsupportedEncodingException{
 		Map<String,Object> map = new HashMap<String, Object>();
 		String errCode = "\"0000\"";		
 		String state = "\"success\"";
@@ -123,7 +125,7 @@ public class OrderController extends BaseController {
 		StringBuilder sb = new StringBuilder();
 		BufferedReader br = null;
 		try {
-			br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+			br = new BufferedReader(new InputStreamReader(request.getInputStream(),"utf-8"));
 	        String line = null;
 	        while((line = br.readLine())!=null){
 	            sb.append(line);
@@ -142,8 +144,8 @@ public class OrderController extends BaseController {
 				e.printStackTrace();
 			}
 		}
+
 		Map map1 = (Map) JSON.parse(sb.toString());
-		System.out.println(map1);
 		String sn = map1.get("sn").toString();//订单号
 		String shippingMethod = orderService.findBySn(sn).getShippingMethod().toString(); //配送方式
 		String deliveryCorp = map1.get("deliveryCorp").toString();//物流公司

@@ -38,6 +38,7 @@ import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.dao.BaseDao;
 import net.shopxx.entity.BaseEntity;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.OrderedEntity;
 
 /**

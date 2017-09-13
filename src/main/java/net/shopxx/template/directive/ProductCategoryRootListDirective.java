@@ -42,6 +42,7 @@ public class ProductCategoryRootListDirective extends BaseDirective {
 	@Inject
 	private CountryService countryService;
 
+
 	/**
 	 * 执行
 	 * 
@@ -58,7 +59,7 @@ public class ProductCategoryRootListDirective extends BaseDirective {
 	public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {
 	    
 	    Integer count = getCount(params);
-		boolean useCache = useCache(params);
+		//boolean useCache = useCache(params);
 		Country  country = countryService.getDefaultCountry();
 		List<ProductCategory> productCategories = productCategoryService.findRoots(country,count);
 		setLocalVariable(VARIABLE_NAME, productCategories, env, body);

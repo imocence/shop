@@ -176,7 +176,7 @@ public class OrderController extends BaseController {
 		if (order.hasExpired() || !Order.Status.shipped.equals(order.getStatus())) {
 			return Results.NOT_FOUND;
 		}
-		if (!orderService.acquireLock(order)) {
+		if (order == null || !orderService.acquireLock(order)) {
 			return Results.unprocessableEntity("member.order.locked");
 		}
 		orderService.receive(order);

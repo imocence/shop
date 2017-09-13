@@ -51,6 +51,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 import net.shopxx.Setting;
 
@@ -91,6 +92,16 @@ public final class WebUtils {
 				.build();
 		
 	}
+	/*static {
+		HTTP_CLIENT_CONNECTION_MANAGER = new PoolingHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().
+				register("http", PlainConnectionSocketFactory.getSocketFactory()).register("https", SSLConnectionSocketFactory.getSocketFactory()).build());
+		HTTP_CLIENT_CONNECTION_MANAGER.setDefaultMaxPerRoute(100);
+		HTTP_CLIENT_CONNECTION_MANAGER.setMaxTotal(200);
+		RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(60000).setConnectTimeout(60000).setSocketTimeout(60000).build();
+		HTTP_CLIENT = HttpClientBuilder.create().setConnectionManager(HTTP_CLIENT_CONNECTION_MANAGER)
+				.setDefaultRequestConfig(requestConfig)
+				.build();
+	}*/
 	/**
 	 * 不可实例化
 	 */
@@ -461,8 +472,9 @@ public final class WebUtils {
 
 		String result = null;
 		try {
-			String jsonObject = JSON.toJSONString(parameterMap);
-			System.out.println(jsonObject);
+			//String jsonObject = JSON.toJSONString(parameterMap);
+			String jsonObject = new JSONObject(parameterMap).toString();
+			//System.out.println(jsonObject);
 			StringEntity se = new StringEntity(jsonObject,Charset.forName("utf-8"));
 			se.setContentType("application/json; charset=UTF-8");
 			se.setContentEncoding("utf-8");

@@ -17,16 +17,10 @@ import freemarker.core.Environment;
 import freemarker.template.TemplateDirectiveBody;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
-import net.shopxx.controller.common.LanguageController;
 import net.shopxx.entity.ArticleCategory;
 import net.shopxx.entity.Country;
-import net.shopxx.entity.Member;
-import net.shopxx.entity.User;
 import net.shopxx.service.ArticleCategoryService;
 import net.shopxx.service.CountryService;
-import net.shopxx.service.MemberService;
-import net.shopxx.service.UserService;
-import net.shopxx.util.WebUtils;
 /**
  * 模板指令 - 顶级文章分类列表
  * 
@@ -45,10 +39,7 @@ public class ArticleCategoryRootListDirective extends BaseDirective {
 	private ArticleCategoryService articleCategoryService;
 	@Inject
 	private CountryService countryService;
-	@Inject
-	UserService userService;
-	@Inject
-	MemberService memberService;
+
 	/**
 	 * 执行
 	 * 
@@ -65,15 +56,7 @@ public class ArticleCategoryRootListDirective extends BaseDirective {
 	public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {
 		Integer count = getCount(params);
 		boolean useCache = useCache(params);
-		User currentUser = userService.getCurrent();
 		Country  country = countryService.getDefaultCountry();
-		if(currentUser != null){
-			String userName = currentUser.getDisplayName();
-			Member member = memberService.findByUsername(userName);
-			if(member != null){
-				country = member.getCountry();
-			}
-		}
 		
 		List<ArticleCategory> articleCategories = articleCategoryService.findRoots(count, useCache,country);
 		setLocalVariable(VARIABLE_NAME, articleCategories, env, body);

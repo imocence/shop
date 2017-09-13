@@ -149,7 +149,7 @@ public class MemberController extends BaseController {
 		StringBuilder sb = new StringBuilder();
 		BufferedReader br = null;
 		try {
-			br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+			br = new BufferedReader(new InputStreamReader(request.getInputStream(),"utf-8"));
 	        String line = null;
 	        while((line = br.readLine())!=null){
 	            sb.append(line);

@@ -283,7 +283,7 @@ $().ready(function() {
 		var $this = $(this);
 		if (/^\d+(\.\d{0,${setting.priceScale}})?$/.test($this.val())) {
 			var max = ${fiBankbookBalance.balance} >= amount ? amount : ${fiBankbookBalance.balance};
-			if (parseFloat($this.val()) > max) {
+			if (parseFloat($this.val()) != max ) {
 				$this.val(max);
 			}
 		} else {
@@ -312,7 +312,7 @@ $().ready(function() {
 		var $this = $(this);
 		if (/^\d+(\.\d{0,${setting.priceScale}})?$/.test($this.val())) {
 			var max = ${fiBankbookCoupon.balance} >= couponPrice ? couponPrice : ${fiBankbookCoupon.balance};
-			if (parseFloat($this.val()) > max) {
+			if (parseFloat($this.val()) != max) {
 				$this.val(max);
 			}
 		} else {
