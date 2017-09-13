@@ -5,7 +5,9 @@
  */
 package net.shopxx.controller.admin;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -17,9 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import net.shopxx.Filter;
 import net.shopxx.Message;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Article;
+import net.shopxx.entity.ArticleTag;
 import net.shopxx.entity.Country;
 import net.shopxx.service.ArticleCategoryService;
 import net.shopxx.service.ArticleService;
@@ -51,8 +55,8 @@ public class ArticleController extends BaseController {
 	 */
 	@GetMapping("/add")
 	public String add(ModelMap model) {
-		model.addAttribute("articleCategoryTree", articleCategoryService.findTree());
-		model.addAttribute("articleTags", articleTagService.findAll());
+//		model.addAttribute("articleCategoryTree", articleCategoryService.findTree());
+//		model.addAttribute("articleTags", articleTagService.findAll());
 		return "admin/article/add";
 	}
 
@@ -78,9 +82,18 @@ public class ArticleController extends BaseController {
 	 */
 	@GetMapping("/edit")
 	public String edit(Long id, ModelMap model) {
-		model.addAttribute("articleCategoryTree", articleCategoryService.findTree());
-		model.addAttribute("articleTags", articleTagService.findAll());
-		model.addAttribute("article", articleService.find(id));
+		Article article = articleService.find(id);
+		model.addAttribute("article", article);
+		Country country = article.getCountry();
+		model.addAttribute("articleCategoryTree", articleCategoryService.findTree(country));
+		List<Filter> filters = new ArrayList<Filter>();
+		Filter filter = new Filter();
+		filter.setProperty("country");
+		filter.setValue(country);
+		filter.setOperator(Filter.Operator.eq);
+		filters.add(filter);
+		List<ArticleTag> articleTags = articleTagService.findList(null, filters, null);
+		model.addAttribute("articleTags", articleTags);
 		return "admin/article/edit";
 	}
 

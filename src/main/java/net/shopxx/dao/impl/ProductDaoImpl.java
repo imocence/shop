@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
@@ -31,6 +32,7 @@ import net.shopxx.entity.Attribute;
 import net.shopxx.entity.Brand;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.Product;
+import net.shopxx.entity.Product.OrderType;
 import net.shopxx.entity.ProductCategory;
 import net.shopxx.entity.ProductTag;
 import net.shopxx.entity.Promotion;
@@ -299,6 +301,59 @@ public class ProductDaoImpl extends BaseDaoImpl<Product, Long> implements Produc
 		}
 		return super.findPage(criteriaQuery, pageable);
 	}
+	 @Override
+	 public List<Product> findList(ProductCategory productCategory, Boolean isMarketable, Boolean isList, Boolean isTop, Product.OrderType orderType) {
+	     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+         CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
+         Root<Product> root = criteriaQuery.from(Product.class);
+         criteriaQuery.select(root);
+         Predicate restrictions = criteriaBuilder.conjunction();
+         if (productCategory != null) {
+             Subquery<ProductCategory> subquery = criteriaQuery.subquery(ProductCategory.class);
+             Root<ProductCategory> subqueryRoot = subquery.from(ProductCategory.class);
+             subquery.select(subqueryRoot);
+             subquery.where(criteriaBuilder.or(criteriaBuilder.equal(subqueryRoot, productCategory), criteriaBuilder.like(subqueryRoot.<String>get("treePath"), "%" + ProductCategory.TREE_PATH_SEPARATOR + productCategory.getId() + ProductCategory.TREE_PATH_SEPARATOR + "%")));
+             restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.in(root.get("productCategory")).value(subquery));
+         }
+         
+         if (isMarketable != null) {
+             restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("isMarketable"), isMarketable));
+         }
+         if (isList != null) {
+             restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("isList"), isList));
+         }
+         
+         if (isTop != null) {
+             restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("isTop"), isTop));
+         }
+         
+         if (orderType != null) {
+             switch (orderType) {
+             case topDesc:
+                 criteriaQuery.orderBy(criteriaBuilder.desc(root.get("isTop")), criteriaBuilder.desc(root.get("createdDate")));
+                 break;
+             case salesDesc:
+                 criteriaQuery.orderBy(criteriaBuilder.desc(root.get("sales")), criteriaBuilder.desc(root.get("createdDate")));
+                 break;
+             case scoreDesc:
+                 criteriaQuery.orderBy(criteriaBuilder.desc(root.get("score")), criteriaBuilder.desc(root.get("createdDate")));
+                 break;
+             case dateDesc:
+                 criteriaQuery.orderBy(criteriaBuilder.desc(root.get("createdDate")));
+                 break;
+                default:
+                    break;
+             }
+         } 
+         
+         criteriaQuery.where(restrictions);
+         TypedQuery<Product> query = entityManager.createQuery(criteriaQuery);
+         return query.getResultList();
+	 }
+	 
+    
+      
+	   
 	
 	/**
 	 * 获取国家下所有的商品
@@ -359,6 +414,9 @@ public class ProductDaoImpl extends BaseDaoImpl<Product, Long> implements Produc
 		}
 		return super.findPage(criteriaQuery, pageable);
 	}
+	
+	
+
 
 	public Long count(Product.Type type, Boolean isMarketable, Boolean isList, Boolean isTop, Boolean isOutOfStock, Boolean isStockAlert) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -417,5 +475,8 @@ public class ProductDaoImpl extends BaseDaoImpl<Product, Long> implements Produc
 		String jpql = "update Product product set product." + Product.ATTRIBUTE_VALUE_PROPERTY_NAME_PREFIX + attribute.getPropertyIndex() + " = null where product.productCategory = :productCategory";
 		entityManager.createQuery(jpql).setParameter("productCategory", attribute.getProductCategory()).executeUpdate();
 	}
+
+
+  
 
 }

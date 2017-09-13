@@ -18,6 +18,7 @@ import net.shopxx.entity.Attribute;
 import net.shopxx.entity.Brand;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.Product;
+import net.shopxx.entity.Product.OrderType;
 import net.shopxx.entity.ProductCategory;
 import net.shopxx.entity.ProductTag;
 import net.shopxx.entity.Promotion;
@@ -178,5 +179,8 @@ public interface ProductDao extends BaseDao<Product, Long> {
 	 *            属性
 	 */
 	void clearAttributeValue(Attribute attribute);
+
+
+    List<Product> findList(ProductCategory productCategory, Boolean isMarketable, Boolean isList, Boolean isTop, OrderType orderType);
 
 }

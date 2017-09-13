@@ -183,6 +183,8 @@
 	text-align: center;
 	border-bottom: none;
 	background-color: #fafafa;
+	font-weight: 600;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fff), color-stop(1, #e7e7e7));
 }
 
 .index .products .panel-body {
@@ -190,7 +192,7 @@
 }
 
 .index .products .thumbnail {
-	height: 200px;
+	height: 210px;
 }
 
 .index .products .thumbnail h4 {
@@ -202,7 +204,7 @@
 }
 
 .index footer {
-	padding: 3px 0px;
+	padding: 8px 0px;
 }
 
 .index footer .active, .index footer .active a {

@@ -6,6 +6,7 @@
 package net.shopxx.service.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,6 +14,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,6 +76,8 @@ import net.shopxx.entity.Sku;
 import net.shopxx.entity.Sn;
 import net.shopxx.entity.SpecificationItem;
 import net.shopxx.entity.StockLog;
+import net.shopxx.service.AttributeService;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.ProductImageService;
 import net.shopxx.service.ProductService;
 import net.shopxx.service.SpecificationValueService;
@@ -115,6 +119,9 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 	private SpecificationValueService specificationValueService;
 	@Inject
 	private ProductImageService productImageService;
+	
+	@Inject
+	private CountryService countryService;
 
 	@Transactional(readOnly = true)
 	public boolean snExists(String sn) {
@@ -179,6 +186,30 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 	@Transactional(readOnly = true)
 	public Page<Product> findPage(Product.Type type, ProductCategory productCategory,Country country, Brand brand, Promotion promotion, ProductTag productTag, Map<Attribute, String> attributeValueMap, BigDecimal startPrice, BigDecimal endPrice, Boolean isMarketable, Boolean isList, Boolean isTop,
 			Boolean isOutOfStock, Boolean isStockAlert, Boolean hasPromotion, Product.OrderType orderType, Pageable pageable) {
+	    
+	    if (startPrice != null && endPrice != null && startPrice.compareTo(endPrice) > 0) {
+            BigDecimal temp = startPrice;
+            startPrice = endPrice;
+            endPrice = temp;
+        }
+        
+	    if (startPrice != null || endPrice !=null 
+	            || (orderType !=null && orderType == Product.OrderType.priceAsc) 
+	            || (orderType !=null && orderType == Product.OrderType.priceDesc)) {
+	        List<Product> results =  productDao.findList(productCategory,isMarketable,isList,isTop,orderType);
+	        if (orderType !=null && orderType == Product.OrderType.priceAsc) {
+	            sortProduct(results,true);
+	        }
+	        if (orderType !=null && orderType == Product.OrderType.priceDesc) {
+                sortProduct(results,false);
+            }
+	        
+	        if (startPrice != null || endPrice !=null ) {
+	            results =  filterPrice(results,startPrice,endPrice);
+	        }
+	        return  getPage(results,pageable);
+	        
+	    }
 		return productDao.findPage(type, productCategory,country, brand, promotion, productTag, attributeValueMap, startPrice, endPrice, isMarketable, isList, isTop, isOutOfStock, isStockAlert, hasPromotion, orderType, pageable);
 	}
 
@@ -211,7 +242,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 		Query isListPhraseQuery = queryBuilder.phrase().onField("isList").sentence("true").createQuery();
 		BooleanJunction<?> booleanJunction = queryBuilder.bool().must(queryBuilder.bool().should(snPhraseQuery).should(namePhraseQuery).should(nameFuzzyQuery).should(keywordPhraseQuery).should(keywordFuzzyQuery).should(introductionPhraseQuery).createQuery()).must(isMarketablePhraseQuery)
 				.must(isListPhraseQuery);
-		if (startPrice != null && endPrice != null) {
+		/*if (startPrice != null && endPrice != null) {
 			Query priceRangeQuery = queryBuilder.range().onField("price").from(startPrice.doubleValue()).to(endPrice.doubleValue()).createQuery();
 			booleanJunction = booleanJunction.must(priceRangeQuery);
 		} else if (startPrice != null) {
@@ -220,7 +251,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 		} else if (endPrice != null) {
 			Query priceRangeQuery = queryBuilder.range().onField("price").below(endPrice.doubleValue()).createQuery();
 			booleanJunction = booleanJunction.must(priceRangeQuery);
-		}
+		}*/
 		FullTextQuery fullTextQuery = fullTextEntityManager.createFullTextQuery(booleanJunction.createQuery(), Product.class);
 
 		SortField[] sortFields = null;
@@ -230,17 +261,19 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 				sortFields = new SortField[] { new SortField("isTop", SortField.Type.STRING, true), new SortField(null, SortField.Type.SCORE), new SortField("createdDate", SortField.Type.LONG, true) };
 				break;
 			case priceAsc:
-				sortFields = new SortField[] { new SortField("price", SortField.Type.DOUBLE, false), new SortField("createdDate", SortField.Type.LONG, true) };
+//				sortFields = new SortField[] { new SortField("price", SortField.Type.DOUBLE, false), new SortField("createdDate", SortField.Type.LONG, true) };
 				List<Product> ps = fullTextQuery.getResultList();
+				filterCountry(ps);
+				ps = filterPrice(ps,startPrice,endPrice);
 		        sortProduct(ps,true);
-		        ps = getPage(ps,pageable.getPageNumber(),pageable.getPageSize());
-		        return new Page<>(ps, ps.size(), pageable);
+		        return getPage(ps,pageable);
 			case priceDesc:
-				sortFields = new SortField[] { new SortField("price", SortField.Type.DOUBLE, true), new SortField("createdDate", SortField.Type.LONG, true) };
+//				sortFields = new SortField[] { new SortField("price", SortField.Type.DOUBLE, true), new SortField("createdDate", SortField.Type.LONG, true) };
 				List<Product> ps1 = fullTextQuery.getResultList();
+				filterCountry(ps1);
+				ps1 = filterPrice(ps1,startPrice,endPrice);
                 sortProduct(ps1,false);
-                ps1 = getPage(ps1,pageable.getPageNumber(),pageable.getPageSize());
-                return new Page<>(ps1, ps1.size(), pageable);
+                return getPage(ps1,pageable);
 			case salesDesc:
 				sortFields = new SortField[] { new SortField("sales", SortField.Type.LONG, true), new SortField("createdDate", SortField.Type.LONG, true) };
 				break;
@@ -255,23 +288,115 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 			sortFields = new SortField[] { new SortField("isTop", SortField.Type.STRING, true), new SortField(null, SortField.Type.SCORE), new SortField("createdDate", SortField.Type.LONG, true) };
 		}
 		fullTextQuery.setSort(new Sort(sortFields));
-		fullTextQuery.setFirstResult((pageable.getPageNumber() - 1) * pageable.getPageSize());
+		List<Product> pds = fullTextQuery.getResultList();
+		filterCountry(pds);
+		pds = filterPrice(pds,startPrice,endPrice);
+		return  getPage(pds,pageable);
+		/*fullTextQuery.setFirstResult((pageable.getPageNumber() - 1) * pageable.getPageSize());
 		fullTextQuery.setMaxResults(pageable.getPageSize());
-		
-		return new Page<>(fullTextQuery.getResultList(), fullTextQuery.getResultSize(), pageable);
+		return new Page<>(fullTextQuery.getResultList(), fullTextQuery.getResultSize(), pageable);*/
 	}
 	
-	private List<Product> getPage(List<Product> pgs,int pageNumber,int pageSize) {
+	/**
+	 * 按照价格排序
+	 * 
+	 * @param results
+	 * @param startPrice
+	 * @param endPrice
+	 * @return
+	 */
+	private List<Product> filterPrice(List<Product> results,BigDecimal startPrice,BigDecimal endPrice) {
+	    if (results == null || results.isEmpty()) {
+            return results;
+        }
+	    
+	    if (startPrice == null && endPrice ==null) {
+	        return results;
+	    }
+	    
+	    List<Product> newLists =  new ArrayList<>();
+	    Subject s  = SecurityUtils.getSubject();
+        if (s.isAuthenticated() && s.getPrincipal() instanceof Member) {
+            final Member   currentUser =  (Member) s.getPrincipal();
+            for (Iterator<Product> iterator = results.iterator(); iterator.hasNext();) {
+                Product product = (Product) iterator.next();
+                for (ProductGrade pg : product.getProductGrades()) {
+                    if (currentUser.getMemberRank().getId() == pg.getGrade().getId()) {
+                        if (startPrice == null && endPrice != null) {
+                            if (pg.getPrice().compareTo(endPrice) <= 0) {
+                                newLists.add(product);
+                            }
+                        } else if (endPrice == null && startPrice != null) {
+                            if (pg.getPrice().compareTo(startPrice) >= 0) {
+                                newLists.add(product);
+                            }
+                            
+                        } else if (endPrice != null && startPrice != null) {
+                            if (pg.getPrice().compareTo(startPrice) >= 0 && pg.getPrice().compareTo(endPrice) <= 0) {
+                                newLists.add(product);
+                            }
+                        } 
+                        break;
+                    }
+                    
+                }
+               
+            }
+        } else if (!s.isAuthenticated()) {
+            for (Iterator<Product> iterator = results.iterator(); iterator.hasNext();) {
+                Product product = (Product) iterator.next();
+                for (ProductGrade pg : product.getProductGrades()) {
+                    if (pg.getGrade().getIsDefault()) {
+                        if (startPrice == null && endPrice != null) {
+                            if (pg.getPrice().compareTo(endPrice) <= 0) {
+                                newLists.add(product);
+                            }
+                        } else if (endPrice == null && startPrice != null) {
+                            if (pg.getPrice().compareTo(startPrice) >= 0) {
+                                newLists.add(product);
+                            }
+                            
+                        } else if (endPrice != null && startPrice != null) {
+                            if (pg.getPrice().compareTo(startPrice) >= 0 && pg.getPrice().compareTo(endPrice) <= 0) {
+                                newLists.add(product);
+                            }
+                        } 
+                        break;
+                    }
+                }
+            }
+        }
+	    
+        return newLists;
+	}
+	
+	private List<Product> filterCountry(List<Product> pgs)  {
+	    if (pgs == null || pgs.isEmpty()) {
+	        return pgs;
+	    }
+	    Country country = countryService.getDefaultCountry();
+	    for (Iterator<Product> iterator = pgs.iterator(); iterator.hasNext();) {
+            Product product = (Product) iterator.next();
+            if (product.getProductCategory().getCountry().getId().longValue() != country.getId() ) {
+                iterator.remove();
+            }
+        }
+        return pgs;
+	    
+	}
+	
+	private Page<Product> getPage(List<Product> pgs,Pageable pageable) {
 	    int size = pgs.size();
-	    int from = (pageNumber - 1) * pageSize;
-	    int to = from + pageSize;
+	    int from = (pageable.getPageNumber() - 1) * pageable.getPageSize();
+	    int to = from + pageable.getPageSize();
 	    if (from > size) {
-	        from = size/pageSize * pageSize;
+	        from = size/pageable.getPageSize() * pageable.getPageSize() ;
 	    }
 	    if (to >= size) {
 	        to = size;
 	    }
-        return pgs.subList(from, to);
+	    pgs =  pgs.subList(from, to);
+	    return new Page<>(pgs, pgs.size(), pageable);
 	    
 	}
 	//按照产品价格排序
