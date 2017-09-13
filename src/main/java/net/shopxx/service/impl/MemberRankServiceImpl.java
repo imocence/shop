@@ -80,5 +80,12 @@ public class MemberRankServiceImpl extends BaseServiceImpl<MemberRank, Long> imp
     public Page<MemberRank> findPage(Country country, Pageable pageable) {
         return memberRankDao.findPage(country,pageable);
     }
-
+    /**
+     * 根据国家取等级信息
+     */
+    @Override
+	@Transactional
+	public MemberRank findByCountry(Country country,String name){
+    	return memberRankDao.findByCountry(country,name);
+    }
 }

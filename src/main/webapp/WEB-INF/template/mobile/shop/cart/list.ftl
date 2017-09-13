@@ -209,7 +209,8 @@
 										<span class="small gray-darker">${cartItem.sku.specifications?join(", ")}</span>
 									[/#if]
 									<strong class="red">${currency(cartItem.price, true)}</strong>
-									<dd>${message("Sku.coupon")}:${currency(cartItem.couponPrice, true)}</dd>
+									<!-- 券 -->
+									<dd [#if currentUser == null] class="hidden" [/#if]>${message("Sku.coupon")}:${currency(cartItem.couponPrice, true)}</dd>
 								</div>
 								<div class="media-right media-bottom text-right">
 									<button class="remove btn btn-sm btn-red" type="button" data-sku-id="${cartItem.sku.id}">${message("shop.cart.remove")}</button>
@@ -258,7 +259,7 @@
 						<div>${message("shop.cart.total")}:
 							<strong id="effectivePrice" class="red">${currency(currentCart.effectivePrice, true)}</strong>
 						</div>
-						<div>
+						<div [#if currentUser == null] class="hidden" [/#if]>
 							${message("shop.cart.totalCoupon")}:
 							<span class="red">${currency(currentCart.effectiveCoupon, true)}</span>
 						</div>

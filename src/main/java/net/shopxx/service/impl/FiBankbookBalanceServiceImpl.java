@@ -104,6 +104,7 @@ public class FiBankbookBalanceServiceImpl extends BaseServiceImpl<FiBankbookBala
 		}
 		Assert.notNull(fiBankbookBalance.getBalance());
 		fiBankbookBalance.setMember(member);
+		fiBankbookBalance.setCountry(member.getCountry());
 		fiBankbookBalance.setBalance(fiBankbookBalance.getBalance().add(amount));
 		// 用户余额不能小于0
 		if (fiBankbookBalance.getBalance().doubleValue() < 0) {

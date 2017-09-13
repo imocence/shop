@@ -32,6 +32,7 @@ import net.shopxx.entity.FiBankbookBalance.Type;
 import net.shopxx.entity.Language;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
+import net.shopxx.entity.MemberRank;
 import net.shopxx.entity.NapaStores;
 import net.shopxx.entity.PointLog;
 import net.shopxx.entity.User;
@@ -89,6 +90,8 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	private MailService mailService;
 	@Inject
 	private SmsService smsService;
+	@Inject
+	MemberService memberService;
 	@Inject
 	CountryService countryService;
 	@Value("${url.path}")
@@ -360,8 +363,20 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 					member.setEmail(null);
 				}else{
 					member.setEmail(email);
-				}				
-				member.setMemberRank(memberRankService.find(Long.valueOf(type+1)));	
+				}	
+				String rankName = "会员";
+				if(type == 0){
+					rankName = "代理商";
+				}else if(type == 1){
+					rankName = "服务中心";
+				}else if(type == 2){
+					rankName = "加盟店";
+				}else if(type == 3){
+					rankName = "中心店";
+				}
+				//MemberRank memberRank = memberRankService.findByCountry(countryService.findByName(locale), rankName);
+
+				member.setMemberRank(memberRankService.findByCountry(countryService.findByName(locale), rankName));	
 				//更新区代信息
 				NapaStores napaStores = napaStoresService.find(member.getNapaStores().getId());
 				if(type == 0){
@@ -374,7 +389,8 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 				napaStores.setMobile(mobile);
 				napaStoresService.update(napaStores);
 				
-				member.setNapaStores(napaStores);		
+				member.setNapaStores(napaStores);
+				update(member);
 				members.add(member);
 			  }
 			}
@@ -435,11 +451,11 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		member.setPassword("a123456");
 		member.setEncodedPassword(DigestUtils.md5Hex("a123456"));
 		member.setEmail(null);
-		member.setMemberRank(memberRankService.find(1L));
 		
 		member.setIsEnabled(true);
 		Country country = countryService.findByName(companyCode);
 		member.setCountry(country);	
+		member.setMemberRank(memberRankService.findByCountry(country,null));
 		
 		System.out.println(countryService.findByName(companyCode).getName());
 		member.removeAttributeValue();
@@ -475,21 +491,22 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		member.setOutMessages(null);
 		member.setPointLogs(null);//n
 		
-		if(null == findByUsercode(userCode)){				
+		Member member3 = findByUsercode(userCode);
+		if(null == member3){				
 			save(member);				
 			//创建会员的存折
 			FiBankbookBalance balance1 = new FiBankbookBalance();
 			balance1.setBalance(BigDecimal.ZERO);
 			balance1.setType(Type.balance);
 			balance1.setMember(member);
+			balance1.setCountry(member.getCountry());
 			fiBankbookBalanceService.save(balance1);
-			
 			FiBankbookBalance balance2 = new FiBankbookBalance();
 			balance2.setBalance(BigDecimal.ZERO);
 			balance2.setType(Type.coupon);
 			balance2.setMember(member);
-			fiBankbookBalanceService.save(balance2);
-			
+			balance2.setCountry(member.getCountry());
+			fiBankbookBalanceService.save(balance2);			
 		}else{
 			napaStoresService.delete(napaStores);
 		}

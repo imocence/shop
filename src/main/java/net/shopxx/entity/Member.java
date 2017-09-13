@@ -300,6 +300,7 @@ public class Member extends User {
 	/**
 	 * 会员等级
 	 */
+	@JsonView(BaseView.class)
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(nullable = false)

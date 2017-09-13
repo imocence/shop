@@ -1050,8 +1050,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		if (Setting.StockAllocationTime.payment.equals(setting.getStockAllocationTime())) {
 			allocateStock(order);
 		}
-		order.setAmountPaid(order.getAmountPaid().add(orderPayment.getEffectiveAmount()));
-		order.setCouponAmountPaid(order.getCouponAmountPaid().add(orderPayment.getCouponAmount()));
+		order.setAmountPaid(order.getAmountPaid());
+		order.setCouponAmountPaid(order.getCouponAmountPaid());
 		order.setFee(order.getFee().add(orderPayment.getFee()));
 		if (!order.hasExpired() && Order.Status.pendingPayment.equals(order.getStatus()) && (order.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0 && order.getCouponAmountPayable().compareTo(BigDecimal.ZERO) <= 0)) {
 			order.setStatus(Order.Status.pendingReview);

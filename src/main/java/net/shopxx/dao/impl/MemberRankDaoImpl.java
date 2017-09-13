@@ -6,8 +6,10 @@
 package net.shopxx.dao.impl;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -19,8 +21,10 @@ import org.springframework.util.Assert;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.dao.MemberRankDao;
+import net.shopxx.entity.ArticleCategory;
 import net.shopxx.entity.Brand;
 import net.shopxx.entity.Country;
+import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberRank;
 
 /**
@@ -71,5 +75,20 @@ public class MemberRankDaoImpl extends BaseDaoImpl<MemberRank, Long> implements 
         criteriaQuery.where(restrictions);
         return super.findPage(criteriaQuery, pageable);
     }
-
+    @Override
+    public MemberRank findByCountry(Country country,String name){
+    	if(name == null){
+    		name = "会员";
+    	}
+    	String jpql = "select memberRank from MemberRank memberRank where country = :country and name =:name ";
+		TypedQuery<MemberRank> query = entityManager.createQuery(jpql, MemberRank.class);
+		query.setParameter("country", country);
+		query.setParameter("name", name);
+		query.setMaxResults(1);
+		List<MemberRank> list= query.getResultList();
+		if (null != list && !list.isEmpty()) {
+			return list.get(0);
+		}
+		return null;
+    }
 }

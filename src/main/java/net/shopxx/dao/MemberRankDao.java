@@ -50,5 +50,11 @@ public interface MemberRankDao extends BaseDao<MemberRank, Long> {
 	void clearDefault(MemberRank exclude);
 
     Page<MemberRank> findPage(Country country, Pageable pageable);
+    /**
+     * 根据国家跟新会员等级
+     * @param country
+     * @return
+     */
+	MemberRank findByCountry(Country country,String name);
 
 }

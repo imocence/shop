@@ -58,4 +58,10 @@ public interface MemberRankService extends BaseService<MemberRank, Long> {
 	MemberRank findByAmount(BigDecimal amount);
 	
 	Page<MemberRank> findPage(Country country, Pageable pageable);
+	/**
+	 * 根据国家查找会员等级信息
+	 * @param country
+	 * @return
+	 */
+	MemberRank findByCountry(Country country,String name);
 }
