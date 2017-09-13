@@ -124,7 +124,7 @@ public class RemittanceLog  extends BaseEntity<Long> {
 	 * 管理员-确认人
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(nullable = false, updatable = false)
+	@JoinColumn(nullable = true, updatable = false)
 	private Admin admin;
 	
 	/**
@@ -204,5 +204,29 @@ public class RemittanceLog  extends BaseEntity<Long> {
 
 	public void setMemo(String memo) {
 		this.memo = memo;
+	}
+
+	public RemittanceLog.ConfirmStatus getConfirmStatus() {
+		return confirmStatus;
+	}
+
+	public void setConfirmStatus(RemittanceLog.ConfirmStatus confirmStatus) {
+		this.confirmStatus = confirmStatus;
+	}
+
+	public Date getConfirmDate() {
+		return confirmDate;
+	}
+
+	public void setConfirmDate(Date confirmDate) {
+		this.confirmDate = confirmDate;
+	}
+
+	public Admin getAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(Admin admin) {
+		this.admin = admin;
 	}
 }

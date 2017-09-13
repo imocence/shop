@@ -16,56 +16,30 @@
 $().ready(function() {
 
 	var $inputForm = $("#inputForm");
-	var $isDraft = $("#isDraft");
-	var $type = $("input[name='type']");
-	var $username = $("#username");
-	var $send = $("#send");
-	var $save = $("#save");
-	
-	// 发送类型
-	$type.click(function() {
-		var $this = $(this);
-		if ($this.val() == "member") {
-			$username.prop("disabled", false).closest("tr").show();
-		} else {
-			$username.prop("disabled", true).closest("tr").hide();
-		}
-	});
+	var $add = $("#add");
 	
 	// 立即发送
-	$send.click(function() {
+	$add.click(function() {
 		$inputForm.submit();
 	});
-	
-	$.validator.addMethod("notEqualsIgnoreCase",
-		function(value, element, param) {
-			return this.optional(element) || param.toLowerCase() != value.toLowerCase()
-		}
-	);
 	
 	// 表单验证
 	$inputForm.validate({
 		rules: {
-			username: {
-				required: true,
-				notEqualsIgnoreCase: "${currentUser.username}",
-				remote: {
-					url: "check_username",
-					cache: false
-				}
-			},
-			title: {
+			name: {
 				required: true
 			},
-			content: {
-				required: true,
-				maxlength: 4000
-			}
-		},
-		messages: {
-			username: {
-				notEqualsIgnoreCase: "${message("member.message.notAllowSelf")}",
-				remote: "${message("member.message.memberNotExist")}"
+			amount: {
+				required: true
+			},
+			number: {
+				required: true
+			},
+			date: {
+				required: true
+			},
+			memo: {
+				required: true
 			}
 		}
 	});
@@ -82,23 +56,71 @@ $().ready(function() {
 			<div class="span10">
 				<div class="input">
 					<div class="title">${message("member.remittanceLog.add")}</div>
-					<form id="inputForm" action="send" method="post">
+					<form id="inputForm" action="add" method="post">
 						<input type="hidden" name="remittanceLog" value="${(remittanceLog.id)!}" />
 						<table class="input">
 							<tr>
 								<th>
-									<span class="requiredField">*</span>${message("Message.title")}:
+									<span class="requiredField">*</span>${message("member.remittanceLog.name")}:
 								</th>
 								<td>
-									<input type="text" name="title" class="text" value="${(draftMessage.title)!}" maxlength="200" />
+									<input type="text" name="name" class="text" value="${(remittanceLog.name)!}" maxlength="200" />
 								</td>
 							</tr>
 							<tr>
 								<th>
-									<span class="requiredField">*</span>${message("Message.content")}:
+									<span class="requiredField">*</span>${message("member.remittanceLog.amount")}:
 								</th>
 								<td>
-									<textarea name="content" class="text">${(draftMessage.content)!}</textarea>
+									<input type="text" name="amount" class="text" value="${(remittanceLog.amount)!}" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									${message("member.remittanceLog.account")}:
+								</th>
+								<td>
+									<input type="text" name="account" class="text" value="${(remittanceLog.remittanceLogAccount)!}" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									${message("member.remittanceLog.telephone")}:
+								</th>
+								<td>
+									<input type="text"  name="telephone" class="text" value="${(remittanceLog.telephone)!}" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									${message("member.remittanceLog.identityCard")}:
+								</th>
+								<td>
+									<input type="text" name="identityCard" class="text" value="${(remittanceLog.identityCard)!}" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<span class="requiredField">*</span>${message("member.remittanceLog.number")}:
+								</th>
+								<td>
+									<input type="text"  name="number" class="text" value="${(remittanceLog.remittanceLogNumber)!}" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<span class="requiredField">*</span>${message("member.remittanceLog.date")}:
+								</th>
+								<td>
+									<input type="text"  name="date" class="text" value="${(remittanceLog.remittanceLogDate)!}" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<span class="requiredField">*</span>${message("member.remittanceLog.memo")}:
+								</th>
+								<td>
+									<textarea name="memo" class="text">${(remittanceLog.memo)!}</textarea>
 								</td>
 							</tr>
 							<tr>
@@ -106,7 +128,7 @@ $().ready(function() {
 									&nbsp;
 								</th>
 								<td>
-									<input type="button" id="send" class="button" value="${message("member.common.add")}" />
+									<input type="button" id="add" class="button" value="${message("member.common.add")}" />
 								</td>
 							</tr>
 						</table>
