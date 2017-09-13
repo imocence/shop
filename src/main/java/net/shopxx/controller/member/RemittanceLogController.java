@@ -20,6 +20,7 @@ import net.shopxx.Pageable;
 import net.shopxx.entity.BaseEntity;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.RemittanceLog;
+import net.shopxx.entity.RemittanceLog.ConfirmStatus;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.service.RemittanceLogService;
 
@@ -56,8 +57,8 @@ public class RemittanceLogController extends BaseController{
 	 * 登记
 	 */
 	@PostMapping("/add")
-	public String add(BigDecimal amount,String identityCard, String memo, String name, String remittanceAccount, Date remittanceDate,String remittanceNumber,String telephone,@CurrentUser Member currentUser,RedirectAttributes redirectAttributes) {
-		if (!isValid(RemittanceLog.class, "identityCard", identityCard) || !isValid(RemittanceLog.class, "remittanceNumber", remittanceNumber)) {
+	public String add(BigDecimal amount,String identityCard, String memo, String name, String account, Date date,String number,String telephone,@CurrentUser Member currentUser,RedirectAttributes redirectAttributes) {
+		if (!isValid(RemittanceLog.class, "identityCard", identityCard) || !isValid(RemittanceLog.class, "remittanceNumber", number)) {
 			return UNPROCESSABLE_ENTITY_VIEW;
 		}
 		
@@ -67,10 +68,11 @@ public class RemittanceLogController extends BaseController{
 		_remittanceLog.setIdentityCard(identityCard);
 		_remittanceLog.setMemo(memo);
 		_remittanceLog.setName(name);
-		_remittanceLog.setRemittanceAccount(remittanceAccount);
-		_remittanceLog.setRemittanceDate(remittanceDate);
-		_remittanceLog.setRemittanceNumber(remittanceNumber);
+		_remittanceLog.setRemittanceAccount(account);
+		_remittanceLog.setRemittanceDate(date);
+		_remittanceLog.setRemittanceNumber(number);
 		_remittanceLog.setTelephone(telephone);
+		_remittanceLog.setConfirmStatus(ConfirmStatus.unconfirmed);
 		remittanceLogService.save(_remittanceLog);
 		
 		addFlashMessage(redirectAttributes, "member.remittance_log.sendSuccess");

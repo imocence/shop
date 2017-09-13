@@ -13,37 +13,11 @@
 <script type="text/javascript" src="${base}/resources/member/js/common.js"></script>
 <script type="text/javascript">
 $().ready(function() {
-
-	var $delete = $("#listTable a.delete");
 	
 	[#if flashMessage?has_content]
 		$.alert("${flashMessage}");
 	[/#if]
 	
-	// 删除
-	$delete.click(function() {
-		if (confirm("${message("shop.dialog.deleteConfirm")}")) {
-			var $element = $(this);
-			var messageId = $element.data("message-id");
-			$.ajax({
-				url: "delete",
-				type: "POST",
-				data: {messageId : messageId},
-				dataType: "json",
-				success: function() {
-					var $item = $element.closest("tr");
-					if ($item.siblings("tr").size() < 2) {
-						setTimeout(function() {
-							location.reload(true);
-						}, 3000);
-					}
-					$item.remove();
-				}
-			});
-		}
-		return false;
-	});
-
 });
 </script>
 </head>
@@ -59,27 +33,43 @@ $().ready(function() {
 					<table id="listTable" class="list">
 						<tr>
 							<th>
-								${message("Message.title")}
+								${message("member.remittanceLog.name")}
+							</th>
+							<th>
+								${message("member.remittanceLog.amount")}
+							</th>
+							<th>
+								${message("member.remittanceLog.number")}
+							</th>
+							<th>
+								${message("member.remittanceLog.date")}
+							</th>
+							<th>
+								${message("member.remittanceLog.memo")}
 							</th>
 							<th>
 								${message("shop.common.createdDate")}
 							</th>
-							<th>
-								${message("member.common.action")}
-							</th>
 						</tr>
-						[#list page.content as memberMessage]
+						[#list page.content as remittanceLog]
 							<tr[#if !memberMessage_has_next] class="last"[/#if]>
 								<td>
-									<span title="${memberMessage.title}">${abbreviate(memberMessage.title, 30)}</span>
-								</td>
-								
-								<td>
-									<span title="${memberMessage.createdDate?string("yyyy-MM-dd HH:mm:ss")}">${memberMessage.createdDate}</span>
+									<span title="${remittanceLog.name}">${abbreviate(remittanceLog.name, 30)}</span>
 								</td>
 								<td>
-									<a href="view?memberMessageId=${memberMessage.id}">[${message("member.common.view")}]</a>
-									<a href="javascript:;" class="delete" data-message-id="${memberMessage.id}">[${message("member.common.delete")}]</a>
+									<span title="${remittanceLog.amount}">${remittanceLog.amount}</span>
+								</td>
+								<td>
+									<span title="${remittanceLog.remittanceNumber}">${remittanceLog.remittanceNumber}</span>
+								</td>
+								<td>
+									<span title="${remittanceLog.remittanceDate?string("yyyy-MM-dd HH:mm:ss")}">${remittanceLog.remittanceDate}</span>
+								</td>
+								<td>
+									<span title="${remittanceLog.memo}">${abbreviate(remittanceLog.memo, 30)}</span>
+								</td>
+								<td>
+									<span title="${remittanceLog.createdDate?string("yyyy-MM-dd HH:mm:ss")}">${remittanceLog.createdDate}</span>
 								</td>
 							</tr>
 						[/#list]

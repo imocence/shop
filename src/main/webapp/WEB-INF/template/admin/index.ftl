@@ -128,7 +128,7 @@ function changeLanguage(){
 							[/@shiro.hasPermission]
 						[/#list]
 
-						[#list ["admin:fiBankbookBalance", "admin:fiBankbookJournal", "admin:fiBankbookJournalTemp", "admin:fiBankbookJournalTempConfirm", "admin:fiBankbookJournalTempAdd"] as permission]
+						[#list ["admin:fiBankbookBalance", "admin:fiBankbookJournal", "admin:fiBankbookJournalTemp", "admin:fiBankbookJournalTempConfirm", "admin:fiBankbookJournalTempAdd","admin:remittanceLog"] as permission]
 							[@shiro.hasPermission name = permission]
 								<li>
 									<a href="#capital">${message("admin.index.capitalNav")}</a>
@@ -495,6 +495,11 @@ function changeLanguage(){
 					[@shiro.hasPermission name="admin:fiBankbookJournalTempAdd"]
 						<dd>
 							<a href="fiBankbookJournalTemp/add" target="iframe">${message("admin.index.fiBankbookJournalTempAdd")}</a>
+						</dd>
+					[/@shiro.hasPermission]
+					[@shiro.hasPermission name="admin:remittanceLog"]
+						<dd>
+							<a href="remittance_log/list" target="iframe">${message("admin.index.remittanceLog")}</a>
 						</dd>
 					[/@shiro.hasPermission]
 				</dl>
