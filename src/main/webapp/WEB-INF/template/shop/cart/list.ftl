@@ -200,12 +200,12 @@ $().ready(function() {
 							<th>${message("shop.cart.image")}</th>
 							<th>${message("shop.cart.sku")}</th>
 							<th>${message("shop.cart.price")}</th>
-							<th>${message("shop.cart.quantity")}</th>
 							<th>${message("shop.cart.subtotal")}</th>
 							[#if currentUser != null] 
 								<th>${message("shop.cart.coupon")}</th>
 								<th>${message("shop.cart.totalCoupon")}</th>
 							[/#if]
+                            <th>${message("shop.cart.quantity")}</th>
 							<th>${message("shop.cart.action")}</th>
 						</tr>
 						[#list currentCart.cartItems as cartItem]

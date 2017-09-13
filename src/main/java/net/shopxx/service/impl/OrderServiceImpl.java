@@ -377,11 +377,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	@Transactional(rollbackFor = Exception.class)
 	public String orderInterface(Order order){
 		Map<String,Object> parameterMap = new HashMap<>();
-		Map<String,Object> goods = new HashMap<String,Object>();
-		List<Object> data = new ArrayList<>();
+		List data = new ArrayList<>();
 		List<OrderItem> orderItems = orderItemService.findByOrderId(order);
 		if(orderItems.size() > 0){
 			for(OrderItem orderItem :orderItems){
+				Map<String,Object> goods = new HashMap<String,Object>();
 				goods.put("title", orderItem.getName());
 				Sku sku = skuService.find(orderItem.getSku().getId());
 				//List<SpecificationValue> specificationValue  = sku.getSpecificationValues();
@@ -452,8 +452,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			 * 1005                           商品编码不存在
 			 * 2001 		异常:xxx
 			 */
+			//System.out.println(parameterMap.toString());
 			String orderMap = WebUtils.postJson(urlPath+"/shopMemberOrderCreate.html",parameterMap);
-			System.out.println(orderMap);
+			//System.out.println(orderMap);
 			return orderMap;
 		} catch (Exception e) {
 			System.out.println(order.getSn()+"推送失败");

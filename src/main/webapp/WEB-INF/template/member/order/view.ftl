@@ -149,7 +149,7 @@ $().ready(function() {
 							[#if order.paymentMethod?? && order.amountPayable > 0]
 								<a href="javascript:;" id="payment" class="button">${message("member.order.payment")}</a>
 							[/#if]
-							[#if !order.hasExpired() && (order.status == "pendingPayment" )]//|| order.status == "pendingReview"待审核状态
+							[#if !order.hasExpired() && (order.status == "pendingPayment" || order.status == "pendingReview")]
 								<a href="javascript:;" id="cancel" class="button">${message("member.order.cancel")}</a>
 							[/#if]
 							[#if !order.hasExpired() && order.status == "shipped"]

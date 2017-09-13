@@ -460,8 +460,8 @@ public class OrderController extends BaseController {
 		
 		data.put("sn", order.getSn());
 		//发送订单接口
-		String ss = orderService.orderInterface(order);
-		System.out.println(ss);
+		//String ss = orderService.orderInterface(order);
+		//System.out.println(ss);
 		
 		return ResponseEntity.ok(data);
 	}

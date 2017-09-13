@@ -15,7 +15,7 @@
         <meta name="description" content="${seo.resolveDescription()}"/>
     [/#if]
 [/@seo]
-    <link href="${base}/favicon.ico" rel="icon" type="image/x-icon"/>
+    <link href="/${base}/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
     <link href="${base}/resources/shop/slider/slider.css" rel="stylesheet" type="text/css"/>
     <link href="${base}/resources/shop/css/animate.css" rel="stylesheet" type="text/css"/>
     <link href="${base}/resources/shop/css/common.css" rel="stylesheet" type="text/css"/>

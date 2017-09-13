@@ -53,6 +53,7 @@
 		var $gift = $("#gift");
 		var $promotion = $("#promotion");
 		var $effectivePrice = $("#effectivePrice");
+		var $effectiveCoupon = $("#effectiveCoupon");
 		var $clear = $("#clear");
 		var $checkout = $("#checkout");
 		var giftTemplate = _.template($("#giftTemplate").html());
@@ -103,6 +104,7 @@
 						promotionNames: data.promotionNames
 					}));
 					$effectivePrice.text(currency(data.effectivePrice, true));
+					$effectiveCoupon.text(currency(data.effectiveCoupon, true));
 				},
 				error: function() {
 					if (newValue > oldValue) {
@@ -261,7 +263,7 @@
 						</div>
 						<div [#if currentUser == null] class="hidden" [/#if]>
 							${message("shop.cart.totalCoupon")}:
-							<span class="red">${currency(currentCart.effectiveCoupon, true)}</span>
+							<span id="effectiveCoupon" class="red">${currency(currentCart.effectiveCoupon, true)}</span>
 						</div>
 					[/#if]
 				</div>

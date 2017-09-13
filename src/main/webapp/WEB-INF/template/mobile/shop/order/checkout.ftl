@@ -215,7 +215,7 @@
 				var $element = $(this);
 				if (/^\d+(\.\d{0,${setting.priceScale}})?$/.test($element.val())) {
 					var max = ${fiBankbookBalance.balance} >= amount ? amount : ${fiBankbookBalance.balance};
-					if (parseFloat($element.val()) > max) {
+					if (parseFloat($element.val()) != max) {
 						$element.val(max);
 					}
 				} else {
@@ -228,7 +228,7 @@
 				var $element = $(this);
 				if (/^\d+(\.\d{0,${setting.priceScale}})?$/.test($element.val())) {
 					var max = ${fiBankbookCoupon.balance} >= couponPrice ? couponPrice : ${fiBankbookCoupon.balance};
-					if (parseFloat($element.val()) > max) {
+					if (parseFloat($element.val()) != max) {
 						$element.val(max);
 					}
 				} else {

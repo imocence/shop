@@ -19,7 +19,9 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 import net.shopxx.Filter;
 import net.shopxx.Order;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.Navigation;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.NavigationService;
 
 /**
@@ -38,6 +40,8 @@ public class NavigationListDirective extends BaseDirective {
 
 	@Inject
 	private NavigationService navigationService;
+	@Inject
+	private CountryService countryService;
 
 	/**
 	 * 执行
@@ -57,7 +61,9 @@ public class NavigationListDirective extends BaseDirective {
 		List<Filter> filters = getFilters(params, Navigation.class);
 		List<Order> orders = getOrders(params);
 		boolean useCache = useCache(params);
-		List<Navigation> navigations = navigationService.findList(count, filters, orders, useCache);
+		//获取默认国家
+		Country  country = countryService.getDefaultCountry();
+		List<Navigation> navigations = navigationService.findList(count, filters, orders, useCache,country);
 		setLocalVariable(VARIABLE_NAME, navigations, env, body);
 	}
 
