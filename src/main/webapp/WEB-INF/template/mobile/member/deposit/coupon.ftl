@@ -68,9 +68,9 @@
 					${message("DepositLog.balance")}
 					<em class="pull-right orange"><%-currency(fiBankbookJournal.balance, true)%></em>
 				</div>
-				<div class="list-group-item small">
+				<div class="list-group-item small" style="height: 80px">
 					${message("DepositLog.memo")}
-					<span class="pull-right">
+					<span class="pull-right" style="width: 60%">
 						<%-fiBankbookJournal.notes%>
 					</span>
 				</div>

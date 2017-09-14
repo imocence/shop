@@ -84,10 +84,10 @@
 					<a href="${base}/member/deposit/gift"[#if current == "depositRecharge"] class="current"[/#if]>${message("member.deposit.gift")}</a>
 				</dd>
 				<dd>
-					<a href="${base}/member/deposit/log?type=0"[#if current == "depositLog"] class="current"[/#if]>${message("member.deposit.log")}</a>
+					<a href="${base}/member/deposit/log?type=0"[#if current == "fiBankbookBalance"] class="current"[/#if]>${message("member.deposit.log")}</a>
 				</dd>
 				<dd>
-					<a href="${base}/member/deposit/log?type=1"[#if current == "depositLog"] class="current"[/#if]>${message("member.deposit.coupon")}</a>
+					<a href="${base}/member/deposit/log?type=1"[#if current == "fiBankbookJournal"] class="current"[/#if]>${message("member.deposit.coupon")}</a>
 				</dd>
 			</dl>
 			<dl>

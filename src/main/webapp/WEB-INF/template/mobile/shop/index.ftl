@@ -311,7 +311,7 @@
 										<div class="col-xs-4">
 											<div class="thumbnail thumbnail-flat thumbnail-condensed">
 												<a href="${base}${product.path}">
-													<img class="img-responsive center-block" src="${base}/upload/image/blank.gif" data-original="${product.image!setting.defaultThumbnailProductImage}">
+													<img style="max-height: 120px" class="img-responsive center-block" src="${base}/upload/image/blank.gif" data-original="${product.image!setting.defaultThumbnailProductImage}">
 													<h4 class="text-overflow">${product.name}</h4>
 													[#if product.caption?has_content]
 														<div class="text-overflow text-muted small">${product.caption}</div>
