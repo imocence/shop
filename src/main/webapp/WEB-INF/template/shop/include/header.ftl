@@ -118,7 +118,7 @@ function changeLanguage(){
 		<div class="topNav">
 			<ul class="left">
 				<li>
-					<span>${message("shop.header.welcome", setting.siteName)}</span>
+					<span>${message("shop.header.welcome", '${message("shop.header.siteName")}')}</span>
 					<span id="headerName" class="headerName">&nbsp;</span>
 				</li>
 				<li id="headerLogin" class="headerLogin">

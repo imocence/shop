@@ -278,7 +278,7 @@ $().ready(function() {
 					<span class="requiredField">*</span>${message("Setting.siteName")}:
 				</th>
 				<td>
-					<input type="text" name="siteName" class="text" value="${setting.siteName}" maxlength="200" />
+					<input type="text" name="siteName" class="text" value="${message("shop.header.siteName")}" readonly="readonly" maxlength="200" />
 				</td>
 			</tr>
 			<tr>

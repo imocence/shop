@@ -20,13 +20,13 @@ import javax.inject.Inject;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-import net.sf.json.JSONObject;
 import net.shopxx.Filter;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.Setting;
 import net.shopxx.dao.CartDao;
 import net.shopxx.dao.OrderDao;
+import net.shopxx.dao.OrderInterfaceLogDao;
 import net.shopxx.dao.OrderLogDao;
 import net.shopxx.dao.OrderPaymentDao;
 import net.shopxx.dao.OrderRefundsDao;
@@ -45,6 +45,7 @@ import net.shopxx.entity.Invoice;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.NapaStores;
 import net.shopxx.entity.Order;
+import net.shopxx.entity.OrderInterfaceLog;
 import net.shopxx.entity.OrderItem;
 import net.shopxx.entity.OrderLog;
 import net.shopxx.entity.OrderPayment;
@@ -89,6 +90,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import com.alibaba.fastjson.JSONObject;
+
 /**
  * Service - 订单
  * 
@@ -104,6 +107,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	private OrderDao orderDao;
 	@Inject
 	private OrderLogDao orderLogDao;
+	@Inject
+	private OrderInterfaceLogDao orderInterfaceLogDao;
 	@Inject
 	private CartDao cartDao;
 	@Inject
@@ -1000,7 +1005,21 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		if (passed) {
 			order.setStatus(Order.Status.pendingShipment);
 			// 审核通过之后向直销推送订单
-			orderInterface(order);
+			String msg = orderInterface(order);
+			// 增加推送日志
+			String code = "";
+			try {
+				JSONObject jsonObject = JSONObject.parseObject(msg);
+				code = jsonObject.getString("errCode");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			OrderInterfaceLog orderInterfaceLog = new OrderInterfaceLog();
+			orderInterfaceLog.setType(OrderInterfaceLog.Type.shipping);
+			orderInterfaceLog.setDetail(msg);
+			orderInterfaceLog.setSn(order.getSn());
+			orderInterfaceLog.setCode(code);
+			orderInterfaceLogDao.persist(orderInterfaceLog);
 		} else {
 			order.setStatus(Order.Status.denied);
 
@@ -1051,8 +1070,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		if (Setting.StockAllocationTime.payment.equals(setting.getStockAllocationTime())) {
 			allocateStock(order);
 		}
-		order.setAmountPaid(order.getAmountPaid());
-		order.setCouponAmountPaid(order.getCouponAmountPaid());
+		order.setAmountPaid(order.getAmountPaid().add(orderPayment.getEffectiveAmount()));
+		order.setCouponAmountPaid(order.getCouponAmountPaid().add(orderPayment.getCouponAmount()));
 		order.setFee(order.getFee().add(orderPayment.getFee()));
 		if (!order.hasExpired() && Order.Status.pendingPayment.equals(order.getStatus()) && (order.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0 && order.getCouponAmountPayable().compareTo(BigDecimal.ZERO) <= 0)) {
 			order.setStatus(Order.Status.pendingReview);
@@ -1314,6 +1333,29 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public String shippedReview(String sn, String shippingMethod, String deliveryCorp, String deliveryCorpCode, String deliveryCorpUrl, BigDecimal freight, String trackingNo, Map<String, Integer> items) throws Exception{
+		// 增加回调日志
+		String msg = "";
+		try {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("sn", sn);
+			jsonObject.put("shippingMethod", shippingMethod);
+			jsonObject.put("deliveryCorp", deliveryCorp);
+			jsonObject.put("deliveryCorpCode", deliveryCorpCode);
+			jsonObject.put("deliveryCorpUrl", deliveryCorpUrl);
+			jsonObject.put("freight", freight);
+			jsonObject.put("trackingNo", trackingNo);
+			jsonObject.put("items", items);
+			msg = jsonObject.toJSONString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		OrderInterfaceLog orderInterfaceLog = new OrderInterfaceLog();
+		orderInterfaceLog.setType(OrderInterfaceLog.Type.shipping);
+		orderInterfaceLog.setDetail(msg);
+		orderInterfaceLog.setSn(sn);
+		orderInterfaceLog.setCode("0000");
+		orderInterfaceLogDao.persist(orderInterfaceLog);
+		
 		Order order = findBySn(sn);
 		if (null == order || order.isNew()) {
 			return "";
