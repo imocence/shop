@@ -22,6 +22,7 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 import net.shopxx.Filter;
 import net.shopxx.Order;
+import net.shopxx.entity.Brand;
 import net.shopxx.entity.Product;
 import net.shopxx.service.ProductService;
 import net.shopxx.util.FreeMarkerUtils;
@@ -92,7 +93,6 @@ public class ProductListDirective extends BaseDirective {
 
 	@Inject
 	private ProductService productService;
-
 	/**
 	 * 执行
 	 * 
@@ -118,9 +118,12 @@ public class ProductListDirective extends BaseDirective {
 		Boolean hasPromotion = FreeMarkerUtils.getParameter(HAS_PROMOTION_PARAMETER_NAME, Boolean.class, params);
 		Product.OrderType orderType = FreeMarkerUtils.getParameter(ORDER_TYPE_PARAMETER_NAME, Product.OrderType.class, params);
 		Integer count = getCount(params);
-		List<Filter> filters = getFilters(params, Product.class);
+		
+		List<Filter> filters = getFilters(params, Brand.class);
+		
+		
 		List<Order> orders = getOrders(params);
-		boolean useCache = useCache(params);
+		boolean useCache = true;//useCache(params);
 		Map<Long, String> attributeValueMap = new HashMap<>();
 		if (attributeValue != null) {
 			for (Map.Entry<String, String> entry : attributeValue.entrySet()) {

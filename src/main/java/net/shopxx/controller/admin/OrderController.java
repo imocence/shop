@@ -901,7 +901,7 @@ public class OrderController extends BaseController {
 			country = countryService.findByName(countryName);
 		}
 		// 根据国家获取国家下的1级分类
-		List<ProductCategory> categorys = productCategoryService.findRoots(country, null);
+		List<ProductCategory> categorys = productCategoryService.findRoots(country, null,true);
 		// key:下级分类ID value:1级分类ID 
 		Map<Long, Long> childrenCategoryIdMap = new HashMap<Long, Long>();
 		// key:1级分类ID value:产品集合 

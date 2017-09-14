@@ -46,7 +46,7 @@ public interface ProductCategoryDao extends BaseDao<ProductCategory, Long> {
 	 *            数量
 	 * @return 上级商品分类
 	 */
-	List<ProductCategory> findParents(ProductCategory productCategory, boolean recursive, Integer count);
+	List<ProductCategory> findParents(Country country,ProductCategory productCategory, boolean recursive, Integer count);
 
 	/**
 	 * 查找下级商品分类

@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.Results;
 import net.shopxx.entity.Attribute;

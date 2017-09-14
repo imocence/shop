@@ -5,10 +5,16 @@
  */
 package net.shopxx.dao.impl;
 
+import java.util.List;
+
+import javax.persistence.TypedQuery;
+
 import org.springframework.stereotype.Repository;
 
 import net.shopxx.dao.AdPositionDao;
 import net.shopxx.entity.AdPosition;
+import net.shopxx.entity.ArticleCategory;
+import net.shopxx.entity.Country;
 
 /**
  * Dao - 广告位
@@ -18,5 +24,22 @@ import net.shopxx.entity.AdPosition;
  */
 @Repository
 public class AdPositionDaoImpl extends BaseDaoImpl<AdPosition, Long> implements AdPositionDao {
+	
+	public List<AdPosition> findChildren(Country country){
 
+		String jpql = "select adPosition from AdPosition adPosition where 1=1 ";
+
+		if (country != null) {
+			jpql += " and country=:country ";
+		}
+		jpql += " order by adPosition.createdDate asc";
+		TypedQuery<AdPosition> query = entityManager.createQuery(jpql, AdPosition.class);
+		
+		if (country != null) {
+			query.setParameter("country", country);
+		}
+
+		List<AdPosition> result = query.getResultList();
+		return result;
+	}
 }

@@ -90,6 +90,7 @@ $().ready(function() {
 		// 审核
 		$reviewButton.click(function() {
 			var $this = $(this);
+			$reviewButton.attr("disabled",true); 
 			$.dialog({
 				type: "warn",
 				content: "${message("admin.order.reviewConfirm")}",
@@ -104,6 +105,7 @@ $().ready(function() {
 					$passed.val("false");
 					$reviewForm.submit();
 					return false;
+					$reviewButton.attr("disabled",false);
 				}
 			});
 		});

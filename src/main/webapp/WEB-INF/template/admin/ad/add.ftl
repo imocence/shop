@@ -23,7 +23,8 @@ $().ready(function() {
 	var $content = $("#content");
 	var $path = $("#path");
 	var $filePicker = $("#filePicker");
-	
+	var $country = $("#country");
+	var $adPositionId = $("#adPositionId");
 	[@flash_message /]
 	
 	$filePicker.initUploader("path");
@@ -56,7 +57,22 @@ $().ready(function() {
 			order: "digits"
 		}
 	});
-
+	$country.change(function(){
+		// ajax获取paymentMethod
+		$.ajax({
+			url: "${base}/admin/ad/listByCountry",
+			type: "GET",
+			data: {countryName: $country.val()},
+			dataType: "json",
+			cache: false,
+			success: function(adPositionTree) {
+				$adPositionId.empty();
+				$.each(adPositionTree, function (index,item){
+					$adPositionId.append('<option value='+item.id+'>'+item.name+'[' +item.width +'x'+ item.height + ']</option>');
+				});
+			}
+		});
+	});
 });
 </script>
 </head>
@@ -71,7 +87,7 @@ $().ready(function() {
 					<span class="requiredField">*</span>${message("common.country")}:
 				</th>
 				<td>
-					<select name="countryName">
+					<select id="country" name="countryName">
 						[@country_list]
 							[#list countrys as country]
 								<option value="${country.name}">${message("${country.nameLocal}")}</option>
@@ -105,7 +121,7 @@ $().ready(function() {
 					${message("Ad.adPosition")}:
 				</th>
 				<td>
-					<select name="adPositionId">
+					<select id="adPositionId" name="adPositionId">
 						[#list adPositions as adPosition]
 							<option value="${adPosition.id}">${adPosition.name} [${adPosition.width} × ${adPosition.height}]</option>
 						[/#list]

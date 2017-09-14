@@ -65,7 +65,8 @@ public class ProductCategoryChildrenListDirective extends BaseDirective {
 		Long productCategoryId = FreeMarkerUtils.getParameter(PRODUCT_CATEGORY_ID_PARAMETER_NAME, Long.class, params);
 		Boolean recursive = FreeMarkerUtils.getParameter(RECURSIVE_PARAMETER_NAME, Boolean.class, params);
 		Integer count = getCount(params);
-		boolean useCache = useCache(params);
+		boolean useCache = true;//useCache(params);
+		
 		List<ProductCategory> productCategories = productCategoryService.findChildren(productCategoryId, recursive != null ? recursive : true, count, useCache);
 		setLocalVariable(VARIABLE_NAME, productCategories, env, body);
 	}

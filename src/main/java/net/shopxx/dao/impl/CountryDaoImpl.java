@@ -5,24 +5,14 @@
  */
 package net.shopxx.dao.impl;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.springframework.stereotype.Repository;
 
 import net.shopxx.dao.CountryDao;
 import net.shopxx.entity.Country;
-import net.shopxx.entity.Language;
 
 /**
  * Dao - 地区

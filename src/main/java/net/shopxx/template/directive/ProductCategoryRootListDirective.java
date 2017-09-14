@@ -42,7 +42,6 @@ public class ProductCategoryRootListDirective extends BaseDirective {
 	@Inject
 	private CountryService countryService;
 
-
 	/**
 	 * 执行
 	 * 
@@ -57,11 +56,10 @@ public class ProductCategoryRootListDirective extends BaseDirective {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {
-	    
+		boolean useCache = true;
 	    Integer count = getCount(params);
-		//boolean useCache = useCache(params);
-		Country  country = countryService.getDefaultCountry();
-		List<ProductCategory> productCategories = productCategoryService.findRoots(country,count);
+	    Country  country = countryService.getDefaultCountry();
+		List<ProductCategory> productCategories = productCategoryService.findRoots(country,count,useCache);
 		setLocalVariable(VARIABLE_NAME, productCategories, env, body);
 	}
 

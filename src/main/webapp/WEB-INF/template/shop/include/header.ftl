@@ -191,7 +191,7 @@ function changeLanguage(){
 			<div class="span12">
 				<dl class="mainNav">
 					<dt>
-						<a href="${base}/product_category">${message("shop.header.allProductCategory")}</a>
+						<a href="${base}/product_category/index">${message("shop.header.allProductCategory")}</a>
 					</dt>
 					[@navigation_list position = "middle"]
 						[#list navigations as navigation]

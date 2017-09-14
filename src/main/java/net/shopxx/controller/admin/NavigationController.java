@@ -5,12 +5,16 @@
  */
 package net.shopxx.controller.admin;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import net.shopxx.Message;
 import net.shopxx.Pageable;
+import net.shopxx.entity.ArticleCategory;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.Navigation;
+import net.shopxx.entity.ProductCategory;
 import net.shopxx.service.ArticleCategoryService;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.NavigationService;
@@ -24,6 +28,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * Controller - 导航
@@ -49,9 +56,10 @@ public class NavigationController extends BaseController {
 	 */
 	@GetMapping("/add")
 	public String add(ModelMap model) {
+		Country  country = countryService.getDefaultCountry();
 		model.addAttribute("positions", Navigation.Position.values());
-		model.addAttribute("articleCategoryTree", articleCategoryService.findTree());
-		model.addAttribute("productCategoryTree", productCategoryService.findTree());
+		model.addAttribute("articleCategoryTree", articleCategoryService.findTree(country));
+		model.addAttribute("productCategoryTree", productCategoryService.findTree(country));
 		return "admin/navigation/add";
 	}
 
@@ -119,5 +127,37 @@ public class NavigationController extends BaseController {
 		navigationService.delete(ids);
 		return Message.success(SUCCESS_MESSAGE);
 	}
-
+	/**
+	 * 根据国家选择上级导航分类
+	 */
+	@GetMapping("/listByCountry")
+	public @ResponseBody JSONArray listByCountry(String countryName) {
+		Country country = null;
+		if (StringUtil.isNotEmpty(countryName)) {
+			country = countryService.findByName(countryName);
+		}
+		List<ArticleCategory> articleCategoryTree = articleCategoryService.findTree(country);
+		List<ProductCategory> productCategoryTree = productCategoryService.findTree(country);
+		
+		JSONArray jsonArray = new JSONArray();
+		if (null != articleCategoryTree  ) {
+			for (ArticleCategory bean : articleCategoryTree) {
+				JSONObject object = new JSONObject();
+				object.put("path", bean.getPath());
+				object.put("name", bean.getName());
+				object.put("grade", bean.getGrade());
+				jsonArray.add(object);
+			}			
+		}
+		if(null != productCategoryTree){
+			for (ProductCategory bean : productCategoryTree) {
+				JSONObject object = new JSONObject();
+				object.put("path", bean.getPath());
+				object.put("name", bean.getName());
+				object.put("grade", bean.getGrade());
+				jsonArray.add(object);
+			}
+		}
+		return jsonArray;
+	}
 }
