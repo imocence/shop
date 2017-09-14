@@ -68,7 +68,7 @@ public class ProductCategoryParentListDirective extends BaseDirective {
 		Long productCategoryId = FreeMarkerUtils.getParameter(PRODUCT_CATEGORY_ID_PARAMETER_NAME, Long.class, params);
 		Boolean recursive = FreeMarkerUtils.getParameter(RECURSIVE_PARAMETER_NAME, Boolean.class, params);
 		Integer count = getCount(params);
-		boolean useCache = true;
+		boolean useCache = useCache(params);
 		Country  country = countryService.getDefaultCountry();
 
 		List<ProductCategory> productCategories = productCategoryService.findParents(country,productCategoryId, recursive != null ? recursive : true, count, useCache);

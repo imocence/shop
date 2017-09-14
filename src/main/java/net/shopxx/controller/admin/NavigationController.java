@@ -82,10 +82,11 @@ public class NavigationController extends BaseController {
 	 */
 	@GetMapping("/edit")
 	public String edit(Long id, ModelMap model) {
+		Navigation navigation = navigationService.find(id);
 		model.addAttribute("positions", Navigation.Position.values());
-		model.addAttribute("articleCategoryTree", articleCategoryService.findTree());
-		model.addAttribute("productCategoryTree", productCategoryService.findTree());
-		model.addAttribute("navigation", navigationService.find(id));
+		model.addAttribute("articleCategoryTree", articleCategoryService.findTree(navigation.getCountry()));
+		model.addAttribute("productCategoryTree", productCategoryService.findTree(navigation.getCountry()));
+		model.addAttribute("navigation", navigation);
 		return "admin/navigation/edit";
 	}
 

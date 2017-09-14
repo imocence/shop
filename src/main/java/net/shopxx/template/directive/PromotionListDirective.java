@@ -83,7 +83,7 @@ public class PromotionListDirective extends BaseDirective {
 		List<Filter> filters = getFilters(params, Brand.class);
 		
 		List<Order> orders = getOrders(params);
-		boolean useCache = true;//useCache(params);
+		boolean useCache = useCache(params);
 		List<Promotion> promotions = promotionService.findList(memberRankId, productCategoryId, hasBegun, hasEnded, count, filters, orders, useCache);
 		setLocalVariable(VARIABLE_NAME, promotions, env, body);
 	}

@@ -92,7 +92,14 @@ public class AdPosition extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="country", referencedColumnName="name_cn")
 	private Country country;
+	/**
+	 * 位置
+	 */
+	@NotEmpty
+	@Column(nullable = false)
+	public int seat;
 	
+
 	/**
 	 * 获取名称
 	 * 
@@ -214,7 +221,20 @@ public class AdPosition extends BaseEntity<Long> {
 	public void setCountry(Country country) {
 		this.country = country;
 	}
-
+	/**
+	 * 获取位置
+	 * @return
+	 */
+	public int getSeat() {
+		return seat;
+	}
+	/**
+	 * 设置位置
+	 * @param seat
+	 */
+	public void setSeat(int seat) {
+		this.seat = seat;
+	}
 	/**
 	 * 解析模板
 	 * 
