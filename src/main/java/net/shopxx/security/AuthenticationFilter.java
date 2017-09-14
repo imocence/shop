@@ -86,7 +86,6 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 				password =  "a123456";
 			}		
 		}
-//		password =  "a123456";
 		boolean rememberMe = isRememberMe(servletRequest);
 		
 		String host = getHost(servletRequest);

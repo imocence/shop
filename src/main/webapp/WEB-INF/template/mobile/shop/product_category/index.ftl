@@ -56,7 +56,7 @@
 					</a>
 				</div>
 				<div class="col-xs-3 text-center active">
-					<a href="${base}/product_category">
+					<a href="${base}/product_category/index">
 						<span class="glyphicon glyphicon-th-list"></span>
 						${message("shop.index.productCategory")}
 					</a>

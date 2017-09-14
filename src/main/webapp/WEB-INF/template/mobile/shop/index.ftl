@@ -196,7 +196,7 @@
 			<nav>
 				<div class="row">
 					<div class="col-xs-3 text-center">
-						<a href="${base}/product_category">
+						<a href="${base}/product_category/index">
 							<img src="${base}/upload/image/全部分类.png" alt="全部分类">
                             全部分类
 						</a>
@@ -363,7 +363,7 @@
 					</a>
 				</div>
 				<div class="col-xs-3 text-center">
-					<a href="${base}/product_category">
+					<a href="${base}/product_category/index">
 						<span class="glyphicon glyphicon-th-list"></span>
 						${message("shop.index.productCategory")}
 					</a>

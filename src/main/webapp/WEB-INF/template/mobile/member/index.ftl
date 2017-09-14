@@ -246,7 +246,7 @@
 					</a>
 				</div>
 				<div class="col-xs-3 text-center">
-					<a href="${base}/product_category">
+					<a href="${base}/product_category/index">
 						<span class="glyphicon glyphicon-th-list"></span>
 						${message("member.index.productCategory")}
 					</a>
