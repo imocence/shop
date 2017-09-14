@@ -75,7 +75,7 @@ public class RemittanceLogController extends BaseController{
 		_remittanceLog.setConfirmStatus(ConfirmStatus.unconfirmed);
 		remittanceLogService.save(_remittanceLog);
 		
-		addFlashMessage(redirectAttributes, "member.remittance_log.sendSuccess");
+		addFlashMessage(redirectAttributes, "member.remittance_log.addSuccess");
 		return "redirect:list";
 		
 	}

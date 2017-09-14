@@ -4,7 +4,6 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
-import org.apache.poi.ss.formula.functions.Now;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,10 +16,13 @@ import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.Results;
 import net.shopxx.entity.Admin;
-import net.shopxx.entity.Member;
+import net.shopxx.entity.FiBankbookBalance;
+import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.RemittanceLog;
 import net.shopxx.entity.RemittanceLog.ConfirmStatus;
 import net.shopxx.security.CurrentUser;
+import net.shopxx.service.FiBankbookBalanceService;
+import net.shopxx.service.FiBankbookJournalService;
 import net.shopxx.service.RemittanceLogService;
 
 /**
@@ -35,6 +37,8 @@ public class RemittanceLogController extends BaseController {
 	@Inject
 	private RemittanceLogService remittanceLogService;
 	
+	@Inject 
+	private FiBankbookJournalService fiBankbookJournalService;
 	/**
 	 * 列表
 	 */
@@ -58,16 +62,18 @@ public class RemittanceLogController extends BaseController {
 	}
 	/**
 	 * 通过
+	 * @throws Exception 
 	 */
 	@PostMapping("/confirmedPass")
-	public ResponseEntity<?> confirmedPass(Long remittanceId, @CurrentUser Admin currentUser) {
+	public ResponseEntity<?> confirmedPass(Long remittanceId, @CurrentUser Admin currentUser) throws Exception {
 		if (remittanceId != null) {
-			RemittanceLog _remittanceLog = new RemittanceLog();
-			_remittanceLog.setId(remittanceId);
+			RemittanceLog _remittanceLog = remittanceLogService.find(remittanceId);
 			_remittanceLog.setAdmin(currentUser);
 			_remittanceLog.setConfirmDate(new Date());
 			_remittanceLog.setConfirmStatus(ConfirmStatus.confirmedPass);
 			remittanceLogService.update(_remittanceLog);
+			
+			fiBankbookJournalService.recharge(_remittanceLog.getMember().getUsercode(), _remittanceLog.getAmount(), null, FiBankbookJournal.Type.balance, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.offline, "RemittanceLog");
 		}
 		return Results.OK;
 	}
@@ -78,8 +84,7 @@ public class RemittanceLogController extends BaseController {
 	@PostMapping("/confirmedNoPass")
 	public ResponseEntity<?> confirmedNoPass(Long remittanceId, @CurrentUser Admin currentUser) {
 		if (remittanceId != null) {
-			RemittanceLog _remittanceLog = new RemittanceLog();
-			_remittanceLog.setId(remittanceId);
+			RemittanceLog _remittanceLog = remittanceLogService.find(remittanceId);
 			_remittanceLog.setAdmin(currentUser);
 			_remittanceLog.setConfirmDate(new Date());
 			_remittanceLog.setConfirmStatus(ConfirmStatus.confirmedNoPass);
