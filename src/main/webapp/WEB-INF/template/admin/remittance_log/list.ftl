@@ -18,7 +18,7 @@ $().ready(function() {
 
 	// 通过
 	$confirmedPass.click(function() {
-		if (confirm("${message("shop.dialog.deleteConfirm")}")) {
+		if (confirm("${message("admin.remittance.dialog.confirmedPass")}")) {
 			var $element = $(this);
 			var remittanceId = $element.data("remittance-id");
 			$.ajax({
@@ -37,7 +37,7 @@ $().ready(function() {
 	});
 	// 不通过
 	$confirmedNoPass.click(function() {
-		if (confirm("${message("shop.dialog.deleteConfirm")}")) {
+		if (confirm("${message("admin.remittance.dialog.confirmedNoPass")}")) {
 			var $element = $(this);
 			var remittanceId = $element.data("remittance-id");
 			$.ajax({
@@ -89,7 +89,7 @@ $().ready(function() {
 					<button type="submit">&nbsp;</button>
 				</div>
 				<ul>
-					<li[#if page.searchProperty == "name"] class="current"[/#if] val="name">${message("Message.title")}</li>
+					<li[#if page.searchProperty == "name"] class="current"[/#if] val="name">${message("member.remittanceLog.name")}</li>
 				</ul>
 			</div>
 		</div>
@@ -146,8 +146,12 @@ $().ready(function() {
 						<span title="${remittanceLog.createdDate?string("yyyy-MM-dd HH:mm:ss")}">${remittanceLog.createdDate}</span>
 					</td>
 					<td>
-						<a href="javascript:;" class="confirmedPass" data-remittance-id="${remittanceLog.id}">[${message("admin.remittance.confirmStatus.confirmedPass")}]</a>
-						<a href="javascript:;" class="confirmedNoPass" data-remittance-id="${remittanceLog.id}">[${message("admin.remittance.confirmStatus.confirmedNoPass")}]</a>
+						[#if remittanceLog.confirmStatus == 'unconfirmed']
+							<a href="javascript:;" class="confirmedPass" data-remittance-id="${remittanceLog.id}">[${message("admin.remittance.confirmStatus.confirmedPass")}]</a>
+							<a href="javascript:;" class="confirmedNoPass" data-remittance-id="${remittanceLog.id}">[${message("admin.remittance.confirmStatus.confirmedNoPass")}]</a>
+						[#else]
+							-
+						[/#if]
 					</td>
 				</tr>
 			[/#list]
