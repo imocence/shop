@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.MediaType;
@@ -61,8 +60,6 @@ public class DepositController extends BaseController {
 	 */
 	private static final int PAGE_SIZE = 10;
 
-	@Inject
-	private DepositLogService depositLogService;
 	@Inject
 	private PluginService pluginService;
 	@Inject
@@ -133,7 +130,7 @@ public class DepositController extends BaseController {
 	 * @throws Exception 
 	 */
 	@PostMapping("/gift_do")
-	public String gift_do(String giftMemberCode,String name, BigDecimal giftAmount,@CurrentUser Member currentUser, HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
+	public String gift_do(String giftMemberCode,String name, BigDecimal giftAmount,@CurrentUser Member currentUser, RedirectAttributes redirectAttributes) throws Exception {
 		Member member = memberService.findByUsercode(StringUtils.upperCase(giftMemberCode.replace(" ", "")));
 		if(!member.getCountry().equals(currentUser.getCountry())){
 			addFlashMessage(redirectAttributes, "member.deposit.notInSomeCountry");

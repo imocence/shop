@@ -32,6 +32,7 @@
 			var $giftMemberCode = $("#giftMemberCode");
 			var $giftAmount = $("#giftAmount");
 			var $submit = $("#submit");
+			var $inputForm = $("#inputForm");
 			// 券
 			$giftAmount.change(function() {
 				var couponPrice = $("#giftAmount").val();
@@ -48,27 +49,21 @@
 			
 			// 表单验证
 			$submit.click(function() {
-				if ($giftMemberCode.val() == "") {
-					$.alert("${message("shop.deposit.memberCodeNullOrMemberNull")}");
-					return false;
-				}
-				$.ajax({
-					url: "gift_do",
-					type: "POST",
-					data: $rechargeForm.serialize(),
-					dataType: "json",
-					beforeSend: function() {
-						$submit.prop("disabled", true);
-					},
-					success: function(data) {
-						 location.href = "log?type=1";
-					},
-					complete: function() {
-						$submit.prop("disabled", false);
-					}
-				});
+				$inputForm.submit();
 			});
-		
+			$inputForm.validate({
+				rules: {
+					name: {
+						required: true
+					},
+					giftMemberCode: {
+						required: true
+					},
+					giftAmount: {
+						required: true
+					}
+				}
+			});
 		});
 	</script>
 </head>
@@ -85,13 +80,19 @@
 				<div class="list-group list-group-flat">
 					<div class="list-group-item">
 						<div class="form-group">
-							<label for="giftMemberCode">${message("member.deposit.giftMemberCode")}</label>
-							<input id="giftMemberCode" name="giftMemberCode" class="form-control" type="text" maxlength="10" onpaste="return false;">
+							<label for="giftMemberCode"><span class="requiredField">*</span>${message("member.deposit.name")}</label>
+							<input id="name" name="name" value="${(remittanceLog.name)!}" class="form-control" type="text" maxlength="10" onpaste="return false;">
 						</div>
 					</div>
 					<div class="list-group-item">
 						<div class="form-group">
-							<label for="giftAmount">${message("member.deposit.giftAmount")}</label>
+							<label for="giftMemberCode"><span class="requiredField">*</span>${message("member.deposit.giftMemberCode")}</label>
+							<input id="giftMemberCode" name="giftMemberCode" value="${(member.deposit.giftMemberCode)!}" class="form-control" type="text" maxlength="10" onpaste="return false;">
+						</div>
+					</div>
+					<div class="list-group-item">
+						<div class="form-group">
+							<label for="giftAmount"><span class="requiredField">*</span>${message("member.deposit.giftAmount")}</label>
 							<input id="giftAmount" name="giftAmount" class="form-control" type="text" maxlength="16" onpaste="return false;">
 						</div>
 					</div>

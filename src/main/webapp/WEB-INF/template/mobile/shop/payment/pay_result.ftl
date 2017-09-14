@@ -62,7 +62,7 @@
 				</div>
 				<div class="col-xs-3 text-center">
 					<span class="glyphicon glyphicon-th-list"></span>
-					<a href="${base}/product_category">${message("shop.common.productCategory")}</a>
+					<a href="${base}/product_category/index">${message("shop.common.productCategory")}</a>
 				</div>
 				<div class="col-xs-3 text-center">
 					<span class="glyphicon glyphicon-shopping-cart"></span>

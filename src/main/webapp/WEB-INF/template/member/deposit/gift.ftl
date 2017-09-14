@@ -20,6 +20,11 @@ $().ready(function() {
 	var $giftMemberCode = $("#giftMemberCode");
 	var $giftAmount = $("#giftAmount");
 	var $inputForm = $("#inputForm");
+	var $submit = $("#submit");
+	
+	$submit.click(function() {
+		$inputForm.submit();
+	});
 	// 券
 	$giftAmount.change(function() {
 		var couponPrice = $("#giftAmount").val();
