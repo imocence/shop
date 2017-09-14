@@ -26,6 +26,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import freemarker.template.TemplateException;
 import net.shopxx.util.FreeMarkerUtils;
+import net.shopxx.util.SpringUtils;
 
 /**
  * 系统设置
@@ -1954,6 +1955,11 @@ public class Setting implements Serializable {
 	 * @return 热门搜索关键词
 	 */
 	public String[] getHotSearches() {
+		// 改为资源文件的shop.header.hotSearchs值
+		String hotSearch = SpringUtils.getMessage("shop.header.hotSearchs");
+		if (hotSearch != null) {
+			hotSearch = hotSearch.replaceAll("[,\\s]*,[,\\s]*", ",").replaceAll("^,|,$", "");
+		}
 		return StringUtils.split(hotSearch, SEPARATOR);
 	}
 

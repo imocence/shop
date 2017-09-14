@@ -278,7 +278,8 @@ $().ready(function() {
 					<span class="requiredField">*</span>${message("Setting.siteName")}:
 				</th>
 				<td>
-					<input type="text" name="siteName" class="text" value="${message("shop.header.siteName")}" readonly="readonly" maxlength="200" />
+					${message("shop.header.siteName")}
+					<!--<input type="text" name="siteName" class="text" value="${message("shop.header.siteName")}" readonly="readonly" maxlength="200" />-->
 				</td>
 			</tr>
 			<tr>
@@ -306,7 +307,8 @@ $().ready(function() {
 					${message("Setting.hotSearch")}:
 				</th>
 				<td>
-					<input type="text" name="hotSearch" class="text" value="${setting.hotSearch}" maxlength="200" title="${message("admin.setting.hotSearchTitle")}" />
+					${message("shop.header.hotSearchs")}
+					<!--<input type="text" name="hotSearch" class="text" value="${message("shop.header.hotSearchs")}" readonly="readonly" maxlength="200" title="${message("admin.setting.hotSearchTitle")}" />-->
 				</td>
 			</tr>
 			<tr>
