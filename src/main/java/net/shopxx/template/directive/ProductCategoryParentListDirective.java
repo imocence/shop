@@ -17,7 +17,9 @@ import freemarker.core.Environment;
 import freemarker.template.TemplateDirectiveBody;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
+import net.shopxx.entity.Country;
 import net.shopxx.entity.ProductCategory;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.ProductCategoryService;
 import net.shopxx.util.FreeMarkerUtils;
 
@@ -47,7 +49,8 @@ public class ProductCategoryParentListDirective extends BaseDirective {
 
 	@Inject
 	private ProductCategoryService productCategoryService;
-
+	@Inject
+	private CountryService countryService;
 	/**
 	 * 执行
 	 * 
@@ -65,8 +68,10 @@ public class ProductCategoryParentListDirective extends BaseDirective {
 		Long productCategoryId = FreeMarkerUtils.getParameter(PRODUCT_CATEGORY_ID_PARAMETER_NAME, Long.class, params);
 		Boolean recursive = FreeMarkerUtils.getParameter(RECURSIVE_PARAMETER_NAME, Boolean.class, params);
 		Integer count = getCount(params);
-		boolean useCache = useCache(params);
-		List<ProductCategory> productCategories = productCategoryService.findParents(productCategoryId, recursive != null ? recursive : true, count, useCache);
+		boolean useCache = true;
+		Country  country = countryService.getDefaultCountry();
+
+		List<ProductCategory> productCategories = productCategoryService.findParents(country,productCategoryId, recursive != null ? recursive : true, count, useCache);
 		setLocalVariable(VARIABLE_NAME, productCategories, env, body);
 	}
 

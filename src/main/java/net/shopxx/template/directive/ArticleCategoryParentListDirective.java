@@ -18,7 +18,11 @@ import freemarker.template.TemplateDirectiveBody;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 import net.shopxx.entity.ArticleCategory;
+import net.shopxx.entity.Country;
 import net.shopxx.service.ArticleCategoryService;
+import net.shopxx.service.CountryService;
+import net.shopxx.service.MemberService;
+import net.shopxx.service.UserService;
 import net.shopxx.util.FreeMarkerUtils;
 
 /**
@@ -47,7 +51,12 @@ public class ArticleCategoryParentListDirective extends BaseDirective {
 
 	@Inject
 	private ArticleCategoryService articleCategoryService;
-
+	@Inject
+	private CountryService countryService;
+	@Inject
+	UserService userService;
+	@Inject
+	MemberService memberService;
 	/**
 	 * 执行
 	 * 
@@ -66,6 +75,7 @@ public class ArticleCategoryParentListDirective extends BaseDirective {
 		Boolean recursive = FreeMarkerUtils.getParameter(RECURSIVE_PARAMETER_NAME, Boolean.class, params);
 		Integer count = getCount(params);
 		boolean useCache = useCache(params);
+		
 		List<ArticleCategory> articleCategories = articleCategoryService.findParents(articleCategoryId, recursive != null ? recursive : true, count, useCache);
 		setLocalVariable(VARIABLE_NAME, articleCategories, env, body);
 	}

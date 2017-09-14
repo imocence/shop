@@ -31,7 +31,7 @@ public interface ProductCategoryService extends BaseService<ProductCategory, Lon
 	 * @param count
 	 * @return
 	 */
-	List<ProductCategory> findRoots(Country country, Integer count);
+	List<ProductCategory> findRoots(Country country, Integer count, boolean useCache);
 	
 	/**
 	 * 查找顶级商品分类
@@ -68,6 +68,7 @@ public interface ProductCategoryService extends BaseService<ProductCategory, Lon
 
 	/**
 	 * 查找上级商品分类
+	 * @param country 
 	 * 
 	 * @param productCategoryId
 	 *            商品分类ID
@@ -79,7 +80,7 @@ public interface ProductCategoryService extends BaseService<ProductCategory, Lon
 	 *            是否使用缓存
 	 * @return 上级商品分类
 	 */
-	List<ProductCategory> findParents(Long productCategoryId, boolean recursive, Integer count, boolean useCache);
+	List<ProductCategory> findParents(Country country, Long productCategoryId, boolean recursive, Integer count, boolean useCache);
 
 	/**
 	 * 查找商品分类树

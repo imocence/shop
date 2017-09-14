@@ -20,7 +20,9 @@ import freemarker.template.TemplateModel;
 import net.shopxx.Filter;
 import net.shopxx.Order;
 import net.shopxx.entity.Brand;
+import net.shopxx.entity.Country;
 import net.shopxx.service.BrandService;
+import net.shopxx.service.CountryService;
 import net.shopxx.util.FreeMarkerUtils;
 
 /**
@@ -44,7 +46,8 @@ public class BrandListDirective extends BaseDirective {
 
 	@Inject
 	private BrandService brandService;
-
+	@Inject
+	private CountryService countryService;
 	/**
 	 * 执行
 	 * 
@@ -61,9 +64,16 @@ public class BrandListDirective extends BaseDirective {
 	public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {
 		Long productCategoryId = FreeMarkerUtils.getParameter(PRODUCT_CATEGORY_ID_PARAMETER_NAME, Long.class, params);
 		Integer count = getCount(params);
+		Country  country = countryService.getDefaultCountry();
 		List<Filter> filters = getFilters(params, Brand.class);
+		Filter filter = new Filter();
+		filter.setProperty("country");
+		filter.setValue(country);
+		filter.setOperator(Filter.Operator.eq);
+		filters.add(filter);
 		List<Order> orders = getOrders(params);
 		boolean useCache = useCache(params);
+				
 		List<Brand> brands = brandService.findList(productCategoryId, count, filters, orders, useCache);
 		setLocalVariable(VARIABLE_NAME, brands, env, body);
 	}

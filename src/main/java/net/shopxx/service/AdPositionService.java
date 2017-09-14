@@ -5,7 +5,10 @@
  */
 package net.shopxx.service;
 
+import java.util.List;
+
 import net.shopxx.entity.AdPosition;
+import net.shopxx.entity.Country;
 
 /**
  * Service - 广告位
@@ -25,5 +28,14 @@ public interface AdPositionService extends BaseService<AdPosition, Long> {
 	 * @return 广告位
 	 */
 	AdPosition find(Long id, boolean useCache);
+
+	
+	/**
+	 * 查找广告位分类树
+	 * @param country
+	 *            国家
+	 * @return 文章分类树
+	 */
+	List<AdPosition> findTree(Country country);
 
 }

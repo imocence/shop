@@ -43,6 +43,7 @@ public class NavigationListDirective extends BaseDirective {
 	@Inject
 	private CountryService countryService;
 
+
 	/**
 	 * 执行
 	 * 
@@ -60,9 +61,10 @@ public class NavigationListDirective extends BaseDirective {
 		Integer count = getCount(params);
 		List<Filter> filters = getFilters(params, Navigation.class);
 		List<Order> orders = getOrders(params);
-		boolean useCache = useCache(params);
+		boolean useCache = true;
 		//获取默认国家
 		Country  country = countryService.getDefaultCountry();
+
 		List<Navigation> navigations = navigationService.findList(count, filters, orders, useCache,country);
 		setLocalVariable(VARIABLE_NAME, navigations, env, body);
 	}

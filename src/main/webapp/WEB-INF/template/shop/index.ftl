@@ -151,19 +151,19 @@
         </div>
         <div class="span10">
         [@ad_position id = 1]
-					[#noautoesc]
-        ${adPosition.resolveTemplate()}
-        [/#noautoesc]
-				[/@ad_position]
+			[#noautoesc]
+		        ${adPosition.resolveTemplate()}
+		    [/#noautoesc]
+		[/@ad_position]
         </div>
     </div>
     <div class="row">
         <div class="span9">
-        [@ad_position id = 2]
-					[#noautoesc]
-        ${adPosition.resolveTemplate()}
-        [/#noautoesc]
-				[/@ad_position]
+       		[@ad_position id = 2]
+				[#noautoesc]
+		        	${adPosition.resolveTemplate()}
+		        [/#noautoesc]
+			[/@ad_position]
         </div>
         <div class="span3">
         [@article_category_root_list count = 2]

@@ -33,7 +33,7 @@
 					</ul>
 				</div>
 				<div class="list">
-					<table>
+					<table>						
 						[#list rootProductCategories as rootProductCategory]
 							<tr[#if !rootProductCategory_has_next] class="last"[/#if]>
 								<th>
@@ -45,7 +45,7 @@
 									[/#list]
 								</td>
 							</tr>
-						[/#list]
+						[/#list]						
 					</table>
 				</div>
 			</div>

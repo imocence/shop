@@ -19,6 +19,7 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 import net.shopxx.Filter;
 import net.shopxx.Order;
+import net.shopxx.entity.Brand;
 import net.shopxx.entity.Promotion;
 import net.shopxx.service.PromotionService;
 import net.shopxx.util.FreeMarkerUtils;
@@ -59,7 +60,6 @@ public class PromotionListDirective extends BaseDirective {
 
 	@Inject
 	private PromotionService promotionService;
-
 	/**
 	 * 执行
 	 * 
@@ -79,9 +79,11 @@ public class PromotionListDirective extends BaseDirective {
 		Boolean hasBegun = FreeMarkerUtils.getParameter(HAS_BEGUN_PARAMETER_NAME, Boolean.class, params);
 		Boolean hasEnded = FreeMarkerUtils.getParameter(HAS_ENDED_PARAMETER_NAME, Boolean.class, params);
 		Integer count = getCount(params);
-		List<Filter> filters = getFilters(params, Promotion.class);
+		
+		List<Filter> filters = getFilters(params, Brand.class);
+		
 		List<Order> orders = getOrders(params);
-		boolean useCache = useCache(params);
+		boolean useCache = true;//useCache(params);
 		List<Promotion> promotions = promotionService.findList(memberRankId, productCategoryId, hasBegun, hasEnded, count, filters, orders, useCache);
 		setLocalVariable(VARIABLE_NAME, promotions, env, body);
 	}

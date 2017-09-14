@@ -44,7 +44,9 @@ public class ProductCategoryServiceImpl extends BaseServiceImpl<ProductCategory,
 	 * @param count
 	 * @return
 	 */
-	public List<ProductCategory> findRoots(Country country, Integer count){
+	@Transactional(readOnly = true)
+	@Cacheable(value = "productCategory", condition = "#useCache")
+	public List<ProductCategory> findRoots(Country country, Integer count,boolean useCache){
 		return productCategoryDao.findRoots(country, count);
 	}
 	
@@ -61,17 +63,17 @@ public class ProductCategoryServiceImpl extends BaseServiceImpl<ProductCategory,
 
 	@Transactional(readOnly = true)
 	public List<ProductCategory> findParents(ProductCategory productCategory, boolean recursive, Integer count) {
-		return productCategoryDao.findParents(productCategory, recursive, count);
+		return productCategoryDao.findParents(null,productCategory, recursive, count);
 	}
 
 	@Transactional(readOnly = true)
 	@Cacheable(value = "productCategory", condition = "#useCache")
-	public List<ProductCategory> findParents(Long productCategoryId, boolean recursive, Integer count, boolean useCache) {
+	public List<ProductCategory> findParents(Country country,Long productCategoryId, boolean recursive, Integer count, boolean useCache) {
 		ProductCategory productCategory = productCategoryDao.find(productCategoryId);
 		if (productCategoryId != null && productCategory == null) {
 			return Collections.emptyList();
 		}
-		return productCategoryDao.findParents(productCategory, recursive, count);
+		return productCategoryDao.findParents(country,productCategory, recursive, count);
 	}
 
 	@Transactional(readOnly = true)

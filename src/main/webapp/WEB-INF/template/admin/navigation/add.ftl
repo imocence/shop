@@ -17,7 +17,7 @@ $().ready(function() {
 	var $inputForm = $("#inputForm");
 	var $systemUrl = $("#systemUrl");
 	var $url = $("#url");
-	
+	var $country = $("#country");
 	[@flash_message /]
 
 	// 系统内容
@@ -41,7 +41,32 @@ $().ready(function() {
 			order: "digits"
 		}
 	});
-
+	$country.change(function(){
+		// ajax获取paymentMethod
+		$.ajax({
+			url: "${base}/admin/navigation/listByCountry",
+			type: "GET",
+			data: {countryName: $country.val()},
+			dataType: "json",
+			cache: false,
+			success: function(articleCategoryTree) {
+				$systemUrl.empty();
+				var paths = '<option value="">------------</option>'+
+							'<option value="${base}/">${message("admin.navigation.home")}</option>'+
+							'<option value="${base}/product_category">${message("admin.navigation.productCategory")}</option>'+
+							'<option value="${base}/friend_link">${message("admin.navigation.friendLink")}</option>'+
+							'<option value="${base}/member/index">${message("admin.navigation.member")}</option>';
+				$systemUrl.append(paths);
+				$.each(articleCategoryTree, function (index,item){
+					var space = '';
+					for(var i=0;i<item.grade;i++){
+						space += '&nbsp;&nbsp';
+					}
+					$systemUrl.append('<option value=${base}' + item.path + '>' + space + item.name + '</option>');
+				});
+			}
+		});
+	});
 });
 </script>
 </head>
@@ -56,7 +81,7 @@ $().ready(function() {
 					<span class="requiredField">*</span>${message("common.country")}:
 				</th>
 				<td>
-					<select name="countryName">
+					<select id="country" name="countryName">
 						[@country_list]
 							[#list countrys as country]
 								<option value="${country.name}">${message("${country.nameLocal}")}</option>

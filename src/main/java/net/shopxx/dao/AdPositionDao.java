@@ -5,7 +5,10 @@
  */
 package net.shopxx.dao;
 
+import java.util.List;
+
 import net.shopxx.entity.AdPosition;
+import net.shopxx.entity.Country;
 
 /**
  * Dao - 广告位
@@ -14,5 +17,13 @@ import net.shopxx.entity.AdPosition;
  * @version 5.0.3
  */
 public interface AdPositionDao extends BaseDao<AdPosition, Long> {
+	/**
+	 * 查找下级广告位
+	 * 
+	 * @param country
+	 *            国家        
+	 * @return 下级广告位
+	 */
+	List<AdPosition> findChildren(Country country);
 
 }

@@ -58,7 +58,7 @@ public class ProductCategoryDaoImpl extends BaseDaoImpl<ProductCategory, Long> i
 		return query.getResultList();
 	}
 
-	public List<ProductCategory> findParents(ProductCategory productCategory, boolean recursive, Integer count) {
+	public List<ProductCategory> findParents(Country country,ProductCategory productCategory, boolean recursive, Integer count) {
 		if (productCategory == null || productCategory.getParent() == null) {
 			return Collections.emptyList();
 		}
@@ -68,7 +68,7 @@ public class ProductCategoryDaoImpl extends BaseDaoImpl<ProductCategory, Long> i
 			query = entityManager.createQuery(jpql, ProductCategory.class).setParameter("ids", Arrays.asList(productCategory.getParentIds()));
 		} else {
 			String jpql = "select productCategory from ProductCategory productCategory where productCategory = :productCategory";
-			query = entityManager.createQuery(jpql, ProductCategory.class).setParameter("productCategory", productCategory.getParent());
+			query = entityManager.createQuery(jpql, ProductCategory.class).setParameter("productCategory", productCategory.getParent()).setParameter("country", country);
 		}
 		if (count != null) {
 			query.setMaxResults(count);

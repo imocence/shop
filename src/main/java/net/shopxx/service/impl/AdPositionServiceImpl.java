@@ -5,6 +5,8 @@
  */
 package net.shopxx.service.impl;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.shopxx.dao.AdPositionDao;
 import net.shopxx.entity.AdPosition;
+import net.shopxx.entity.Country;
 import net.shopxx.service.AdPositionService;
 
 /**
@@ -24,7 +27,17 @@ import net.shopxx.service.AdPositionService;
  */
 @Service
 public class AdPositionServiceImpl extends BaseServiceImpl<AdPosition, Long> implements AdPositionService {
-
+	/**
+	 * 查找文章分类树
+	 * @param country
+	 *            国家
+	 * @return 文章分类树
+	 */
+	@Transactional(readOnly = true)
+	public List<AdPosition> findTree(Country country){
+		return adPositionDao.findChildren(country);
+	}
+	
 	@Inject
 	private AdPositionDao adPositionDao;
 

@@ -35,10 +35,11 @@ public class ProductCategoryController extends BaseController {
 	/**
 	 * 首页
 	 */
-	@GetMapping
+	@GetMapping("/index")
 	public String index(ModelMap model) {
 	    Country  country = countryService.getDefaultCountry();
-		model.addAttribute("rootProductCategories", productCategoryService.findRoots(country,null));
+	    boolean useCache = true;
+		model.addAttribute("rootProductCategories", productCategoryService.findRoots(country,null,useCache));
 		return "shop/product_category/index";
 	}
 

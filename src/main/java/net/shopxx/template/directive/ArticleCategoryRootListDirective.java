@@ -39,7 +39,6 @@ public class ArticleCategoryRootListDirective extends BaseDirective {
 	private ArticleCategoryService articleCategoryService;
 	@Inject
 	private CountryService countryService;
-
 	/**
 	 * 执行
 	 * 
