@@ -92,7 +92,7 @@
 		</div>
 		<div class="info">
 			<p>${setting.certtext}</p>
-			<p>${message("shop.footer.copyright", setting.siteName)}</p>
+			<p>${message("shop.footer.copyright", '${message("shop.header.siteName")}')}</p>
 			[@friend_link_list type="image" count = 8]
 				<ul>
 					[#list friendLinks as friendLink]
