@@ -19,7 +19,7 @@ $().ready(function() {
 	var $rechargeForm = $("#rechargeForm");
 	var $giftMemberCode = $("#giftMemberCode");
 	var $giftAmount = $("#giftAmount");
-	var $submit = $("#submit");
+	var $inputForm = $("#inputForm");
 	// 券
 	$giftAmount.change(function() {
 		var couponPrice = $("#giftAmount").val();
@@ -35,26 +35,18 @@ $().ready(function() {
 	});
 	
 	// 表单验证
-	$submit.click(function() {
-		if ($giftMemberCode.val() == "") {
-			$.alert("${message("shop.deposit.memberCodeNullOrMemberNull")}");
-			return false;
-		}
-		$.ajax({
-			url: "gift_do",
-			type: "POST",
-			data: $rechargeForm.serialize(),
-			dataType: "json",
-			beforeSend: function() {
-				$submit.prop("disabled", true);
+	$inputForm.validate({
+		rules: {
+			name: {
+				required: true
 			},
-			success: function(data) {
-				location.href = "log?type=1";
+			giftMemberCode: {
+				required: true
 			},
-			complete: function() {
-				$submit.prop("disabled", false);
+			giftAmount: {
+				required: true
 			}
-		});
+		}
 	});
 });
 </script>
@@ -81,15 +73,23 @@ $().ready(function() {
 							</tr>
 							<tr>
 								<th>
-									${message("member.deposit.giftMemberCode")}:
+									<span class="requiredField">*</span>${message("member.deposit.name")}:
 								</th>
 								<td>
-									<input type="text" id="giftMemberCode" name="giftMemberCode" class="text" maxlength="16" onpaste="return false;" />
+									<input type="text" name="name" class="text" value="${(remittanceLog.name)!}" maxlength="200" />
 								</td>
 							</tr>
 							<tr>
 								<th>
-									${message("member.deposit.giftAmount")}:
+									<span class="requiredField">*</span>${message("member.deposit.giftMemberCode")}:
+								</th>
+								<td>
+									<input type="text" id="giftMemberCode" name="giftMemberCode" value="${(member.deposit.giftMemberCode)!}" class="text" maxlength="16" onpaste="return false;" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<span class="requiredField">*</span>${message("member.deposit.giftAmount")}:
 								</th>
 								<td>
 									<input type="text" id="giftAmount" name="giftAmount" class="text" maxlength="16" onpaste="return false;" />

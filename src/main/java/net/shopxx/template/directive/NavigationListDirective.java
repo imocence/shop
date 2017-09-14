@@ -61,7 +61,7 @@ public class NavigationListDirective extends BaseDirective {
 		Integer count = getCount(params);
 		List<Filter> filters = getFilters(params, Navigation.class);
 		List<Order> orders = getOrders(params);
-		boolean useCache = true;
+		boolean useCache = useCache(params);
 		//获取默认国家
 		Country  country = countryService.getDefaultCountry();
 

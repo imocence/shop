@@ -56,7 +56,7 @@ public class ProductTagListDirective extends BaseDirective {
 		Integer count = getCount(params);
 		List<Filter> filters = getFilters(params, ProductTag.class);
 		List<Order> orders = getOrders(params);
-		boolean useCache = true;//useCache(params);
+		boolean useCache = useCache(params);
 		List<ProductTag> productTags = productTagService.findList(count, filters, orders, useCache);
 		setLocalVariable(VARIABLE_NAME, productTags, env, body);
 	}

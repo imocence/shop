@@ -61,14 +61,14 @@ public class AdPositionDirective extends BaseDirective {
 		
 		Country  country = countryService.getDefaultCountry();
 		AdPosition adPosition = adPositionService.find(id, useCache);
-		Set<Ad> ads = adPosition.getAds();
+		/*Set<Ad> ads = adPosition.getAds();
 		if(ads.size() > 0){
 			for(Ad ad : ads){
 				if(!ad.getCountry().equals(country)){
 					ads.remove(ad);
 				}
 			}
-		}
+		}*/
 		
 		setLocalVariable(VARIABLE_NAME, adPosition, env, body);
 		

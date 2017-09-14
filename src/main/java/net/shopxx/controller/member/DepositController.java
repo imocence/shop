@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -69,8 +71,6 @@ public class DepositController extends BaseController {
 	FiBankbookBalanceService fiBankbookBalanceService;
 	@Inject
 	MemberService memberService;
-	@Inject
-	private SnDao snDao;
 	/**
 	 * 计算支付手续费
 	 */
@@ -130,40 +130,37 @@ public class DepositController extends BaseController {
 	}
 	/**
 	 * 转券执行
+	 * @throws Exception 
 	 */
 	@PostMapping("/gift_do")
-	public ResponseEntity<?> gift_do(String giftMemberCode, BigDecimal giftAmount,@CurrentUser Member currentUser) {
-		Map<String, Object> data = new HashMap<>();
+	public String gift_do(String giftMemberCode,String name, BigDecimal giftAmount,@CurrentUser Member currentUser, HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
 		Member member = memberService.findByUsercode(StringUtils.upperCase(giftMemberCode.replace(" ", "")));
-		if (giftMemberCode == null || member == null) {
-			return Results.unprocessableEntity("shop.deposit.memberCodeNullOrMemberNull");
+		if(!member.getCountry().equals(currentUser.getCountry())){
+			addFlashMessage(redirectAttributes, "member.deposit.notInSomeCountry");
+			return UNPROCESSABLE_ENTITY_VIEW;
+		}
+		if (giftMemberCode == null || member == null || !name.equals(member.getName())) {
+			addFlashMessage(redirectAttributes, "member.deposit.sendSuccess");
+			return UNPROCESSABLE_ENTITY_VIEW;
 		}
 		if (giftAmount != null && giftAmount.compareTo(BigDecimal.ZERO) < 0) {
-			return Results.UNPROCESSABLE_ENTITY;
+			return UNPROCESSABLE_ENTITY_VIEW;
 		}
 		if (giftAmount != null && giftAmount.compareTo(fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.coupon).getBalance()) > 0) {
-			return Results.unprocessableEntity("shop.order.insufficientCoupon");
+			return UNPROCESSABLE_ENTITY_VIEW;
 		}
 		String outCoupon = "OUT"+currentUser.getUsercode().substring(4, 10)+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
 		String inCoupon =  "IN"+member.getUsercode().substring(4, 10)+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
 		//当前会员券减
 		String outNotes = "用户编号[" + currentUser.getUsercode() + "] 操作编号[" + outCoupon + "] 赠送券" + giftAmount;
 		String inNotes = "用户编号[" + member.getUsercode() + "] 操作编号[" + inCoupon + "] 获取赠送券" + giftAmount;
-		if (giftAmount.compareTo(BigDecimal.ZERO) > 0) {
-			try {
-				fiBankbookJournalService.recharge(currentUser.getUsercode(), giftAmount, outCoupon, 
-						FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.takeout, FiBankbookJournal.MoneyType.couponOut, outNotes);
-				fiBankbookJournalService.recharge(member.getUsercode(), giftAmount, inCoupon, 
-						FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.couponIn, inNotes);
-				data.put("msg", "操作成功！");
-			} catch (Exception e) {
-				data.put("msg", "操作失败，查看交易记录！");
-				e.printStackTrace();
-			}
-		}else{
-			data.put("msg", "操作失败，金额必须大于0！");
-		}
-		return ResponseEntity.ok(data);		
+		fiBankbookJournalService.recharge(currentUser.getUsercode(), giftAmount, outCoupon, 
+				FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.takeout, FiBankbookJournal.MoneyType.couponOut, outNotes);
+		fiBankbookJournalService.recharge(member.getUsercode(), giftAmount, inCoupon, 
+				FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.couponIn, inNotes);
+		
+		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
+		return "redirect:log?type=1";	
 	}
 	/**
 	 * 记录

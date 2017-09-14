@@ -123,7 +123,7 @@ public class ProductListDirective extends BaseDirective {
 		
 		
 		List<Order> orders = getOrders(params);
-		boolean useCache = true;//useCache(params);
+		boolean useCache = useCache(params);
 		Map<Long, String> attributeValueMap = new HashMap<>();
 		if (attributeValue != null) {
 			for (Map.Entry<String, String> entry : attributeValue.entrySet()) {
