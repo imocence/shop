@@ -48,6 +48,9 @@ $().ready(function() {
 								${message("member.remittanceLog.memo")}
 							</th>
 							<th>
+								<span>${message("admin.remittance.confirmStatus")}</span>
+							</th>
+							<th>
 								${message("shop.common.createdDate")}
 							</th>
 						</tr>
@@ -67,6 +70,9 @@ $().ready(function() {
 								</td>
 								<td>
 									<span title="${remittanceLog.memo}">${abbreviate(remittanceLog.memo, 30)}</span>
+								</td>
+								<td>
+									${message("admin.remittance.confirmStatus." + remittanceLog.confirmStatus)}
 								</td>
 								<td>
 									<span title="${remittanceLog.createdDate?string("yyyy-MM-dd HH:mm:ss")}">${remittanceLog.createdDate}</span>
