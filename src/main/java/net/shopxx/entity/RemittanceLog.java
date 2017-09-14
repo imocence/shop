@@ -102,7 +102,7 @@ public class RemittanceLog  extends BaseEntity<Long> {
 	 */
 	@Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
 	@DateBridge(resolution = Resolution.SECOND)
-	@Column(name="remittance_date")
+	@Column(name="remittance_date", updatable = false)
 	private Date remittanceDate;
 	
 	/**
