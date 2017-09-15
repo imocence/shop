@@ -38,6 +38,7 @@ import net.shopxx.CommonAttributes;
 import net.shopxx.EnumConverter;
 import net.shopxx.Setting;
 import net.shopxx.TemplateConfig;
+import net.shopxx.entity.Country;
 
 /**
  * Utils - 系统
@@ -138,7 +139,22 @@ public final class SystemUtils {
 		}
 		return (Setting) cacheElement.getObjectValue();
 	}
-
+	/**
+	 * 设置钱币单位
+	 */
+	public static void setCurrency(Country country){
+		Ehcache cache = CACHE_MANAGER.getEhcache(Setting.CACHE_NAME);
+		//设置货币
+		//Setting setting = SystemUtils.getSetting();
+		if(country.getName().equals("MY")){
+			getSetting().setCurrencySign("$");
+			getSetting().setCurrencyUnit("");
+		}else if(country.getName().equals("CN")){
+			getSetting().setCurrencySign("￥");
+			getSetting().setCurrencyUnit("元");
+		}	
+		cache.put(new Element("setting", getSetting()));
+	}
 	/**
 	 * 设置系统设置
 	 * 
@@ -218,6 +234,7 @@ public final class SystemUtils {
 		if (cacheElement == null) {
 			TemplateConfig templateConfig = null;
 			try {
+				
 				File shopxxXmlFile = new ClassPathResource(CommonAttributes.SHOPXX_XML_PATH).getFile();
 				Document document = new SAXReader().read(shopxxXmlFile);
 				org.dom4j.Element element = (org.dom4j.Element) document.selectSingleNode("/shopxx/templateConfig[@id='" + id + "']");
@@ -300,5 +317,6 @@ public final class SystemUtils {
 		templateConfig.setDescription(description);
 		return templateConfig;
 	}
+
 
 }

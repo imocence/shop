@@ -13,7 +13,9 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import net.shopxx.entity.User;
 import net.shopxx.event.UserLoggedOutEvent;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.UserService;
+import net.shopxx.util.SystemUtils;
 
 /**
  * Security - 注销过滤器
@@ -27,7 +29,6 @@ public class LogoutFilter extends org.apache.shiro.web.filter.authc.LogoutFilter
 	private ApplicationEventPublisher applicationEventPublisher;
 	@Inject
 	private UserService userService;
-
 	/**
 	 * 请求前处理
 	 * 

@@ -8,12 +8,15 @@ package net.shopxx.template.method;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.springframework.stereotype.Component;
 
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import net.shopxx.Setting;
+import net.shopxx.service.CountryService;
 import net.shopxx.util.FreeMarkerUtils;
 import net.shopxx.util.SystemUtils;
 
@@ -25,7 +28,8 @@ import net.shopxx.util.SystemUtils;
  */
 @Component
 public class CurrencyMethod implements TemplateMethodModelEx {
-
+	@Inject
+	CountryService countryService;
 	/**
 	 * 执行
 	 * 
@@ -38,6 +42,8 @@ public class CurrencyMethod implements TemplateMethodModelEx {
 		BigDecimal amount = FreeMarkerUtils.getArgument(0, BigDecimal.class, arguments);
 		Boolean showSign = FreeMarkerUtils.getArgument(1, Boolean.class, arguments);
 		Boolean showUnit = FreeMarkerUtils.getArgument(2, Boolean.class, arguments);
+		//System.out.println(countryService.getDefaultCountry().getName());
+		SystemUtils.setCurrency(countryService.getDefaultCountry());
 		if (amount != null) {
 			Setting setting = SystemUtils.getSetting();
 			String price = setting.setScale(amount).toString();

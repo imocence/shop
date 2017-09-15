@@ -23,7 +23,6 @@ import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.dao.DepositLogDao;
 import net.shopxx.dao.MemberDao;
-import net.shopxx.dao.MemberRankDao;
 import net.shopxx.dao.PointLogDao;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.DepositLog;
@@ -32,7 +31,6 @@ import net.shopxx.entity.FiBankbookBalance.Type;
 import net.shopxx.entity.Language;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
-import net.shopxx.entity.MemberRank;
 import net.shopxx.entity.NapaStores;
 import net.shopxx.entity.PointLog;
 import net.shopxx.entity.User;
@@ -80,8 +78,6 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	NapaStoresService napaStoresService;
 	@Inject
 	private MemberDao memberDao;
-	@Inject
-	private MemberRankDao memberRankDao;
 	@Inject
 	private DepositLogDao depositLogDao;
 	@Inject

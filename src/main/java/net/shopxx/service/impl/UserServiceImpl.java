@@ -61,7 +61,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	 * 认证Provider缓存
 	 */
 	private static final Map<Class<?>, AuthenticationProvider> AUTHENTICATION_PROVIDER_CACHE = new ConcurrentHashMap<>();
-
 	@Inject
 	private ApplicationEventPublisher applicationEventPublisher;
 	@Inject
@@ -70,7 +69,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	private CacheManager cacheManager;
 	@Inject
 	private UserDao userDao;
-
 	@Transactional(readOnly = true)
 	public User getCurrentAuditor() {
 		return getCurrent();
@@ -78,6 +76,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 	@Transactional(noRollbackFor = AuthenticationException.class)
 	public User getUser(AuthenticationToken authenticationToken) {
+		
 		Assert.notNull(authenticationToken);
 		Assert.state(authenticationToken instanceof UserAuthenticationToken || authenticationToken instanceof SocialUserAuthenticationToken);
 
@@ -120,6 +119,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		}
 		user.setLastLoginDate(new Date());
 		resetFailedLoginAttempts(user);
+		
 		return user;
 	}
 
@@ -134,9 +134,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	public void register(User user) {
 		Assert.notNull(user);
 		Assert.isTrue(user.isNew());
-
 		userDao.persist(user);
-
 		applicationEventPublisher.publishEvent(new UserRegisteredEvent(this, user));
 	}
 
@@ -153,6 +151,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		applicationEventPublisher.publishEvent(new UserLoggedOutEvent(this, getCurrent()));
 
 		Subject subject = SecurityUtils.getSubject();
+		
 		subject.logout();
 	}
 
