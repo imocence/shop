@@ -58,6 +58,12 @@ public class RemittanceLogController extends BaseController{
 	 */
 	@PostMapping("/add")
 	public String add(BigDecimal amount,String identityCard, String memo, String name, String account, Date date,String number,String telephone,@CurrentUser Member currentUser,RedirectAttributes redirectAttributes) {
+		if(currentUser.getNapaStores().getType() == 0)
+		{
+			addFlashMessage(redirectAttributes, "member.remittance_log.limits");
+			return "redirect:list";
+		}
+		
 		if (!isValid(RemittanceLog.class, "identityCard", identityCard) || !isValid(RemittanceLog.class, "remittanceNumber", number)) {
 			return UNPROCESSABLE_ENTITY_VIEW;
 		}
