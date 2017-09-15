@@ -51,13 +51,18 @@ public class AdPositionDaoImpl extends BaseDaoImpl<AdPosition, Long> implements 
 		if (country != null) {
 			jpql += " and country=:country ";
 		}
+		if (orders != null) {
+			jpql += " and orders=:orders ";
+		}
 		jpql += " order by adPosition.createdDate asc";
 		TypedQuery<AdPosition> query = entityManager.createQuery(jpql, AdPosition.class);
 		
 		if (country != null) {
 			query.setParameter("country", country);
 		}
-
+		if (country != null) {
+			query.setParameter("orders", orders);
+		}
 		List<AdPosition> result = query.getResultList();
 		if(result.size() > 0){
 			return result.get(0);
