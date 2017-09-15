@@ -383,6 +383,7 @@ AdPosition.name=\u540d\u7a31
 AdPosition.width=\u5bec\u5ea6
 AdPosition.height=\u9ad8\u5ea6
 AdPosition.description=\u63cf\u8ff0
+AdPosition.orders=\u4F4D\u7F6E
 AdPosition.template=\u7bc4\u672c
 AdPosition.ads=\u5ee3\u544a
 

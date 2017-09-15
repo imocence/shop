@@ -173,6 +173,7 @@ public class ProductController extends BaseController {
 	 */
 	@GetMapping("/list/{productCategoryId}")
 	public String list(@CurrentUser Member currentUser,@PathVariable Long productCategoryId, Product.Type type, Long brandId, Long promotionId, Long productTagId, BigDecimal startPrice, BigDecimal endPrice, Product.OrderType orderType, Integer pageNumber, Integer pageSize, HttpServletRequest request, ModelMap model) {
+		
 		ProductCategory productCategory = productCategoryService.find(productCategoryId);
 		if (productCategory == null) {
 			throw new ResourceNotFoundException();

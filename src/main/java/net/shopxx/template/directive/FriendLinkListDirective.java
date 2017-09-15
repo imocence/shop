@@ -55,6 +55,7 @@ public class FriendLinkListDirective extends BaseDirective {
 	public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {
 		Integer count = getCount(params);
 		List<Filter> filters = getFilters(params, FriendLink.class);
+		
 		List<Order> orders = getOrders(params);
 		boolean useCache = useCache(params);
 		List<FriendLink> friendLinks = friendLinkService.findList(count, filters, orders, useCache);

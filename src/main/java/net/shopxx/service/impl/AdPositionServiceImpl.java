@@ -46,7 +46,11 @@ public class AdPositionServiceImpl extends BaseServiceImpl<AdPosition, Long> imp
 	public AdPosition find(Long id, boolean useCache) {
 		return adPositionDao.find(id);
 	}
-
+	@Transactional(readOnly = true)
+	@Cacheable(value = "adPosition", condition = "#useCache")
+	public AdPosition find(String orders, Country country,boolean useCache){
+		return adPositionDao.find(orders,country);
+	}
 	@Override
 	@Transactional
 	@CacheEvict(value = "adPosition", allEntries = true)

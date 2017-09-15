@@ -21,6 +21,7 @@ import net.shopxx.Filter;
 import net.shopxx.Order;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.Navigation;
+import net.shopxx.entity.Navigation.Position;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.NavigationService;
 
@@ -58,14 +59,19 @@ public class NavigationListDirective extends BaseDirective {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {
-		Integer count = getCount(params);
+		//Integer count = getCount(params);
 		List<Filter> filters = getFilters(params, Navigation.class);
-		List<Order> orders = getOrders(params);
+		//List<Order> orders = getOrders(params);
+		Navigation.Position position = null;
+		for(Filter filter :filters ){
+			position = (Position) filter.getValue();
+		}
 		boolean useCache = useCache(params);
 		//获取默认国家
 		Country  country = countryService.getDefaultCountry();
 
-		List<Navigation> navigations = navigationService.findList(count, filters, orders, useCache,country);
+		//List<Navigation> navigations = navigationService.findList(count, filters, orders, useCache,country);
+		List<Navigation> navigations = navigationService.findList(position, useCache,country);
 		setLocalVariable(VARIABLE_NAME, navigations, env, body);
 	}
 

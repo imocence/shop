@@ -11,6 +11,7 @@ import net.shopxx.Filter;
 import net.shopxx.Order;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.Navigation;
+import net.shopxx.entity.Navigation.Position;
 
 /**
  * Service - 导航
@@ -71,5 +72,7 @@ public interface NavigationService extends BaseService<Navigation, Long> {
 	 * @return 导航
 	 */
 	List<Navigation> findList(Integer count, List<Filter> filters, List<Order> orders, boolean useCache, Country country);
+
+	List<Navigation> findList(Position position, boolean useCache,Country country);
 
 }

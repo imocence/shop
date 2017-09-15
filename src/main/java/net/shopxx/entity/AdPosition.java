@@ -97,7 +97,7 @@ public class AdPosition extends BaseEntity<Long> {
 	 */
 	@NotEmpty
 	@Column(nullable = false)
-	public int seat;
+	public String orders;
 	
 
 	/**
@@ -225,15 +225,15 @@ public class AdPosition extends BaseEntity<Long> {
 	 * 获取位置
 	 * @return
 	 */
-	public int getSeat() {
-		return seat;
+	public String getOrders() {
+		return orders;
 	}
 	/**
 	 * 设置位置
 	 * @param seat
 	 */
-	public void setSeat(int seat) {
-		this.seat = seat;
+	public void setOrders(String orders) {
+		this.orders = orders;
 	}
 	/**
 	 * 解析模板

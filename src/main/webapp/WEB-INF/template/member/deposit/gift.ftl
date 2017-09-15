@@ -21,9 +21,16 @@ $().ready(function() {
 	var $giftAmount = $("#giftAmount");
 	var $inputForm = $("#inputForm");
 	var $submit = $("#submit");
-	
+	[#if flashMessage?has_content]
+        $.alert("${flashMessage}");
+    [/#if]
 	$submit.click(function() {
-		$inputForm.submit();
+		if (confirm("${message("member.deposit.cancelConfirm")}")) {
+			$inputForm.submit();
+			location.reload(true);
+		}else{
+			return false;
+		}		
 	});
 	// 券
 	$giftAmount.change(function() {

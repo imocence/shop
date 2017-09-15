@@ -33,6 +33,9 @@
 			var $giftAmount = $("#giftAmount");
 			var $submit = $("#submit");
 			var $inputForm = $("#inputForm");
+			[#if flashMessage?has_content]
+		        $.alert("${flashMessage}");
+		    [/#if]
 			// 券
 			$giftAmount.change(function() {
 				var couponPrice = $("#giftAmount").val();
@@ -49,7 +52,13 @@
 			
 			// 表单验证
 			$submit.click(function() {
-				$inputForm.submit();
+				if (confirm("${message("member.deposit.cancelConfirm")}")) {
+					$inputForm.submit();
+					location.reload(true);
+					
+				}else{
+					return false;
+				}
 			});
 			$inputForm.validate({
 				rules: {

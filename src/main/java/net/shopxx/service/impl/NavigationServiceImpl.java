@@ -19,6 +19,7 @@ import net.shopxx.Order;
 import net.shopxx.dao.NavigationDao;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.Navigation;
+import net.shopxx.entity.Navigation.Position;
 import net.shopxx.service.NavigationService;
 
 /**
@@ -68,7 +69,12 @@ public class NavigationServiceImpl extends BaseServiceImpl<Navigation, Long> imp
 		filters.add(filter);
 		return navigationDao.findList(null, count, filters, orders);
 	}
-
+	@Transactional(readOnly = true)
+	@Cacheable(value = "navigation", condition = "#useCache")
+	public List<Navigation> findList(Position position, boolean useCache,Country country){
+		return navigationDao.findList(position, country);
+	}
+	
 	@Override
 	@Transactional
 	@CacheEvict(value = "navigation", allEntries = true)
