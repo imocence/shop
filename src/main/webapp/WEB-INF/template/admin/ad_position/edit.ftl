@@ -23,6 +23,7 @@ $().ready(function() {
 	$inputForm.validate({
 		rules: {
 			name: "required",
+			orders: "required",
 			width: {
 				required: true,
 				integer: true,
@@ -67,6 +68,14 @@ $().ready(function() {
 				</th>
 				<td>
 					<input type="text" name="name" class="text" value="${adPosition.name}" maxlength="200" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span class="requiredField">*</span>${message("AdPosition.orders")}:
+				</th>
+				<td>
+					<input type="text" name="orders" class="text" maxlength="200" />
 				</td>
 			</tr>
 			<tr>

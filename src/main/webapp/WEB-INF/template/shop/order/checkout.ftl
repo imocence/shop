@@ -323,7 +323,7 @@ $().ready(function() {
 	
 	// 订单提交
 	$submit.click(function() {
-		[#if !(currentUser.napaStores.napaAddress?has_content)]
+		[#if !(currentUser.napaStores.napaCode?has_content)]
 			$.alert("${message("shop.order.newAddres")}");
 			return false;
 		[/#if]

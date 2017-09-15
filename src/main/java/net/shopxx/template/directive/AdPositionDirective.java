@@ -6,9 +6,7 @@
 package net.shopxx.template.directive;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -18,7 +16,6 @@ import freemarker.core.Environment;
 import freemarker.template.TemplateDirectiveBody;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
-import net.shopxx.entity.Ad;
 import net.shopxx.entity.AdPosition;
 import net.shopxx.entity.Country;
 import net.shopxx.service.AdPositionService;
@@ -56,19 +53,12 @@ public class AdPositionDirective extends BaseDirective {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {
-		Long id = getId(params);
+		//Long id = getId(params);
+		String orders = params.get("orders").toString();
 		boolean useCache = useCache(params);
 		
 		Country  country = countryService.getDefaultCountry();
-		AdPosition adPosition = adPositionService.find(id, useCache);
-		/*Set<Ad> ads = adPosition.getAds();
-		if(ads.size() > 0){
-			for(Ad ad : ads){
-				if(!ad.getCountry().equals(country)){
-					ads.remove(ad);
-				}
-			}
-		}*/
+		AdPosition adPosition = adPositionService.find(orders,country, useCache);
 		
 		setLocalVariable(VARIABLE_NAME, adPosition, env, body);
 		

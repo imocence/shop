@@ -70,6 +70,14 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
+					<span class="requiredField">*</span>${message("AdPosition.orders")}:
+				</th>
+				<td>
+					<input type="text" name="orders" class="text" maxlength="200" />
+				</td>
+			</tr>
+			<tr>
+				<th>
 					<span class="requiredField">*</span>${message("AdPosition.width")}:
 				</th>
 				<td>

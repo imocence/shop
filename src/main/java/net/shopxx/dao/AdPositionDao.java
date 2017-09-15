@@ -25,5 +25,14 @@ public interface AdPositionDao extends BaseDao<AdPosition, Long> {
 	 * @return 下级广告位
 	 */
 	List<AdPosition> findChildren(Country country);
+	/**
+	 	查找广告位
+	 * @param orders
+	 *            位置    
+	 * @param country
+	 *            国家        
+	 * @return 下级广告位
+	 */
+	AdPosition find(String orders,Country country);
 
 }

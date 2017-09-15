@@ -90,6 +90,9 @@ $().ready(function() {
 					<a href="javascript:;" class="sort" name="description">${message("AdPosition.description")}</a>
 				</th>
 				<th>
+					<span>${message("AdPosition.orders")}</span>
+				</th>
+				<th>
 					<span>${message("common.country")}</span>
 				</th>
 				<th>
@@ -114,6 +117,9 @@ $().ready(function() {
 						[#if adPosition.description??]
 							<span title="${adPosition.description}">${abbreviate(adPosition.description, 50, "...")}</span>
 						[/#if]
+					</td>
+					<td>
+						${message("${adPosition.orders}")}
 					</td>
 					<td>
 						${message("${adPosition.country.nameLocal}")}

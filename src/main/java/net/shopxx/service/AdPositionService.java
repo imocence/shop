@@ -38,4 +38,16 @@ public interface AdPositionService extends BaseService<AdPosition, Long> {
 	 */
 	List<AdPosition> findTree(Country country);
 
+	/**
+	 * 
+	 * @param orders
+	 * 			位置
+	 * @param country
+	 * 			國家
+	 * @param useCache
+	 * 			是否使用缓存
+	 * @return
+	 */
+	AdPosition find(String orders, Country country, boolean useCache);
+
 }

@@ -132,7 +132,7 @@ function changeLanguage(){
 				</li>
 			</ul>
 			<ul class="right">
-				[@navigation_list position = "top"]
+				[@navigation_list position = "top"]					
 					[#list navigations as navigation]
 						<li>
 							<a href="${navigation.url}"[#if navigation.isBlankTarget] target="_blank"[/#if]>${navigation.name}</a>|
