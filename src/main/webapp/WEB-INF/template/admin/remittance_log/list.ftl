@@ -111,6 +111,9 @@ $().ready(function() {
 					<span>${message("admin.remittance.creator")}</span>
 				</th>
 				<th>
+					<span>${message("admin.remittance.napaStores")}</span>
+				</th>
+				<th>
 					<span>${message("admin.remittance.confirmStatus")}</span>
 				</th>
 				<th>
@@ -138,6 +141,9 @@ $().ready(function() {
 						<a href="${base}/admin/member/view?id=${remittanceLog.member.id}">
 							${remittanceLog.member.username}
 						</a>
+					</td>
+					<td>
+						${remittanceLog.member.napaStores.napaCode}
 					</td>
 					<td>
 						${message("admin.remittance.confirmStatus." + remittanceLog.confirmStatus)}
