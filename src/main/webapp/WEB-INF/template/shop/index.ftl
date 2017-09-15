@@ -150,7 +150,7 @@
         [/@product_category_root_list]
         </div>
         <div class="span10">
-        [@ad_position orders = 1]
+        [@ad_position orders = "1"]
 			[#noautoesc]
 		        ${adPosition.resolveTemplate()}
 		    [/#noautoesc]
@@ -159,7 +159,7 @@
     </div>
     <div class="row">
         <div class="span9">
-       		[@ad_position orders = 2]
+       		[@ad_position orders = "2"]
 				[#noautoesc]
 		        	${adPosition.resolveTemplate()}
 		        [/#noautoesc]
@@ -195,7 +195,7 @@
     </div>
     <div class="row">
         <div class="span12">
-        [@ad_position orders = 3]
+        [@ad_position orders = "3"]
 					[#noautoesc]
         ${adPosition.resolveTemplate()}
         [/#noautoesc]
@@ -203,7 +203,7 @@
         </div>
     </div>
 [@product_category_root_list count = 3]
-    [@ad_position orders = 4]
+    [@ad_position orders = "4"]
         [#if adPosition??]
             [#assign adIterator = adPosition.ads.iterator() /]
         [/#if]
@@ -321,7 +321,7 @@
 [/@product_category_root_list]
     <div class="row">
         <div class="span12">
-        [@ad_position orders = 5]
+        [@ad_position orders = "5"]
 					[#noautoesc]
         ${adPosition.resolveTemplate()}
         [/#noautoesc]

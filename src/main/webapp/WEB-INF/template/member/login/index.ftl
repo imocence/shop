@@ -86,7 +86,7 @@ $().ready(function() {
 	<div class="container login">
 		<div class="row">
 			<div class="span6">
-				[@ad_position orders = 6]
+				[@ad_position orders = "6"]
 					[#noautoesc]
 						${adPosition.resolveTemplate()}
 					[/#noautoesc]
