@@ -3,11 +3,11 @@
 	<setting name="siteName" value="绿叶国际商城" />
 	<setting name="siteUrl" value="http://localhost" />
 	<setting name="logo" value="/upload/image/logo.png" />
-	<setting name="hotSearch" value="苹果,三星,索尼,华为,魅族,佳能,华硕,美的,格力" />
-	<setting name="address" value="苏州国家高新区浒墅关工业园安杨路198号" />
-	<setting name="phone" value="400-900-5528" />
-	<setting name="zipCode" value="400000" />
-	<setting name="email" value="service@shopxx.net" />
+	<setting name="hotSearch" value="希诺丝,家得丽,卡丽施,纽维兹"/>
+	<setting name="address" value="苏州国家高新区浒墅关工业园安杨路198号"/>
+	<setting name="phone" value="400-900-5528"/>
+	<setting name="zipCode" value="400000"/>
+	<setting name="email" value="service@shopxx.net"/>
 	<setting name="certtext" value="湘ICP备10000000号" />
 	<setting name="largeProductImageWidth" value="700" />
 	<setting name="largeProductImageHeight" value="700" />
