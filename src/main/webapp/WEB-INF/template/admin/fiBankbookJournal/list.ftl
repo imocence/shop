@@ -139,6 +139,9 @@ $().ready(function() {
 					<a href="javascript:;" class="sort" name="member.usercode">${message("common.member.code")}</a>
 				</th>
 				<th>
+					<a href="javascript:;" >${message("admin.member.napaCode")}</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="member.username">${message("common.member.name")}</a>
 				</th>
 				<th>
@@ -176,6 +179,9 @@ $().ready(function() {
 				<tr>
 					<td>
 						${fiBankbookJournal.member.usercode}
+					</td>
+					<td>
+						${fiBankbookJournal.member.napaStores.napaCode}
 					</td>
 					<td>
 						${fiBankbookJournal.member.username}
