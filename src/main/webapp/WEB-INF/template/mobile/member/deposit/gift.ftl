@@ -27,15 +27,12 @@
 	<script src="${base}/resources/mobile/member/js/common.js"></script>
 	<script type="text/javascript">
 		$().ready(function() {
-			
-			var $rechargeForm = $("#rechargeForm");
-			var $giftMemberCode = $("#giftMemberCode");
+
 			var $giftAmount = $("#giftAmount");
-			var $submit = $("#submit");
 			var $inputForm = $("#inputForm");
 			[#if flashMessage?has_content]
-		        $.alert("${flashMessage}");
-		    [/#if]
+				$.alert("${flashMessage}");
+			[/#if]
 			// 券
 			$giftAmount.change(function() {
 				var couponPrice = $("#giftAmount").val();
@@ -51,22 +48,15 @@
 			});
 			
 			// 表单验证
-			$submit.click(function() {
-				if (confirm("${message("member.deposit.cancelConfirm")}")) {
-					$inputForm.submit();
-					location.reload(true);
-					
-				}else{
-					return false;
-				}
-			});
 			$inputForm.validate({
 				rules: {
 					name: {
-						required: true
+						required: true,
+						minlength: 4
 					},
 					giftMemberCode: {
-						required: true
+						required: true,
+						minlength: 4
 					},
 					giftAmount: {
 						required: true
@@ -85,18 +75,18 @@
 	</header>
 	<main>
 		<div class="container-fluid">
-			<form id="rechargeForm" action="gift_do" method="post">
+			<form id="inputForm" action="gift_do" method="post">
 				<div class="list-group list-group-flat">
 					<div class="list-group-item">
 						<div class="form-group">
 							<label for="giftMemberCode"><span class="requiredField">*</span>${message("member.deposit.name")}</label>
-							<input id="name" name="name" value="${(remittanceLog.name)!}" class="form-control" type="text" maxlength="10" onpaste="return false;">
+							<input id="name" name="name"  class="form-control" type="text" maxlength="10" onpaste="return false;">
 						</div>
 					</div>
 					<div class="list-group-item">
 						<div class="form-group">
 							<label for="giftMemberCode"><span class="requiredField">*</span>${message("member.deposit.giftMemberCode")}</label>
-							<input id="giftMemberCode" name="giftMemberCode" value="${(member.deposit.giftMemberCode)!}" class="form-control" type="text" maxlength="10" onpaste="return false;">
+							<input id="giftMemberCode" name="giftMemberCode"  class="form-control" type="text" maxlength="10" onpaste="return false;">
 						</div>
 					</div>
 					<div class="list-group-item">
@@ -108,7 +98,7 @@
 					<div class="list-group-item small">${message("member.deposit.balance")}: ${currency(coupon.balance, true)}</div>
 				</div>
 				<div class="panel-footer text-center">
-					<button class="btn btn-primary" id="submit" type="submit">${message("member.common.submit")}</button>
+					<button class="btn btn-primary" type="submit">${message("member.common.submit")}</button>
 					<a class="btn btn-default" href="${base}/member/index">${message("member.common.back")}</a>
 				</div>			
 			</form>

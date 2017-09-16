@@ -11,30 +11,19 @@
 <link href="${base}/resources/member/css/member.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="${base}/resources/member/js/jquery.js"></script>
 <script type="text/javascript" src="${base}/resources/member/js/jquery.validate.js"></script>
-<script type="text/javascript" src="${base}/resources/member/js/underscore.js"></script>
 <script type="text/javascript" src="${base}/resources/member/js/common.js"></script>
 <script type="text/javascript">
 $().ready(function() {
-
-	var $rechargeForm = $("#rechargeForm");
-	var $giftMemberCode = $("#giftMemberCode");
 	var $giftAmount = $("#giftAmount");
 	var $inputForm = $("#inputForm");
-	var $submit = $("#submit");
+	
 	[#if flashMessage?has_content]
-        $.alert("${flashMessage}");
-    [/#if]
-	$submit.click(function() {
-		if (confirm("${message("member.deposit.cancelConfirm")}")) {
-			$inputForm.submit();
-			location.reload(true);
-		}else{
-			return false;
-		}		
-	});
+		$.alert("${flashMessage}");
+	[/#if]
+	
 	// 券
 	$giftAmount.change(function() {
-		var couponPrice = $("#giftAmount").val();
+		var couponPrice = $giftAmount.val();
 		var $element = $(this);
 		if (/^\d+(\.\d{0,${setting.priceScale}})?$/.test($element.val())) {
 			var max = ${coupon.balance} >= couponPrice ? couponPrice : ${coupon.balance};
@@ -60,6 +49,7 @@ $().ready(function() {
 			}
 		}
 	});
+	
 });
 </script>
 </head>
@@ -72,7 +62,7 @@ $().ready(function() {
 			<div class="span10">
 				<div class="input deposit">
 					<div class="title">${message("member.deposit.gift")}</div>
-					<form id="inputForm" action="gift_do" method="post" target="_blank">
+					<form id="inputForm" name="inputForm" action="gift_do" method="post">
 				
 						<table class="input">
 							<tr>
@@ -88,7 +78,7 @@ $().ready(function() {
 									<span class="requiredField">*</span>${message("member.deposit.name")}:
 								</th>
 								<td>
-									<input type="text" name="name" class="text" value="${(remittanceLog.name)!}" maxlength="200" />
+									<input type="text" name="name" class="text" maxlength="200" />
 								</td>
 							</tr>
 							<tr>
@@ -96,7 +86,7 @@ $().ready(function() {
 									<span class="requiredField">*</span>${message("member.deposit.giftMemberCode")}:
 								</th>
 								<td>
-									<input type="text" id="giftMemberCode" name="giftMemberCode" value="${(member.deposit.giftMemberCode)!}" class="text" maxlength="16" onpaste="return false;" />
+									<input type="text" id="giftMemberCode" name="giftMemberCode"  class="text" maxlength="10"/>
 								</td>
 							</tr>
 							<tr>
@@ -104,7 +94,7 @@ $().ready(function() {
 									<span class="requiredField">*</span>${message("member.deposit.giftAmount")}:
 								</th>
 								<td>
-									<input type="text" id="giftAmount" name="giftAmount" class="text" maxlength="16" onpaste="return false;" />
+									<input type="text" id="giftAmount" name="giftAmount" class="text" maxlength="16" />
 								</td>
 							</tr>
 							<tr>

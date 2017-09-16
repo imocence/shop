@@ -11,6 +11,13 @@
 <link href="${base}/resources/member/css/member.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="${base}/resources/member/js/jquery.js"></script>
 <script type="text/javascript" src="${base}/resources/member/js/common.js"></script>
+<script type="text/javascript">
+	$().ready(function() {
+		[#if flashMessage?has_content]
+			$.alert("${flashMessage}");
+		[/#if]
+	});
+	</script>
 </head>
 <body>
 	[#assign current = "fiBankbookJournal" /]

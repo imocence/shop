@@ -26,18 +26,13 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import net.shopxx.Pageable;
 import net.shopxx.Results;
-import net.shopxx.dao.SnDao;
 import net.shopxx.entity.BaseEntity;
-import net.shopxx.entity.Cart;
 import net.shopxx.entity.FiBankbookBalance;
 import net.shopxx.entity.FiBankbookJournal;
-import net.shopxx.entity.Sn;
 import net.shopxx.entity.FiBankbookJournal.Type;
 import net.shopxx.entity.Member;
 import net.shopxx.plugin.PaymentPlugin;
-import net.shopxx.security.CurrentCart;
 import net.shopxx.security.CurrentUser;
-import net.shopxx.service.DepositLogService;
 import net.shopxx.service.FiBankbookBalanceService;
 import net.shopxx.service.FiBankbookJournalService;
 import net.shopxx.service.MemberService;
@@ -130,31 +125,39 @@ public class DepositController extends BaseController {
 	 * @throws Exception 
 	 */
 	@PostMapping("/gift_do")
-	public String gift_do(String giftMemberCode,String name, BigDecimal giftAmount,@CurrentUser Member currentUser, RedirectAttributes redirectAttributes) throws Exception {
+	public String gift_do(String giftMemberCode,String name, BigDecimal giftAmount,@CurrentUser Member currentUser, RedirectAttributes redirectAttributes)  {
+		if (!isValid(Member.class, "usercode", giftMemberCode) || !isValid(Member.class, "username", giftMemberCode) || !isValid(FiBankbookBalance.class, "balance", giftAmount)) {
+			return "redirect:gift";
+		}
 		Member member = memberService.findByUsercode(StringUtils.upperCase(giftMemberCode.replace(" ", "")));
 		if(!member.getCountry().equals(currentUser.getCountry())){
 			addFlashMessage(redirectAttributes, "member.deposit.notInSomeCountry");
-			return UNPROCESSABLE_ENTITY_VIEW;
+			return "redirect:gift";
 		}
 		if (giftMemberCode == null || member == null || !name.equals(member.getName())) {
 			addFlashMessage(redirectAttributes, "member.deposit.sendSuccess");
-			return UNPROCESSABLE_ENTITY_VIEW;
+			return "redirect:gift";
 		}
 		if (giftAmount != null && giftAmount.compareTo(BigDecimal.ZERO) < 0) {
-			return UNPROCESSABLE_ENTITY_VIEW;
+			return "redirect:gift";
 		}
 		if (giftAmount != null && giftAmount.compareTo(fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.coupon).getBalance()) > 0) {
-			return UNPROCESSABLE_ENTITY_VIEW;
+			return "redirect:gift";
 		}
 		String outCoupon = "OUT"+currentUser.getUsercode().substring(4, 10)+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
 		String inCoupon =  "IN"+member.getUsercode().substring(4, 10)+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
 		//当前会员券减
 		String outNotes = "用户编号[" + currentUser.getUsercode() + "] 操作编号[" + outCoupon + "] 赠送券" + giftAmount;
 		String inNotes = "用户编号[" + member.getUsercode() + "] 操作编号[" + inCoupon + "] 获取赠送券" + giftAmount;
-		fiBankbookJournalService.recharge(currentUser.getUsercode(), giftAmount, outCoupon, 
-				FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.takeout, FiBankbookJournal.MoneyType.couponOut, outNotes);
-		fiBankbookJournalService.recharge(member.getUsercode(), giftAmount, inCoupon, 
-				FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.couponIn, inNotes);
+		try {
+			fiBankbookJournalService.recharge(currentUser.getUsercode(), giftAmount, outCoupon, 
+					FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.takeout, FiBankbookJournal.MoneyType.couponOut, outNotes);
+			fiBankbookJournalService.recharge(member.getUsercode(), giftAmount, inCoupon, 
+					FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.couponIn, inNotes);
+		} catch (Exception e) {
+			addFlashMessage(redirectAttributes, ERROR_MESSAGE);
+			return "redirect:gift";
+		}
 		
 		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
 		return "redirect:log?type=1";	

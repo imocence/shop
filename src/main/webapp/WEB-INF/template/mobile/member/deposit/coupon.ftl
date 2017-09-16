@@ -82,7 +82,9 @@
 		
 		var $fiBankbookJournalItems = $("#fiBankbookJournalItems");
 		var fiBankbookJournalTemplate = _.template($("#fiBankbookJournalTemplate").html());
-		
+		[#if flashMessage?has_content]
+			$.alert("${flashMessage}");
+		[/#if]
 		// 无限滚动加载
 		$fiBankbookJournalItems.infiniteScroll({
 			url: function(pageNumber) {

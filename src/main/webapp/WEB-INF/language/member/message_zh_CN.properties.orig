@@ -95,6 +95,7 @@ member.navigation.profile=\u4e2a\u4eba\u8d44\u6599
 member.navigation.deposit=\u9884\u5b58\u6b3e
 member.navigation.remittanceLog=\u6c47\u6b3e
 
+member.deposit.cancelConfirm=\u786E\u8BA4\u8F6C\u5238\uFF1F
 member.consultation.list=\u5546\u54c1\u54a8\u8be2
 member.consultation.productImage=\u5546\u54c1\u56fe\u7247
 member.deposit.notInSomeCountry=\u4e0d\u5728\u540c\u4e00\u56fd\u5bb6\u4e0d\u80fd\u8f6c\u5238
