@@ -27,6 +27,7 @@ import net.shopxx.entity.Sku;
 import net.shopxx.security.CurrentCart;
 import net.shopxx.service.CartService;
 import net.shopxx.service.SkuService;
+import net.shopxx.util.SystemUtils;
 
 /**
  * Controller - 购物车
@@ -158,14 +159,14 @@ public class CartController extends BaseController {
 		cartService.modify(currentCart, sku, quantity);
 		CartItem cartItem = currentCart.getCartItem(sku);
 
-		data.put("subtotal", cartItem.getSubtotal());
-		data.put("totalCoupon", cartItem.getTotalCoupon());
+		data.put("subtotal", SystemUtils.changeCurrency(cartItem.getSubtotal()));
+		data.put("totalCoupon", SystemUtils.changeCurrency(cartItem.getTotalCoupon()));
 		data.put("isLowStock", cartItem.getIsLowStock());
 		data.put("quantity", currentCart.getProductQuantity());
 		data.put("effectiveRewardPoint", currentCart.getEffectiveRewardPoint());
 		System.out.println(currentCart.getEffectiveCoupon());
-		data.put("effectiveCoupon", currentCart.getEffectiveCoupon());
-		data.put("effectivePrice", currentCart.getEffectivePrice());
+		data.put("effectiveCoupon", SystemUtils.changeCurrency(currentCart.getEffectiveCoupon()));
+		data.put("effectivePrice", SystemUtils.changeCurrency(currentCart.getEffectivePrice()));
 		data.put("giftNames", currentCart.getGiftNames());
 		data.put("promotionNames", currentCart.getPromotionNames());
 		return ResponseEntity.ok(data);

@@ -103,8 +103,8 @@
 					$promotion.html(promotionTemplate({
 						promotionNames: data.promotionNames
 					}));
-					$effectivePrice.text(currency(data.effectivePrice, true));
-					$effectiveCoupon.text(currency(data.effectiveCoupon, true));
+					$effectivePrice.text(data.effectivePrice);
+					$effectiveCoupon.text(data.effectiveCoupon);
 				},
 				error: function() {
 					if (newValue > oldValue) {

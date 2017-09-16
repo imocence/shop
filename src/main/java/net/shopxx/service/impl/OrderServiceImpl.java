@@ -389,14 +389,32 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				Map<String,Object> goods = new HashMap<String,Object>();
 				goods.put("title", orderItem.getName());
 				Sku sku = skuService.find(orderItem.getSku().getId());
+				Product product = orderItem.getSku().getProduct();
 				//List<SpecificationValue> specificationValue  = sku.getSpecificationValues();
-				goods.put("unit", sku.getUnit());
+				//小单位传送
+				//goods.put("unit", sku.getUnit());
+				goods.put("unit", product.getSmallUnit());
 				goods.put("optiontitle", "");//规格
 				goods.put("goodssn", sku.getProduct().getSn());//"testaa1"商品编号
-				goods.put("price", orderItem.getPrice());
-				goods.put("total", orderItem.getQuantity());//数量
-				goods.put("weight", orderItem.getWeight());
-				goods.put("volume", orderItem.getVersion());
+				//goods.put("price", orderItem.getPrice());
+				//转为小单位价格
+				BigDecimal price = orderItem.getPrice().divide(new BigDecimal(product.getConversion()),2,BigDecimal.ROUND_HALF_EVEN);
+				goods.put("price", price);
+				goods.put("total", orderItem.getQuantity()*Integer.valueOf(product.getConversion()));//数量
+				//重量换算
+				System.out.println(orderItem.getWeight());
+				if(orderItem.getWeight() != null){					
+					goods.put("weight", new BigDecimal(orderItem.getWeight()/Integer.valueOf(product.getConversion())));
+				}else{
+					goods.put("weight", "0");
+				}
+				//体积换算
+				if(orderItem.getVersion() != null){
+					goods.put("volume", new BigDecimal(orderItem.getVersion()/Integer.valueOf(product.getConversion())));
+				}else{
+					goods.put("volume","0");
+				}
+				
 				//String jsonObject = JSON.toJSONString(goods);
 				data.add(goods);
 			}
@@ -637,6 +655,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		
 		order.setOffsetCouponAmount(BigDecimal.ZERO);
 		order.setCouponAmountPaid(BigDecimal.ZERO);
+		order.setAmountPaid(BigDecimal.ZERO);
+
 		order.setRefundAmount(BigDecimal.ZERO);
 		order.setSource(Order.Source.member);
 		order.setCouponRefundAmount(BigDecimal.ZERO);
@@ -664,6 +684,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		order.setMember(member);
 		order.setPromotionNames(cart.getPromotionNames());
 		order.setCoupons(new ArrayList<>(cart.getCoupons()));
+		
 		//优惠券抵扣
 		if (couponCode != null) {
 			if (!cart.isCouponAllowed() || !cart.isValid(couponCode)) {
@@ -708,8 +729,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				order.setExpire(DateUtils.addMinutes(new Date(), paymentMethod.getTimeout()));
 			}
 		} else {
-			order.setAmountPaid(balance);
-			order.setCouponAmountPaid(coupon);
+			
 			order.setStatus(Order.Status.pendingReview);
 			order.setPaymentMethod(null);
 		}

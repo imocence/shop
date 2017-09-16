@@ -926,6 +926,22 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
+					${message("Product.smallUnit")}:
+				</th>
+				<td>
+					<input type="text" name="smallUnit" class="text" value="${product.smallUnit}" maxlength="200" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					${message("Product.conversion")}:
+				</th>
+				<td>
+					<input type="text" name="conversion" class="text" value="${product.conversion}" maxlength="200" placeholder="${message("Product.convert")}"/>
+				</td>
+			</tr>
+			<tr>
+				<th>
 					${message("Product.weight")}:
 				</th>
 				<td>

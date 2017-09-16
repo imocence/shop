@@ -75,7 +75,7 @@ $().ready(function() {
 					<span class="requiredField">*</span>${message("AdPosition.orders")}:
 				</th>
 				<td>
-					<input type="text" name="orders" class="text" maxlength="200" />
+					<input type="text" name="orders" class="text" value="${adPosition.orders}" maxlength="200" />
 				</td>
 			</tr>
 			<tr>

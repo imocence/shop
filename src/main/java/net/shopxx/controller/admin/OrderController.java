@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -165,7 +164,12 @@ public class OrderController extends BaseController {
 				
 				//获取每一个对象中的值
 				String productno = job.getString("productno");
+				Product product = productService.findBySn(productno);
+				//小單位转为大单位
 				int qty = job.getInt("qty");
+				if(product.getConversion() != null){
+					qty = qty / Integer.valueOf(product.getConversion());
+				}
 				itemMap.put(productno, qty);
 			}
 			

@@ -38,7 +38,6 @@ import javax.validation.constraints.Pattern;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Boost;
 import org.hibernate.search.annotations.Field;
@@ -56,7 +55,6 @@ import freemarker.core.Environment;
 import freemarker.template.TemplateException;
 import net.shopxx.BaseAttributeConverter;
 import net.shopxx.BigDecimalNumericFieldBridge;
-import net.shopxx.entity.BaseEntity.BaseView;
 import net.shopxx.util.FreeMarkerUtils;
 
 /**
@@ -275,6 +273,20 @@ public class Product extends BaseEntity<Long> {
 	@Field(store = Store.YES, index = Index.NO, analyze = Analyze.NO)
 	@Length(max = 200)
 	private String unit;
+	/**
+	 * 小单位
+	 */
+	@Field(store = Store.YES, index = Index.NO, analyze = Analyze.NO)
+	@Length(max = 200)
+	@Column(name = "small_unit")
+	private String smallUnit;
+	/**
+	 * 单位转换率
+	 */
+	@Length(max = 200)
+	@Column(name = "conversion")
+	private String conversion;
+	
 
 	/**
 	 * 重量
@@ -815,7 +827,34 @@ public class Product extends BaseEntity<Long> {
 	public void setUnit(String unit) {
 		this.unit = unit;
 	}
-
+	/**
+	 * 获取小单位
+	 * @return
+	 */
+	public String getSmallUnit() {
+		return smallUnit;
+	}
+	/**
+	 * 设置小单位
+	 * @param smallUnit
+	 */
+	public void setSmallUnit(String smallUnit) {
+		this.smallUnit = smallUnit;
+	}
+	/**
+	 * 获取单位转换率
+	 * @return
+	 */
+	public String getConversion() {
+		return conversion;
+	}
+	/**
+	 * 设置单位转换率
+	 * @return
+	 */
+	public void setConversion(String conversion) {
+		this.conversion = conversion;
+	}
 	/**
 	 * 获取重量
 	 * 

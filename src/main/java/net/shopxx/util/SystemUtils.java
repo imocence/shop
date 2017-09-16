@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -145,15 +146,29 @@ public final class SystemUtils {
 	public static void setCurrency(Country country){
 		Ehcache cache = CACHE_MANAGER.getEhcache(Setting.CACHE_NAME);
 		//设置货币
-		//Setting setting = SystemUtils.getSetting();
+		Setting setting = SystemUtils.getSetting();
 		if(country.getName().equals("MY")){
-			getSetting().setCurrencySign("$");
-			getSetting().setCurrencyUnit("");
+			setting.setCurrencySign("$");
+			setting.setCurrencyUnit("");
 		}else if(country.getName().equals("CN")){
-			getSetting().setCurrencySign("￥");
-			getSetting().setCurrencyUnit("元");
+			setting.setCurrencySign("￥");
+			setting.setCurrencyUnit("元");
 		}	
-		cache.put(new Element("setting", getSetting()));
+		cache.put(new Element("setting", setting));
+	}
+	/**
+	 * 更改价格单位
+	 */
+	public static String changeCurrency(BigDecimal amount){
+		String price = null;
+		if (amount != null) {
+			Setting setting = SystemUtils.getSetting();
+			price = setting.setScale(amount).toString();
+			if (setting != null ) {
+				price = setting.getCurrencySign() + price+setting.getCurrencyUnit();
+			}
+		}
+		return price;
 	}
 	/**
 	 * 设置系统设置

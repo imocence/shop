@@ -87,8 +87,8 @@ $().ready(function() {
 					},
 					success: function(data) {
 						$quantity.data("value", quantity);
-						$tr.find("span.subtotal").text(currency(data.subtotal, true));
-						$tr.find("span.totalCoupon").text(currency(data.totalCoupon, true));
+						$tr.find("span.subtotal").text(data.subtotal);
+						$tr.find("span.totalCoupon").text(data.totalCoupon);
 						if (data.giftNames != null && data.giftNames.length > 0) {
 							$gift.html('<dt>${message("Cart.gifts")}:<\/dt>');
 							$.each(data.giftNames, function(i, giftName) {
@@ -103,8 +103,8 @@ $().ready(function() {
 							$tr.find("span.lowStock").remove();
 						}
 						$effectiveRewardPoint.text(data.effectiveRewardPoint);
-						$effectivePrice.text(currency(data.effectivePrice, true, true));
-						$effectiveCoupon.text(currency(data.effectiveCoupon, true, true));
+						$effectivePrice.text(data.effectivePrice);
+						$effectiveCoupon.text(data.effectiveCoupon);
 					},
 					error: function() {
 						$quantity.val($quantity.data("value"));

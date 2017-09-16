@@ -991,6 +991,9 @@ Product.cost=\u6210\u672c\u4ef7
 Product.marketPrice=\u5e02\u573a\u4ef7
 Product.image=\u5c55\u793a\u56fe\u7247
 Product.unit=\u5355\u4f4d
+Product.smallUnit=\u5C0F\u5355\u4F4D
+Product.conversion=\u5355\u4F4D\u8F6C\u6362\u7387
+Product.convert=1\u5355\u4F4D=10\u5C0F\u5355\u4F4D
 Product.weight=\u91cd\u91cf
 Product.isMarketable=\u662f\u5426\u4e0a\u67b6
 Product.isList=\u662f\u5426\u5217\u51fa

@@ -85,8 +85,6 @@ public class ProductController extends BaseController {
 	private SpecificationItemService specificationItemService;
 	@Inject
 	private AttributeService attributeService;
-	@Inject
-	private SpecificationService specificationService;
 	
 	@Inject
 	private CountryService countryService;
