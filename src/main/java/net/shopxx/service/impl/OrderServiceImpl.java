@@ -398,22 +398,30 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				goods.put("goodssn", sku.getProduct().getSn());//"testaa1"商品编号
 				//goods.put("price", orderItem.getPrice());
 				//转为小单位价格
-				BigDecimal price = orderItem.getPrice().divide(new BigDecimal(product.getConversion()),2,BigDecimal.ROUND_HALF_EVEN);
-				goods.put("price", price);
-				goods.put("total", orderItem.getQuantity()*Integer.valueOf(product.getConversion()));//数量
-				//重量换算
-				System.out.println(orderItem.getWeight());
-				if(orderItem.getWeight() != null){					
-					goods.put("weight", new BigDecimal(orderItem.getWeight()/Integer.valueOf(product.getConversion())));
+				if(product.getConversion() != null){
+					BigDecimal price = orderItem.getPrice().divide(new BigDecimal(product.getConversion()),2,BigDecimal.ROUND_HALF_EVEN);
+					goods.put("price", price);
+					goods.put("total", orderItem.getQuantity()*Integer.valueOf(product.getConversion()));//数量
+					//重量换算
+					System.out.println(orderItem.getWeight());
+					if(orderItem.getWeight() != null){					
+						goods.put("weight", new BigDecimal(orderItem.getWeight()/Integer.valueOf(product.getConversion())));
+					}else{
+						goods.put("weight", "0");
+					}
+					//体积换算
+					if(orderItem.getVersion() != null){
+						goods.put("volume", new BigDecimal(orderItem.getVersion()/Integer.valueOf(product.getConversion())));
+					}else{
+						goods.put("volume","0");
+					}
 				}else{
-					goods.put("weight", "0");
+					goods.put("price", orderItem.getPrice().toString());
+					goods.put("total", orderItem.getQuantity().toString());
+					goods.put("weight", orderItem.getWeight());
+					goods.put("volume", orderItem.getVersion());
 				}
-				//体积换算
-				if(orderItem.getVersion() != null){
-					goods.put("volume", new BigDecimal(orderItem.getVersion()/Integer.valueOf(product.getConversion())));
-				}else{
-					goods.put("volume","0");
-				}
+				
 				
 				//String jsonObject = JSON.toJSONString(goods);
 				data.add(goods);

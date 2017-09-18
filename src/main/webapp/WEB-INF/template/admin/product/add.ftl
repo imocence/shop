@@ -655,6 +655,9 @@ $().ready(function() {
 				}
 			},
 			name: "required",
+			unit: "required",
+			smallUnit: "required",
+			conversion: "required",
 			"gradePrices": {
 				required: true,
 				min: 0,
@@ -899,7 +902,7 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					${message("Product.unit")}:
+					<span class="requiredField">*</span>${message("Product.unit")}:
 				</th>
 				<td>
 					<input type="text" name="unit" class="text" maxlength="200" />
@@ -907,7 +910,7 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					${message("Product.smallUnit")}:
+					<span class="requiredField">*</span>${message("Product.smallUnit")}:
 				</th>
 				<td>
 					<input type="text" name="smallUnit" class="text" maxlength="200" />
@@ -915,7 +918,7 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					${message("Product.conversion")}:
+					<span class="requiredField">*</span>${message("Product.conversion")}:
 				</th>
 				<td>
 					<input type="text" name="conversion" class="text" maxlength="200" placeholder="${message("Product.convert")}"/>
