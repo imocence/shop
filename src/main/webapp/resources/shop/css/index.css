@@ -387,7 +387,8 @@
 .index .hotBrand li {
 	_display: inline;
 	float: left;
-	margin-left: 20px;
+	margin-left: 33px;
+	padding: 5px 0;
 }
 
 .index .hotBrand li img {
