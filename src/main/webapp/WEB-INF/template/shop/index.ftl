@@ -330,7 +330,7 @@
     </div>
     <div class="row">
         <div class="span12">
-        [@brand_list type = "image" count = 10]
+        [@brand_list type = "image" count = 9]
             [#if brands?has_content]
                 <div class="hotBrand">
                     <ul class="clearfix">
