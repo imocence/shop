@@ -456,7 +456,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		
 		parameterMap.put("expresscom", "");//快递公司
 		parameterMap.put("expresssn", "");//快递单号
-		parameterMap.put("shipFee", order.getFreight());//运费
+		parameterMap.put("shipFee", order.getFreight().toString());//运费
 		parameterMap.put("expressTime", "");//发货时间
 		parameterMap.put("WarehouseName", "");//发货仓库
 

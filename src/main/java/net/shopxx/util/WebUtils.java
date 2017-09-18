@@ -473,7 +473,7 @@ public final class WebUtils {
 		try {
 			//String jsonObject = JSON.toJSONString(parameterMap);
 			String jsonObject = new JSONObject(parameterMap).toString();
-			//System.out.println(jsonObject);
+			System.out.println(jsonObject);
 			StringEntity se = new StringEntity(jsonObject,Charset.forName("utf-8"));
 			se.setContentType("application/json; charset=UTF-8");
 			se.setContentEncoding("utf-8");

@@ -62,7 +62,9 @@
 	</script>
 	<script type="text/javascript">
 		$().ready(function() {
-			
+			var $freight = $("[data-name='freight']");
+			var $tax =  $("[data-name='tax']");
+			var $amount = $("[data-name='amount']");
 			var $togglePage = $("[data-toggle='page']");
 			var $toggleItem = $("[data-toggle='item']");
 			var $dataItem = $("[data-name]");
@@ -82,6 +84,7 @@
 			var $useCouponItem = $("#useCouponItem");
 			var $balance = $("#balance");
 			var $coupon = $("#coupon");
+			var $couponPrice = $("#couponPrice");
 			var $receiverList = $("#receiverPage div.list-group");
 			var $addReceiverForm = $("#addReceiverForm");
 			var $areaId = $("#areaId");
@@ -97,6 +100,7 @@
 			var fiBankbookBalance = ${fiBankbookBalance.balance};
 			var amountPayable = ${order.amountPayable};
 			var paymentMethodIds = {};
+			var regular = /^(￥|\$)/;
 			[@compress single_line = true]
 				[#list shippingMethods as shippingMethod]
 					paymentMethodIds["${shippingMethod.id}"] = [
@@ -413,29 +417,36 @@
 					data: $orderForm.serialize(),
 					dataType: "json",
 					success: function(data) {
-						$dataItem.each(function() {
-							var $element = $(this);
-							var name = $element.data("name");
-							var type = $element.data("type");
-							if (name in data) {
-								var value = data[name];
-								switch(type) {
-									case "currency":
-										$element.text(currency(value, true));
-										break;
-									default:
-										$element.text(value);
-								}
-							}
-						});
-						if (data.amount != amount) {
+						//$dataItem.each(function() {
+							//var $element = $(this);
+							//var name = $element.data("name");
+							//var type = $element.data("type");
+							//if (name in data) {
+								//var value = data[name];
+								//switch(type) {
+									//case "currency":
+										//alert(value);
+										//$element.text(currency(value, true));
+										//break;																									
+									//default:
+										//$element.text(value);
+								//}
+							//}
+						//});
+						$freight.text(data.freight);//运费
+						
+						//总券				
+						couponPrice = data.couponPrice.replace(regular,"");
+						$couponPrice.text(data.couponPrice);
+						//总费用
+						if (data.amount.replace(regular,"") != amount) {
 							$balance.val("0");
-							amountPayable = data.amount;
+							amountPayable = data.amount.replace(regular,"");
 						} else {
 							amountPayable = data.amountPayable;
 						}
-						amount = data.amount;
-						if (amountPayable > 0) {
+						amount = data.amount.replace(regular,"");
+						if (amountPayable.replace(regular,"") > 0) {
 							if ($currentPaymentMethod.is(":hidden")) {
 								$currentPaymentMethod.velocity("slideDown");
 							}

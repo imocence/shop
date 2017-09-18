@@ -54,6 +54,7 @@ $().ready(function() {
 	var fiBankbookBalance = ${fiBankbookBalance.balance};
 	var amountPayable = ${order.amountPayable};
 	var paymentMethodIds = {};
+	var regular = /^(￥|\$)/;
 	[@compress single_line = true]
 		[#list shippingMethods as shippingMethod]
 			paymentMethodIds["${shippingMethod.id}"] = [
@@ -116,39 +117,40 @@ $().ready(function() {
 			data: $orderForm.serialize(),
 			dataType: "json",
 			success: function(data) {
-				$freight.text(currency(data.freight, true));//运费
+				$freight.text(data.freight);//运费
 				if (data.tax > 0) {
 					$tax.text(currency(data.tax, true)).parent().show();
 				} else {
 					$tax.parent().hide();
 				}
 				if (data.promotionDiscount > 0) {
-					$promotionDiscount.text(currency(data.promotionDiscount, true)).parent().show();
+					$promotionDiscount.text(data.promotionDiscount).parent().show();
 				} else {
 					$promotionDiscount.parent().hide();
 				}
 				if (data.couponDiscount > 0) {
-					$couponDiscount.text(currency(data.couponDiscount, true)).parent().show();
+					$couponDiscount.text(data.couponDiscount).parent().show();
 				} else {
 					$couponDiscount.parent().hide();
 				}
 				//总费用
-				if (data.amount != amount) {
+				if (data.amount.replace(regular,"") != amount) {
 					$balance.val("0");
-					amountPayable = data.amount;
+					amountPayable = data.amount.replace(regular,"");
 				} else {
 					amountPayable = data.amountPayable;
 				}
-				amount = data.amount;
-				$amount.text(currency(amount, true, true));
+				amount = data.amount.replace(regular,"");
+				//alert(amount);
+				$amount.text(data.amount);
 				if (amount > 0) {
 					$useBalance.parent().show();
 				} else {
 					$useBalance.parent().hide();
 				}
 				//总券				
-				couponPrice = data.couponPrice;
-				$couponPrice.text(currency(couponPrice, true));
+				couponPrice = data.couponPrice.replace(regular,"");
+				$couponPrice.text(data.couponPrice);
 				if (couponPrice > 0) {
 					$useCoupon.parent().show();
 				} else {

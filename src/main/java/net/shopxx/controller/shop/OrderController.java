@@ -55,6 +55,7 @@ import net.shopxx.service.PluginService;
 import net.shopxx.service.ReceiverService;
 import net.shopxx.service.ShippingMethodService;
 import net.shopxx.service.SkuService;
+import net.shopxx.util.SystemUtils;
 import net.shopxx.util.WebUtils;
 
 /**
@@ -328,15 +329,15 @@ public class OrderController extends BaseController {
 		
 		Order order = orderService.generate(Order.Type.general, currentCart, napaStores ,receiver, paymentMethod, shippingMethod, couponCode, invoice, balance, memo);
 
-		data.put("price", order.getPrice());
-		data.put("fee", order.getFee());
-		data.put("freight", order.getFreight());
+		data.put("price", SystemUtils.changeCurrency(order.getPrice()));
+		data.put("fee", SystemUtils.changeCurrency(order.getFee()));
+		data.put("freight", SystemUtils.changeCurrency(order.getFreight()));
 		data.put("tax", order.getTax());
 		data.put("promotionDiscount", order.getPromotionDiscount());
-		data.put("couponDiscount", order.getCouponDiscount());
-		data.put("amount", order.getAmount());
-		data.put("couponPrice", order.getCouponPrice());
-		data.put("amountPayable", order.getAmountPayable());
+		data.put("couponDiscount", SystemUtils.changeCurrency(order.getCouponDiscount()));
+		data.put("amount", SystemUtils.changeCurrency(order.getAmount()));
+		data.put("couponPrice", SystemUtils.changeCurrency(order.getCouponPrice()));
+		data.put("amountPayable", SystemUtils.changeCurrency(order.getAmountPayable()));
 		return ResponseEntity.ok(data);
 	}
 
@@ -377,15 +378,15 @@ public class OrderController extends BaseController {
 		
 		Order order = orderService.generate(Order.Type.general, cart, napaStores ,receiver, paymentMethod, shippingMethod, null, null, balance, null);
 
-		data.put("price", order.getPrice());
-		data.put("fee", order.getFee());
-		data.put("freight", order.getFreight());
+		data.put("price", SystemUtils.changeCurrency(order.getPrice()));
+		data.put("fee", SystemUtils.changeCurrency(order.getFee()));
+		data.put("freight", SystemUtils.changeCurrency(order.getFreight()));
 		data.put("tax", order.getTax());
 		data.put("promotionDiscount", order.getPromotionDiscount());
 		data.put("couponDiscount", order.getCouponDiscount());
-		data.put("amount", order.getAmount());
-		data.put("couponPrice", order.getCouponPrice());
-		data.put("amountPayable", order.getAmountPayable());
+		data.put("amount", SystemUtils.changeCurrency(order.getAmount()));
+		data.put("couponPrice", SystemUtils.changeCurrency(order.getCouponPrice()));
+		data.put("amountPayable", SystemUtils.changeCurrency(order.getAmountPayable()));
 		return ResponseEntity.ok(data);
 	}
 

@@ -361,13 +361,13 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 					member.setEmail(email);
 				}	
 				String rankName = "会员";
-				if(type == 0){
+				if(type == 1){
 					rankName = "代理商";
-				}else if(type == 1){
-					rankName = "服务中心";
 				}else if(type == 2){
-					rankName = "加盟店";
+					rankName = "服务中心";
 				}else if(type == 3){
+					rankName = "加盟店";
+				}else if(type == 4){
 					rankName = "中心店";
 				}
 				//MemberRank memberRank = memberRankService.findByCountry(countryService.findByName(locale), rankName);
