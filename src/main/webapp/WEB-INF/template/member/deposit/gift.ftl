@@ -16,11 +16,17 @@
 $().ready(function() {
 	var $giftAmount = $("#giftAmount");
 	var $inputForm = $("#inputForm");
-	
+	var $add = $("#add");
 	[#if flashMessage?has_content]
 		$.alert("${flashMessage}");
 	[/#if]
-	
+	$add.click(function() {
+		if (confirm("${message("member.deposit.cancelConfirm")}")) {
+			$inputForm.submit();
+			location.reload(true);
+		}
+		return false;		
+	});
 	// 券
 	$giftAmount.change(function() {
 		var couponPrice = $giftAmount.val();
@@ -86,7 +92,7 @@ $().ready(function() {
 									<span class="requiredField">*</span>${message("member.deposit.giftMemberCode")}:
 								</th>
 								<td>
-									<input type="text" id="giftMemberCode" name="giftMemberCode"  class="text" maxlength="10"/>
+									<input type="text" id="giftMemberCode" name="giftMemberCode"  class="text" maxlength="200"/>
 								</td>
 							</tr>
 							<tr>
@@ -102,7 +108,7 @@ $().ready(function() {
 									&nbsp;
 								</th>
 								<td>
-									<input type="submit" class="button" value="${message("member.common.submit")}" />
+									<input type="button" id="add" class="button" value="${message("member.common.submit")}" />
 									<input type="button" class="button" value="${message("member.common.back")}" onclick="history.back(); return false;" />
 								</td>
 							</tr>

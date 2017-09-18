@@ -30,9 +30,17 @@
 
 			var $giftAmount = $("#giftAmount");
 			var $inputForm = $("#inputForm");
+			var $add = $("#add");
 			[#if flashMessage?has_content]
 				$.alert("${flashMessage}");
 			[/#if]
+			$add.click(function() {
+				if (confirm("${message("member.deposit.cancelConfirm")}")) {
+					$inputForm.submit();
+					location.reload(true);
+				}
+				return false;		
+			});
 			// 券
 			$giftAmount.change(function() {
 				var couponPrice = $("#giftAmount").val();
@@ -80,13 +88,13 @@
 					<div class="list-group-item">
 						<div class="form-group">
 							<label for="giftMemberCode"><span class="requiredField">*</span>${message("member.deposit.name")}</label>
-							<input id="name" name="name"  class="form-control" type="text" maxlength="10" onpaste="return false;">
+							<input id="name" name="name"  class="form-control" type="text" maxlength="200" onpaste="return false;">
 						</div>
 					</div>
 					<div class="list-group-item">
 						<div class="form-group">
 							<label for="giftMemberCode"><span class="requiredField">*</span>${message("member.deposit.giftMemberCode")}</label>
-							<input id="giftMemberCode" name="giftMemberCode"  class="form-control" type="text" maxlength="10" onpaste="return false;">
+							<input id="giftMemberCode" name="giftMemberCode"  class="form-control" type="text" maxlength="200" onpaste="return false;">
 						</div>
 					</div>
 					<div class="list-group-item">
@@ -98,7 +106,7 @@
 					<div class="list-group-item small">${message("member.deposit.balance")}: ${currency(coupon.balance, true)}</div>
 				</div>
 				<div class="panel-footer text-center">
-					<button class="btn btn-primary" type="submit">${message("member.common.submit")}</button>
+					<button class="btn btn-primary" type="button" id="add">${message("member.common.submit")}</button>
 					<a class="btn btn-default" href="${base}/member/index">${message("member.common.back")}</a>
 				</div>			
 			</form>

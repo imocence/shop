@@ -129,7 +129,7 @@ public class DepositController extends BaseController {
 		if (!isValid(Member.class, "usercode", giftMemberCode) || !isValid(Member.class, "username", giftMemberCode) || !isValid(FiBankbookBalance.class, "balance", giftAmount)) {
 			return "redirect:gift";
 		}
-		Member member = memberService.findByUsercode(giftMemberCode);
+		Member member = memberService.findByUsercode(StringUtils.upperCase(giftMemberCode.replace(" ", "")));
 		if (giftMemberCode == null || member == null || !name.equals(member.getName())) {
 			addFlashMessage(redirectAttributes, "member.deposit.sendSuccess");
 			return "redirect:gift";
