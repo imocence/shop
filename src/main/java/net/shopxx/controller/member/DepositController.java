@@ -127,6 +127,7 @@ public class DepositController extends BaseController {
 	@PostMapping("/gift_do")
 	public String gift_do(String giftMemberCode,String name, BigDecimal giftAmount,@CurrentUser Member currentUser, RedirectAttributes redirectAttributes)  {
 		if (!isValid(Member.class, "usercode", giftMemberCode) || !isValid(Member.class, "username", giftMemberCode) || !isValid(FiBankbookBalance.class, "balance", giftAmount)) {
+			addFlashMessage(redirectAttributes, "member.deposit.format");
 			return "redirect:gift";
 		}
 		Member member = memberService.findByUsercode(StringUtils.upperCase(giftMemberCode.replace(" ", "")));

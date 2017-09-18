@@ -21,11 +21,7 @@ $().ready(function() {
 		$.alert("${flashMessage}");
 	[/#if]
 	$add.click(function() {
-		if (confirm("${message("member.deposit.cancelConfirm")}")) {
-			$inputForm.submit();
-			location.reload(true);
-		}
-		return false;		
+		$inputForm.submit();		
 	});
 	// 券
 	$giftAmount.change(function() {

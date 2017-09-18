@@ -101,6 +101,7 @@ member.consultation.productImage=\u5546\u54c1\u5716\u7247
 member.deposit.cancelConfirm=\u78BA\u8A8D\u532F\u6B3E\uFF1F
 member.deposit.notInSomeCountry=\u4e0d\u5728\u540c\u4e00\u570b\u5bb6\u4e0d\u80fd\u8f49\u5238
 member.deposit.sendSuccess=\u8cec\u865f\u6216\u59d3\u540d\u8f38\u5165\u6709\u8aa4
+member.deposit.format=\u59D3\u540D\u6216\u7DE8\u865F\u683C\u5F0F\u4E0D\u6B63\u78BA
 member.deposit.name=\u532f\u6b3e\u4eba\u59d3\u540d
 member.deposit.log=\u6211\u7684\u9810\u5b58\u6b3e
 member.deposit.coupon=\u6211\u7684\u9884\u5b58\u5238

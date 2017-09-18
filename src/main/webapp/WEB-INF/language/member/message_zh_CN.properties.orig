@@ -100,6 +100,7 @@ member.consultation.list=\u5546\u54c1\u54a8\u8be2
 member.consultation.productImage=\u5546\u54c1\u56fe\u7247
 member.deposit.notInSomeCountry=\u4e0d\u5728\u540c\u4e00\u56fd\u5bb6\u4e0d\u80fd\u8f6c\u5238
 member.deposit.sendSuccess=\u8d26\u53f7\u6216\u59d3\u540d\u8f93\u5165\u6709\u8bef
+member.deposit.format=\u59D3\u540D\u6216\u7F16\u53F7\u683C\u5F0F\u4E0D\u6B63\u786E
 member.deposit.name=\u6c47\u6b3e\u4eba\u59d3\u540d
 member.deposit.log=\u6211\u7684\u9884\u5b58\u6b3e
 member.deposit.coupon=\u6211\u7684\u9884\u5b58\u5238
