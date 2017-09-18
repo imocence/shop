@@ -650,8 +650,18 @@ public class OrderController extends BaseController {
 	 */
 	@PostMapping("/shippingReview")
 	public @ResponseBody Message shippingReview(Long[] ids) {
+		Long[] idsLongs = new Long[100]; 
+		if (ids != null) {
+			// 待审核状态  状态改为“待发货”，->推单到直销
+			for (int i = 0;i < ids.length;i++) {
+				Order order = orderService.find(ids[i]);
+				if(Order.Status.pendingReview.equals(order.getStatus())){
+					idsLongs[i] = ids[i];
+				}
+			}
+		}
 		try {
-			orderService.shippingReview(ids);
+			orderService.shippingReview(idsLongs);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new Message(Message.Type.error, e.getMessage());
