@@ -6,6 +6,7 @@
 <title>${message("member.consultation.list")}[#if showPowered] - Powered By SHOP++[/#if]</title>
 <meta name="author" content="SHOP++ Team" />
 <meta name="copyright" content="SHOP++" />
+    <link href="${base}/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
 <link href="${base}/resources/member/css/animate.css" rel="stylesheet" type="text/css" />
 <link href="${base}/resources/member/css/common.css" rel="stylesheet" type="text/css" />
 <link href="${base}/resources/member/css/member.css" rel="stylesheet" type="text/css" />
