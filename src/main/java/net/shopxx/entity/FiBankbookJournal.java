@@ -213,7 +213,7 @@ public class FiBankbookJournal extends BaseEntity<Long> {
 	 * 唯一标示
 	 */
 	@Length(max = 200)
-	@Column(name="unique_code", unique=true)
+	@Column(name="unique_code")
 	private String uniqueCode; 
 	
 	/**

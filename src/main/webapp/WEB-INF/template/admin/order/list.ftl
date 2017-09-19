@@ -143,7 +143,7 @@ $().ready(function() {
 		var $checkedIds = $("#listTable input[name='ids']:enabled:checked");
 		$.dialog({
 			type: "warn",
-			content: "${message("admin.dialog.verifyConfirm")}",
+			content: "${message("admin.dialog.reviewConfirm")}",
 			ok: "${message("admin.dialog.ok")}",
 			cancel: "${message("admin.dialog.cancel")}",
 			onOk: function() {
@@ -179,7 +179,7 @@ $().ready(function() {
 		var $checkedIds = $("#listTable input[name='ids']:enabled:checked");
 		$.dialog({
 			type: "warn",
-			content: "${message("admin.dialog.verifyConfirm")}",
+			content: "${message("admin.dialog.refundsConfirm")}",
 			ok: "${message("admin.dialog.ok")}",
 			cancel: "${message("admin.dialog.cancel")}",
 			onOk: function() {
@@ -215,7 +215,7 @@ $().ready(function() {
 		var $checkedIds = $("#listTable input[name='ids']:enabled:checked");
 		$.dialog({
 			type: "warn",
-			content: "${message("admin.dialog.verifyConfirm")}",
+			content: "${message("admin.dialog.completeConfirm")}",
 			ok: "${message("admin.dialog.ok")}",
 			cancel: "${message("admin.dialog.cancel")}",
 			onOk: function() {
