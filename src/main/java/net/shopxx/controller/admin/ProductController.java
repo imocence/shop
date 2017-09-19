@@ -7,6 +7,7 @@ package net.shopxx.controller.admin;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,9 +16,11 @@ import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.Assert;
@@ -25,8 +28,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
+import net.shopxx.ExcelViewNew;
 import net.shopxx.Message;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Attribute;
@@ -37,6 +43,7 @@ import net.shopxx.entity.Parameter;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.ProductCategory;
 import net.shopxx.entity.ProductGrade;
+import net.shopxx.entity.ProductRequest;
 import net.shopxx.entity.ProductTag;
 import net.shopxx.entity.Promotion;
 import net.shopxx.entity.Sku;
@@ -54,6 +61,7 @@ import net.shopxx.service.PromotionService;
 import net.shopxx.service.SkuService;
 import net.shopxx.service.SpecificationItemService;
 import net.shopxx.service.SpecificationService;
+import net.shopxx.util.ExcelUtils;
 
 /**
  * Controller - 商品
@@ -139,6 +147,8 @@ public class ProductController extends BaseController {
 		}
 		return data;
 	}
+	
+	
 
 	/**
 	 * 获取规格
@@ -336,6 +346,33 @@ public class ProductController extends BaseController {
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
+	
+	/**
+     * 下载优惠码
+     */
+	@GetMapping("/download")
+    public ModelAndView download (ModelMap model,HttpServletResponse response) {
+        String filename = "product" + DateFormatUtils.format(new Date(), "yyyyMM");
+        List<Product> products = productService.findAll();
+        List<ProductRequest> res = new ArrayList<>();
+        for (Product product : products) {
+            ProductRequest  p = new ProductRequest();
+            p.setContryName(product.getProductCategory().getCountry().getName());
+            p.setSn(product.getSn());
+            p.setName(product.getName());
+            p.setProductCategory(product.getProductCategory().getName());
+            p.setIsMarketable(product.getIsMarketable().toString());
+            p.setIsTop(product.getIsTop().toString());
+            p.setCreatedDate(product.getCreatedDate());
+            res.add(p);
+        }
+        try {
+            new ExcelUtils<>(new ProductRequest()).writeToResponseForExcel(res, null, filename, response);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+        return new ModelAndView(new ExcelViewNew(), model);
+    }
 
 	/**
 	 * 列表
