@@ -17,11 +17,14 @@
 	position: fixed;
 	top: 0px;
 	z-index: 100;
-	background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
-	background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
-	background: -ms-linear-gradient(top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
-	background: -o-linear-gradient(top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
-	background: linear-gradient(top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+	/*background: RGB(28,187,127);*/
+	background: -webkit-linear-gradient(top, rgba(138,138,138, 0.6), rgba(29, 29, 29, 0.6));
+	background: -moz-linear-gradient(top, rgba(138,138,138, 0.6), rgba(29, 29, 29, 0.6));
+	background: -ms-linear-gradient(top, rgba(138,138,138, 0.6), rgba(29, 29, 29, 0.6));
+	background: -o-linear-gradient(top, rgba(138,138,138, 0.6), rgba(29, 29, 29, 0.6));
+	background: linear-gradient(top, rgba(138,138,138, 0.6), rgba(29, 29, 29, 0.6));
+
+
 }
 
 .index header .glyphicon-th-large {
@@ -103,7 +106,8 @@
 }
 
 .index .masthead {
-	margin-bottom: 10px;
+	margin-bottom: 8px;
+	margin-top: 40px;
 }
 
 .index .masthead .carousel-indicators {
@@ -175,8 +179,8 @@
 }
 
 .index .ad img {
-	width: 160px;
-	height: 100px;
+	width: 155px;
+	/*height: 100px;*/
 }
 
 .index .products .panel-heading {
