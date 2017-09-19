@@ -61,7 +61,8 @@
 								</li>
 								<li>
 									<a href="message/list">${message("member.index.messageCount")}(<em>${messageCount}</em>)</a>
-									<a href="coupon_code/list">${message("member.index.couponCodeCount")}(<em>${couponCodeCount}</em>)</a>
+									<!--<a href="coupon_code/list">${message("member.index.couponCodeCount")}(<em>${couponCodeCount}</em>)</a>-->
+									<a href="deposit/gift">${message("member.deposit.gift")}(<em>0</em>)</a>
 								</li>
 								<li>
 									<a href="product_favorite/list">${message("member.index.productFavoriteCount")}(<em>${productFavoriteCount}</em>)</a>

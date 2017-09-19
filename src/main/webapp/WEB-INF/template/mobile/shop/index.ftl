@@ -176,7 +176,16 @@
 					<li data-target="#masthead" data-slide-to="2"></li>
 				</ol>
 				<ul class="carousel-inner">
-					<li class="item active">
+					[@ad_position orders = "1"]	
+						[#list adPosition.ads as ad]
+							<li class="item [#if ad_index = 0] active[/#if]">
+								<a href="${ad.url}">
+									<img src="${ad.path}" alt="${ad.title}">
+								</a>
+							</li>
+						[/#list]
+					[/@ad_position]
+					<!-- <li class="item active">
 						<a href="#">
 							<img src="${base}/upload/image/index_slider1.jpg" alt="荣耀8">
 						</a>
@@ -190,7 +199,7 @@
 						<a href="#">
 							<img src="${base}/upload/image/index_slider3.jpg" alt="百万豪礼">
 						</a>
-					</li>
+					</li> -->
 				</ul>
 			</div>
 			<nav>
@@ -278,7 +287,16 @@
 			</div>
 			<div class="ad">
 				<ul>
-					<li>
+					[@ad_position orders = "2"]	
+						[#list adPosition.ads as ad]
+							<li>
+								<a href="${ad.url}">
+									<img src="${ad.path}" alt="${ad.title}">
+								</a>
+							</li>
+						[/#list]
+					[/@ad_position]
+					<!--<li>
 						<a href="${base}/product/list/1">
 							<img src="${base}/upload/image/row3_slider_1.jpg" alt="音响">
 						</a>
@@ -297,7 +315,7 @@
 						<a href="${base}/product/list/1">
 							<img src="${base}/upload/image/row3_slider_4.jpg" alt="音响">
 						</a>
-					</li>
+					</li>-->
 				</ul>
 			</div>
 			[@product_category_root_list count = 3]

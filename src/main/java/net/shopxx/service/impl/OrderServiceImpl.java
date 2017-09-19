@@ -99,7 +99,8 @@ import com.alibaba.fastjson.JSONObject;
  * @version 5.0.3
  */
 @Service
-public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements OrderService {
+public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements
+		OrderService {
 
 	@Inject
 	private CacheManager cacheManager;
@@ -141,7 +142,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	private OrderItemService orderItemService;
 	@Inject
 	private FiBankbookJournalService fiBankbookJournalService;
-	
+
 	@Value("${url.signature}")
 	private String urlSignature;
 	@Value("${url.path}")
@@ -153,27 +154,50 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	}
 
 	@Transactional(readOnly = true)
-	public List<Order> findList(Order.Type type, Order.Status status, Member member, Product product, Boolean isPendingReceive, Boolean isPendingRefunds, Boolean isUseCouponCode, Boolean isExchangePoint, Boolean isAllocatedStock, Boolean hasExpired, Integer count, List<Filter> filters,
+	public List<Order> findList(Order.Type type, Order.Status status,
+			Member member, Product product, Boolean isPendingReceive,
+			Boolean isPendingRefunds, Boolean isUseCouponCode,
+			Boolean isExchangePoint, Boolean isAllocatedStock,
+			Boolean hasExpired, Integer count, List<Filter> filters,
 			List<net.shopxx.Order> orders) {
-		return orderDao.findList(type, status, member, product, isPendingReceive, isPendingRefunds, isUseCouponCode, isExchangePoint, isAllocatedStock, hasExpired, count, filters, orders);
+		return orderDao.findList(type, status, member, product,
+				isPendingReceive, isPendingRefunds, isUseCouponCode,
+				isExchangePoint, isAllocatedStock, hasExpired, count, filters,
+				orders);
 	}
 
 	@Transactional(readOnly = true)
-	public Page<Order> findPage(Order.Type type, Order.Status status, Member member, Product product, Boolean isPendingReceive, Boolean isPendingRefunds, Boolean isUseCouponCode, Boolean isExchangePoint, Boolean isAllocatedStock, Boolean hasExpired, Pageable pageable) {
-		return orderDao.findPage(type, status, member, product, isPendingReceive, isPendingRefunds, isUseCouponCode, isExchangePoint, isAllocatedStock, hasExpired, pageable);
+	public Page<Order> findPage(Order.Type type, Order.Status status,
+			Member member, Product product, Boolean isPendingReceive,
+			Boolean isPendingRefunds, Boolean isUseCouponCode,
+			Boolean isExchangePoint, Boolean isAllocatedStock,
+			Boolean hasExpired, Pageable pageable) {
+		return orderDao.findPage(type, status, member, product,
+				isPendingReceive, isPendingRefunds, isUseCouponCode,
+				isExchangePoint, isAllocatedStock, hasExpired, pageable);
 	}
 
 	@Transactional(readOnly = true)
-	public Long count(Order.Type type, Order.Status status, Member member, Product product, Boolean isPendingReceive, Boolean isPendingRefunds, Boolean isUseCouponCode, Boolean isExchangePoint, Boolean isAllocatedStock, Boolean hasExpired) {
-		return orderDao.count(type, status, member, product, isPendingReceive, isPendingRefunds, isUseCouponCode, isExchangePoint, isAllocatedStock, hasExpired);
+	public Long count(Order.Type type, Order.Status status, Member member,
+			Product product, Boolean isPendingReceive,
+			Boolean isPendingRefunds, Boolean isUseCouponCode,
+			Boolean isExchangePoint, Boolean isAllocatedStock,
+			Boolean hasExpired) {
+		return orderDao.count(type, status, member, product, isPendingReceive,
+				isPendingRefunds, isUseCouponCode, isExchangePoint,
+				isAllocatedStock, hasExpired);
 	}
 
 	@Transactional(readOnly = true)
-	public BigDecimal calculateTax(BigDecimal price, BigDecimal promotionDiscount, BigDecimal couponDiscount, BigDecimal offsetAmount) {
+	public BigDecimal calculateTax(BigDecimal price,
+			BigDecimal promotionDiscount, BigDecimal couponDiscount,
+			BigDecimal offsetAmount) {
 		Assert.notNull(price);
 		Assert.state(price.compareTo(BigDecimal.ZERO) >= 0);
-		Assert.state(promotionDiscount == null || promotionDiscount.compareTo(BigDecimal.ZERO) >= 0);
-		Assert.state(couponDiscount == null || couponDiscount.compareTo(BigDecimal.ZERO) >= 0);
+		Assert.state(promotionDiscount == null
+				|| promotionDiscount.compareTo(BigDecimal.ZERO) >= 0);
+		Assert.state(couponDiscount == null
+				|| couponDiscount.compareTo(BigDecimal.ZERO) >= 0);
 
 		Setting setting = SystemUtils.getSetting();
 		if (!setting.getIsTaxPriceEnabled()) {
@@ -189,8 +213,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		if (offsetAmount != null) {
 			amount = amount.add(offsetAmount);
 		}
-		BigDecimal tax = amount.multiply(new BigDecimal(String.valueOf(setting.getTaxRate())));
-		return tax.compareTo(BigDecimal.ZERO) >= 0 ? setting.setScale(tax) : BigDecimal.ZERO;
+		BigDecimal tax = amount.multiply(new BigDecimal(String.valueOf(setting
+				.getTaxRate())));
+		return tax.compareTo(BigDecimal.ZERO) >= 0 ? setting.setScale(tax)
+				: BigDecimal.ZERO;
 	}
 
 	@Transactional(readOnly = true)
@@ -200,20 +226,26 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		if (order.getInvoice() == null) {
 			return BigDecimal.ZERO;
 		}
-		return calculateTax(order.getPrice(), order.getPromotionDiscount(), order.getCouponDiscount(), order.getOffsetAmount());
+		return calculateTax(order.getPrice(), order.getPromotionDiscount(),
+				order.getCouponDiscount(), order.getOffsetAmount());
 	}
+
 	/**
 	 * 订单总金额
 	 */
 	@Transactional(readOnly = true)
-	public BigDecimal calculateAmount(BigDecimal price, BigDecimal fee, BigDecimal freight, BigDecimal tax, BigDecimal promotionDiscount, BigDecimal couponDiscount, BigDecimal offsetAmount) {
+	public BigDecimal calculateAmount(BigDecimal price, BigDecimal fee,
+			BigDecimal freight, BigDecimal tax, BigDecimal promotionDiscount,
+			BigDecimal couponDiscount, BigDecimal offsetAmount) {
 		Assert.notNull(price);
 		Assert.state(price.compareTo(BigDecimal.ZERO) >= 0);
 		Assert.state(fee == null || fee.compareTo(BigDecimal.ZERO) >= 0);
 		Assert.state(freight == null || freight.compareTo(BigDecimal.ZERO) >= 0);
 		Assert.state(tax == null || tax.compareTo(BigDecimal.ZERO) >= 0);
-		Assert.state(promotionDiscount == null || promotionDiscount.compareTo(BigDecimal.ZERO) >= 0);
-		Assert.state(couponDiscount == null || couponDiscount.compareTo(BigDecimal.ZERO) >= 0);
+		Assert.state(promotionDiscount == null
+				|| promotionDiscount.compareTo(BigDecimal.ZERO) >= 0);
+		Assert.state(couponDiscount == null
+				|| couponDiscount.compareTo(BigDecimal.ZERO) >= 0);
 
 		Setting setting = SystemUtils.getSetting();
 		BigDecimal amount = price;
@@ -235,34 +267,42 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		if (offsetAmount != null) {
 			amount = amount.add(offsetAmount);
 		}
-		return amount.compareTo(BigDecimal.ZERO) >= 0 ? setting.setScale(amount) : BigDecimal.ZERO;
+		return amount.compareTo(BigDecimal.ZERO) >= 0 ? setting
+				.setScale(amount) : BigDecimal.ZERO;
 	}
+
 	/**
 	 * 订单总金额
 	 */
-	public BigDecimal calculateCouponAmount(BigDecimal price, BigDecimal offsetAmount) {
+	public BigDecimal calculateCouponAmount(BigDecimal price,
+			BigDecimal offsetAmount) {
 		BigDecimal amount = price;
 		Setting setting = SystemUtils.getSetting();
 		if (offsetAmount != null) {
 			amount = amount.add(offsetAmount);
 		}
-		return amount.compareTo(BigDecimal.ZERO) >= 0 ? setting.setScale(amount) : BigDecimal.ZERO;
+		return amount.compareTo(BigDecimal.ZERO) >= 0 ? setting
+				.setScale(amount) : BigDecimal.ZERO;
 	}
 
 	@Transactional(readOnly = true)
 	public BigDecimal calculateAmount(Order order) {
 		Assert.notNull(order);
 
-		return calculateAmount(order.getPrice(), order.getFee(), order.getFreight(), order.getTax(), order.getPromotionDiscount(), order.getCouponDiscount(), order.getOffsetAmount());
+		return calculateAmount(order.getPrice(), order.getFee(),
+				order.getFreight(), order.getTax(),
+				order.getPromotionDiscount(), order.getCouponDiscount(),
+				order.getOffsetAmount());
 	}
-	
+
 	@Transactional(readOnly = true)
 	public BigDecimal calculateCouponAmount(Order order) {
 		Assert.notNull(order);
 
-		return calculateCouponAmount(order.getCouponPrice(), order.getOffsetCouponAmount());
+		return calculateCouponAmount(order.getCouponPrice(),
+				order.getOffsetCouponAmount());
 	}
-	
+
 	@Transactional(readOnly = true)
 	public boolean acquireLock(Order order, User user) {
 		Assert.notNull(order);
@@ -275,7 +315,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		cache.acquireWriteLockOnKey(orderId);
 		try {
 			Element element = cache.get(orderId);
-			if (element != null && !user.getId().equals(element.getObjectValue())) {
+			if (element != null
+					&& !user.getId().equals(element.getObjectValue())) {
 				return false;
 			}
 			cache.put(new Element(orderId, user.getId()));
@@ -305,7 +346,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 	public void undoExpiredUseCouponCode() {
 		while (true) {
-			List<Order> orders = orderDao.findList(null, null, null, null, null, null, true, null, null, true, 100, null, null);
+			List<Order> orders = orderDao.findList(null, null, null, null,
+					null, null, true, null, null, true, 100, null, null);
 			if (CollectionUtils.isNotEmpty(orders)) {
 				for (Order order : orders) {
 					undoUseCouponCode(order);
@@ -321,7 +363,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 	public void undoExpiredExchangePoint() {
 		while (true) {
-			List<Order> orders = orderDao.findList(null, null, null, null, null, null, null, true, null, true, 100, null, null);
+			List<Order> orders = orderDao.findList(null, null, null, null,
+					null, null, null, true, null, true, 100, null, null);
 			if (CollectionUtils.isNotEmpty(orders)) {
 				for (Order order : orders) {
 					undoExchangePoint(order);
@@ -337,7 +380,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 	public void releaseExpiredAllocatedStock() {
 		while (true) {
-			List<Order> orders = orderDao.findList(null, null, null, null, null, null, null, null, true, true, 100, null, null);
+			List<Order> orders = orderDao.findList(null, null, null, null,
+					null, null, null, null, true, true, 100, null, null);
 			if (CollectionUtils.isNotEmpty(orders)) {
 				for (Order order : orders) {
 					releaseAllocatedStock(order);
@@ -350,151 +394,144 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 		}
 	}
+
 	/**
-	 * 属性字段参考
-	 *  usercode 区代编号
-		ordersn 订单号
-		status 订单状态
-		price 订单价格
-		jifen 订单购物券
-		payTime 支付时间
-		realname 收货人姓名
-		mobile 收货人电话
-		address 联系地址
-		province 收货省
-		city 收货市
-		area 收货地区
-		expresscom 快递公司
-		expresssn 快递单号
-		expressTime 快递时间
-		WarehouseName 发货仓库
-	 * goods_data
-		title 商品名
-		unit 计量单位
-		optiontitle 规格
-		goodssn 商品编码
-		price 单价
-		jifen 单券
-		total 数量
-		weight 重量
-		volume 体积
+	 * 属性字段参考 usercode 区代编号 ordersn 订单号 status 订单状态 price 订单价格 jifen 订单购物券
+	 * payTime 支付时间 realname 收货人姓名 mobile 收货人电话 address 联系地址 province 收货省 city
+	 * 收货市 area 收货地区 expresscom 快递公司 expresssn 快递单号 expressTime 快递时间
+	 * WarehouseName 发货仓库 goods_data title 商品名 unit 计量单位 optiontitle 规格 goodssn
+	 * 商品编码 price 单价 jifen 单券 total 数量 weight 重量 volume 体积
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public String orderInterface(Order order){
-		Map<String,Object> parameterMap = new HashMap<>();
+	public String orderInterface(Order order) {
+		Map<String, Object> parameterMap = new HashMap<>();
 		List data = new ArrayList<>();
 		List<OrderItem> orderItems = orderItemService.findByOrderId(order);
-		if(orderItems.size() > 0){
-			for(OrderItem orderItem :orderItems){
-				Map<String,Object> goods = new HashMap<String,Object>();
+		if (orderItems.size() > 0) {
+			for (OrderItem orderItem : orderItems) {
+				Map<String, Object> goods = new HashMap<String, Object>();
 				goods.put("title", orderItem.getName());
 				Sku sku = skuService.find(orderItem.getSku().getId());
 				Product product = orderItem.getSku().getProduct();
-				//List<SpecificationValue> specificationValue  = sku.getSpecificationValues();
-				//小单位传送
-				//goods.put("unit", sku.getUnit());
+				// List<SpecificationValue> specificationValue =
+				// sku.getSpecificationValues();
+				// 小单位传送
+				// goods.put("unit", sku.getUnit());
 				goods.put("unit", product.getSmallUnit());
-				goods.put("optiontitle", "");//规格
-				goods.put("goodssn", sku.getProduct().getSn());//"testaa1"商品编号
-				//goods.put("price", orderItem.getPrice());
-				//转为小单位价格
-				if(product.getConversion() != null){
-					BigDecimal price = orderItem.getPrice().divide(new BigDecimal(product.getConversion()),2,BigDecimal.ROUND_HALF_EVEN);
+				goods.put("optiontitle", "");// 规格
+				goods.put("goodssn", sku.getProduct().getSn());// "testaa1"商品编号
+				// goods.put("price", orderItem.getPrice());
+				// 转为小单位价格
+				if (product.getConversion() != null) {
+					BigDecimal price = orderItem.getPrice().divide(
+							new BigDecimal(product.getConversion()), 2,
+							BigDecimal.ROUND_HALF_EVEN);
 					goods.put("price", price);
-					goods.put("total", orderItem.getQuantity()*Integer.valueOf(product.getConversion()));//数量
-					//重量换算
+					goods.put(
+							"total",
+							orderItem.getQuantity()
+									* Integer.valueOf(product.getConversion()));// 数量
+					// 重量换算
 					System.out.println(orderItem.getWeight());
-					if(orderItem.getWeight() != null){					
-						goods.put("weight", new BigDecimal(orderItem.getWeight()/Integer.valueOf(product.getConversion())));
-					}else{
+					if (orderItem.getWeight() != null) {
+						goods.put(
+								"weight",
+								new BigDecimal(orderItem.getWeight()
+										/ Integer.valueOf(product
+												.getConversion())));
+					} else {
 						goods.put("weight", "0");
 					}
-					//体积换算
-					if(orderItem.getVersion() != null){
-						goods.put("volume", new BigDecimal(orderItem.getVersion()/Integer.valueOf(product.getConversion())));
-					}else{
-						goods.put("volume","0");
+					// 体积换算
+					if (orderItem.getVersion() != null) {
+						goods.put(
+								"volume",
+								new BigDecimal(orderItem.getVersion()
+										/ Integer.valueOf(product
+												.getConversion())));
+					} else {
+						goods.put("volume", "0");
 					}
-				}else{
+				} else {
 					goods.put("price", orderItem.getPrice().toString());
 					goods.put("total", orderItem.getQuantity().toString());
 					goods.put("weight", orderItem.getWeight());
 					goods.put("volume", orderItem.getVersion());
 				}
-				
-				
-				//String jsonObject = JSON.toJSONString(goods);
+
+				// String jsonObject = JSON.toJSONString(goods);
 				data.add(goods);
 			}
 		}
-		
-		parameterMap.put("usercode", order.getMember().getNapaStores().getNapaCode());//"G006682"区代编号
-		parameterMap.put("ordersn", order.getSn());		
-		
-		if(Order.Status.pendingPayment.equals(order.getStatus())){
-			parameterMap.put("status", "等待付款");//等待付款
-		}else if(Order.Status.pendingReview.equals(order.getStatus())){
-			parameterMap.put("status", "等待审核");//等待审核
-		}else if(Order.Status.pendingShipment.equals(order.getStatus())){
-			parameterMap.put("status", "等待发货");//等待发货
-		}else if(Order.Status.shipped.equals(order.getStatus())){
-			parameterMap.put("status", "已发货");//已发货
-		}else if(Order.Status.received.equals(order.getStatus())){
-			parameterMap.put("status", "已收货");//已收货
-		}else if(Order.Status.completed.equals(order.getStatus())){
-			parameterMap.put("status", "已完成");//已完成
-		}else if(Order.Status.failed.equals(order.getStatus())){
-			parameterMap.put("status", "已失败");//已失败
-		}else if(Order.Status.canceled.equals(order.getStatus())){
-			parameterMap.put("status", "已取消");//已取消
-		}else if(Order.Status.denied.equals(order.getStatus())){
-			parameterMap.put("status", "已拒绝");//已拒绝
+
+		parameterMap.put("usercode", order.getMember().getNapaStores()
+				.getNapaCode());// "G006682"区代编号
+		parameterMap.put("ordersn", order.getSn());
+
+		if (Order.Status.pendingPayment.equals(order.getStatus())) {
+			parameterMap.put("status", "等待付款");// 等待付款
+		} else if (Order.Status.pendingReview.equals(order.getStatus())) {
+			parameterMap.put("status", "等待审核");// 等待审核
+		} else if (Order.Status.pendingShipment.equals(order.getStatus())) {
+			parameterMap.put("status", "等待发货");// 等待发货
+		} else if (Order.Status.shipped.equals(order.getStatus())) {
+			parameterMap.put("status", "已发货");// 已发货
+		} else if (Order.Status.received.equals(order.getStatus())) {
+			parameterMap.put("status", "已收货");// 已收货
+		} else if (Order.Status.completed.equals(order.getStatus())) {
+			parameterMap.put("status", "已完成");// 已完成
+		} else if (Order.Status.failed.equals(order.getStatus())) {
+			parameterMap.put("status", "已失败");// 已失败
+		} else if (Order.Status.canceled.equals(order.getStatus())) {
+			parameterMap.put("status", "已取消");// 已取消
+		} else if (Order.Status.denied.equals(order.getStatus())) {
+			parameterMap.put("status", "已拒绝");// 已拒绝
 		}
 
-		parameterMap.put("price", calculateAmount(order));//总金额+运费
-		parameterMap.put("jifen", order.getCouponAmountPaid());//券金额
-		parameterMap.put("payTime", TimeUtil.getDate(order.getCreatedDate()));//支付时间
-		
-		parameterMap.put("realname", "");//收货人
-		parameterMap.put("mobile", "");//收货人电话
-		parameterMap.put("address", "");//收货人地址
-		parameterMap.put("province", "");//收货人省
-		parameterMap.put("city", "");//收货人市
-		parameterMap.put("area", "");//收货人区
-		
-		parameterMap.put("expresscom", "");//快递公司
-		parameterMap.put("expresssn", "");//快递单号
-		parameterMap.put("shipFee", order.getFreight().toString());//运费
-		parameterMap.put("expressTime", "");//发货时间
-		parameterMap.put("WarehouseName", "");//发货仓库
+		parameterMap.put("price", calculateAmount(order));// 总金额+运费
+		parameterMap.put("jifen", order.getCouponAmountPaid());// 券金额
+		parameterMap.put("payTime", TimeUtil.getDate(order.getCreatedDate()));// 支付时间
 
-		parameterMap.put("goods_data", data);//商品信息
-		
+		parameterMap.put("realname", "");// 收货人
+		parameterMap.put("mobile", "");// 收货人电话
+		parameterMap.put("address", "");// 收货人地址
+		parameterMap.put("province", "");// 收货人省
+		parameterMap.put("city", "");// 收货人市
+		parameterMap.put("area", "");// 收货人区
+
+		parameterMap.put("expresscom", "");// 快递公司
+		parameterMap.put("expresssn", "");// 快递单号
+		parameterMap.put("shipFee", order.getFreight().toString());// 运费
+		parameterMap.put("expressTime", "");// 发货时间
+		parameterMap.put("WarehouseName", "");// 发货仓库
+
+		parameterMap.put("goods_data", data);// 商品信息
+
 		parameterMap.put("timestamp", TimeUtil.getTimestamp());
-		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getTimestamp()+urlSignature));
+		parameterMap.put("signature",
+				DigestUtils.md5Hex(TimeUtil.getTimestamp() + urlSignature));
 		try {
 			/**
-			 * errCode         msg
-			 * 0000 		成功：success
-			 * 1001 		验签错误
-			 * 1002 		会员编号已存在
-			 * 1003 		区代编号已存在
-			 * 1004 		链接超过有效时间
-			 * 1005                           商品编码不存在
-			 * 2001 		异常:xxx
+			 * errCode msg 0000 成功：success 1001 验签错误 1002 会员编号已存在 1003 区代编号已存在
+			 * 1004 链接超过有效时间 1005 商品编码不存在 2001 异常:xxx
 			 */
-			//System.out.println(parameterMap.toString());
-			String orderMap = WebUtils.postJson(urlPath+"/shopMemberOrderCreate.html",parameterMap);
-			//System.out.println(orderMap);
+			// System.out.println(parameterMap.toString());
+			String orderMap = WebUtils.postJson(urlPath
+					+ "/shopMemberOrderCreate.html", parameterMap);
+			System.out.println(orderMap);
 			return orderMap;
 		} catch (Exception e) {
-			System.out.println(order.getSn()+"推送失败");
-			return "{\"errCode\":\"2001\",\"msg\":\""+order.getSn()+"推送失败，网络连接超时\"}";
-		}				
+			System.out.println(order.getSn() + "推送失败");
+			return "{\"errCode\":\"2001\",\"msg\":\"" + order.getSn()
+					+ "推送失败，网络连接超时\"}";
+		}
 	}
-	
+
 	@Transactional(readOnly = true)
-	public Order generate(Order.Type type, Cart cart,  NapaStores napaStores,Receiver receiver, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, String memo) {
+	public Order generate(Order.Type type, Cart cart, NapaStores napaStores,
+			Receiver receiver, PaymentMethod paymentMethod,
+			ShippingMethod shippingMethod, CouponCode couponCode,
+			Invoice invoice, BigDecimal balance, String memo) {
 		Assert.notNull(type);
 		Assert.notNull(cart);
 		Assert.notNull(cart.getMember());
@@ -506,8 +543,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		Order order = new Order();
 		order.setType(type);
 		order.setPrice(cart.getPrice());
-		order.setCouponPrice(cart.getCouponPrice());//券总计
-		
+		order.setCouponPrice(cart.getCouponPrice());// 券总计
+
 		order.setFee(BigDecimal.ZERO);
 		order.setPromotionDiscount(cart.getDiscount());
 		order.setOffsetAmount(BigDecimal.ZERO);
@@ -528,17 +565,25 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		order.setPromotionNames(cart.getPromotionNames());
 		order.setCoupons(new ArrayList<>(cart.getCoupons()));
 
-		if (shippingMethod != null && shippingMethod.isSupported(paymentMethod) && cart.getIsDelivery()) {
-			order.setFreight(!cart.isFreeShipping() ? shippingMethodService.calculateFreight(shippingMethod, receiver, cart.getTotalWeight()) : BigDecimal.ZERO);
+		if (shippingMethod != null && shippingMethod.isSupported(paymentMethod)
+				&& cart.getIsDelivery()) {
+			order.setFreight(!cart.isFreeShipping() ? shippingMethodService
+					.calculateFreight(shippingMethod, receiver,
+							cart.getTotalWeight()) : BigDecimal.ZERO);
 			order.setShippingMethod(shippingMethod);
 		} else {
 			order.setFreight(BigDecimal.ZERO);
 			order.setShippingMethod(null);
 		}
 
-		if (couponCode != null && cart.isCouponAllowed() && cart.isValid(couponCode)) {
-			BigDecimal couponDiscount = cart.getEffectivePrice().subtract(couponCode.getCoupon().calculatePrice(cart.getEffectivePrice(), cart.getProductQuantity()));
-			order.setCouponDiscount(couponDiscount.compareTo(BigDecimal.ZERO) >= 0 ? couponDiscount : BigDecimal.ZERO);
+		if (couponCode != null && cart.isCouponAllowed()
+				&& cart.isValid(couponCode)) {
+			BigDecimal couponDiscount = cart.getEffectivePrice().subtract(
+					couponCode.getCoupon()
+							.calculatePrice(cart.getEffectivePrice(),
+									cart.getProductQuantity()));
+			order.setCouponDiscount(couponDiscount.compareTo(BigDecimal.ZERO) >= 0 ? couponDiscount
+					: BigDecimal.ZERO);
 			order.setCouponCode(couponCode);
 		} else {
 			order.setCouponDiscount(BigDecimal.ZERO);
@@ -547,14 +592,16 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 		order.setTax(calculateTax(order));
 		order.setAmount(calculateAmount(order));
-		System.out.println("券总计"+cart.getCouponPrice());
-		order.setCouponAmount(cart.getCouponPrice());//券总计
-		if (balance != null && balance.compareTo(BigDecimal.ZERO) > 0 && balance.compareTo(member.getBalance()) <= 0 && balance.compareTo(order.getAmount()) <= 0) {
+		System.out.println("券总计" + cart.getCouponPrice());
+		order.setCouponAmount(cart.getCouponPrice());// 券总计
+		if (balance != null && balance.compareTo(BigDecimal.ZERO) > 0
+				&& balance.compareTo(member.getBalance()) <= 0
+				&& balance.compareTo(order.getAmount()) <= 0) {
 			order.setAmountPaid(balance);
 		} else {
 			order.setAmountPaid(BigDecimal.ZERO);
 		}
-		//收货地址
+		// 收货地址
 		if (cart.getIsDelivery() && napaStores != null) {
 			order.setConsignee(member.getName());
 			order.setAreaName(null);
@@ -563,15 +610,16 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			order.setPhone(napaStores.getMobile());
 			order.setArea(null);
 		}
-		/*if (cart.getIsDelivery() && receiver != null) {
-			order.setConsignee(receiver.getConsignee());
-			order.setAreaName(receiver.getAreaName());
-			order.setAddress(receiver.getAddress());
-			order.setZipCode(receiver.getZipCode());
-			order.setPhone(receiver.getPhone());
-			order.setArea(receiver.getArea());
-		}*/
-		//商品
+		/*
+		 * if (cart.getIsDelivery() && receiver != null) {
+		 * order.setConsignee(receiver.getConsignee());
+		 * order.setAreaName(receiver.getAreaName());
+		 * order.setAddress(receiver.getAddress());
+		 * order.setZipCode(receiver.getZipCode());
+		 * order.setPhone(receiver.getPhone());
+		 * order.setArea(receiver.getArea()); }
+		 */
+		// 商品
 		List<OrderItem> orderItems = order.getOrderItems();
 		for (CartItem cartItem : cart) {
 			Sku sku = cartItem.getSku();
@@ -580,7 +628,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderItem.setSn(sku.getSn());
 				orderItem.setName(sku.getName());
 				orderItem.setType(sku.getType());
-				orderItem.setPrice(cartItem.getPrice());//价格
+				orderItem.setPrice(cartItem.getPrice());// 价格
 				orderItem.setWeight(sku.getWeight());
 				orderItem.setIsDelivery(sku.getIsDelivery());
 				orderItem.setThumbnail(sku.getThumbnail());
@@ -589,20 +637,20 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderItem.setReturnedQuantity(0);
 				orderItem.setSku(cartItem.getSku());
 				orderItem.setOrder(order);
-				orderItem.setCouponPrice(cartItem.getCouponPrice());//券
+				orderItem.setCouponPrice(cartItem.getCouponPrice());// 券
 				orderItem.setSpecifications(sku.getSpecifications());
 				orderItems.add(orderItem);
 			}
 		}
-		//赠品
+		// 赠品
 		for (Sku gift : cart.getGifts()) {
 			OrderItem orderItem = new OrderItem();
 			orderItem.setSn(gift.getSn());
 			orderItem.setName(gift.getName());
 			orderItem.setType(gift.getType());
-			orderItem.setPrice(BigDecimal.ZERO);//价格
-			orderItem.setCouponPrice(BigDecimal.ZERO);//券
-			
+			orderItem.setPrice(BigDecimal.ZERO);// 价格
+			orderItem.setCouponPrice(BigDecimal.ZERO);// 券
+
 			orderItem.setWeight(gift.getWeight());
 			orderItem.setIsDelivery(gift.getIsDelivery());
 			orderItem.setThumbnail(gift.getThumbnail());
@@ -618,26 +666,30 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		return order;
 	}
 
-	public Order createNose(Order.Type type, Cart cart, Receiver receiver,NapaStores napaStores, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance,BigDecimal coupon, String memo) {
+	public Order createNose(Order.Type type, Cart cart, Receiver receiver,
+			NapaStores napaStores, PaymentMethod paymentMethod,
+			ShippingMethod shippingMethod, CouponCode couponCode,
+			Invoice invoice, BigDecimal balance, BigDecimal coupon, String memo) {
 		Assert.notNull(type);
 		Assert.notNull(cart);
 		Assert.notNull(napaStores);
 		Assert.notNull(cart.getMember());
 		Assert.state(!cart.isEmpty());
 		if (cart.getIsDelivery()) {
-			//收货地址
-			//Assert.notNull(receiver);
+			// 收货地址
+			// Assert.notNull(receiver);
 			Assert.notNull(shippingMethod);
 			Assert.state(shippingMethod.isSupported(paymentMethod));
 		} else {
-			//收货地址
-			//Assert.isNull(receiver);
+			// 收货地址
+			// Assert.isNull(receiver);
 			Assert.isNull(shippingMethod);
 		}
 
 		for (CartItem cartItem : cart) {
 			Sku sku = cartItem.getSku();
-			if (sku == null || !sku.getIsMarketable() || cartItem.getQuantity() > sku.getAvailableStock()) {
+			if (sku == null || !sku.getIsMarketable()
+					|| cartItem.getQuantity() > sku.getAvailableStock()) {
 				throw new IllegalArgumentException();
 			}
 		}
@@ -657,10 +709,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		order.setPrice(cart.getPrice());
 		order.setCouponPrice(cart.getCouponPrice());
 		order.setFee(BigDecimal.ZERO);
-		order.setFreight(cart.getIsDelivery() && !cart.isFreeShipping() ? shippingMethodService.calculateFreight(shippingMethod, receiver, cart.getTotalWeight()) : BigDecimal.ZERO);
+		order.setFreight(cart.getIsDelivery() && !cart.isFreeShipping() ? shippingMethodService
+				.calculateFreight(shippingMethod, receiver,
+						cart.getTotalWeight()) : BigDecimal.ZERO);
 		order.setPromotionDiscount(cart.getDiscount());
 		order.setOffsetAmount(BigDecimal.ZERO);
-		
+
 		order.setOffsetCouponAmount(BigDecimal.ZERO);
 		order.setCouponAmountPaid(BigDecimal.ZERO);
 		order.setAmountPaid(BigDecimal.ZERO);
@@ -674,7 +728,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		order.setQuantity(cart.getTotalQuantity());
 		order.setShippedQuantity(0);
 		order.setReturnedQuantity(0);
-		//收货地址
+		// 收货地址
 		if (cart.getIsDelivery()) {
 			order.setConsignee(member.getName());
 			order.setAreaName(napaStores.getNapaAddress());
@@ -692,14 +746,18 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		order.setMember(member);
 		order.setPromotionNames(cart.getPromotionNames());
 		order.setCoupons(new ArrayList<>(cart.getCoupons()));
-		
-		//优惠券抵扣
+
+		// 优惠券抵扣
 		if (couponCode != null) {
 			if (!cart.isCouponAllowed() || !cart.isValid(couponCode)) {
 				throw new IllegalArgumentException();
 			}
-			BigDecimal couponDiscount = cart.getEffectivePrice().subtract(couponCode.getCoupon().calculatePrice(cart.getEffectivePrice(), cart.getProductQuantity()));
-			order.setCouponDiscount(couponDiscount.compareTo(BigDecimal.ZERO) >= 0 ? couponDiscount : BigDecimal.ZERO);
+			BigDecimal couponDiscount = cart.getEffectivePrice().subtract(
+					couponCode.getCoupon()
+							.calculatePrice(cart.getEffectivePrice(),
+									cart.getProductQuantity()));
+			order.setCouponDiscount(couponDiscount.compareTo(BigDecimal.ZERO) >= 0 ? couponDiscount
+					: BigDecimal.ZERO);
 			order.setCouponCode(couponCode);
 			useCouponCode(order);
 		} else {
@@ -715,29 +773,37 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		Set<FiBankbookBalance> set = member.getFiBankbookBalances();
 		if (null != set) {
 			for (FiBankbookBalance fiBankbookBalance : set) {
-				if (FiBankbookBalance.Type.balance == fiBankbookBalance.getType()) {
+				if (FiBankbookBalance.Type.balance == fiBankbookBalance
+						.getType()) {
 					userBalance = fiBankbookBalance.getBalance();
-				}else if (FiBankbookBalance.Type.coupon == fiBankbookBalance.getType()) {
+				} else if (FiBankbookBalance.Type.coupon == fiBankbookBalance
+						.getType()) {
 					userCouponbalance = fiBankbookBalance.getBalance();
 				}
 			}
 		}
 		// 校验余额
-		if (userBalance.compareTo(order.getAmount()) < 0 || userCouponbalance.compareTo(order.getCouponAmount()) < 0) {
+		if (userBalance.compareTo(order.getAmount()) < 0
+				|| userCouponbalance.compareTo(order.getCouponAmount()) < 0) {
 			throw new IllegalArgumentException("余额不足");
 		}
-		BigDecimal amountPayable = balance != null ? order.getAmount().subtract(balance) : order.getAmount();
+		BigDecimal amountPayable = balance != null ? order.getAmount()
+				.subtract(balance) : order.getAmount();
 		if (amountPayable.compareTo(BigDecimal.ZERO) > 0) {
 			if (paymentMethod == null) {
 				throw new IllegalArgumentException("支付方式不存在");
 			}
-			order.setStatus(PaymentMethod.Type.deliveryAgainstPayment.equals(paymentMethod.getType()) ? Order.Status.pendingPayment : Order.Status.pendingReview);
+			order.setStatus(PaymentMethod.Type.deliveryAgainstPayment
+					.equals(paymentMethod.getType()) ? Order.Status.pendingPayment
+					: Order.Status.pendingReview);
 			order.setPaymentMethod(paymentMethod);
-			if (paymentMethod.getTimeout() != null && Order.Status.pendingPayment.equals(order.getStatus())) {
-				order.setExpire(DateUtils.addMinutes(new Date(), paymentMethod.getTimeout()));
+			if (paymentMethod.getTimeout() != null
+					&& Order.Status.pendingPayment.equals(order.getStatus())) {
+				order.setExpire(DateUtils.addMinutes(new Date(),
+						paymentMethod.getTimeout()));
 			}
 		} else {
-			
+
 			order.setStatus(Order.Status.pendingReview);
 			order.setPaymentMethod(null);
 		}
@@ -781,7 +847,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			orderItem.setSpecifications(gift.getSpecifications());
 			orderItems.add(orderItem);
 		}
-		
+
 		try {
 			orderDao.persist(order);
 		} catch (Exception e) {
@@ -794,8 +860,13 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		orderLogDao.persist(orderLog);
 
 		exchangePoint(order);
-		if (Setting.StockAllocationTime.order.equals(setting.getStockAllocationTime())
-				|| (Setting.StockAllocationTime.payment.equals(setting.getStockAllocationTime()) && (order.getAmountPaid().compareTo(BigDecimal.ZERO) > 0 || order.getExchangePoint() > 0 || order.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0))) {
+		if (Setting.StockAllocationTime.order.equals(setting
+				.getStockAllocationTime())
+				|| (Setting.StockAllocationTime.payment.equals(setting
+						.getStockAllocationTime()) && (order.getAmountPaid()
+						.compareTo(BigDecimal.ZERO) > 0
+						|| order.getExchangePoint() > 0 || order
+						.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0))) {
 			allocateStock(order);
 		}
 
@@ -819,10 +890,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		if (!cart.isNew()) {
 			cartDao.remove(cart);
 		}
-		
+
 		return order;
 	}
-	
+
 	/**
 	 * 后台订单创建
 	 * 
@@ -835,10 +906,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	 * @return 订单
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public boolean create(Order order, Member member, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice) throws Exception{
+	public boolean create(Order order, Member member,
+			PaymentMethod paymentMethod, ShippingMethod shippingMethod,
+			CouponCode couponCode, Invoice invoice) throws Exception {
 		// 校验库存
 		Setting setting = SystemUtils.getSetting();
-		
+
 		order.setSn(snDao.generate(Sn.Type.order));
 		order.setType(Order.Type.general);
 		order.setFee(BigDecimal.ZERO);
@@ -852,12 +925,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		order.setExchangePoint(BigDecimal.ZERO.longValue());
 		order.setShippedQuantity(0);
 		order.setReturnedQuantity(0);
-//		order.setConsignee(receiver.getConsignee());
-//		order.setAreaName(receiver.getAreaName());
-//		order.setAddress(receiver.getAddress());
-//		order.setZipCode("123456");
-//		order.setPhone(receiver.getPhone());
-//		order.setArea(receiver.getArea());
+		// order.setConsignee(receiver.getConsignee());
+		// order.setAreaName(receiver.getAreaName());
+		// order.setAddress(receiver.getAddress());
+		// order.setZipCode("123456");
+		// order.setPhone(receiver.getPhone());
+		// order.setArea(receiver.getArea());
 		order.setIsUseCouponCode(false);
 		order.setIsExchangePoint(false);
 		order.setIsAllocatedStock(false);
@@ -867,11 +940,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		order.setPromotionNames(null);
 		order.setCoupons(null);
 		order.setTax(calculateTax(order));
-//		order.setAmount(calculateAmount(order));
+		// order.setAmount(calculateAmount(order));
 		order.setSource(Order.Source.system);
 		order.setCouponDiscount(BigDecimal.ZERO);
-//		order.setCouponPrice(order.getCouponAmount());
-//		order.setPrice(order.getAmount());
+		// order.setCouponPrice(order.getCouponAmount());
+		// order.setPrice(order.getAmount());
 		order.setPromotionDiscount(BigDecimal.ZERO);
 		order.setCouponAmountPaid(BigDecimal.ZERO);
 		BigDecimal amount = order.getAmount();
@@ -882,15 +955,18 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		Set<FiBankbookBalance> set = member.getFiBankbookBalances();
 		if (null != set) {
 			for (FiBankbookBalance fiBankbookBalance : set) {
-				if (FiBankbookBalance.Type.balance == fiBankbookBalance.getType()) {
+				if (FiBankbookBalance.Type.balance == fiBankbookBalance
+						.getType()) {
 					userBalance = fiBankbookBalance.getBalance();
-				}else if (FiBankbookBalance.Type.coupon == fiBankbookBalance.getType()) {
+				} else if (FiBankbookBalance.Type.coupon == fiBankbookBalance
+						.getType()) {
 					userCouponbalance = fiBankbookBalance.getBalance();
 				}
 			}
 		}
 		// 校验余额
-		if (userBalance.compareTo(order.getAmount()) < 0 || userCouponbalance.compareTo(order.getCouponAmount()) < 0) {
+		if (userBalance.compareTo(order.getAmount()) < 0
+				|| userCouponbalance.compareTo(order.getCouponAmount()) < 0) {
 			throw new IllegalArgumentException("余额不足");
 		}
 		BigDecimal amountPayable = order.getAmount();
@@ -898,16 +974,20 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			if (paymentMethod == null) {
 				throw new IllegalArgumentException("支付方式不存在");
 			}
-			order.setStatus(PaymentMethod.Type.deliveryAgainstPayment.equals(paymentMethod.getType()) ? Order.Status.pendingPayment : Order.Status.pendingReview);
+			order.setStatus(PaymentMethod.Type.deliveryAgainstPayment
+					.equals(paymentMethod.getType()) ? Order.Status.pendingPayment
+					: Order.Status.pendingReview);
 			order.setPaymentMethod(paymentMethod);
-			if (paymentMethod.getTimeout() != null && Order.Status.pendingPayment.equals(order.getStatus())) {
-				order.setExpire(DateUtils.addMinutes(new Date(), paymentMethod.getTimeout()));
+			if (paymentMethod.getTimeout() != null
+					&& Order.Status.pendingPayment.equals(order.getStatus())) {
+				order.setExpire(DateUtils.addMinutes(new Date(),
+						paymentMethod.getTimeout()));
 			}
 		} else {
 			order.setStatus(Order.Status.pendingReview);
 			order.setPaymentMethod(null);
 		}
-		
+
 		List<OrderItem> orderItems = new ArrayList<OrderItem>();
 		List<OrderItem> curOrderItems = order.getOrderItems();
 		// 获取重量和数量
@@ -915,7 +995,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		Integer totalWeight = BigDecimal.ZERO.intValue();
 		if (null != curOrderItems) {
 			for (OrderItem curOrderItem : curOrderItems) {
-				if (null == curOrderItem.getQuantity() || curOrderItem.getQuantity() == 0) {
+				if (null == curOrderItem.getQuantity()
+						|| curOrderItem.getQuantity() == 0) {
 					continue;
 				}
 				OrderItem orderItem = new OrderItem();
@@ -927,7 +1008,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderItem.setType(product.getType());
 				orderItem.setPrice(curOrderItem.getPrice());
 				orderItem.setCouponPrice(curOrderItem.getCouponPrice());
-				Integer weight = NumberUtil.getInt(product.getWeight()) * curOrderItem.getQuantity();
+				Integer weight = NumberUtil.getInt(product.getWeight())
+						* curOrderItem.getQuantity();
 				totalWeight += weight;
 				totalQuantity += curOrderItem.getQuantity();
 				orderItem.setWeight(sku.getWeight());
@@ -956,11 +1038,16 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		orderLogDao.persist(orderLog);
 
 		exchangePoint(order);
-		if (Setting.StockAllocationTime.order.equals(setting.getStockAllocationTime())
-				|| (Setting.StockAllocationTime.payment.equals(setting.getStockAllocationTime()) && (order.getAmountPaid().compareTo(BigDecimal.ZERO) > 0 || order.getExchangePoint() > 0 || order.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0))) {
+		if (Setting.StockAllocationTime.order.equals(setting
+				.getStockAllocationTime())
+				|| (Setting.StockAllocationTime.payment.equals(setting
+						.getStockAllocationTime()) && (order.getAmountPaid()
+						.compareTo(BigDecimal.ZERO) > 0
+						|| order.getExchangePoint() > 0 || order
+						.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0))) {
 			allocateStock(order);
 		}
-		
+
 		// 余额支付
 		OrderPayment orderPayment = new OrderPayment();
 		orderPayment.setMethod(OrderPayment.Method.deposit);
@@ -970,7 +1057,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		orderPayment.setOrder(order);
 		orderPayment.setCountry(order.getCountry());
 		payment(order, orderPayment);
-		
+
 		mailService.sendCreateOrderMail(order);
 		smsService.sendCreateOrderSms(order);
 		return true;
@@ -979,15 +1066,20 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	public void modify(Order order) {
 		Assert.notNull(order);
 		Assert.isTrue(!order.isNew());
-		Assert.state(!order.hasExpired() && (Order.Status.pendingPayment.equals(order.getStatus()) || Order.Status.pendingReview.equals(order.getStatus())));
+		Assert.state(!order.hasExpired()
+				&& (Order.Status.pendingPayment.equals(order.getStatus()) || Order.Status.pendingReview
+						.equals(order.getStatus())));
 
 		order.setAmount(calculateAmount(order));
 		order.setCouponAmount(calculateCouponAmount(order));
-		if (order.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0 && order.getCouponAmountPayable().compareTo(BigDecimal.ZERO) <= 0) {
+		if (order.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0
+				&& order.getCouponAmountPayable().compareTo(BigDecimal.ZERO) <= 0) {
 			order.setStatus(Order.Status.pendingReview);
 			order.setExpire(null);
 		} else {
-			if (order.getPaymentMethod() != null && PaymentMethod.Type.deliveryAgainstPayment.equals(order.getPaymentMethod().getType())) {
+			if (order.getPaymentMethod() != null
+					&& PaymentMethod.Type.deliveryAgainstPayment.equals(order
+							.getPaymentMethod().getType())) {
 				order.setStatus(Order.Status.pendingPayment);
 			} else {
 				order.setStatus(Order.Status.pendingReview);
@@ -1007,7 +1099,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	public void cancel(Order order) {
 		Assert.notNull(order);
 		Assert.isTrue(!order.isNew());
-		Assert.state(!order.hasExpired() && (Order.Status.pendingPayment.equals(order.getStatus()) || Order.Status.pendingReview.equals(order.getStatus())));
+		Assert.state(!order.hasExpired()
+				&& (Order.Status.pendingPayment.equals(order.getStatus()) || Order.Status.pendingReview
+						.equals(order.getStatus())));
 
 		order.setStatus(Order.Status.canceled);
 		order.setExpire(null);
@@ -1028,7 +1122,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	public void review(Order order, boolean passed) {
 		Assert.notNull(order);
 		Assert.isTrue(!order.isNew());
-		Assert.state(!order.hasExpired() && Order.Status.pendingReview.equals(order.getStatus()));
+		Assert.state(!order.hasExpired()
+				&& Order.Status.pendingReview.equals(order.getStatus()));
 
 		if (passed) {
 			order.setStatus(Order.Status.pendingShipment);
@@ -1066,7 +1161,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void payment(Order order, OrderPayment orderPayment) throws Exception {
+	public void payment(Order order, OrderPayment orderPayment)
+			throws Exception {
 		Assert.notNull(order);
 		Assert.isTrue(!order.isNew());
 		Assert.notNull(orderPayment);
@@ -1075,36 +1171,53 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		Assert.notNull(orderPayment.getCouponAmount());
 		Assert.state(orderPayment.getAmount().compareTo(BigDecimal.ZERO) >= 0);
 		Assert.state(orderPayment.getCouponAmount().compareTo(BigDecimal.ZERO) >= 0);
-		Assert.state(!(orderPayment.getAmount().compareTo(BigDecimal.ZERO) == 0 && orderPayment.getCouponAmount().compareTo(BigDecimal.ZERO) == 0));
+		Assert.state(!(orderPayment.getAmount().compareTo(BigDecimal.ZERO) == 0 && orderPayment
+				.getCouponAmount().compareTo(BigDecimal.ZERO) == 0));
 		Member member = order.getMember();
 		orderPayment.setSn(snDao.generate(Sn.Type.orderPayment));
 		orderPayment.setCountry(member.getCountry());
 		orderPayment.setOrder(order);
 		orderPaymentDao.persist(orderPayment);
 		if (member != null) {
-			String notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 电子币账户消费" + orderPayment.getAmount();
+			String notes = "用户编号[" + member.getUsercode() + "] 订单编号["
+					+ order.getSn() + "] 电子币账户消费" + orderPayment.getAmount();
 			if (orderPayment.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-				fiBankbookJournalService.recharge(member.getUsercode(), orderPayment.getAmount(), null, 
-						FiBankbookJournal.Type.balance, FiBankbookJournal.DealType.takeout, FiBankbookJournal.MoneyType.orderAudit, notes);
+				fiBankbookJournalService.recharge(member.getUsercode(),
+						orderPayment.getAmount(), null,
+						FiBankbookJournal.Type.balance,
+						FiBankbookJournal.DealType.takeout,
+						FiBankbookJournal.MoneyType.orderAudit, notes);
 			}
-			notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 购物券账户消费" + orderPayment.getCouponAmount();
+			notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn()
+					+ "] 购物券账户消费" + orderPayment.getCouponAmount();
 			if (orderPayment.getCouponAmount().compareTo(BigDecimal.ZERO) > 0) {
-				fiBankbookJournalService.recharge(member.getUsercode(), orderPayment.getCouponAmount(), null, 
-						FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.takeout, FiBankbookJournal.MoneyType.orderAudit, notes);
+				fiBankbookJournalService.recharge(member.getUsercode(),
+						orderPayment.getCouponAmount(), null,
+						FiBankbookJournal.Type.coupon,
+						FiBankbookJournal.DealType.takeout,
+						FiBankbookJournal.MoneyType.orderAudit, notes);
 			}
 
 		}
 		Setting setting = SystemUtils.getSetting();
-		if (Setting.StockAllocationTime.payment.equals(setting.getStockAllocationTime())) {
+		if (Setting.StockAllocationTime.payment.equals(setting
+				.getStockAllocationTime())) {
 			allocateStock(order);
 		}
-		order.setAmountPaid(order.getAmountPaid().add(orderPayment.getEffectiveAmount()));
-		order.setCouponAmountPaid(order.getCouponAmountPaid().add(orderPayment.getCouponAmount()));
+		order.setAmountPaid(order.getAmountPaid().add(
+				orderPayment.getEffectiveAmount()));
+		order.setCouponAmountPaid(order.getCouponAmountPaid().add(
+				orderPayment.getCouponAmount()));
 		order.setFee(order.getFee().add(orderPayment.getFee()));
-		if (!order.hasExpired() && Order.Status.pendingPayment.equals(order.getStatus()) && (order.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0 && order.getCouponAmountPayable().compareTo(BigDecimal.ZERO) <= 0)) {
+		if (!order.hasExpired()
+				&& Order.Status.pendingPayment.equals(order.getStatus())
+				&& (order.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0 && order
+						.getCouponAmountPayable().compareTo(BigDecimal.ZERO) <= 0)) {
 			order.setStatus(Order.Status.pendingReview);
 			order.setExpire(null);
 		}
+		//消费总数
+		member.setAmount(member.getAmount().add(orderPayment.getAmount()));
 
 		OrderLog orderLog = new OrderLog();
 		orderLog.setType(OrderLog.Type.payment);
@@ -1113,11 +1226,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 		mailService.sendPaymentOrderMail(order);
 		smsService.sendPaymentOrderSms(order);
-		
+
 	}
-	
+
 	@Transactional(rollbackFor = Exception.class)
-	public void refunds(Order order, OrderRefunds orderRefunds) throws Exception {
+	public void refunds(Order order, OrderRefunds orderRefunds)
+			throws Exception {
 		Assert.notNull(order);
 		Assert.isTrue(!order.isNew());
 		Assert.state(order.getRefundableAmount().compareTo(BigDecimal.ZERO) > 0);
@@ -1125,9 +1239,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		Assert.isTrue(orderRefunds.isNew());
 		Assert.notNull(orderRefunds.getAmount());
 		Assert.notNull(orderRefunds.getCouponAmount());
-		Assert.state((orderRefunds.getAmount().compareTo(BigDecimal.ZERO) > 0 && orderRefunds.getAmount().compareTo(order.getRefundableAmount()) <= 0)
-				|| (orderRefunds.getCouponAmount().compareTo(BigDecimal.ZERO) > 0 && orderRefunds.getCouponAmount().compareTo(order.getRefundableCouponAmount()) <= 0));
-		
+		Assert.state((orderRefunds.getAmount().compareTo(BigDecimal.ZERO) > 0 && orderRefunds
+				.getAmount().compareTo(order.getRefundableAmount()) <= 0)
+				|| (orderRefunds.getCouponAmount().compareTo(BigDecimal.ZERO) > 0 && orderRefunds
+						.getCouponAmount().compareTo(
+								order.getRefundableCouponAmount()) <= 0));
+
 		Member member = order.getMember();
 		orderRefunds.setSn(snDao.generate(Sn.Type.orderRefunds));
 		orderRefunds.setOrder(order);
@@ -1135,24 +1252,38 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		orderRefundsDao.persist(orderRefunds);
 
 		if (member != null) {
-//			memberService.addBalance(order.getMember(), orderRefunds.getAmount(), DepositLog.Type.orderRefunds, null);
-			String notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 电子币账户退款" + orderRefunds.getAmount();
+			// memberService.addBalance(order.getMember(),
+			// orderRefunds.getAmount(), DepositLog.Type.orderRefunds, null);
+			String notes = "用户编号[" + member.getUsercode() + "] 订单编号["
+					+ order.getSn() + "] 电子币账户退款" + orderRefunds.getAmount();
 			if (orderRefunds.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-				fiBankbookJournalService.recharge(member.getUsercode(), orderRefunds.getAmount(), null, 
-						FiBankbookJournal.Type.balance, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.balanceRefund, notes);
+				fiBankbookJournalService.recharge(member.getUsercode(),
+						orderRefunds.getAmount(), null,
+						FiBankbookJournal.Type.balance,
+						FiBankbookJournal.DealType.deposit,
+						FiBankbookJournal.MoneyType.balanceRefund, notes);
 			}
 			if (orderRefunds.getCouponAmount().compareTo(BigDecimal.ZERO) > 0) {
-				notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 购物券账户退款" + orderRefunds.getCouponAmount();
-				fiBankbookJournalService.recharge(member.getUsercode(), orderRefunds.getCouponAmount(), null, 
-						FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.balanceRefund, notes);
+				notes = "用户编号[" + member.getUsercode() + "] 订单编号["
+						+ order.getSn() + "] 购物券账户退款"
+						+ orderRefunds.getCouponAmount();
+				fiBankbookJournalService.recharge(member.getUsercode(),
+						orderRefunds.getCouponAmount(), null,
+						FiBankbookJournal.Type.coupon,
+						FiBankbookJournal.DealType.deposit,
+						FiBankbookJournal.MoneyType.balanceRefund, notes);
 			}
 		}
-		
-		order.setAmountPaid(order.getAmountPaid().subtract(orderRefunds.getAmount()));
-		order.setCouponAmountPaid(order.getCouponAmountPaid().subtract(orderRefunds.getCouponAmount()));
-		order.setRefundAmount(order.getRefundAmount().add(orderRefunds.getAmount()));
-		order.setCouponRefundAmount(order.getCouponRefundAmount().add(orderRefunds.getCouponAmount()));
-		
+
+		order.setAmountPaid(order.getAmountPaid().subtract(
+				orderRefunds.getAmount()));
+		order.setCouponAmountPaid(order.getCouponAmountPaid().subtract(
+				orderRefunds.getCouponAmount()));
+		order.setRefundAmount(order.getRefundAmount().add(
+				orderRefunds.getAmount()));
+		order.setCouponRefundAmount(order.getCouponRefundAmount().add(
+				orderRefunds.getCouponAmount()));
+
 		OrderLog orderLog = new OrderLog();
 		orderLog.setType(OrderLog.Type.refunds);
 		orderLog.setOrder(order);
@@ -1176,29 +1307,37 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		orderShippingDao.persist(orderShipping);
 
 		Setting setting = SystemUtils.getSetting();
-		if (Setting.StockAllocationTime.ship.equals(setting.getStockAllocationTime())) {
+		if (Setting.StockAllocationTime.ship.equals(setting
+				.getStockAllocationTime())) {
 			allocateStock(order);
 		}
 
-		for (OrderShippingItem orderShippingItem : orderShipping.getOrderShippingItems()) {
+		for (OrderShippingItem orderShippingItem : orderShipping
+				.getOrderShippingItems()) {
 			OrderItem orderItem = order.getOrderItem(orderShippingItem.getSn());
-			if (orderItem == null || orderShippingItem.getQuantity() > orderItem.getShippableQuantity()) {
+			if (orderItem == null
+					|| orderShippingItem.getQuantity() > orderItem
+							.getShippableQuantity()) {
 				throw new IllegalArgumentException();
 			}
-			orderItem.setShippedQuantity(orderItem.getShippedQuantity() + orderShippingItem.getQuantity());
+			orderItem.setShippedQuantity(orderItem.getShippedQuantity()
+					+ orderShippingItem.getQuantity());
 			Sku sku = orderShippingItem.getSku();
 			if (sku != null) {
 				if (orderShippingItem.getQuantity() > sku.getStock()) {
 					throw new IllegalArgumentException();
 				}
-				skuService.addStock(sku, -orderShippingItem.getQuantity(), StockLog.Type.stockOut, null);
+				skuService.addStock(sku, -orderShippingItem.getQuantity(),
+						StockLog.Type.stockOut, null);
 				if (BooleanUtils.isTrue(order.getIsAllocatedStock())) {
-					skuService.addAllocatedStock(sku, -orderShippingItem.getQuantity());
+					skuService.addAllocatedStock(sku,
+							-orderShippingItem.getQuantity());
 				}
 			}
 		}
 
-		order.setShippedQuantity(order.getShippedQuantity() + orderShipping.getQuantity());
+		order.setShippedQuantity(order.getShippedQuantity()
+				+ orderShipping.getQuantity());
 		if (order.getShippedQuantity() >= order.getQuantity()) {
 			order.setStatus(Order.Status.shipped);
 			order.setIsAllocatedStock(false);
@@ -1226,15 +1365,20 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		orderReturns.setCountry(order.getCountry());
 		orderReturnsDao.persist(orderReturns);
 
-		for (OrderReturnsItem orderReturnsItem : orderReturns.getOrderReturnsItems()) {
+		for (OrderReturnsItem orderReturnsItem : orderReturns
+				.getOrderReturnsItems()) {
 			OrderItem orderItem = order.getOrderItem(orderReturnsItem.getSn());
-			if (orderItem == null || orderReturnsItem.getQuantity() > orderItem.getReturnableQuantity()) {
+			if (orderItem == null
+					|| orderReturnsItem.getQuantity() > orderItem
+							.getReturnableQuantity()) {
 				throw new IllegalArgumentException();
 			}
-			orderItem.setReturnedQuantity(orderItem.getReturnedQuantity() + orderReturnsItem.getQuantity());
+			orderItem.setReturnedQuantity(orderItem.getReturnedQuantity()
+					+ orderReturnsItem.getQuantity());
 		}
 
-		order.setReturnedQuantity(order.getReturnedQuantity() + orderReturns.getQuantity());
+		order.setReturnedQuantity(order.getReturnedQuantity()
+				+ orderReturns.getQuantity());
 
 		OrderLog orderLog = new OrderLog();
 		orderLog.setType(OrderLog.Type.returns);
@@ -1248,7 +1392,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	public void receive(Order order) {
 		Assert.notNull(order);
 		Assert.isTrue(!order.isNew());
-		Assert.state(!order.hasExpired() && Order.Status.shipped.equals(order.getStatus()));
+		Assert.state(!order.hasExpired()
+				&& Order.Status.shipped.equals(order.getStatus()));
 
 		order.setStatus(Order.Status.received);
 
@@ -1264,25 +1409,31 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	public void complete(Order order) {
 		Assert.notNull(order);
 		Assert.isTrue(!order.isNew());
-		Assert.state(!order.hasExpired() && Order.Status.received.equals(order.getStatus()));
+		Assert.state(!order.hasExpired()
+				&& Order.Status.received.equals(order.getStatus()));
 
 		Member member = order.getMember();
 		if (order.getRewardPoint() > 0) {
-			memberService.addPoint(member, order.getRewardPoint(), PointLog.Type.reward, null);
+			memberService.addPoint(member, order.getRewardPoint(),
+					PointLog.Type.reward, null);
 		}
 		if (CollectionUtils.isNotEmpty(order.getCoupons())) {
 			for (Coupon coupon : order.getCoupons()) {
 				couponCodeService.generate(coupon, member);
 			}
 		}
-		if ((order.getAmountPaid().compareTo(BigDecimal.ZERO) > 0 && order.getCouponAmountPaid().compareTo(BigDecimal.ZERO) >= 0)
-			|| (order.getAmountPaid().compareTo(BigDecimal.ZERO) >= 0 && order.getCouponAmountPaid().compareTo(BigDecimal.ZERO) > 0)) {
-			memberService.addAmount(member, order.getAmountPaid(), order.getCouponAmountPaid());
+		if ((order.getAmountPaid().compareTo(BigDecimal.ZERO) > 0 && order
+				.getCouponAmountPaid().compareTo(BigDecimal.ZERO) >= 0)
+				|| (order.getAmountPaid().compareTo(BigDecimal.ZERO) >= 0 && order
+						.getCouponAmountPaid().compareTo(BigDecimal.ZERO) > 0)) {
+			memberService.addAmount(member, order.getAmountPaid(),
+					order.getCouponAmountPaid());
 		}
 		for (OrderItem orderItem : order.getOrderItems()) {
 			Sku sku = orderItem.getSku();
 			if (sku != null && sku.getProduct() != null) {
-				productService.addSales(sku.getProduct(), orderItem.getQuantity());
+				productService.addSales(sku.getProduct(),
+						orderItem.getQuantity());
 			}
 		}
 
@@ -1301,7 +1452,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	public void fail(Order order) {
 		Assert.notNull(order);
 		Assert.isTrue(!order.isNew());
-		Assert.state(!order.hasExpired() && (Order.Status.pendingShipment.equals(order.getStatus()) || Order.Status.shipped.equals(order.getStatus()) || Order.Status.received.equals(order.getStatus())));
+		Assert.state(!order.hasExpired()
+				&& (Order.Status.pendingShipment.equals(order.getStatus())
+						|| Order.Status.shipped.equals(order.getStatus()) || Order.Status.received
+							.equals(order.getStatus())));
 
 		order.setStatus(Order.Status.failed);
 
@@ -1317,22 +1471,23 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		mailService.sendFailOrderMail(order);
 		smsService.sendFailOrderSms(order);
 	}
-	
+
 	/**
-	 * 发货推单
-	 * 状态改为“待发货”
+	 * 发货推单 状态改为“待发货”
+	 * 
 	 * @param order
 	 *            订单
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public String shippingReview(Long... ids) throws Exception{
+	public String shippingReview(Long... ids) throws Exception {
 		// 获取当前用户
 		Admin currentUser = userService.getCurrent(Admin.class);
 		if (null == currentUser) {
-			throw new Exception(SpringUtils.getMessage("admin.common.session.lost"));
+			throw new Exception(
+					SpringUtils.getMessage("admin.common.session.lost"));
 		}
 		if (ids != null) {
-			// 待审核状态  状态改为“待发货”，->推单到直销
+			// 待审核状态 状态改为“待发货”，->推单到直销
 			for (Long id : ids) {
 				Order order = find(id);
 				if (null == order || order.isNew() || !acquireLock(order)) {
@@ -1343,24 +1498,34 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		}
 		return "";
 	}
-	
+
 	/**
-	 * 直销发货接口回调
-	 * 1：减少实际库存
-	 * 2：全部发货完成状态改为“已发货”
-	 * @param sn 订单编号
-	 * @param shippingMethod 配送方式
-	 * @param deliveryCorp 物流名称
-	 * @param deliveryCorpCode 物流代码
-	 * @param deliveryCorpUrl 物流地址
-	 * @param freight 运费
-	 * @param trackingNo 运单号
-	 * @param items 订单的商品编号和发货数量集合
+	 * 直销发货接口回调 1：减少实际库存 2：全部发货完成状态改为“已发货”
+	 * 
+	 * @param sn
+	 *            订单编号
+	 * @param shippingMethod
+	 *            配送方式
+	 * @param deliveryCorp
+	 *            物流名称
+	 * @param deliveryCorpCode
+	 *            物流代码
+	 * @param deliveryCorpUrl
+	 *            物流地址
+	 * @param freight
+	 *            运费
+	 * @param trackingNo
+	 *            运单号
+	 * @param items
+	 *            订单的商品编号和发货数量集合
 	 * @return
 	 * @throws Exception
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public String shippedReview(String sn, String shippingMethod, String deliveryCorp, String deliveryCorpCode, String deliveryCorpUrl, BigDecimal freight, String trackingNo, Map<String, Integer> items) throws Exception{
+	public String shippedReview(String sn, String shippingMethod,
+			String deliveryCorp, String deliveryCorpCode,
+			String deliveryCorpUrl, BigDecimal freight, String trackingNo,
+			Map<String, Integer> items) throws Exception {
 		// 增加回调日志
 		String msg = "";
 		try {
@@ -1383,7 +1548,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		orderInterfaceLog.setSn(sn);
 		orderInterfaceLog.setCode("0000");
 		orderInterfaceLogDao.persist(orderInterfaceLog);
-		
+
 		Order order = findBySn(sn);
 		if (null == order || order.isNew()) {
 			return "";
@@ -1404,22 +1569,23 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		orderShipping.setDeliveryCorpUrl(deliveryCorpUrl);
 		orderShipping.setDeliveryCorpCode(deliveryCorpCode);
 		orderShipping.setArea(order.getArea());
-		
+
 		orderShipping.setTrackingNo(trackingNo);
 		orderShipping.setFreight(freight);
 		orderShipping.setConsignee(order.getConsignee());
 		orderShipping.setAddress(order.getAddress());
 		orderShipping.setZipCode(order.getZipCode());
 		orderShipping.setPhone(order.getPhone());
-		
+
 		orderShipping.setSn(snDao.generate(Sn.Type.orderShipping));
 		orderShipping.setOrder(order);
 		orderShipping.setCountry(order.getCountry());
-		
+
 		// 构建发货单子项
 		List<OrderShippingItem> orderShippingItems = new ArrayList<OrderShippingItem>();
 		if (null != items && !items.isEmpty()) {
-			Iterator<Entry<String, Integer>> iterator = items.entrySet().iterator();
+			Iterator<Entry<String, Integer>> iterator = items.entrySet()
+					.iterator();
 			while (iterator.hasNext()) {
 				Entry<String, Integer> entry = iterator.next();
 				String itemSn = entry.getKey();
@@ -1430,22 +1596,23 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderShippingItem.setQuantity(quantity);
 				// 设置编号
 				orderShippingItem.setSn(orderItem.getSn());
-				
+
 				orderShippingItem.setName(orderItem.getName());
 				orderShippingItem.setIsDelivery(orderItem.getIsDelivery());
 				Sku sku = orderItem.getSku();
 				if (sku != null && orderShippingItem.getQuantity() > sku.getStock()) {
 					continue;
 				}
-				skuService.addStock(sku, -orderShippingItem.getQuantity(), StockLog.Type.stockOut, null);
+				skuService.addStock(sku, -orderShippingItem.getQuantity(),StockLog.Type.stockOut, null);
 				if (BooleanUtils.isTrue(order.getIsAllocatedStock())) {
-					skuService.addAllocatedStock(sku, -orderShippingItem.getQuantity());
+					skuService.addAllocatedStock(sku,-orderShippingItem.getQuantity());
 				}
 				orderShippingItem.setSku(sku);
 				orderShippingItem.setOrderShipping(orderShipping);
-				orderShippingItem.setSpecifications(orderItem.getSpecifications());
+				orderShippingItem.setSpecifications(orderItem
+						.getSpecifications());
 				// 设置 订单的已发货数量=订单已发货数量+发货项的数量
-				orderItem.setShippedQuantity(orderItem.getShippedQuantity() + quantity);
+				orderItem.setShippedQuantity(orderItem.getShippedQuantity()+ quantity);
 				orderShippingItems.add(orderShippingItem);
 			}
 		}
@@ -1453,10 +1620,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		orderShippingDao.persist(orderShipping);
 
 		Setting setting = SystemUtils.getSetting();
-		if (Setting.StockAllocationTime.ship.equals(setting.getStockAllocationTime())) {
+		if (Setting.StockAllocationTime.ship.equals(setting
+				.getStockAllocationTime())) {
 			allocateStock(order);
 		}
-		
+
 		order.setShippedQuantity(order.getShippedQuantity() + orderShipping.getQuantity());
 		if (order.getShippedQuantity() >= order.getQuantity()) {
 			order.setStatus(Order.Status.shipped);
@@ -1472,7 +1640,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		smsService.sendShippingOrderSms(order);
 		return "";
 	}
-	
+
 	/**
 	 * 退单退款
 	 * 
@@ -1480,11 +1648,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	 *            订单
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public String returnsReview(Long... ids) throws Exception{
+	public String returnsReview(Long... ids) throws Exception {
 		// 获取当前用户
 		Admin currentUser = userService.getCurrent(Admin.class);
 		if (null == currentUser) {
-			throw new Exception(SpringUtils.getMessage("admin.common.session.lost"));
+			throw new Exception(
+					SpringUtils.getMessage("admin.common.session.lost"));
 		}
 		if (ids != null) {
 			for (Long id : ids) {
@@ -1493,15 +1662,20 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 					continue;
 				}
 				// 状态是等待付款、等待审核、等待发货、已发货、已收货可以退货退款
-				if (Order.Status.pendingPayment != order.getStatus() && Order.Status.pendingReview != order.getStatus()
-						&& Order.Status.pendingShipment != order.getStatus() && Order.Status.shipped != order.getStatus()
+				if (Order.Status.pendingPayment != order.getStatus()
+						&& Order.Status.pendingReview != order.getStatus()
+						&& Order.Status.pendingShipment != order.getStatus()
+						&& Order.Status.shipped != order.getStatus()
 						&& Order.Status.received != order.getStatus()) {
 					continue;
 				}
 				// 修改状态为“已失败”，已分配库存和金额回退,减去的库存回退
 				// 退款 退款金额和电子币
-				if ((order.getAmountPaid().compareTo(BigDecimal.ZERO) > 0 && order.getCouponAmountPaid().compareTo(BigDecimal.ZERO) >= 0)
-					|| (order.getAmountPaid().compareTo(BigDecimal.ZERO) >= 0 && order.getCouponAmountPaid().compareTo(BigDecimal.ZERO) > 0)) {
+				if ((order.getAmountPaid().compareTo(BigDecimal.ZERO) > 0 && order
+						.getCouponAmountPaid().compareTo(BigDecimal.ZERO) >= 0)
+						|| (order.getAmountPaid().compareTo(BigDecimal.ZERO) >= 0 && order
+								.getCouponAmountPaid().compareTo(
+										BigDecimal.ZERO) > 0)) {
 					OrderRefunds orderRefunds = new OrderRefunds();
 					Member member = order.getMember();
 					orderRefunds.setSn(snDao.generate(Sn.Type.orderRefunds));
@@ -1513,30 +1687,49 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 					orderRefunds.setMethod(OrderRefunds.Method.deposit);
 					orderRefunds.setPaymentMethod(order.getPaymentMethod());
 					orderRefundsDao.persist(orderRefunds);
-					
+
 					if (member != null) {
-						String notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 电子币账户退款" + orderRefunds.getAmount();
+						String notes = "用户编号[" + member.getUsercode()
+								+ "] 订单编号[" + order.getSn() + "] 电子币账户退款"
+								+ orderRefunds.getAmount();
 						if (orderRefunds.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-							fiBankbookJournalService.recharge(member.getUsercode(), orderRefunds.getAmount(), null, 
-									FiBankbookJournal.Type.balance, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.balanceRefund, notes);
+							fiBankbookJournalService.recharge(
+									member.getUsercode(),
+									orderRefunds.getAmount(), null,
+									FiBankbookJournal.Type.balance,
+									FiBankbookJournal.DealType.deposit,
+									FiBankbookJournal.MoneyType.balanceRefund,
+									notes);
 						}
-						if (orderRefunds.getCouponAmount().compareTo(BigDecimal.ZERO) > 0) {
-							notes = "用户编号[" + member.getUsercode() + "] 订单编号[" + order.getSn() + "] 购物券账户退款" + orderRefunds.getCouponAmount();
-							fiBankbookJournalService.recharge(member.getUsercode(), orderRefunds.getCouponAmount(), null, 
-									FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.balanceRefund, notes);
+						if (orderRefunds.getCouponAmount().compareTo(
+								BigDecimal.ZERO) > 0) {
+							notes = "用户编号[" + member.getUsercode() + "] 订单编号["
+									+ order.getSn() + "] 购物券账户退款"
+									+ orderRefunds.getCouponAmount();
+							fiBankbookJournalService.recharge(
+									member.getUsercode(),
+									orderRefunds.getCouponAmount(), null,
+									FiBankbookJournal.Type.coupon,
+									FiBankbookJournal.DealType.deposit,
+									FiBankbookJournal.MoneyType.balanceRefund,
+									notes);
 						}
 					}
-					
-					order.setAmountPaid(order.getAmountPaid().subtract(orderRefunds.getAmount()));
-					order.setCouponAmountPaid(order.getCouponAmountPaid().subtract(orderRefunds.getCouponAmount()));
-					order.setRefundAmount(order.getRefundAmount().add(orderRefunds.getAmount()));
-					order.setCouponRefundAmount(order.getCouponRefundAmount().add(orderRefunds.getCouponAmount()));
-					
+
+					order.setAmountPaid(order.getAmountPaid().subtract(
+							orderRefunds.getAmount()));
+					order.setCouponAmountPaid(order.getCouponAmountPaid()
+							.subtract(orderRefunds.getCouponAmount()));
+					order.setRefundAmount(order.getRefundAmount().add(
+							orderRefunds.getAmount()));
+					order.setCouponRefundAmount(order.getCouponRefundAmount()
+							.add(orderRefunds.getCouponAmount()));
+
 					OrderLog orderLog = new OrderLog();
 					orderLog.setType(OrderLog.Type.refunds);
 					orderLog.setOrder(order);
 					orderLogDao.persist(orderLog);
-					
+
 					mailService.sendRefundsOrderMail(order);
 					smsService.sendRefundsOrderSms(order);
 				}
@@ -1552,11 +1745,15 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 							OrderReturnsItem orderReturnsItem = new OrderReturnsItem();
 							orderReturnsItem.setName(orderItem.getName());
 							orderReturnsItem.setOrderReturns(orderReturns);
-							orderReturnsItem.setSpecifications(orderItem.getSpecifications());
-							orderReturnsItem.setQuantity(orderItem.getReturnableQuantity());
+							orderReturnsItem.setSpecifications(orderItem
+									.getSpecifications());
+							orderReturnsItem.setQuantity(orderItem
+									.getReturnableQuantity());
 							orderReturnsItem.setSn(orderItem.getSn());
 							orderReturnsItems.add(orderReturnsItem);
-							totalWeight += NumberUtil.getInt(orderItem.getWeight()) * orderReturnsItem.getQuantity();
+							totalWeight += NumberUtil.getInt(orderItem
+									.getWeight())
+									* orderReturnsItem.getQuantity();
 						}
 					}
 					orderReturns.setOrderReturnsItems(orderReturnsItems);
@@ -1573,40 +1770,49 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 					orderReturns.setOrder(order);
 					orderReturns.setCountry(order.getCountry());
 					orderReturns.setMemo("退单退款");
-					orderReturns.setFreight(shippingMethodService.calculateFreight(shippingMethod, order.getArea(), totalWeight));
+					orderReturns.setFreight(shippingMethodService
+							.calculateFreight(shippingMethod, order.getArea(),
+									totalWeight));
 					orderReturns.setPhone(order.getPhone());
 					orderReturns.setShipper(order.getConsignee());
 					orderReturns.setTrackingNo(null);
 					orderReturns.setZipCode(order.getZipCode());
 					orderReturnsDao.persist(orderReturns);
-					
-					for (OrderReturnsItem orderReturnsItem : orderReturns.getOrderReturnsItems()) {
-						OrderItem orderItem = order.getOrderItem(orderReturnsItem.getSn());
-						if (orderItem == null || orderReturnsItem.getQuantity() > orderItem.getReturnableQuantity()) {
+
+					for (OrderReturnsItem orderReturnsItem : orderReturns
+							.getOrderReturnsItems()) {
+						OrderItem orderItem = order
+								.getOrderItem(orderReturnsItem.getSn());
+						if (orderItem == null
+								|| orderReturnsItem.getQuantity() > orderItem
+										.getReturnableQuantity()) {
 							throw new IllegalArgumentException();
 						}
-						orderItem.setReturnedQuantity(orderItem.getReturnedQuantity() + orderReturnsItem.getQuantity());
+						orderItem.setReturnedQuantity(orderItem
+								.getReturnedQuantity()
+								+ orderReturnsItem.getQuantity());
 					}
-					order.setReturnedQuantity(order.getReturnedQuantity() + orderReturns.getQuantity());
+					order.setReturnedQuantity(order.getReturnedQuantity()
+							+ orderReturns.getQuantity());
 				}
 				order.setStatus(Order.Status.failed);
-				
+
 				undoUseCouponCode(order);
 				undoExchangePoint(order);
 				releaseAllocatedStock(order);
-				
+
 				OrderLog orderLog = new OrderLog();
 				orderLog.setType(OrderLog.Type.fail);
 				orderLog.setOrder(order);
 				orderLogDao.persist(orderLog);
-				
+
 				mailService.sendFailOrderMail(order);
 				smsService.sendFailOrderSms(order);
 			}
 		}
 		return "";
 	}
-	
+
 	/**
 	 * 一键完成
 	 * 
@@ -1614,11 +1820,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	 *            订单
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public String completeReview(Long... ids) throws Exception{
+	public String completeReview(Long... ids) throws Exception {
 		// 获取当前用户
 		Admin currentUser = userService.getCurrent(Admin.class);
 		if (null == currentUser) {
-			throw new Exception(SpringUtils.getMessage("admin.common.session.lost"));
+			throw new Exception(
+					SpringUtils.getMessage("admin.common.session.lost"));
 		}
 		if (ids != null) {
 			for (Long id : ids) {
@@ -1630,27 +1837,34 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 					continue;
 				}
 				// 状态是已收货、已发货可以完成
-				if (Order.Status.shipped != order.getStatus() && Order.Status.received != order.getStatus()) {
+				if (Order.Status.shipped != order.getStatus()
+						&& Order.Status.received != order.getStatus()) {
 					continue;
 				}
 
 				Member member = order.getMember();
 				if (order.getRewardPoint() > 0) {
-					memberService.addPoint(member, order.getRewardPoint(), PointLog.Type.reward, null);
+					memberService.addPoint(member, order.getRewardPoint(),
+							PointLog.Type.reward, null);
 				}
 				if (CollectionUtils.isNotEmpty(order.getCoupons())) {
 					for (Coupon coupon : order.getCoupons()) {
 						couponCodeService.generate(coupon, member);
 					}
 				}
-				if ((order.getAmountPaid().compareTo(BigDecimal.ZERO) > 0 && order.getCouponAmountPaid().compareTo(BigDecimal.ZERO) >= 0)
-					|| (order.getAmountPaid().compareTo(BigDecimal.ZERO) >= 0 && order.getCouponAmountPaid().compareTo(BigDecimal.ZERO) > 0)) {
-					memberService.addAmount(member, order.getAmountPaid(), order.getCouponAmountPaid());
+				if ((order.getAmountPaid().compareTo(BigDecimal.ZERO) > 0 && order
+						.getCouponAmountPaid().compareTo(BigDecimal.ZERO) >= 0)
+						|| (order.getAmountPaid().compareTo(BigDecimal.ZERO) >= 0 && order
+								.getCouponAmountPaid().compareTo(
+										BigDecimal.ZERO) > 0)) {
+					memberService.addAmount(member, order.getAmountPaid(),
+							order.getCouponAmountPaid());
 				}
 				for (OrderItem orderItem : order.getOrderItems()) {
 					Sku sku = orderItem.getSku();
 					if (sku != null && sku.getProduct() != null) {
-						productService.addSales(sku.getProduct(), orderItem.getQuantity());
+						productService.addSales(sku.getProduct(),
+								orderItem.getQuantity());
 					}
 				}
 
@@ -1688,7 +1902,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	 *            订单
 	 */
 	private void useCouponCode(Order order) {
-		if (order == null || BooleanUtils.isNotFalse(order.getIsUseCouponCode()) || order.getCouponCode() == null) {
+		if (order == null
+				|| BooleanUtils.isNotFalse(order.getIsUseCouponCode())
+				|| order.getCouponCode() == null) {
 			return;
 		}
 		CouponCode couponCode = order.getCouponCode();
@@ -1704,7 +1920,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	 *            订单
 	 */
 	private void undoUseCouponCode(Order order) {
-		if (order == null || BooleanUtils.isNotTrue(order.getIsUseCouponCode()) || order.getCouponCode() == null) {
+		if (order == null || BooleanUtils.isNotTrue(order.getIsUseCouponCode())
+				|| order.getCouponCode() == null) {
 			return;
 		}
 		CouponCode couponCode = order.getCouponCode();
@@ -1721,10 +1938,13 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	 *            订单
 	 */
 	private void exchangePoint(Order order) {
-		if (order == null || BooleanUtils.isNotFalse(order.getIsExchangePoint()) || order.getExchangePoint() <= 0 || order.getMember() == null) {
+		if (order == null
+				|| BooleanUtils.isNotFalse(order.getIsExchangePoint())
+				|| order.getExchangePoint() <= 0 || order.getMember() == null) {
 			return;
 		}
-		memberService.addPoint(order.getMember(), -order.getExchangePoint(), PointLog.Type.exchange, null);
+		memberService.addPoint(order.getMember(), -order.getExchangePoint(),
+				PointLog.Type.exchange, null);
 		order.setIsExchangePoint(true);
 	}
 
@@ -1735,10 +1955,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	 *            订单
 	 */
 	private void undoExchangePoint(Order order) {
-		if (order == null || BooleanUtils.isNotTrue(order.getIsExchangePoint()) || order.getExchangePoint() <= 0 || order.getMember() == null) {
+		if (order == null || BooleanUtils.isNotTrue(order.getIsExchangePoint())
+				|| order.getExchangePoint() <= 0 || order.getMember() == null) {
 			return;
 		}
-		memberService.addPoint(order.getMember(), order.getExchangePoint(), PointLog.Type.undoExchange, null);
+		memberService.addPoint(order.getMember(), order.getExchangePoint(),
+				PointLog.Type.undoExchange, null);
 		order.setIsExchangePoint(false);
 	}
 
@@ -1749,14 +1971,16 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	 *            订单
 	 */
 	private void allocateStock(Order order) {
-		if (order == null || BooleanUtils.isNotFalse(order.getIsAllocatedStock())) {
+		if (order == null
+				|| BooleanUtils.isNotFalse(order.getIsAllocatedStock())) {
 			return;
 		}
 		if (order.getOrderItems() != null) {
 			for (OrderItem orderItem : order.getOrderItems()) {
 				Sku sku = orderItem.getSku();
 				if (sku != null) {
-					skuService.addAllocatedStock(sku, orderItem.getQuantity() - orderItem.getShippedQuantity());
+					skuService.addAllocatedStock(sku, orderItem.getQuantity()
+							- orderItem.getShippedQuantity());
 				}
 			}
 		}
@@ -1770,14 +1994,17 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	 *            订单
 	 */
 	private void releaseAllocatedStock(Order order) {
-		if (order == null || BooleanUtils.isNotTrue(order.getIsAllocatedStock())) {
+		if (order == null
+				|| BooleanUtils.isNotTrue(order.getIsAllocatedStock())) {
 			return;
 		}
 		if (order.getOrderItems() != null) {
 			for (OrderItem orderItem : order.getOrderItems()) {
 				Sku sku = orderItem.getSku();
 				if (sku != null) {
-					skuService.addAllocatedStock(sku, -(orderItem.getQuantity() - orderItem.getShippedQuantity()));
+					skuService.addAllocatedStock(sku,
+							-(orderItem.getQuantity() - orderItem
+									.getShippedQuantity()));
 				}
 			}
 		}
