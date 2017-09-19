@@ -62,7 +62,6 @@ import net.shopxx.service.SkuService;
 import net.shopxx.service.SpecificationItemService;
 import net.shopxx.service.SpecificationService;
 import net.shopxx.util.ExcelUtils;
-import net.shopxx.util.SpringUtils;
 
 /**
  * Controller - 商品
@@ -94,8 +93,6 @@ public class ProductController extends BaseController {
 	private SpecificationItemService specificationItemService;
 	@Inject
 	private AttributeService attributeService;
-	@Inject
-	private SpecificationService specificationService;
 	
 	@Inject
 	private CountryService countryService;
@@ -356,9 +353,6 @@ public class ProductController extends BaseController {
 	@GetMapping("/download")
     public ModelAndView download (ModelMap model,HttpServletResponse response) {
         String filename = "product" + DateFormatUtils.format(new Date(), "yyyyMM");
-        String countryName = SpringUtils.getMessage("Brand.country");
-        model.addAttribute("countryName", countryName);
-        model.addAttribute("productSn", SpringUtils.getMessage("Product.sn"));
         List<Product> products = productService.findAll();
         List<ProductRequest> res = new ArrayList<>();
         for (Product product : products) {
