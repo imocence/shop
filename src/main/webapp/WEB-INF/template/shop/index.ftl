@@ -4,6 +4,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="renderer" content="webkit">
     <meta name="author" content="SHOP++ Team"/>
     <meta name="copyright" content="SHOP++"/>
 [@seo type = "index"]

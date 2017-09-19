@@ -24,6 +24,7 @@
 	<meta name="author" content="SHOP++ Team" />
 	<meta name="copyright" content="SHOP++" />
 [/#if]
+    <link href="${base}/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
 <link href="${base}/resources/shop/css/animate.css" rel="stylesheet" type="text/css" />
 <link href="${base}/resources/shop/css/common.css" rel="stylesheet" type="text/css" />
 <link href="${base}/resources/shop/css/product.css" rel="stylesheet" type="text/css" />

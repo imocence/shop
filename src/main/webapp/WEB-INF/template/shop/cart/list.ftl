@@ -6,6 +6,7 @@
 <title>${message("shop.cart.title")}[#if showPowered] - Powered By SHOP++[/#if]</title>
 <meta name="author" content="SHOP++ Team" />
 <meta name="copyright" content="SHOP++" />
+    <link href="${base}/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
 <link href="${base}/resources/shop/css/animate.css" rel="stylesheet" type="text/css" />
 <link href="${base}/resources/shop/css/common.css" rel="stylesheet" type="text/css" />
 <link href="${base}/resources/shop/css/cart.css" rel="stylesheet" type="text/css" />
