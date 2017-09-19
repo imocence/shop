@@ -44,8 +44,8 @@
 	<setting name="smtpPassword" value="test" />
 	<setting name="smtpSSLEnabled" value="false" />
 	<setting name="smtpFromMail" value="test@shopxx.net" />
-	<setting name="currencySign" value="￥" />
-	<setting name="currencyUnit" value="元" />
+	<setting name="currencySign" value="" /><!-- ￥ -->
+	<setting name="currencyUnit" value="" /><!-- 元 -->
 	<setting name="stockAlertCount" value="5" />
 	<setting name="stockAllocationTime" value="order" />
 	<setting name="defaultPointScale" value="1" />

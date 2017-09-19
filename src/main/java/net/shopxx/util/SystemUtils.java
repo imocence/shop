@@ -148,11 +148,11 @@ public final class SystemUtils {
 		//设置货币
 		Setting setting = SystemUtils.getSetting();
 		if(country.getName().equals("MY")){
-			setting.setCurrencySign("$");
+			setting.setCurrencySign("");
 			setting.setCurrencyUnit("");
-		}else if(country.getName().equals("CN")){
-			setting.setCurrencySign("￥");
-			setting.setCurrencyUnit("元");
+		}else{
+			setting.setCurrencySign("");
+			setting.setCurrencyUnit("");
 		}	
 		cache.put(new Element("setting", setting));
 	}
