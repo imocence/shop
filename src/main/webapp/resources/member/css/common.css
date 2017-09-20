@@ -914,7 +914,26 @@ span.loadingBar {
 .footer .service dd a {
 	color: #888888;
 }
+.flist {
+	width: 250px;
+	display: inline-block;
+	margin-top: 30px;
+}
 
+.ftop {
+	display: inline-block;
+	width: 50px;
+	padding-right: 10px
+}
+
+.fp{
+	font-size: 14px;
+	text-align: left
+}
+
+.fp:hover{
+	color:#fa7700
+}
 .footer .service .qrCode {
 	float: left;
 	padding: 20px 0px 20px 40px;

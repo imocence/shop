@@ -167,8 +167,9 @@
 }
 
 .hotBrand dd img {
-	width: 94px;
-	height: 50px;
+	/*width: 94px;*/
+	/*height: 50px;*/
+	width: 90%;
 }
 
 .hotBrand dd span {
