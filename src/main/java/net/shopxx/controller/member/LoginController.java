@@ -68,6 +68,14 @@ public class LoginController extends BaseController {
 	 */
 	@Value("${url.signature}")
 	private String urlSignature;
+	@Value("${gift.dollar}")
+	private String giftDollar;//赠送美元
+	@Value("${gift.rmb}")
+	private String giftRMB;//赠送人民币
+	@Value("${gift.taiwan}")
+	private String giftTb;//赠送台币
+	@Value("${gift.myr}")
+	private String giftMyr;//赠送马来西亚币
 	@Inject
 	private UserService userService;
 	@Inject
@@ -144,8 +152,16 @@ public class LoginController extends BaseController {
 				memberService.create(member,companyCode,userCode,signature,timestamp,request,null,language);
 				String appointtrue = DigestUtils.md5Hex(timestamp+urlSignature);
 				String uniqueCode = "ZC"+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
+				BigDecimal giftMoney = new BigDecimal("10000");
+				if(companyCode.equals("CN")){
+					giftMoney = new BigDecimal(giftRMB);
+				}else if(companyCode.equals("MY")){
+					giftMoney = new BigDecimal(giftMyr);
+				}else if(companyCode.equals("TW")){
+					giftMoney = new BigDecimal(giftTb);
+				}
 				//添加一条注册赠送记录
-				String success = fiBankbookJournalService.recharge(userCode, new BigDecimal("10000"), uniqueCode, FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.recharge, "用户注册赠送");
+				String success = fiBankbookJournalService.recharge(userCode, giftMoney, uniqueCode, FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.recharge, "用户注册赠送");
 				if(!"success".equals(success)){
 					System.out.println("注册赠送券未成功，提醒手动添加，会员编码为："+userCode);
 				}

@@ -361,7 +361,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 				}	
 				String rankName = "会员";
 				if(type == 1){
-					rankName = "代理商";
+					rankName = "会员";
 				}else if(type == 2){
 					rankName = "服务中心";
 				}else if(type == 3){

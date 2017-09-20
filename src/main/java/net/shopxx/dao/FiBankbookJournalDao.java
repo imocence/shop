@@ -54,4 +54,13 @@ public interface FiBankbookJournalDao extends BaseDao<FiBankbookJournal, Long> {
 	 * @return 交易记录分页
 	 */
 	Page<FiBankbookJournal> findPageByMemberId(Type type, Member currentUser,Pageable pageNumber);
+	/**
+	 * 根据会员和编号模糊查询
+	 * @param member
+	 * 			会员
+	 * @param code
+	 * 			编号
+	 * @return
+	 */
+	FiBankbookJournal findByMemberAndCode(Member member, String code);
 }
