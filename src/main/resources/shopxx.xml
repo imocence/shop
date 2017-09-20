@@ -15,9 +15,9 @@
 	<setting name="mediumProductImageHeight" value="300" />
 	<setting name="thumbnailProductImageWidth" value="170" />
 	<setting name="thumbnailProductImageHeight" value="170" />
-	<setting name="defaultLargeProductImage" value="/globalilife/upload/image/default_large.png" />
-	<setting name="defaultMediumProductImage" value="/globalilife/upload/image/default_medium.png" />
-	<setting name="defaultThumbnailProductImage" value="/globalilife/upload/image/default_thumbnail.png" />
+	<setting name="defaultLargeProductImage" value="/upload/image/default_large.png" />
+	<setting name="defaultMediumProductImage" value="/upload/image/default_medium.png" />
+	<setting name="defaultThumbnailProductImage" value="/upload/image/default_thumbnail.png" />
 	<setting name="watermarkAlpha" value="50" />
 	<setting name="watermarkImage" value="/upload/image/watermark.png" />
 	<setting name="watermarkPosition" value="no" />
