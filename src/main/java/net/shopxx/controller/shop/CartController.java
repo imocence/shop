@@ -164,7 +164,7 @@ public class CartController extends BaseController {
 		data.put("isLowStock", cartItem.getIsLowStock());
 		data.put("quantity", currentCart.getProductQuantity());
 		data.put("effectiveRewardPoint", currentCart.getEffectiveRewardPoint());
-		System.out.println(currentCart.getEffectiveCoupon());
+		//System.out.println(currentCart.getEffectiveCoupon());
 		data.put("effectiveCoupon", SystemUtils.changeCurrency(currentCart.getEffectiveCoupon()));
 		data.put("effectivePrice", SystemUtils.changeCurrency(currentCart.getEffectivePrice()));
 		data.put("giftNames", currentCart.getGiftNames());

@@ -109,7 +109,7 @@ public class HttpClientUtils {
             setGetHead(httpGet, headMap);  
             CloseableHttpResponse response1 = httpclient.execute(httpGet);  
             try {  
-                System.out.println(response1.getStatusLine());  
+                //System.out.println(response1.getStatusLine());  
                 HttpEntity httpEntity = response1.getEntity();  
                 long contentLength = httpEntity.getContentLength();  
                 InputStream is = httpEntity.getContent();  
@@ -169,10 +169,10 @@ public class HttpClientUtils {
             CloseableHttpResponse response1 = httpclient.execute(httpGet);  
             setGetHead(httpGet, headMap);  
             try {  
-                System.out.println(response1.getStatusLine());  
+               // System.out.println(response1.getStatusLine());  
                 HttpEntity entity = response1.getEntity();  
                 responseContent = getRespString(entity);  
-                System.out.println("debug:" + responseContent);  
+                //System.out.println("debug:" + responseContent);  
                 EntityUtils.consume(entity);  
             } finally {  
                 response1.close();  
@@ -210,7 +210,7 @@ public class HttpClientUtils {
             setPostParams(httpPost, paramsMap);  
             CloseableHttpResponse response = httpclient.execute(httpPost);  
             try {  
-                System.out.println(response.getStatusLine());  
+                //System.out.println(response.getStatusLine());  
                 HttpEntity entity = response.getEntity();  
                 responseContent = getRespString(entity);  
                 EntityUtils.consume(entity);  
@@ -226,7 +226,7 @@ public class HttpClientUtils {
                 e.printStackTrace();  
             }  
         }  
-        System.out.println("responseContent = " + responseContent);  
+        //System.out.println("responseContent = " + responseContent);  
         return responseContent;  
     }  
   
@@ -312,7 +312,7 @@ public class HttpClientUtils {
   
             CloseableHttpResponse response = httpclient.execute(httppost);  
             try {  
-                System.out.println(response.getStatusLine());  
+                //System.out.println(response.getStatusLine());  
                 HttpEntity resEntity = response.getEntity();  
                 respStr = getRespString(resEntity);  
                 EntityUtils.consume(resEntity);  
@@ -322,7 +322,7 @@ public class HttpClientUtils {
         } finally {  
             httpclient.close();  
         }  
-        System.out.println("resp=" + respStr);  
+        //System.out.println("resp=" + respStr);  
         return respStr;  
     }  
   

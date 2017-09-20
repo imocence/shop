@@ -432,7 +432,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements
 							orderItem.getQuantity()
 									* Integer.valueOf(product.getConversion()));// 数量
 					// 重量换算
-					System.out.println(orderItem.getWeight());
+					//System.out.println(orderItem.getWeight());
 					if (orderItem.getWeight() != null) {
 						goods.put(
 								"weight",
@@ -518,7 +518,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements
 			// System.out.println(parameterMap.toString());
 			String orderMap = WebUtils.postJson(urlPath
 					+ "/shopMemberOrderCreate.html", parameterMap);
-			System.out.println(orderMap);
+			//System.out.println(orderMap);
 			return orderMap;
 		} catch (Exception e) {
 			System.out.println(order.getSn() + "推送失败");
@@ -592,7 +592,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements
 
 		order.setTax(calculateTax(order));
 		order.setAmount(calculateAmount(order));
-		System.out.println("券总计" + cart.getCouponPrice());
+		//System.out.println("券总计" + cart.getCouponPrice());
 		order.setCouponAmount(cart.getCouponPrice());// 券总计
 		if (balance != null && balance.compareTo(BigDecimal.ZERO) > 0
 				&& balance.compareTo(member.getBalance()) <= 0

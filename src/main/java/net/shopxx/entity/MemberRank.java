@@ -62,6 +62,22 @@ public class MemberRank extends BaseEntity<Long> {
 	@Digits(integer = 12, fraction = 3)
 	@Column(precision = 21, scale = 6)
 	private BigDecimal amount;
+	/**
+	 * 消费金额
+	 */
+	@Min(0)
+	@Digits(integer = 12, fraction = 3)
+	@Column(precision = 21, scale = 6,name="first_single")
+	private BigDecimal firstSingle;
+	/**
+	 * 消费金额
+	 */
+	@Min(0)
+	@Digits(integer = 12, fraction = 3)
+	@Column(precision = 21, scale = 6,name="next_single")
+	private BigDecimal nextSingle;
+
+	
 
 	/**
 	 * 是否默认
@@ -84,7 +100,7 @@ public class MemberRank extends BaseEntity<Long> {
      */
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(nullable = true)
-    private Country           country;
+    private Country  country;
     
 
 	/**
@@ -145,7 +161,34 @@ public class MemberRank extends BaseEntity<Long> {
 	public BigDecimal getAmount() {
 		return amount;
 	}
-
+	/**
+	 * 获取首单最低价
+	 * @return
+	 */
+	public BigDecimal getFirstSingle() {
+		return firstSingle;
+	}
+	/**
+	 * 设置首单最低价
+	 * @return
+	 */
+	public void setFirstSingle(BigDecimal firstSingle) {
+		this.firstSingle = firstSingle;
+	}
+	/**
+	 * 获取下一单最低价
+	 * @return
+	 */
+	public BigDecimal getNextSingle() {
+		return nextSingle;
+	}
+	/**
+	 * 设置下一单最低价
+	 * @return
+	 */
+	public void setNextSingle(BigDecimal nextSingle) {
+		this.nextSingle = nextSingle;
+	}
 	/**
 	 * 设置消费金额
 	 * 

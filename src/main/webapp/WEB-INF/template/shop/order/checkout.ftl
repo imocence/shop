@@ -269,6 +269,10 @@ $().ready(function() {
 	$useBalance.click(function() {
 		var $this = $(this);
 		if ($this.prop("checked")) {
+			var max = ${fiBankbookBalance.balance} >= amount ? amount : ${fiBankbookBalance.balance};
+			if (parseFloat($balance.val()) != max ) {
+				$balance.val(max);
+			}
 			$balance.prop("disabled", false).parent().show();
 		} else {
 			$balance.prop("disabled", true).parent().hide();
@@ -298,6 +302,10 @@ $().ready(function() {
 	$useCoupon.click(function() {
 		var $this = $(this);
 		if ($this.prop("checked")) {
+			var max = ${fiBankbookCoupon.balance} >= couponPrice ? couponPrice : ${fiBankbookCoupon.balance};
+			if (parseFloat($coupon.val()) != max) {
+				$coupon.val(max);
+			}
 			$coupon.prop("disabled", false).parent().show();
 		} else {
 			$coupon.prop("disabled", true).parent().hide();
@@ -326,43 +334,55 @@ $().ready(function() {
 	
 	// 订单提交
 	$submit.click(function() {
-		[#if !(currentUser.napaStores.napaCode?has_content)]
-			$.alert("${message("shop.order.newAddres")}");
-			return false;
-		[/#if]
-		if((amountPayable - $balance.val()) > 0 && (fiBankbookBalance-amount) < 0 || (fiBankbookCoupon - couponPrice) < 0){
-			$.alert("${message("shop.order.credit")}");
-			return false;
-		}else {
-			$paymentMethodId.prop("disabled", true);
+		if (confirm("${message("shop.order.cancelConfirm")}")) {
+			var maxCoupon = fiBankbookCoupon >= couponPrice ? couponPrice : fiBankbookCoupon;
+			if (parseFloat($coupon.val()) != maxCoupon) {
+				$coupon.val(maxCoupon);
+			}
+			var maxBalance = fiBankbookBalance >= amount ? amount : fiBankbookBalance;
+			if (parseFloat($balance.val()) != maxBalance) {
+				$balance.val(maxBalance);
+			}
+			[#if !(currentUser.napaStores.napaCode?has_content)]
+				$.alert("${message("shop.order.newAddres")}");
+				return false;
+			[/#if]
+			if((amountPayable - $balance.val()) > 0 && (fiBankbookBalance-amount) < 0 || (fiBankbookCoupon - couponPrice) < 0){
+				$.alert("${message("shop.order.credit")}");
+				return false;
+			}else {
+				$paymentMethodId.prop("disabled", true);
+			}
+			[#if order.isDelivery]
+				if ($shippingMethodId.filter(":checked").size() <= 0) {
+					$.alert("${message("shop.order.shippingMethodRequired")}");
+					return false;
+				}
+			[/#if]
+			[#if setting.isInvoiceEnabled]
+				if ($isInvoice.prop("checked") && $.trim($invoiceTitle.val()) == "") {
+					$.alert("${message("shop.order.invoiceTileRequired")}");
+					return false;
+				}
+			[/#if]
+			$.ajax({
+				url: "create",
+				type: "POST",
+				data: $orderForm.serialize(),
+				dataType: "json",
+				beforeSend: function() {
+					$submit.prop("disabled", true);
+				},
+				success: function(data) {
+					location.reload(true);
+					location.href = (amountPayable - $balance.val()) > 0 ? "payment?orderSn=" + data.sn : "${base}/member/order/view?orderSn=" + data.sn;
+				},
+				complete: function() {
+					$submit.prop("disabled", false);
+				}
+			});
 		}
-		[#if order.isDelivery]
-			if ($shippingMethodId.filter(":checked").size() <= 0) {
-				$.alert("${message("shop.order.shippingMethodRequired")}");
-				return false;
-			}
-		[/#if]
-		[#if setting.isInvoiceEnabled]
-			if ($isInvoice.prop("checked") && $.trim($invoiceTitle.val()) == "") {
-				$.alert("${message("shop.order.invoiceTileRequired")}");
-				return false;
-			}
-		[/#if]
-		$.ajax({
-			url: "create",
-			type: "POST",
-			data: $orderForm.serialize(),
-			dataType: "json",
-			beforeSend: function() {
-				$submit.prop("disabled", true);
-			},
-			success: function(data) {
-				location.href = (amountPayable - $balance.val()) > 0 ? "payment?orderSn=" + data.sn : "${base}/member/order/view?orderSn=" + data.sn;
-			},
-			complete: function() {
-				$submit.prop("disabled", false);
-			}
-		});
+		return false;
 	});
 	
 	[#if order.isDelivery]
@@ -752,12 +772,12 @@ $().ready(function() {
 						<!-- 使用账户余额 -->
 						[#if fiBankbookBalance.type == "balance"]
 							<li[#if order.amount <= 0] class="hidden"[/#if]>
-								<input type="checkbox" id="useBalance" name="useBalance" value="true" />
+								<input type="checkbox" id="useBalance" name="useBalance" value="true" checked="checked" disabled="disabled"/>
 								<label for="useBalance">
 									${message("shop.order.useBalance")}
 								</label>
-								<span class="hidden">
-									<input type="text" id="balance" name="balance" class="balance" value="0" maxlength="16" onpaste="return false;" />
+								<span>
+									<input type="hidden" id="balance" name="balance" class="balance" value="0" maxlength="16" onpaste="return false;" />
 									<p>
 										${message("shop.order.balance")}: 
 										${currency(fiBankbookBalance.balance, true)}
@@ -767,12 +787,12 @@ $().ready(function() {
 						[/#if]
 						[#if fiBankbookCoupon.type == "coupon"]
 							<li[#if order.couponPrice <= 0] class="hidden"[/#if]>
-								<input type="checkbox" id="useCoupon" name="useCoupon" value="true" />
+								<input type="checkbox" id="useCoupon" name="useCoupon" value="true" checked="checked" disabled="disabled"/>
 								<label for="useCoupon">
 									${message("shop.order.useCoupon")}
 								</label>
-								<span class="hidden">
-									<input type="text" id="coupon" name="coupon" class="coupon" value="0" maxlength="16" onpaste="return false;" />
+								<span>
+									<input type="hidden" id="coupon" name="coupon" class="coupon" value="0" maxlength="16" onpaste="return false;" />
 									<p>
 										${message("shop.order.coupon")}: 
 										${currency(fiBankbookCoupon.balance, true)}

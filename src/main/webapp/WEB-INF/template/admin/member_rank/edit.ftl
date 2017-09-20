@@ -33,33 +33,40 @@ $().ready(function() {
 	// 表单验证
 	$inputForm.validate({
 		rules: {
-			name: "required",
-			scale: {
-				required: true,
-				min: 0,
-				decimal: {
-					integer: 3,
-					fraction: 3
-				}
-			},
-			amount: {
+			firstSingle: {
 				required: true,
 				min: 0,
 				decimal: {
 					integer: 12,
-					fraction: ${setting.priceScale}
-				},
-				remote: {
-					url: "check_amount?id=${memberRank.id}",
-					cache: false
+					fraction: 3
+				}
+			},
+			nextSingle: {
+				required: true,
+				min: 0,
+				decimal: {
+					integer: 12,
+					fraction: 3
 				}
 			}
-		},
-		messages: {
-			amount: {
-				remote: "${message("common.validate.exist")}"
-			}
+			//amount: {
+				//required: true,
+				//min: 0,
+				//decimal: {
+					//integer: 12,
+					//fraction: ${setting.priceScale}
+				//},
+				//remote: {
+					//url: "check_amount",
+					//cache: false
+				//}
+			//}
 		}
+		//messages: {
+			//amount: {
+				//remote: "${message("common.validate.exist")}"
+			//}
+		//}
 	});
 
 });
@@ -92,7 +99,7 @@ $().ready(function() {
 					<input type="text" name="name" class="text" value="${memberRank.name}" maxlength="200" />
 				</td>
 			</tr>
-			<tr>
+			<tr class="hidden">
 				<th>
 					<span class="requiredField">*</span>${message("MemberRank.scale")}:
 				</th>
@@ -100,12 +107,28 @@ $().ready(function() {
 					<input type="text" name="scale" class="text" value="${memberRank.scale}" maxlength="7" />
 				</td>
 			</tr>
-			<tr>
+			<tr class="hidden">
 				<th>
 					<span class="requiredField">*</span>${message("MemberRank.amount")}:
 				</th>
 				<td>
-					<input type="text" id="amount" name="amount" class="text" value="${memberRank.amount}" maxlength="16"[#if memberRank.isSpecial] disabled="disabled"[/#if] />
+					<input type="text" id="amount" name="amount" value="${memberRank.amount}" class="text" maxlength="16" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span class="requiredField">*</span>${message("MemberRank.firstSingle")}:
+				</th>
+				<td>
+					<input type="text" id="firstSingle" name="firstSingle" value="${memberRank.firstSingle}" class="text" maxlength="16" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span class="requiredField">*</span>${message("MemberRank.nextSingle")}:
+				</th>
+				<td>
+					<input type="text" id="nextSingle" name="nextSingle" value="${memberRank.nextSingle}" class="text" maxlength="16" />
 				</td>
 			</tr>
 			<tr>

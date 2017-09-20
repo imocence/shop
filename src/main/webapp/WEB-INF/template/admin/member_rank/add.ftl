@@ -34,32 +34,40 @@ $().ready(function() {
 	$inputForm.validate({
 		rules: {
 			name: "required",
-			scale: {
-				required: true,
-				min: 0,
-				decimal: {
-					integer: 3,
-					fraction: 3
-				}
-			},
-			amount: {
+			firstSingle: {
 				required: true,
 				min: 0,
 				decimal: {
 					integer: 12,
-					fraction: ${setting.priceScale}
-				},
-				remote: {
-					url: "check_amount",
-					cache: false
+					fraction: 3
+				}
+			},
+			nextSingle: {
+				required: true,
+				min: 0,
+				decimal: {
+					integer: 12,
+					fraction: 3
 				}
 			}
-		},
-		messages: {
-			amount: {
-				remote: "${message("common.validate.exist")}"
-			}
+			//amount: {
+				//required: true,
+				//min: 0,
+				//decimal: {
+					//integer: 12,
+					//fraction: ${setting.priceScale}
+				//},
+				//remote: {
+					//url: "check_amount",
+					//cache: false
+				//}
+			//}
 		}
+		//messages: {
+			//amount: {
+				//remote: "${message("common.validate.exist")}"
+			//}
+		//}
 	});
 
 });
@@ -91,7 +99,7 @@ $().ready(function() {
 					<input type="text" name="name" class="text" maxlength="200" />
 				</td>
 			</tr>
-			<tr>
+			<tr class="hidden">
 				<th>
 					<span class="requiredField">*</span>${message("MemberRank.scale")}:
 				</th>
@@ -99,12 +107,28 @@ $().ready(function() {
 					<input type="text" name="scale" class="text" value="1" maxlength="7" />
 				</td>
 			</tr>
-			<tr>
+			<tr class="hidden">
 				<th>
 					<span class="requiredField">*</span>${message("MemberRank.amount")}:
 				</th>
 				<td>
-					<input type="text" id="amount" name="amount" class="text" maxlength="16" />
+					<input type="text" id="amount" name="amount" value="1" class="text" maxlength="16" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span class="requiredField">*</span>${message("MemberRank.firstSingle")}:
+				</th>
+				<td>
+					<input type="text" id="firstSingle" name="firstSingle" class="text" maxlength="16" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span class="requiredField">*</span>${message("MemberRank.nextSingle")}:
+				</th>
+				<td>
+					<input type="text" id="nextSingle" name="nextSingle" class="text" maxlength="16" />
 				</td>
 			</tr>
 			<tr>

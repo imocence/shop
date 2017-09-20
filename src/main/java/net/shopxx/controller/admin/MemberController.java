@@ -155,7 +155,7 @@ public class MemberController extends BaseController {
 	            sb.append(line);
 	        }
 		} catch (Exception e) {
-			 System.out.println("获取post参数请求出现异常！" + e);
+			 //System.out.println("获取post参数请求出现异常！" + e);
 	         e.printStackTrace();
 			 map.put("errCode", "\"2001\"");
 			 map.put("state", "\"异常:\"");
@@ -238,7 +238,7 @@ public class MemberController extends BaseController {
 			return ERROR_VIEW;
 		}
 		member.removeAttributeValue();
-		System.out.println(memberAttributeService.findList(true, true));
+		//System.out.println(memberAttributeService.findList(true, true));
 		for (MemberAttribute memberAttribute : memberAttributeService.findList(true, true)) {
 			String[] values = request.getParameterValues("memberAttribute_" + memberAttribute.getId());
 			if (!memberAttributeService.isValid(memberAttribute, values)) {

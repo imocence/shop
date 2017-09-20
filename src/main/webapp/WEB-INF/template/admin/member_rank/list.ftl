@@ -98,11 +98,17 @@ $().ready(function() {
 				<th>
 					<a href="javascript:;" class="sort" name="name">${message("MemberRank.name")}</a>
 				</th>
-				<th>
+				<!-- <th>
 					<a href="javascript:;" class="sort" name="scale">${message("MemberRank.scale")}</a>
 				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="amount">${message("MemberRank.amount")}</a>
+				</th> -->
+				<th>
+					<a href="javascript:;" class="sort" name="firstSingle">${message("MemberRank.firstSingle")}</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="nextSingle">${message("MemberRank.nextSingle")}</a>
 				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="isDefault">${message("MemberRank.isDefault")}</a>
@@ -122,11 +128,17 @@ $().ready(function() {
 					<td>
 						${memberRank.name}
 					</td>
-					<td>
+					<!-- <td>
 						${memberRank.scale}
 					</td>
 					<td>
 						${memberRank.amount}
+					</td> -->
+					<td>
+						${memberRank.firstSingle}
+					</td>
+					<td>
+						${memberRank.nextSingle}
 					</td>
 					<td>
 						${message(memberRank.isDefault?string('admin.common.true', 'admin.common.false'))}

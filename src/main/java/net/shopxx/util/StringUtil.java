@@ -242,8 +242,4 @@ public class StringUtil {
 		}
 		return str;
 	}
-	
-	public static void main(String[] args) {
-		System.out.println(strSub("12345678901", 1));
-	}
 }

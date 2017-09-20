@@ -62,7 +62,7 @@ public class NapaStoresController extends BaseController{
 	            sb.append(line);
 	        }
 		} catch (Exception e) {
-			 System.out.println("获取post参数请求出现异常！" + e);
+			 //System.out.println("获取post参数请求出现异常！" + e);
 	         e.printStackTrace();
 		}finally{
 			try {

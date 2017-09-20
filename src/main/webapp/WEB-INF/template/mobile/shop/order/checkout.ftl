@@ -272,44 +272,44 @@
 			});
 			
 			// 添加收货地址表单验证
-			$addReceiverForm.validate({
-				rules: {
-					consignee: "required",
-					areaId: "required",
-					address: "required",
-					zipCode: {
-						required: true,
-						pattern: /^\d{6}$/
-					},
-					phone: {
-						required: true,
-						pattern: /^\d{3,4}-?\d{7,9}$/
-					}
-				},
-				submitHandler: function(form) {
-					$.ajax({
-						url: "save_receiver",
-						type: "POST",
-						data: $addReceiverForm.serialize(),
-						dataType: "json",
-						beforeSend: function() {
-							$addReceiverSubmit.prop("disabled", true);
-						},
-						success: function(data) {
-							$receiverId.val(data.id);
-							$currentReceiver.html(currentReceiverTemplate({
-								currentReceiver: data
-							}));
-							loadReceiver();
-							togglePage("#mainPage");
-							calculate();
-						},
-						complete: function() {
-							$addReceiverSubmit.prop("disabled", false);
-						}
-					});
-				}
-			});
+			//$addReceiverForm.validate({
+				//rules: {
+					//consignee: "required",
+					//areaId: "required",
+					//address: "required",
+					//zipCode: {
+						//required: true,
+						//pattern: /^\d{6}$/
+					//},
+					//phone: {
+						//required: true,
+						//pattern: /^\d{3,4}-?\d{7,9}$/
+					//}
+				//},
+				//submitHandler: function(form) {
+					//$.ajax({
+						//url: "save_receiver",
+						//type: "POST",
+						//data: $addReceiverForm.serialize(),
+						//dataType: "json",
+						//beforeSend: function() {
+							//$addReceiverSubmit.prop("disabled", true);
+						//},
+						//success: function(data) {
+							//$receiverId.val(data.id);
+							//$currentReceiver.html(currentReceiverTemplate({
+								//currentReceiver: data
+							//}));
+							//loadReceiver();
+							//togglePage("#mainPage");
+							//calculate();
+						//},
+						//complete: function() {
+							//$addReceiverSubmit.prop("disabled", false);
+						//}
+					//});
+				//}
+			//});
 			
 			// 支付方式
 			$paymentMethodItem.click(function() {
@@ -369,44 +369,56 @@
 			
 			// 订单提交
 			$submit.click(function() {
-				[#if !(currentUser.napaStores.napaCode?has_content)]
-					$.alert("${message("shop.order.newAddres")}");
-					return false;
-				[/#if]
-				[#if order.isDelivery]
-					if ($receiverId.val() == "") {
-						$.alert("${message("shop.order.receiverRequired")}");
-						return false;
+				if (confirm("${message("shop.order.cancelConfirm")}")) {
+					var maxCoupon = fiBankbookCoupon >= couponPrice ? couponPrice : fiBankbookCoupon;
+					if (parseFloat($coupon.val()) != maxCoupon) {
+						$coupon.val(maxCoupon);
 					}
-				[/#if]
-				if((amountPayable - $balance.val()) > 0 && (fiBankbookBalance-amount) < 0 || (fiBankbookCoupon - couponPrice) < 0){
-					$.alert("${message("shop.order.credit")}");
-					$submit.prop("disabled", false);
-					return false;
-				}else {
-					$paymentMethodId.prop("disabled", true);
-				}
-				[#if order.isDelivery]
-					if ($shippingMethodId.val() == "") {
-						$.alert("${message("shop.order.shippingMethodRequired")}");
-						return false;
+					var maxBalance = fiBankbookBalance >= amount ? amount : fiBankbookBalance;
+					if (parseFloat($balance.val()) != maxBalance) {
+						$balance.val(maxBalance);
 					}
-				[/#if]
-				$.ajax({
-					url: "create",
-					type: "POST",
-					data: $orderForm.serialize(),
-					dataType: "json",
-					beforeSend: function() {
-						$submit.prop("disabled", true);
-					},
-					success: function(data) {
-						location.href = (amountPayable - $balance.val()) > 0 ? "payment?orderSn=" + data.sn : "${base}/member/order/view?orderSn=" + data.sn;
-					},
-					complete: function() {
+					[#if !(currentUser.napaStores.napaCode?has_content)]
+						$.alert("${message("shop.order.newAddres")}");
+						return false;
+					[/#if]
+					[#if order.isDelivery]
+						if ($receiverId.val() == "") {
+							$.alert("${message("shop.order.receiverRequired")}");
+							return false;
+						}
+					[/#if]
+					if((amountPayable - $balance.val()) > 0 && (fiBankbookBalance-amount) < 0 || (fiBankbookCoupon - couponPrice) < 0){
+						$.alert("${message("shop.order.credit")}");
 						$submit.prop("disabled", false);
+						return false;
+					}else {
+						$paymentMethodId.prop("disabled", true);
 					}
-				});
+					[#if order.isDelivery]
+						if ($shippingMethodId.val() == "") {
+							$.alert("${message("shop.order.shippingMethodRequired")}");
+							return false;
+						}
+					[/#if]
+					$.ajax({
+						url: "create",
+						type: "POST",
+						data: $orderForm.serialize(),
+						dataType: "json",
+						beforeSend: function() {
+							$submit.prop("disabled", true);
+						},
+						success: function(data) {
+							location.reload(true);
+							location.href = (amountPayable - $balance.val()) > 0 ? "payment?orderSn=" + data.sn : "${base}/member/order/view?orderSn=" + data.sn;
+						},
+						complete: function() {
+							$submit.prop("disabled", false);
+						}
+					});
+				}
+				return false;
 			});
 			
 			// 计算
@@ -598,17 +610,18 @@
 									</div>
 									<div class="col-xs-2 text-right">
 										<span class="glyphicon glyphicon-check" data-toggle="item" data-target="#balanceItem"></span>
+										<input id="balance" name="balance" type="hidden" value="0" maxlength="16">
 									</div>
 								</div>
 							</div>
-							<div id="balanceItem" class="hidden-element list-group-item">
+							<!-- <div id="balanceItem" class="hidden list-group-item">
 								<div class="row">
 									<div class="col-xs-3">${message("shop.order.useAmount")}</div>
 									<div class="col-xs-9">
-										<input id="balance" name="balance" type="text" value="0" maxlength="16" onpaste="return false;" disabled>
+										<input id="balance" name="balance" type="hidden" value="0" maxlength="16" onpaste="return false;" disabled>
 									</div>
 								</div>
-							</div>
+							</div> -->
 						[/#if]
 						<!--券账户-->
 						[#if fiBankbookCoupon.type =="coupon"]
@@ -620,17 +633,18 @@
 									</div>
 									<div class="col-xs-2 text-right">
 										<span class="glyphicon glyphicon-check" data-toggle="item" data-target="#couponItem"></span>
+										<input id="coupon" name="coupon" type="hidden" value="0" maxlength="16" >
 									</div>
 								</div>
 							</div>
-							<div id="couponItem" class="hidden-element list-group-item">
+							<!-- <div id="couponItem" class="hidden list-group-item">
 								<div class="row">
 									<div class="col-xs-3">${message("shop.order.useCoupon")}</div>
 									<div class="col-xs-9">
-										<input id="coupon" name="coupon" type="text" value="0" maxlength="16" onpaste="return false;" disabled>
+										<input id="coupon" name="coupon" type="hidden" value="0" maxlength="16" onpaste="return false;" disabled>
 									</div>
 								</div>
-							</div>
+							</div> -->
 						[/#if]
 						<!--[#if currentUser.balance > 0]
 							<div id="useBalanceItem" class="[#if order.amountPayable <= 0 ]hidden-element [/#if]list-group-item">

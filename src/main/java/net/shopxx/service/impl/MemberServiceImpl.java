@@ -320,7 +320,6 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		parameterMap.put("timestamp", TimeUtil.getTimestamp());
 		parameterMap.put("signature", DigestUtils.md5Hex(TimeUtil.getTimestamp()+urlSignature));
 		parameterMap.put("userCode", StringUtils.upperCase(userCodes));
-		System.out.println(parameterMap);
 		
 		String userCodeMap = WebUtils.postJson(urlPath+"/getMemberInfoToShop.html",parameterMap);
 		List<Member> members = new ArrayList<Member>();
@@ -453,7 +452,6 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		member.setCountry(country);	
 		member.setMemberRank(memberRankService.findByCountry(country,null));
 		
-		System.out.println(countryService.findByName(companyCode).getName());
 		member.removeAttributeValue();
 		for (MemberAttribute memberAttribute : memberAttributeService.findList(true, true)) {
 			String[] values = request.getParameterValues("memberAttribute_" + memberAttribute.getId());
