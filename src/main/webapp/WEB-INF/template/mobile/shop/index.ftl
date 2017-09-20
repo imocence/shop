@@ -255,35 +255,35 @@
             </div>
         </nav>
         <div class="promotion">
-            <div class="row">
-                <div class="col-xs-2 text-center">
-                    <span class="glyphicon glyphicon-gift red-dark"></span>
-                </div>
-                <div class="col-xs-10">
-                    <div class="carousel" data-ride="carousel">
-                        <ul class="carousel-inner">
-                            <li class="item active">
-                                <a href="${base}/product/list/1">
-                                    <em class="blue-dark">苹果产品促销专场，全部最低价</em>
-                                    以旧换新最高可抵2000元
-                                </a>
-                            </li>
-                            <li class="item">
-                                <a href="${base}/product/list/1">
-                                    <em class="blue-dark">Color Cube立体声蓝牙音箱</em>
-                                    精致生活，声色享受
-                                </a>
-                            </li>
-                            <li class="item">
-                                <a href="${base}/product/list/1">
-                                    <em class="blue-dark">四款让人任性的数码产品，达人分享</em>
-                                    忙碌1年，任性1把
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            [#--<div class="row">--]
+                [#--<div class="col-xs-2 text-center">--]
+                    [#--<span class="glyphicon glyphicon-gift red-dark"></span>--]
+                [#--</div>--]
+                [#--<div class="col-xs-10">--]
+                    [#--<div class="carousel" data-ride="carousel">--]
+                        [#--<ul class="carousel-inner">--]
+                            [#--<li class="item active">--]
+                                [#--<a href="${base}/product/list/1">--]
+                                    [#--<em class="blue-dark">苹果产品促销专场，全部最低价</em>--]
+                                    [#--以旧换新最高可抵2000元--]
+                                [#--</a>--]
+                            [#--</li>--]
+                            [#--<li class="item">--]
+                                [#--<a href="${base}/product/list/1">--]
+                                    [#--<em class="blue-dark">Color Cube立体声蓝牙音箱</em>--]
+                                    [#--精致生活，声色享受--]
+                                [#--</a>--]
+                            [#--</li>--]
+                            [#--<li class="item">--]
+                                [#--<a href="${base}/product/list/1">--]
+                                    [#--<em class="blue-dark">四款让人任性的数码产品，达人分享</em>--]
+                                    [#--忙碌1年，任性1把--]
+                                [#--</a>--]
+                            [#--</li>--]
+                        [#--</ul>--]
+                    [#--</div>--]
+                [#--</div>--]
+            [#--</div>--]
         </div>
         <div class="ad">
             <ul>
