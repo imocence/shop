@@ -221,6 +221,9 @@ $().ready(function() {
 			<a href="add" class="iconButton">
 				<span class="addIcon">&nbsp;</span>${message("admin.common.add")}
 			</a>
+			<a href="download" class="iconButton">
+				<span class="addIcon">&nbsp;</span>下载
+			</a>
 			<div class="buttonGroup">
 				<a href="javascript:;" id="deleteButton" class="iconButton disabled">
 					<span class="deleteIcon">&nbsp;</span>${message("admin.common.delete")}
@@ -313,6 +316,9 @@ $().ready(function() {
 					<a href="javascript:;" class="sort" name="isMarketable">${message("Product.isMarketable")}</a>
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" name="isMarketable">${message("Product.isTop")}</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="createdDate">${message("admin.common.createdDate")}</a>
 				</th>
 				<th>
@@ -354,6 +360,9 @@ $().ready(function() {
 					</td -->
 					<td>
 						<span class="${product.isMarketable?string("true", "false")}Icon">&nbsp;</span>
+					</td>
+					<td>
+						<span class="${product.isTop?string("true", "false")}Icon">&nbsp;</span>
 					</td>
 					<td>
 						<span title="${product.createdDate?string("yyyy-MM-dd HH:mm:ss")}">${product.createdDate}</span>

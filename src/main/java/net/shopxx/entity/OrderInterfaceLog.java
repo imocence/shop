@@ -50,7 +50,7 @@ public class OrderInterfaceLog extends BaseEntity<Long> {
 	/**
 	 * 详情
 	 */
-	@Column(updatable = false)
+	@Column(columnDefinition="TEXT")
 	private String detail;
 
 	/**
