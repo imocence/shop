@@ -130,7 +130,7 @@ public class OrderController extends BaseController {
 	            sb.append(line);
 	        }
 		} catch (Exception e) {
-			 System.out.println("获取post参数请求出现异常！" + e);
+			 //System.out.println("获取post参数请求出现异常！" + e);
 	         e.printStackTrace();
 			 map.put("errCode", "\"2001\"");
 			 map.put("state", "\"异常:\"");

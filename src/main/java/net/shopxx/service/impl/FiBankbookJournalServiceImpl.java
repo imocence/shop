@@ -74,6 +74,19 @@ public class FiBankbookJournalServiceImpl extends BaseServiceImpl<FiBankbookJour
 		return fiBankbookJournalDao.findPageByMemberId(type,currentUser, pageNumber);
 	}
 	/**
+	 * 查找个人充值记录
+	 * 
+	 * @param member
+	 *            会员信息
+	 * @param code
+	 *            编号
+	 * @return 交易记录分页
+	 */
+	@Transactional(readOnly = true)
+	public FiBankbookJournal findByMemberAndCode(Member member, String code){
+		return fiBankbookJournalDao.findByMemberAndCode(member,code);
+	}
+	/**
 	 * 获取最近的一条记录
 	 * @param member
 	 * @param type

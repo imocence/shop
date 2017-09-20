@@ -89,6 +89,7 @@
 			<mvc:exclude-mapping path="/admin/member/setMember" />
 			<mvc:exclude-mapping path="/admin/order/shippedReview" />
 			<mvc:exclude-mapping path="/admin/store/setStore" />
+			<mvc:exclude-mapping path="/admin/store/increase" />
 			<bean class="net.shopxx.security.CsrfInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>

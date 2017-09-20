@@ -114,4 +114,21 @@ public class FiBankbookJournalDaoImpl extends BaseDaoImpl<FiBankbookJournal, Lon
 		}
 		return null;
 	}
+	/**
+	 * 获取最近的一条记录
+	 * @param member
+	 * @type type
+	 * @return
+	 */
+	public FiBankbookJournal findByMemberAndCode(Member member, String code){
+		String jpql = "SELECT fiBankbookJournal FROM FiBankbookJournal fiBankbookJournal WHERE fiBankbookJournal.member.usercode=:usercode AND fiBankbookJournal.uniqueCode like '"+code+"%' ";
+		TypedQuery<FiBankbookJournal> query = entityManager.createQuery(jpql, FiBankbookJournal.class);
+		query.setParameter("usercode", member.getUsercode());
+		query.setMaxResults(1);
+		List<FiBankbookJournal> list= query.getResultList();
+		if (null != list && !list.isEmpty()) {
+			return list.get(0);
+		}
+		return null;
+	}
 }

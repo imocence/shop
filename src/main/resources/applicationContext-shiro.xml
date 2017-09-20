@@ -18,6 +18,7 @@
 				<entry key="/admin/order/shippedReview" value="anon" />
 				<entry key="/admin/napaStores" value="anon" />
 				<entry key="/admin/store/setStore" value="anon" />
+				<entry key="/admin/store/increase" value="anon" />
 				
 				<entry key="/order/**" value="memberAuthc,perms[member]" />
 

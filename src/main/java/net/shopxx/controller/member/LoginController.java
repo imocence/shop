@@ -68,6 +68,14 @@ public class LoginController extends BaseController {
 	 */
 	@Value("${url.signature}")
 	private String urlSignature;
+	@Value("${gift.dollar}")
+	private String giftDollar;//赠送美元
+	@Value("${gift.rmb}")
+	private String giftRMB;//赠送人民币
+	@Value("${gift.taiwan}")
+	private String giftTb;//赠送台币
+	@Value("${gift.myr}")
+	private String giftMyr;//赠送马来西亚币
 	@Inject
 	private UserService userService;
 	@Inject
@@ -105,20 +113,15 @@ public class LoginController extends BaseController {
 		if(userCode != null && member != null){
 			
 			String appointtrue = DigestUtils.md5Hex(timestamp+urlSignature);
-			System.out.println("MD5:"+appointtrue);
-			System.out.println("接口传过来的时间戳："+timestamp+"当前时间戳"+System.currentTimeMillis() / 1000);
+			//System.out.println("MD5:"+appointtrue);
+			//System.out.println("接口传过来的时间戳："+timestamp+"当前时间戳"+System.currentTimeMillis() / 1000);
 			//时间差
 			Long timeT = TimeUtil.validateTimeStamp(Long.parseLong(timestamp));
-			System.out.println(timeT);
+			//System.out.println(timeT);
 			if(timeT < 3 && appointtrue.equals(signature)){
 				try {
 					userService.login(new UserAuthenticationToken(Member.class,userCode , "a123456", false, request.getRemoteAddr()));	
-					String uniqueCode = "ZC"+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
-					//添加一条注册赠送记录
-					String success = fiBankbookJournalService.recharge(userCode, new BigDecimal("10000"), uniqueCode, FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.recharge, "用户注册赠送");
-					if(!"success".equals(success)){
-						System.out.println("注册赠送券未成功，提醒手动添加，会员编码为："+userCode);
-					}
+
 				} catch (Exception e) {
 					System.out.println("数据库没有"+userCode+"这个会员编号");
 				}
@@ -148,11 +151,23 @@ public class LoginController extends BaseController {
 				member = new Member();
 				memberService.create(member,companyCode,userCode,signature,timestamp,request,null,language);
 				String appointtrue = DigestUtils.md5Hex(timestamp+urlSignature);
-				System.out.println("MD5:"+appointtrue);
-				System.out.println("接口传过来的时间戳："+timestamp+"当前时间戳"+System.currentTimeMillis() / 1000);
+				String uniqueCode = "ZC"+TimeUtil.getFormatNowTime("yyyyMMddHHmmss");
+				BigDecimal giftMoney = new BigDecimal("10000");
+				if(companyCode.equals("CN")){
+					giftMoney = new BigDecimal(giftRMB);
+				}else if(companyCode.equals("MY")){
+					giftMoney = new BigDecimal(giftMyr);
+				}else if(companyCode.equals("TW")){
+					giftMoney = new BigDecimal(giftTb);
+				}
+				//添加一条注册赠送记录
+				String success = fiBankbookJournalService.recharge(userCode, giftMoney, uniqueCode, FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.recharge, "用户注册赠送");
+				if(!"success".equals(success)){
+					System.out.println("注册赠送券未成功，提醒手动添加，会员编码为："+userCode);
+				}
 				//时间差
 				Long timeT = TimeUtil.validateTimeStamp(Long.parseLong(timestamp));
-				System.out.println(timeT);
+				//System.out.println(timeT);
 				if(timeT < 3 && appointtrue.equals(signature)){
 					try {
 						userService.login(new UserAuthenticationToken(Member.class,userCode , "a123456", false, request.getRemoteAddr()));					
