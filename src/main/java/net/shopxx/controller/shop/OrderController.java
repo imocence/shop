@@ -25,7 +25,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import net.shopxx.Page;
 import net.shopxx.Results;
 import net.shopxx.entity.BaseEntity;
 import net.shopxx.entity.Cart;
@@ -430,8 +429,7 @@ public class OrderController extends BaseController {
 		
 		//判断是不是首单
 		List<Order> orders = orderService.findPage(null, null, currentUser, null, null, null, null, null, null, null, null).getContent();
-		if(orders.size() >= 0){//不是首单
-			//System.out.println(balance.compareTo(currentUser.getMemberRank().getNextSingle()));
+		if(orders.size() > 0){//不是首单
 			if (balance == null || balance.compareTo(currentUser.getMemberRank().getNextSingle()) < 0) {
 				return Results.unprocessableEntity("shop.order.nextSingle",currentUser.getMemberRank().getNextSingle());
 			}
@@ -521,7 +519,7 @@ public class OrderController extends BaseController {
 		
 		//判断是不是首单
 		List<Order> orders = orderService.findPage(null, null, currentUser, null, null, null, null, null, null, null, null).getContent();
-		if(orders.size() >= 0){//不是首单
+		if(orders.size() > 0){//不是首单
 			//System.out.println(balance.compareTo(currentUser.getMemberRank().getNextSingle()));
 			if (balance == null || balance.compareTo(currentUser.getMemberRank().getNextSingle()) < 0) {
 				return Results.unprocessableEntity("shop.order.nextSingle",currentUser.getMemberRank().getNextSingle());

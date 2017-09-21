@@ -129,7 +129,7 @@ public class LoginController extends BaseController {
 				userService.logout();
 			}
 			return "redirect:/";
-		}else if(companyCode != null){		
+		}else if(companyCode != null && member == null){		
 			try {
 				//获取国家语言
 				String code = (String)WebUtils.getRequest().getSession().getAttribute(LanguageController.CODE);

@@ -31,9 +31,9 @@ $().ready(function() {
 				[#if member??]
 					<a href="javascript:;" class="button" onclick="history.back(); return false;">${message("admin.common.back")}</a>
 				[/#if]
-				<a href="adjust" class="button">
+				<!--<a href="adjust" class="button">
 					${message("admin.deposit.adjust")}
-				</a>
+				</a>-->
 				<a href="javascript:;" id="refreshButton" class="iconButton">
 					<span class="refreshIcon">&nbsp;</span>${message("admin.common.refresh")}
 				</a>
@@ -60,7 +60,7 @@ $().ready(function() {
 				</ul>
 			</div>
 		</div>
-		<table id="listTable" class="list">
+		<!-- <table id="listTable" class="list">
 			<tr>
 				<th>
 					<a href="javascript:;" class="sort" name="type">${message("DepositLog.type")}</a>
@@ -112,6 +112,38 @@ $().ready(function() {
 					</td>
 					<td>
 						<span title="${depositLog.createdDate?string("yyyy-MM-dd HH:mm:ss")}">${depositLog.createdDate}</span>
+					</td>
+				</tr>
+			[/#list]
+		</table>-->
+		<table id="listTable" class="list">
+			<tr>
+				<th>
+					<a href="javascript:;" class="sort" name="member">${message("common.member")}</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="type">${message("admin.fiBankbookBalance.type")}</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="balance">${message("admin.fiBankbookBalance.balance")}</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="country">${message("common.country")}</a>
+				</th>
+			</tr>
+			[#list page.content as fiBankbookBalance]
+				<tr>
+					<td>
+						${fiBankbookBalance.member.username}
+					</td>
+					<td>
+						${message("admin.fiBankbookBalance.type." + fiBankbookBalance.type)}
+					</td>
+					<td>
+						${fiBankbookBalance.balance}
+					</td>
+					<td>
+						${message("${fiBankbookBalance.country.nameLocal}")}
 					</td>
 				</tr>
 			[/#list]

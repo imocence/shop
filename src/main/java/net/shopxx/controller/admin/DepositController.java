@@ -23,7 +23,9 @@ import net.shopxx.Message;
 import net.shopxx.Pageable;
 import net.shopxx.entity.DepositLog;
 import net.shopxx.entity.Member;
+import net.shopxx.service.CountryService;
 import net.shopxx.service.DepositLogService;
+import net.shopxx.service.FiBankbookBalanceService;
 import net.shopxx.service.MemberService;
 
 /**
@@ -40,7 +42,11 @@ public class DepositController extends BaseController {
 	private DepositLogService depositLogService;
 	@Inject
 	private MemberService memberService;
-
+	@Inject
+	private FiBankbookBalanceService fiBankbookBalanceService;
+	
+	@Inject
+	private CountryService countryService;
 	/**
 	 * 检查会员
 	 */
@@ -89,13 +95,15 @@ public class DepositController extends BaseController {
 	 * 记录
 	 */
 	@GetMapping("/log")
-	public String log(Long memberId, Pageable pageable, ModelMap model) {
+	public String log(Long memberId,String type, Pageable pageable, ModelMap model) {
 		Member member = memberService.find(memberId);
 		if (member != null) {
 			model.addAttribute("member", member);
-			model.addAttribute("page", depositLogService.findPage(member, pageable));
+			//model.addAttribute("page", depositLogService.findPage(member, pageable));
+			model.addAttribute("page", fiBankbookBalanceService.findPage(member, member.getCountry(), pageable));
 		} else {
-			model.addAttribute("page", depositLogService.findPage(pageable));
+			//model.addAttribute("page", depositLogService.findPage(pageable));
+			model.addAttribute("page", fiBankbookBalanceService.findPage(null, null, pageable));
 		}
 		return "admin/deposit/log";
 	}

@@ -218,10 +218,15 @@ public class MemberController extends BaseController {
 				}else if(companyCode.equals("TW")){
 					giftMoney = new BigDecimal(giftTb);
 				}
-				//添加一条注册赠送记录
-				String success = fiBankbookJournalService.recharge(userCode, giftMoney, uniqueCode, FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.recharge, "用户注册赠送");
-				if(!"success".equals(success)){
-					System.out.println("注册赠送券未成功，提醒手动添加，会员编码为："+userCode);
+				FiBankbookJournal fiBankbookJournal = fiBankbookJournalService.findLastByMember(member,FiBankbookJournal.Type.coupon);
+				if(fiBankbookJournal != null){
+					System.out.println("已赠送券，会员编码为："+userCode);
+				}else{					
+					//添加一条注册赠送记录
+					String success = fiBankbookJournalService.recharge(userCode, giftMoney, uniqueCode, FiBankbookJournal.Type.coupon, FiBankbookJournal.DealType.deposit, FiBankbookJournal.MoneyType.recharge, "用户注册赠送");
+					if(!"success".equals(success)){
+						System.out.println("注册赠送券未成功，提醒手动添加，会员编码为："+userCode);
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

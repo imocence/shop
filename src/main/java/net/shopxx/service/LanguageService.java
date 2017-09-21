@@ -22,4 +22,5 @@ public interface LanguageService extends BaseService<Language, Long> {
 	Language findByCode(String code);
 	
 	Language findByLocale(String locale);
+	Language getDefaultLanguage();
 }

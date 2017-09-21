@@ -67,14 +67,14 @@ public class MemberRank extends BaseEntity<Long> {
 	 */
 	@Min(0)
 	@Digits(integer = 12, fraction = 3)
-	@Column(precision = 21, scale = 6,name="first_single")
+	@Column(name="first_single",columnDefinition="decimal(21,6) default 0.000000000000")
 	private BigDecimal firstSingle;
 	/**
 	 * 消费金额
 	 */
 	@Min(0)
 	@Digits(integer = 12, fraction = 3)
-	@Column(precision = 21, scale = 6,name="next_single")
+	@Column(name="next_single",columnDefinition="decimal(21,6) default 0.000000000000")
 	private BigDecimal nextSingle;
 
 	

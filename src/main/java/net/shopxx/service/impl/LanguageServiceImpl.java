@@ -11,8 +11,12 @@ import net.shopxx.dao.AreaDao;
 import net.shopxx.dao.LanguageDao;
 import net.shopxx.entity.Area;
 import net.shopxx.entity.Language;
+import net.shopxx.entity.Member;
 import net.shopxx.service.LanguageService;
+import net.shopxx.util.PropertyUtil;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,5 +71,22 @@ public class LanguageServiceImpl extends BaseServiceImpl<Language, Long> impleme
 			cache.put(new Element(key, language));
 			return language;
 		}
+	}
+	
+	@Override
+	public Language getDefaultLanguage(){
+		Subject s  = SecurityUtils.getSubject();
+        Member currentUser = null;
+        if (s.isAuthenticated() && s.getPrincipal() instanceof Member) {
+            currentUser =  (Member) s.getPrincipal();
+        }
+		Language language = null;
+		if(currentUser == null){
+			String languageId =  PropertyUtil.getProperty("default.language.id");
+			language = find(Long.valueOf(languageId));
+		}else{
+			language = currentUser.getLanguage();
+		}
+		return language;
 	}
 }
