@@ -763,10 +763,10 @@ $().ready(function() {
 						[/#if]
 						<li>
 							<span>
-								${message("shop.order.couponPrice")}: <em id="couponPrice">${currency(order.couponPrice, true)}</em>
+								${message("Order.amount")}: <strong id="amount">${currency(order.amount, true, true)}</strong>
 							</span>
 							<span>
-								${message("Order.amount")}: <strong id="amount">${currency(order.amount, true, true)}</strong>
+								${message("shop.order.couponPrice")}: <em id="couponPrice">${currency(order.couponPrice, true)}</em>
 							</span>
 						</li>
 						<!-- 使用账户余额 -->
