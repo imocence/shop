@@ -1,7 +1,5 @@
 package net.shopxx.interceptor;
 
-import java.util.Locale;
-
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,10 +9,8 @@ import net.shopxx.entity.Language;
 import net.shopxx.entity.Member;
 import net.shopxx.service.LanguageService;
 import net.shopxx.service.UserService;
-import net.shopxx.util.SpringUtils;
 import net.shopxx.util.WebUtils;
 
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
@@ -45,26 +41,19 @@ public class LanguageInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		String code = (String)WebUtils.getRequest().getSession().getAttribute(LanguageController.CODE);
 		if (null == code) {
-			// 默认获取该用户的语言
+			// 默认获取该用户的语言,session获取不到则从cookie获取，处理退出登录时session失效的场景
 			Language language = null;
-			Member currentUser = userService.getCurrent(Member.class);
-			if (currentUser != null && currentUser.getLanguage() != null) {
-				language = currentUser.getLanguage();
-			}else {
-				LocaleResolver localeResolver = SpringUtils.getBean("localeResolver", LocaleResolver.class);
-				Locale locale = localeResolver.resolveLocale(WebUtils.getRequest());
-				if (null  == locale) {
-					locale = Locale.getDefault();
-				}
-				String localeStr = locale.getLanguage() + "_" + locale.getCountry();
-				language = languageService.findByLocale(localeStr);
+			code = WebUtils.getCookie(request, LanguageController.CODE);
+			if (null != code) {
+				language = languageService.findByCode(code);
 			}
 			if (null == language) {
-				language = languageService.findByLocale(Locale.US.toString());
+				Member currentUser = userService.getCurrent(Member.class);
+				if (currentUser != null && currentUser.getLanguage() != null) {
+					language = currentUser.getLanguage();
+				}
 			}
-			if (null != language) {
-				WebUtils.getRequest().getSession().setAttribute(LanguageController.CODE, language.getCode());
-			}
+			languageService.setLanguage(language);
 		}
 		return super.preHandle(request, response, handler);
 	}

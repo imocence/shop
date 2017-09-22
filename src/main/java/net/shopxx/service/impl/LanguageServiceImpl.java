@@ -1,24 +1,28 @@
 package net.shopxx.service.impl;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-import net.shopxx.dao.AreaDao;
+import net.shopxx.controller.common.LanguageController;
 import net.shopxx.dao.LanguageDao;
-import net.shopxx.entity.Area;
 import net.shopxx.entity.Language;
 import net.shopxx.entity.Member;
 import net.shopxx.service.LanguageService;
 import net.shopxx.util.PropertyUtil;
+import net.shopxx.util.SpringUtils;
+import net.shopxx.util.WebUtils;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 /**
  * Service - 地区
@@ -88,5 +92,35 @@ public class LanguageServiceImpl extends BaseServiceImpl<Language, Long> impleme
 			language = currentUser.getLanguage();
 		}
 		return language;
+	}
+	
+	public Language setLanguage(Language language){
+		// 处理语言
+		if (null == language) {
+			LocaleResolver localeResolver = SpringUtils.getBean("localeResolver", LocaleResolver.class);
+			Locale locale = localeResolver.resolveLocale(WebUtils.getRequest());
+			if (null  == locale) {
+				locale = Locale.getDefault();
+			}
+			String localeStr = locale.getLanguage() + "_" + locale.getCountry();
+			language = findByLocale(localeStr);
+			if (null == language) {
+				language = findByLocale(Locale.US.toString());
+			}
+		}
+		setLanguageSession(language);
+		return language;
+	}
+	
+	public void setLanguageSession(Language language){
+		if (null != language) {
+			String[] locale = language.getLocale().split("_");
+			if (locale.length == 2) {
+				WebUtils.getRequest().getSession().setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, new Locale(locale[0], locale[1]));
+				WebUtils.getRequest().getSession().setAttribute(LanguageController.CODE, language.getCode());
+				// session丢失的时候获取cookie的语言code
+				WebUtils.addCookie(WebUtils.getRequest(), WebUtils.getResponse(), LanguageController.CODE, language.getCode());
+			}
+		}
 	}
 }
