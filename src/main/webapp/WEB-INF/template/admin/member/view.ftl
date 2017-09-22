@@ -29,13 +29,18 @@
 	<table class="input tabContent">
 		<tr>
 			<th>
+				${message("Member.name")}:
+			</th>
+			<td>
+				${loginPlugin.name}
+			</td>
+		</tr>
+		<tr>
+			<th>
 				${message("Member.username")}:
 			</th>
 			<td>
 				${member.username}
-				[#if loginPlugin??]
-					<span class="silver">[${loginPlugin.name}]</span>
-				[/#if]
 			</td>
 		</tr>
 		<tr>

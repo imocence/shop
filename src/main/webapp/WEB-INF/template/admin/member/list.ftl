@@ -67,6 +67,9 @@ $().ready(function() {
 					<input type="checkbox" id="selectAll" />
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" name="username">${message("Member.name")}</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="username">${message("Member.username")}</a>
 				</th>
 				<th>
@@ -98,6 +101,9 @@ $().ready(function() {
 				<tr>
 					<td>
 						<input type="checkbox" name="ids" value="${member.id}" />
+					</td>
+					<td>
+						${member.name}
 					</td>
 					<td>
 						${member.username}

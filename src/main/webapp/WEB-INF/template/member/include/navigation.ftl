@@ -4,6 +4,10 @@
 		<div class="content">
 			<p>
 				${message("member.navigation.welcome")}
+				<strong>${currentUser.name}</strong>
+			</p>
+			<p>
+				${message("Member.usercode")}
 				<strong>${currentUser.username}</strong>
 			</p>
 			<p>

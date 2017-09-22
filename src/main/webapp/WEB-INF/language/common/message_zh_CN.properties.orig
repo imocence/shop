@@ -622,6 +622,7 @@ Member.RankingType.point=\u79ef\u5206
 Member.RankingType.balance=\u4f59\u989d
 Member.RankingType.amount=\u6d88\u8d39\u91d1\u989d
 Member.username=\u7528\u6237\u540d
+Member.name=\u59D3\u540D
 Member.usercode=\u7528\u6237\u7F16\u7801
 Member.country=\u8BED\u8A00\u56FD\u5BB6
 Member.napaCode=\u533A\u4EE3\u7F16\u7801
