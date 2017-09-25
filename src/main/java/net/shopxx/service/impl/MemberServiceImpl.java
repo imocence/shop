@@ -374,7 +374,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 				member.setMemberRank(memberRankService.findByCountry(countryService.findByName(locale), rankName));	
 				//更新区代信息
 				NapaStores napaStores = napaStoresService.find(member.getNapaStores().getId());
-				if(type == 0){
+				if(type == 1){
 					napaStores.setNapaCode(null);
 				}else{
 					napaStores.setNapaCode(napaCode);
@@ -433,7 +433,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		NapaStores napaStores = new NapaStores();
 		napaStores.setMobile(null);
 		napaStores.setNapaCode(null);
-		napaStores.setType(0);
+		napaStores.setType(1);
 		napaStores.setBalance(BigDecimal.ZERO);
 		napaStoresService.save(napaStores);
 		member.setNapaStores(napaStores);

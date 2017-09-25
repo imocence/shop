@@ -857,7 +857,7 @@
                 <span class="glyphicon glyphicon-shopping-cart"></span>
                 <a href="${base}/cart/list">${message("shop.product.cart")}</a>
             </div>
-            <div class="col-xs-3 text-right">
+            <div class="[#if !(currentUser.napaStores.napaCode?has_content)] hidden [#else] col-xs-3 text-right [/#if]">
             [#if product.type == "general"]
                 <button id="willAddCart" class="btn btn-primary btn-flat btn-block" style="margin-bottom: -3px;"
                         type="button">${message("shop.product.addCart")}</button>

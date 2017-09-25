@@ -93,7 +93,7 @@ public class NapaStoresController extends BaseController{
 			Member member = memberService.findByUsercode(userCode);	
 			napaStores = member.getNapaStores();
 			
-			if(Integer.parseInt(type) == 0){
+			if(Integer.parseInt(type) == 1){
 				napaStores.setNapaCode(null);
 			}else{
 				napaStores.setNapaCode(store_id);

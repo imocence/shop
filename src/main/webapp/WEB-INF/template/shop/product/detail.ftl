@@ -677,7 +677,7 @@ $().ready(function() {
 								${product.unit!message("shop.product.defaultUnit")}
 							</dd>
 						</dl>
-						<div class="buy">
+						<div class="[#if !(currentUser.napaStores.napaCode?has_content)] hidden [#else] buy [/#if]">
 							<input type="button" id="addProductNotify" class="addProductNotify[#if !defaultSku.isOutOfStock] hidden[/#if]" value="${message("shop.product.addProductNotify")}" />
 							[#if product.type == "general"]
 								<input type="button" id="addCart" class="addCart[#if defaultSku.isOutOfStock] hidden[/#if]" value="${message("shop.product.addCart")}" />

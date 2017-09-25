@@ -58,7 +58,7 @@ public class RemittanceLogController extends BaseController{
 	 */
 	@PostMapping("/add")
 	public String add(BigDecimal amount,String identityCard, String memo, String name, String account, Date date,String number,String telephone,@CurrentUser Member currentUser,RedirectAttributes redirectAttributes) {
-		if(currentUser.getNapaStores().getType() == 0)
+		if(currentUser.getNapaStores().getType() == 1)
 		{
 			addFlashMessage(redirectAttributes, "member.remittance_log.limits");
 			return "redirect:list";

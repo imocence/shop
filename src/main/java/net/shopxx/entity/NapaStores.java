@@ -44,7 +44,7 @@ public class NapaStores extends BaseEntity<Long>{
 	 * 类型，type=0,1,2,3 ：代理商，服务中心，加盟店，中心店
 	 */
 	@Length(max = 2)
-	@Column
+	@Column(columnDefinition=" default 1")
 	private int type;
 	
 	/**
