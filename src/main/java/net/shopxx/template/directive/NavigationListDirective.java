@@ -18,7 +18,6 @@ import freemarker.template.TemplateDirectiveBody;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 import net.shopxx.Filter;
-import net.shopxx.Order;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.Navigation;
 import net.shopxx.entity.Navigation.Position;

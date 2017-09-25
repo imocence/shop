@@ -7,7 +7,7 @@
 				<strong>${currentUser.name}</strong>
 			</p>
 			<p>
-				${message("Member.usercode")}
+				${message("Member.usercode")}:
 				<strong>${currentUser.username}</strong>
 			</p>
 			<p>
