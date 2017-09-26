@@ -162,7 +162,7 @@
 								<div class="col-xs-4 text-center">
 									<a class="icon" href="deposit/log?type=1">
 										<span class="fa fa-ticket orange-lighter"></span>
-										${message("member.couponCode.list")}
+										${message("member.deposit.coupon")}
 									</a>
 								</div>
 							</div>
