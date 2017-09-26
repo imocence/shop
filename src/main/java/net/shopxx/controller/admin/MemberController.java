@@ -201,9 +201,6 @@ public class MemberController extends BaseController {
 					if (null == language) {
 						language = languageService.findByLocale(Locale.US.toString());
 					}
-					/*if (null != language) {
-						WebUtils.getRequest().getSession().setAttribute(LanguageController.CODE, language.getCode());
-					}*/
 				}else{
 					language = languageService.findByLocale(code);
 				}

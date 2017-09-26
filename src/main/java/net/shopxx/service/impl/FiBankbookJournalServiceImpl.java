@@ -74,6 +74,19 @@ public class FiBankbookJournalServiceImpl extends BaseServiceImpl<FiBankbookJour
 		return fiBankbookJournalDao.findPageByMemberId(type,currentUser, pageNumber);
 	}
 	/**
+	 * 
+	 * @param currentUser
+	 * @param coupon
+	 * @param string
+	 * 			“out”转出
+	 * @param string2
+	 * 			“in”获取
+	 * @return
+	 */
+	public int countN(Member currentUser, FiBankbookJournal.Type coupon, String string, String string2){
+		return fiBankbookJournalDao.countN(currentUser, coupon,string,string2);
+	}
+	/**
 	 * 查找个人充值记录
 	 * 
 	 * @param member

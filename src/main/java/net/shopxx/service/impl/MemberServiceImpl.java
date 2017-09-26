@@ -31,6 +31,7 @@ import net.shopxx.entity.FiBankbookBalance.Type;
 import net.shopxx.entity.Language;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
+import net.shopxx.entity.MemberRank;
 import net.shopxx.entity.NapaStores;
 import net.shopxx.entity.PointLog;
 import net.shopxx.entity.User;
@@ -359,17 +360,17 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 				}else{
 					member.setEmail(email);
 				}	
-				String rankName = "会员";
+				MemberRank.Type rankName = MemberRank.Type.tourist;
 				if(type == 1){
-					rankName = "会员";
+					rankName = MemberRank.Type.agent;
 				}else if(type == 2){
-					rankName = "服务中心";
+					rankName = MemberRank.Type.service;
 				}else if(type == 3){
-					rankName = "加盟店";
+					rankName = MemberRank.Type.franchise;
 				}else if(type == 4){
-					rankName = "中心店";
+					rankName = MemberRank.Type.mainstore;
 				}
-				//MemberRank memberRank = memberRankService.findByCountry(countryService.findByName(locale), rankName);
+				MemberRank memberRank = memberRankService.findByCountry(countryService.findByName(locale), rankName);
 
 				member.setMemberRank(memberRankService.findByCountry(countryService.findByName(locale), rankName));	
 				//更新区代信息
@@ -450,7 +451,8 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		member.setIsEnabled(true);
 		Country country = countryService.findByName(companyCode);
 		member.setCountry(country);	
-		member.setMemberRank(memberRankService.findByCountry(country,null));
+		 
+		member.setMemberRank(memberRankService.findByCountry(country,MemberRank.Type.agent));
 		
 		member.removeAttributeValue();
 		for (MemberAttribute memberAttribute : memberAttributeService.findList(true, true)) {

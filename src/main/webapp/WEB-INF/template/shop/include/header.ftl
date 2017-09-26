@@ -13,7 +13,14 @@ $().ready(function() {
 	var defaultKeyword = "${message("shop.header.keyword")}";
 	
 	if ($.trim(currentMemberUsername) != "") {
-		$headerName.text(currentMemberUsername).show();
+		var username = currentMemberUsername;
+
+		[#if currentUser.napaStores.napaCode?has_content]
+			username += "   ${currentUser.napaStores.napaCode}  ${currentUser.memberRank.name}";
+		[#else]
+			username += "   ${currentUser.memberRank.name}";
+		[/#if]
+		$headerName.text(username).show();
 		$headerLogout.show();
 	} else {
 		$headerLogin.show();

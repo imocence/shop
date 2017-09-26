@@ -85,7 +85,7 @@ public class MemberRankServiceImpl extends BaseServiceImpl<MemberRank, Long> imp
      */
     @Override
 	@Transactional
-	public MemberRank findByCountry(Country country,String name){
-    	return memberRankDao.findByCountry(country,name);
+	public MemberRank findByCountry(Country country,MemberRank.Type type){
+    	return memberRankDao.findByCountry(country,type);
     }
 }

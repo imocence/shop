@@ -55,6 +55,6 @@ public interface MemberRankDao extends BaseDao<MemberRank, Long> {
      * @param country
      * @return
      */
-	MemberRank findByCountry(Country country,String name);
+	MemberRank findByCountry(Country country,MemberRank.Type type);
 
 }

@@ -651,6 +651,12 @@ MemberAttribute.propertyIndex=\u5c6c\u6027\u5e8f\u865f
 MemberAttribute.options=\u53ef\u9078\u9805
 
 MemberRank.name=\u540d\u7a31
+MemberRank.type=\u6703\u54E1\u985E\u578B
+MemberRank.type.tourist=\u904A\u5BA2
+MemberRank.type.agent=\u4EE3\u7406\u5546
+MemberRank.type.service=\u670D\u52D9\u4E2D\u5FC3
+MemberRank.type.franchise=\u52A0\u76DF\u5E97
+MemberRank.type.mainstore=\u4E2D\u5FC3\u5E97
 MemberRank.scale=\u512a\u60e0\u6bd4\u4f8b
 MemberRank.amount=\u6d88\u8cbb\u91d1\u984d
 MemberRank.firstSingle=\u9996\u55AE\u5E95\u50F9

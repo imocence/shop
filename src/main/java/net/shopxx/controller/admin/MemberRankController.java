@@ -54,6 +54,7 @@ public class MemberRankController extends BaseController {
 	@GetMapping("/add")
 	public String add(ModelMap model) {
 	    model.addAttribute("countries", countryService.findRoots());
+	    model.addAttribute("types", MemberRank.Type.values());
 		return "admin/member_rank/add";
 	}
 
@@ -85,6 +86,7 @@ public class MemberRankController extends BaseController {
 	public String edit(Long id, ModelMap model) {
 	    model.addAttribute("countries", countryService.findRoots());
 		model.addAttribute("memberRank", memberRankService.find(id));
+		model.addAttribute("types", MemberRank.Type.values());
 		return "admin/member_rank/edit";
 	}
 

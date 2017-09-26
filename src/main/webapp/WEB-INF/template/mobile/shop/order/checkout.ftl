@@ -520,7 +520,7 @@
 			<div class="page-body">
 				<div class="container-fluid">
 					[#if order.isDelivery]
-						<div id="currentReceiver" class="current-receiver" data-toggle="page" data-target="#receiverPage">
+						<div id="currentReceiver" class="current-receiver" data-toggle="page" data-target=""><!--#receiverPage-->
 							<div class="media">
 								<div class="media-left media-middle">
 									<span class="glyphicon glyphicon-map-marker"></span>
@@ -785,7 +785,7 @@
 	<div id="addReceiverPage" class="add-receiver-page page">
 		<form id="addReceiverForm" action="receiver_save" method="post">
 			<div class="header-fixed">
-				<a class="pull-left" href="javascript:;" data-toggle="page" data-target="#receiverPage">
+				<a class="pull-left" href="javascript:;" data-toggle="page" data-target=""><!--#receiverPage-->
 					<span class="glyphicon glyphicon-menu-left"></span>
 				</a>
 				${message("shop.order.addReceiver")}

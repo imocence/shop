@@ -93,10 +93,13 @@ $().ready(function() {
 					<input type="checkbox" id="selectAll" />
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="name">${message("Brand.country")}</a>
+					<a href="javascript:;" class="sort" name="country">${message("Brand.country")}</a>
 				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="name">${message("MemberRank.name")}</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="type">${message("MemberRank.type")}</a>
 				</th>
 				<!-- <th>
 					<a href="javascript:;" class="sort" name="scale">${message("MemberRank.scale")}</a>
@@ -127,6 +130,13 @@ $().ready(function() {
 					</td>
 					<td>
 						${memberRank.name}
+					</td>
+					<td>
+						[#if memberRank.type?has_content]
+							${message("MemberRank.type." + memberRank.type)}
+						[#else]
+							-
+						[/#if]
 					</td>
 					<!-- <td>
 						${memberRank.scale}
