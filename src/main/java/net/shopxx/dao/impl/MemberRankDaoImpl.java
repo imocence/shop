@@ -21,10 +21,7 @@ import org.springframework.util.Assert;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.dao.MemberRankDao;
-import net.shopxx.entity.ArticleCategory;
-import net.shopxx.entity.Brand;
 import net.shopxx.entity.Country;
-import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberRank;
 
 /**

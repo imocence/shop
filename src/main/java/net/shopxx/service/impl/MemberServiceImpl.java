@@ -370,7 +370,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 				}else if(type == 4){
 					rankName = MemberRank.Type.mainstore;
 				}
-				MemberRank memberRank = memberRankService.findByCountry(countryService.findByName(locale), rankName);
+				//MemberRank memberRank = memberRankService.findByCountry(countryService.findByName(locale), rankName);
 
 				member.setMemberRank(memberRankService.findByCountry(countryService.findByName(locale), rankName));	
 				//更新区代信息

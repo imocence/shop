@@ -9,11 +9,8 @@ import java.math.BigDecimal;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
-import net.shopxx.entity.Brand;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.MemberRank;
-import net.shopxx.entity.MemberRank.Type;
-
 /**
  * Service - 会员等级
  * 
