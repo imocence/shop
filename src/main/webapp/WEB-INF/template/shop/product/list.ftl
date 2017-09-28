@@ -668,7 +668,7 @@ $().ready(function() {
 												[/#if]
 											[/#if]
 											<a href="javascript:;" class="addProductFavorite" title="${message("shop.product.addProductFavorite")}" productId="${product.id}">&nbsp;</a>
-											<a href="javascript:;" class="addCompare" title="${message("shop.product.addCompare")}" productId="${product.id}">&nbsp;</a>
+											[#--<a href="javascript:;" class="addCompare" title="${message("shop.product.addCompare")}" productId="${product.id}">&nbsp;</a>--]
 										</div>
 									</li>
 								[/#list]
