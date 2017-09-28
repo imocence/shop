@@ -172,6 +172,11 @@ function changeLanguage(){
 							<a href="stock/log" target="iframe">${message("admin.index.stock")}</a>
 						</dd>
 					[/@shiro.hasPermission]
+					[@shiro.hasPermission name="admin:sheet"]
+						<dd>
+							<a href="sheet/log" target="iframe">${message("admin.index.sheet")}</a>
+						</dd>
+					[/@shiro.hasPermission]
 					[@shiro.hasPermission name="admin:warehouse"]
 						<dd>
 							<a href="warehouse/list" target="iframe">${message("admin.index.warehouse")}</a>

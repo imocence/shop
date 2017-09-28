@@ -655,6 +655,7 @@ $().ready(function() {
 				}
 			},
 			name: "required",
+			
 			unit: "required",
 			smallUnit: "required",
 			conversion: "required",
@@ -851,10 +852,10 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					${message("Product.caption")}:
+					<span class="requiredField">*</span>${message("Product.caption")}:
 				</th>
 				<td>
-					<input type="text" name="caption" class="text" maxlength="200" />
+					<input type="text" id="caption" name="caption" class="text" maxlength="200" />
 				</td>
 			</tr>
 			<tr class="hidden">
