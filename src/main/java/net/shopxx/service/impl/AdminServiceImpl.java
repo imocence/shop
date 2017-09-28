@@ -6,6 +6,7 @@
 package net.shopxx.service.impl;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -130,5 +131,15 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin, Long> implements Ad
 	public void delete(Admin admin) {
 		super.delete(admin);
 	}
-
+	/**
+	 * 根据名称查找管理人员
+	 * @param keyword
+	 * @param count
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public List<Admin> search(String keyword, Integer count){
+		return adminDao.search(keyword,count);
+	}
 }

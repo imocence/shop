@@ -489,11 +489,13 @@ $().ready(function() {
                                                 </div>
 											[/#if]
 										</strong>
-										<div class="action">
-											[#if product.type == "general"]
-												<a href="javascript:;" class="addCart" skuId="${defaultSku.id}">${message("shop.product.addCart")}</a>
-											[#elseif product.type == "exchange"]
-												<a href="javascript:;" class="exchange" skuId="${defaultSku.id}">${message("shop.product.exchange")}</a>
+										<div class=" action ">
+											[#if permission != "noPermission"]
+												[#if product.type == "general"]
+													<a href="javascript:;" class="addCart" skuId="${defaultSku.id}">${message("shop.product.addCart")}</a>
+												[#elseif product.type == "exchange"]
+													<a href="javascript:;" class="exchange" skuId="${defaultSku.id}">${message("shop.product.exchange")}</a>
+												[/#if]
 											[/#if]
 											<a href="javascript:;" class="addProductFavorite" title="${message("shop.product.addProductFavorite")}" productId="${product.id}">&nbsp;</a>
 											[#--<a href="javascript:;" class="addCompare" title="${message("shop.product.addCompare")}" productId="${product.id}">&nbsp;</a>--]

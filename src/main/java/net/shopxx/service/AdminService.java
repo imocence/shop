@@ -5,6 +5,8 @@
  */
 package net.shopxx.service;
 
+import java.util.List;
+
 import net.shopxx.entity.Admin;
 import net.shopxx.security.AuthenticationProvider;
 
@@ -62,5 +64,12 @@ public interface AdminService extends BaseService<Admin, Long>, AuthenticationPr
 	 * @return 管理员，若不存在则返回null
 	 */
 	Admin findByEmail(String email);
+	/**
+	 * 根据名称查找管理人员
+	 * @param keyword
+	 * @param count
+	 * @return
+	 */
+	List<Admin> search(String keyword, Integer count);
 
 }

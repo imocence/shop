@@ -91,6 +91,9 @@ $().ready(function() {
 							<input type="checkbox" name="permissions" value="admin:stock" />${message("admin.role.stock")}
 						</label>
 						<label>
+							<input type="checkbox" name="permissions" value="admin:sheet" />${message("admin.role.sheet")}
+						</label>
+						<label>
 							<input type="checkbox" name="permissions" value="admin:warehouse" />${message("admin.role.warehouse")}
 						</label>
 						<label>

@@ -92,6 +92,9 @@ $().ready(function() {
 							<input type="checkbox" name="permissions" value="admin:stock"[#if role.permissions?seq_contains("admin:stock")] checked="checked"[/#if] />${message("admin.role.stock")}
 						</label>
 						<label>
+							<input type="checkbox" name="permissions" value="admin:sheet"[#if role.permissions?seq_contains("admin:sheet")] checked="checked"[/#if] />${message("admin.role.sheet")}
+						</label>
+						<label>
 							<input type="checkbox" name="permissions" value="admin:warehouse"[#if role.permissions?seq_contains("admin:warehouse")] checked="checked"[/#if] />${message("admin.role.warehouse")}
 						</label>
 						<label>

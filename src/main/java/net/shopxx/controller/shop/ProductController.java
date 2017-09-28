@@ -220,6 +220,11 @@ public class ProductController extends BaseController {
 		model.addAttribute("pageSize", pageSize);
 		model.addAttribute("currentUser", currentUser);
 		model.addAttribute("page", productService.findPage(type, productCategory,null, brand, promotion, productTag, attributeValueMap, startPrice, endPrice, true, true, null, null, null, null, orderType, pageable));
+		if(null != currentUser && (currentUser.getNapaStores().getType() == 2 || currentUser.getNapaStores().getType() == 3)){
+			model.addAttribute("permission", "permission");
+		}else{
+			model.addAttribute("permission", "noPermission");
+		}
 		return "shop/product/list";
 	}
 
@@ -251,6 +256,11 @@ public class ProductController extends BaseController {
 		model.addAttribute("pageSize", pageSize);
 		model.addAttribute("currentUser", currentUser);
 		model.addAttribute("page", productService.findPage(type, null,null, brand, promotion, productTag, null, startPrice, endPrice, true, true, null, null, null, null, orderType, pageable));
+		if(null != currentUser && (currentUser.getNapaStores().getType() == 2 || currentUser.getNapaStores().getType() == 3)){
+			model.addAttribute("permission", "permission");
+		}else{
+			model.addAttribute("permission", "noPermission");
+		}
 		return "shop/product/list";
 	}
 
@@ -335,6 +345,11 @@ public class ProductController extends BaseController {
 		model.addAttribute("orderType", orderType);
 		model.addAttribute("currentUser", currentUser);
 		model.addAttribute("page", productService.search(keyword, startPrice, endPrice, orderType, pageable));
+		if(null != currentUser && (currentUser.getNapaStores().getType() == 2 || currentUser.getNapaStores().getType() == 3)){
+			model.addAttribute("permission", "permission");
+		}else{
+			model.addAttribute("permission", "noPermission");
+		}
 		return "shop/product/search";
 	}
 

@@ -5,6 +5,8 @@
  */
 package net.shopxx.dao;
 
+import java.util.List;
+
 import net.shopxx.entity.Admin;
 
 /**
@@ -14,5 +16,12 @@ import net.shopxx.entity.Admin;
  * @version 5.0.3
  */
 public interface AdminDao extends BaseDao<Admin, Long> {
+	/**
+	 * 根据名称查找管理人员
+	 * @param keyword
+	 * @param count
+	 * @return
+	 */
+	List<Admin> search(String keyword, Integer count);
 
 }
