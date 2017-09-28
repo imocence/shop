@@ -93,7 +93,7 @@
 				<div class="panel-body small">
 					<div class="row">
 						<div class="col-xs-4 text-center">
-							<a class="icon" href="order/list?status=pendingPayment&hasExpired=false">
+							<a class="icon" href="order/list?status=pendingReview&hasExpired=false">
 								<span class="fa fa-credit-card gray"></span>
 								<span class="badge">${pendingPaymentOrderCount}</span>
 								${message("member.index.pendingPaymentOrderCount")}

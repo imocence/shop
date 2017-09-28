@@ -57,7 +57,7 @@
 							</ul>
 							<ul>
 								<li>
-									<a href="order/list?status=pendingPayment&hasExpired=false">${message("member.index.pendingPaymentOrderCount")}(<em>${pendingPaymentOrderCount}</em>)</a>
+									<a href="order/list?status=pendingReview&hasExpired=false">${message("member.index.pendingPaymentOrderCount")}(<em>${pendingPaymentOrderCount}</em>)</a>
 									<a href="order/list?status=pendingShipment&hasExpired=false">${message("member.index.pendingShipmentOrderCount")}(<em>${pendingShipmentOrderCount}</em>)</a>
 								</li>
 								<li>

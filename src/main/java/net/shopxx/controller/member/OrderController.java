@@ -116,7 +116,35 @@ public class OrderController extends BaseController {
 		model.addAttribute("status", status);
 		model.addAttribute("hasExpired", hasExpired);
 		model.addAttribute("isKuaidi100Enabled", StringUtils.isNotEmpty(setting.getKuaidi100Key()) && StringUtils.isNotEmpty(setting.getKuaidi100Customer()));
-		model.addAttribute("page", orderService.findPage(null, status, currentUser, null, null, null, null, null, null, hasExpired, pageable));
+		//model.addAttribute("page", orderService.findPage(null, status, currentUser, null, null, null, null, null, null, hasExpired, pageable));
+		/**
+		 * 查找订单分页
+		 * 
+		 * @param type
+		 *            类型
+		 * @param status
+		 *            状态
+		 * @param member
+		 *            会员
+		 * @param product
+		 *            商品
+		 * @param isPendingReceive
+		 *            是否等待收款
+		 * @param isPendingRefunds
+		 *            是否等待退款
+		 * @param isUseCouponCode
+		 *            是否已使用优惠码
+		 * @param isExchangePoint
+		 *            是否已兑换积分
+		 * @param isAllocatedStock
+		 *            是否已分配库存
+		 * @param hasExpired
+		 *            是否已过期
+		 * @param pageable
+		 *            分页信息
+		 * @return 订单分页
+		 */
+		model.addAttribute("page",orderService.findPage(null, status, currentUser, null, null, null, null, null, null, hasExpired, pageable));
 		return "member/order/list";
 	}
 
