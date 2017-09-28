@@ -9,10 +9,8 @@ import java.math.BigDecimal;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
-import net.shopxx.entity.Brand;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.MemberRank;
-
 /**
  * Service - 会员等级
  * 
@@ -63,5 +61,5 @@ public interface MemberRankService extends BaseService<MemberRank, Long> {
 	 * @param country
 	 * @return
 	 */
-	MemberRank findByCountry(Country country,String name);
+	MemberRank findByCountry(Country country,MemberRank.Type agent);
 }

@@ -6,11 +6,13 @@
 package net.shopxx.controller.member;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.shopxx.controller.common.LanguageController;
 import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.Language;
 import net.shopxx.entity.Member;
@@ -23,6 +25,7 @@ import net.shopxx.service.MemberService;
 import net.shopxx.service.PluginService;
 import net.shopxx.service.SocialUserService;
 import net.shopxx.service.UserService;
+import net.shopxx.util.SpringUtils;
 import net.shopxx.util.TimeUtil;
 import net.shopxx.util.WebUtils;
 
@@ -33,6 +36,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.LocaleResolver;
 
 /**
  * Controller - 会员登录
@@ -107,11 +111,22 @@ public class LoginController extends BaseController {
 		String signature = request.getParameter("signature");
 		String timestamp = request.getParameter("timestamp");
 		
-		// 处理语言
+		//获取国家语言
+		String code = (String)WebUtils.getRequest().getSession().getAttribute(LanguageController.CODE);
 		Language language = null;
-		// 默认获取该用户的语言
-		if (null != member) {
-			language = member.getLanguage();
+		if (null == code) {
+			LocaleResolver localeResolver = SpringUtils.getBean("localeResolver", LocaleResolver.class);
+			Locale locale = localeResolver.resolveLocale(WebUtils.getRequest());
+			if (null  == locale) {
+				locale = Locale.getDefault();
+			}
+			String localeStr = locale.getLanguage() + "_" + locale.getCountry();
+			language = languageService.findByLocale(localeStr);
+			if (null == language) {
+				language = languageService.findByLocale(Locale.US.toString());
+			}
+		}else{
+			language = languageService.findByLocale(code);
 		}
 		languageService.setLanguage(language);
 		

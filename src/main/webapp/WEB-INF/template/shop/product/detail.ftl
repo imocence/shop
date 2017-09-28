@@ -532,12 +532,12 @@ $().ready(function() {
 							<em>${product.caption}</em>
 						[/#if]
 					</h1>
-					<dl>
+					<!--<dl>
 						<dt>${message("Product.sn")}:</dt>
 						<dd>
 							${product.sn}
 						</dd>
-					</dl>
+					</dl>-->
 					[#if product.type != "general"]
 						<dl>
 							<dt>${message("Product.type")}:</dt>
@@ -633,7 +633,7 @@ $().ready(function() {
 					[/#if]
 				</div>
 				[#if product.type == "general" || product.type == "exchange"]
-					<div class="action">
+					<div class="[#if permission == "noPermission"] hidden [#else] action [/#if]">
 						[#if product.hasSpecification()]
 							[#assign defaultSpecificationValueIds = defaultSku.specificationValueIds /]
 							<div id="specification" class="specification clearfix">
@@ -677,7 +677,7 @@ $().ready(function() {
 								${product.unit!message("shop.product.defaultUnit")}
 							</dd>
 						</dl>
-						<div class="[#if !(currentUser.napaStores.napaCode?has_content)] hidden [#else] buy [/#if]">
+						<div class="buy">
 							<input type="button" id="addProductNotify" class="addProductNotify[#if !defaultSku.isOutOfStock] hidden[/#if]" value="${message("shop.product.addProductNotify")}" />
 							[#if product.type == "general"]
 								<input type="button" id="addCart" class="addCart[#if defaultSku.isOutOfStock] hidden[/#if]" value="${message("shop.product.addCart")}" />
@@ -688,7 +688,7 @@ $().ready(function() {
 						</div>
 					</div>
 				[/#if]
-				<div class="share">
+				<div class="hidden"><!-- share -->
 					<div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare">
 						<a class="bds_qzone"></a>
 						<a class="bds_tsina"></a>

@@ -95,6 +95,11 @@ public class ProductController extends BaseController {
 		}
 		model.addAttribute("product", product);
 		model.addAttribute("currentUser", currentUser);
+		if(null != currentUser && (currentUser.getNapaStores().getType() == 2 || currentUser.getNapaStores().getType() == 3)){
+			model.addAttribute("permission", "permission");
+		}else{
+			model.addAttribute("permission", "noPermission");
+		}
 		return "shop/product/detail";
 	}
 

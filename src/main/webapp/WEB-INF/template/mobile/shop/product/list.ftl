@@ -46,7 +46,7 @@
 					<a href="${base}<%-product.path%>">
 						<img class="img-responsive center-block" src="<%-product.thumbnail != null ? product.thumbnail : "${setting.defaultThumbnailProductImage}"%>" alt="<%-product.name%>">
 						<h4 class="text-overflow"><%-product.name%></h4>
-						<%if (product.type == "general") {%>					
+						<%if (product.type == "general") {%>			
 							<%if (product.productGrades != null) {%>								
 								<%_.each(product.productGrades, function(productGrade, i) {%>
 									<%if (productGrade.grade.isDefault) {%>

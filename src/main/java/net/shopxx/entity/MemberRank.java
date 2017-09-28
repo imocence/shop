@@ -37,7 +37,34 @@ import com.fasterxml.jackson.annotation.JsonView;
 public class MemberRank extends BaseEntity<Long> {
 
 	private static final long serialVersionUID = 3599029355500655209L;
-
+	/**
+	 * 会员等级：0游客，1代理商，2服务中心，3加盟店，4中心店
+	 * @author sihao
+	 *
+	 */
+	public enum Type {
+		/**
+		 * 游客
+		 */
+		tourist,
+		/**
+		 * 代理商
+		 */
+		agent,
+		/**
+		 * 服务中心
+		 */
+		service,
+		/**
+		 * 加盟店
+		 */
+		franchise,
+		
+		/**
+		 * 中心店
+		 */
+		mainstore;
+	}
 	/**
 	 * 名称
 	 */
@@ -101,7 +128,13 @@ public class MemberRank extends BaseEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(nullable = true)
     private Country  country;
-    
+    /**
+	 * 类型，type=1,2,3,5：代理商，服务中心，加盟店，中心店
+	 */
+    @JsonView(BaseView.class)
+    @Column(name="type")
+	private MemberRank.Type type;
+	
 
 	/**
 	 * 会员
@@ -295,6 +328,19 @@ public class MemberRank extends BaseEntity<Long> {
     public void setCountry(Country country) {
         this.country = country;
     }
-	
+    /**
+     * 获取会员类型
+     * @return
+     */
+    public MemberRank.Type getType() {
+		return type;
+	}
+    /**
+     * 设置会员类型
+     * @return
+     */
+	public void setType(MemberRank.Type type) {
+		this.type = type;
+	}
 
 }

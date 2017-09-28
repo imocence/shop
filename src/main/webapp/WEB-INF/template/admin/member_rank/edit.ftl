@@ -99,6 +99,19 @@ $().ready(function() {
 					<input type="text" name="name" class="text" value="${memberRank.name}" maxlength="200" />
 				</td>
 			</tr>
+			<tr>
+				<th>
+					<span class="requiredField">*</span>${message("MemberRank.type")}:
+				</th>
+				<td>
+					<select name="type">
+						[#list types as type]
+							<option value="${type}" [#if memberRank.type == type] selected="selected"[/#if]>${message("MemberRank.type." + type)}</option>
+						[/#list]
+					</select>
+				</td>
+			</tr>
+			
 			<tr class="hidden">
 				<th>
 					<span class="requiredField">*</span>${message("MemberRank.scale")}:

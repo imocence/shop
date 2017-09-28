@@ -223,7 +223,7 @@
                     </a>
                 </div>
                 <div class="col-xs-3 text-center">
-                    <a href="${base}/product/list/1">
+                    <a href="${base}/product/search?keyword=\"卡丽施\"">
                         <img src="${base}/upload/image/热门.png" alt="热门搜索">
                     ${message('shop.mobile.hotsearch')}
                     </a>

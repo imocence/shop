@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import net.shopxx.entity.FiBankbookBalance;
+import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.Order;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.service.ConsultationService;
 import net.shopxx.service.CouponCodeService;
 import net.shopxx.service.FiBankbookBalanceService;
+import net.shopxx.service.FiBankbookJournalService;
 import net.shopxx.service.MessageService;
 import net.shopxx.service.NapaStoresService;
 import net.shopxx.service.OrderService;
@@ -64,13 +66,15 @@ public class IndexController extends BaseController {
 	FiBankbookBalanceService fiBankbookBalanceService;
 	@Inject
 	NapaStoresService napaStoresService;
+	@Inject
+	FiBankbookJournalService fiBankbookJournalService;
 	/**
 	 * 首页
 	 */
 	@GetMapping
 	public String index(@CurrentUser Member currentUser, ModelMap model) {
 		
-		model.addAttribute("pendingPaymentOrderCount", orderService.count(null, Order.Status.pendingPayment, currentUser, null, null, null, null, null, null, false));
+		model.addAttribute("pendingPaymentOrderCount", orderService.count(null, Order.Status.pendingReview, currentUser, null, null, null, null, null, null, false));
 		model.addAttribute("shippedOrderCount", orderService.count(null, Order.Status.shipped, currentUser, null, null, null, null, null, null, null));
 		model.addAttribute("pendingShipmentOrderCount", orderService.count(null, Order.Status.pendingShipment, currentUser, null, null, null, null, null, null, null));
 		model.addAttribute("messageCount", messageService.count(currentUser, false));
@@ -80,7 +84,7 @@ public class IndexController extends BaseController {
 		model.addAttribute("reviewCount", reviewService.count(currentUser, null, null, null));
 		model.addAttribute("consultationCount", consultationService.count(currentUser, null, null));
 		model.addAttribute("newOrders", orderService.findList(null, null, currentUser, null, null, null, null, null, null, null, NEW_ORDER_SIZE, null, null));
-
+		model.addAttribute("depositGift", fiBankbookJournalService.countN(currentUser,FiBankbookJournal.Type.coupon,"OUT","IN"));
 		//会员存折
 		model.addAttribute("fiBankbookBalance", fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.balance));
 		model.addAttribute("fiBankbookCoupon", fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.coupon));

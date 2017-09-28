@@ -21,10 +21,7 @@ import org.springframework.util.Assert;
 import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.dao.MemberRankDao;
-import net.shopxx.entity.ArticleCategory;
-import net.shopxx.entity.Brand;
 import net.shopxx.entity.Country;
-import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberRank;
 
 /**
@@ -76,14 +73,12 @@ public class MemberRankDaoImpl extends BaseDaoImpl<MemberRank, Long> implements 
         return super.findPage(criteriaQuery, pageable);
     }
     @Override
-    public MemberRank findByCountry(Country country,String name){
-    	if(name == null){
-    		name = "会员";
-    	}
-    	String jpql = "select memberRank from MemberRank memberRank where country = :country and name =:name ";
+    public MemberRank findByCountry(Country country,MemberRank.Type type){
+
+    	String jpql = "select memberRank from MemberRank memberRank where country = :country and type =:type ";
 		TypedQuery<MemberRank> query = entityManager.createQuery(jpql, MemberRank.class);
 		query.setParameter("country", country);
-		query.setParameter("name", name);
+		query.setParameter("type", type);
 		query.setMaxResults(1);
 		List<MemberRank> list= query.getResultList();
 		if (null != list && !list.isEmpty()) {

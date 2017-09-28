@@ -63,4 +63,6 @@ public interface FiBankbookJournalDao extends BaseDao<FiBankbookJournal, Long> {
 	 * @return
 	 */
 	FiBankbookJournal findByMemberAndCode(Member member, String code);
+
+	int countN(Member currentUser, FiBankbookJournal.Type coupon, String string, String string2);
 }

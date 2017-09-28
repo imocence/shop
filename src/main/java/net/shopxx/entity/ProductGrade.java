@@ -24,7 +24,6 @@ import org.hibernate.search.annotations.Store;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import net.shopxx.BigDecimalNumericFieldBridge;
-import net.shopxx.entity.BaseEntity.BaseView;
 
 /**
  * Entity - 产品等级表

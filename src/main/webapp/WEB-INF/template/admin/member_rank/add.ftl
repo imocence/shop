@@ -34,6 +34,7 @@ $().ready(function() {
 	$inputForm.validate({
 		rules: {
 			name: "required",
+			type: "required",
 			firstSingle: {
 				required: true,
 				min: 0,
@@ -97,6 +98,18 @@ $().ready(function() {
 				</th>
 				<td>
 					<input type="text" name="name" class="text" maxlength="200" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span class="requiredField">*</span>${message("MemberRank.type")}:
+				</th>
+				<td>
+					<select name="type">
+						[#list types as type]
+							<option value="${type}">${message("MemberRank.type." + type)}</option>
+						[/#list]
+					</select>
 				</td>
 			</tr>
 			<tr class="hidden">

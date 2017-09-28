@@ -77,5 +77,15 @@ public interface FiBankbookJournalService extends BaseService<FiBankbookJournal,
 	 * @return
 	 */
 	FiBankbookJournal findByMemberAndCode(Member member, String code);
-
+	/**
+	 * 
+	 * @param currentUser
+	 * @param coupon
+	 * @param string
+	 * 			“out”转出
+	 * @param string2
+	 * 			“in”获取
+	 * @return
+	 */
+	int countN(Member currentUser, FiBankbookJournal.Type coupon, String string, String string2);
 }
