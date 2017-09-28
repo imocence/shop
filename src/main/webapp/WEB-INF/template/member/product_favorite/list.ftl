@@ -82,7 +82,20 @@ $().ready(function() {
 									<a href="${base}${productFavorite.product.path}" title="${productFavorite.product.name}" target="_blank">${abbreviate(productFavorite.product.name, 30)}</a>
 								</td>
 								<td>
-									${currency(productFavorite.product.price, true)}
+									[#if currentUser == null] 
+									   [#list productFavorite.product.productGrades as pg]
+											[#if pg.grade.isDefault == true]
+											   ${currency(pg.price, true)}
+											[/#if]
+									    [/#list]
+									[#else]
+										[#list productFavorite.product.productGrades as pg]
+											[#if pg.grade.id == currentUser.memberRank.id]
+											  ${currency(pg.price, true)}
+											[/#if]
+									    [/#list]
+									[/#if]
+									
 								</td>
 								<td>
 									<a href="javascript:;" class="delete" data-product-favorite-id="${productFavorite.id}">[${message("member.common.delete")}]</a>

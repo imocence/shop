@@ -160,7 +160,7 @@ public class SheetServiceImpl extends BaseServiceImpl<Sheet, Long> implements Sh
 						Product product = productService.findBySn(sn);
 						Set<Sku> skus = product.getSkus();
 						for(Sku sku : skus){						
-							skuService.addStock(sku, sheetItem.getQuantity(), StockLog.Type.stockIn, "");
+							skuService.addStock(sku, sheetItem.getQuantity(), StockLog.Type.stockIn, "入库单入库，编号："+sheet.getSn()+"，操作人："+admin.getUsername());
 						}
 					}				
 				}

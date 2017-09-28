@@ -95,6 +95,7 @@ public class ProductFavoriteController extends BaseController {
 	public String list(Integer pageNumber, @CurrentUser Member currentUser, ModelMap model) {
 		Pageable pageable = new Pageable(pageNumber, PAGE_SIZE);
 		model.addAttribute("page", productFavoriteService.findPage(currentUser, pageable));
+		model.addAttribute("currentUser", currentUser);
 		return "member/product_favorite/list";
 	}
 
