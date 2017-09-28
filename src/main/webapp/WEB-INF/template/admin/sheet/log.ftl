@@ -10,18 +10,24 @@
 <script type="text/javascript" src="${base}/resources/admin/js/jquery.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/common.js"></script>
 <script type="text/javascript" src="${base}/resources/admin/js/list.js"></script>
+<script type="text/javascript" src="${base}/resources/admin/js/country.js"></script>
 <script type="text/javascript">
 $().ready(function() {
 	var $listForm = $("#listForm");
 	var $countryId = $("#countryId");
-	var $typeMenu = $("#typeMenu");
-	var $typeMenuItem = $("#typeMenu li");
+
 	var $ids = $("#listTable input[name='ids']");
 	var $selectAll = $("#selectAll");
 	var $shippingButton = $("#shippingButton");
 	var $refundsButton = $("#refundsButton");
+
+	var $statusName = $("#statusName");
+	var $statusMenu = $("#statusMenu");
+	var $statusMenuItem = $("#statusMenu li");
+	
+	
 	[@flash_message /]
-	$typeMenu.hover(
+	$statusMenu.hover(
 		function() {
 			$(this).children("ul").show();
 		}, function() {
@@ -29,8 +35,8 @@ $().ready(function() {
 		}
 	);
 	
-	$typeMenuItem.click(function() {
-		$countryId.val($(this).attr("val"));
+	$statusMenuItem.click(function() {
+		$statusName.val($(this).attr("val"));
 		$listForm.submit();
 	});
 	// 选择
@@ -148,7 +154,8 @@ $().ready(function() {
 		${message("admin.stock.log")} <span>(${message("admin.page.total", page.total)})</span>
 	</div>
 	<form id="listForm" action="log" method="get">
-	<input type="hidden" id="countryId" name="countryId" value="${countryId}" />
+		<input type="hidden" id="statusName" name="statusName" value="${statusName}" />
+		<input type="hidden" id="countryName" name="countryName" value="${countryName}" />
 		<div class="bar">
 			<div class="buttonGroup">
 				<a href="javascript:;" id="deleteButton" class="iconButton disabled">
@@ -160,19 +167,30 @@ $().ready(function() {
 				<a href="javascript:;" id="refreshButton" class="iconButton">
 					<span class="refreshIcon">&nbsp;</span>${message("admin.common.refresh")}
 				</a>
-		   		<div id="typeMenu" class="dropdownMenu">
+		   		<div id="countryMenu" class="dropdownMenu">
 					<a href="javascript:;" class="button">
 						${message("common.country")}<span class="arrow">&nbsp;</span>
 					</a>
 					<ul>
-						<li[#if countryId == null] class="current"[/#if] val="">${message("Brand.country.all")}</li>
+						<li[#if country.name == null] class="current"[/#if] val="">${message("common.country.all")}</li>
 						[@country_list]
-							[#list countries as country]
-								<li[#if country.id == currentType] class="current"[/#if] val="${country.id}">${country.name}</li>
+							[#list countrys as country]
+								<li[#if country.name == countryName] class="current"[/#if] val="${country.name}">${message("${country.nameLocal}")}</li>
 							[/#list]
 						[/@country_list]
 					</ul>
-		   		</div>
+				</div>
+				<div id="statusMenu" class="dropdownMenu">
+					<a href="javascript:;" class="button">
+						${message("StockLog.type")}<span class="arrow">&nbsp;</span>
+					</a>
+					<ul>
+						<li [#if statusName == null] class="current"[/#if] val="">${message("common.country.all")}</li>
+						[#list statuss as value]
+							<li [#if value == countryName] class="current"[/#if] val="${value}">${message("admin.sheet.${value}")}</li>
+						[/#list]
+					</ul>
+				</div>
 				<div id="pageSizeMenu" class="dropdownMenu">
 					<a href="javascript:;" class="button">
 						${message("admin.page.pageSize")}<span class="arrow">&nbsp;</span>
@@ -217,9 +235,7 @@ $().ready(function() {
 				<th>
 					<a href="javascript:;" class="sort" name="auditor">${message("admin.sheet.auditor")}</a>
 				</th>
-				<th>
-					<a href="javascript:;" class="sort" name="modify">${message("admin.sheet.modify")}</a>
-				</th>
+
 				<th>
 					<a href="javascript:;" class="sort" name="type">${message("StockLog.type")}</a>
 				</th>
@@ -250,9 +266,7 @@ $().ready(function() {
 					<td>
 						${sheetLog.auditor}
 					</td>
-					<td>
-						${sheetLog.modifyName}
-					</td>
+
 					<td>
 						${message("admin.sheet." + sheetLog.status)}
 					</td>
@@ -264,11 +278,6 @@ $().ready(function() {
 					</td>
 					<td>
 						<a href="view?id=${sheetLog.id}">[${message("admin.common.view")}]</a>
-						[#if sheetLog.status == "pendingReview"]
-							<a href="edit?id=${sheetLog.id}">[${message("admin.common.edit")}]</a>
-						[#else]
-							<span title="${message("admin.sheet.editNotAllowed")}">[${message("admin.common.edit")}]</span>
-						[/#if]
 					</td>
 				</tr>
 			[/#list]

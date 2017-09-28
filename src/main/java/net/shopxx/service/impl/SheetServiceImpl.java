@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
@@ -115,6 +116,35 @@ public class SheetServiceImpl extends BaseServiceImpl<Sheet, Long> implements Sh
 		sheet.setSheetItems(sheetItems);
 		sheetDao.persist(sheet);
 		return true;
+	}
+	/**
+	 * 更新
+	 */
+	public void modify(Sheet sheet){
+		Assert.notNull(sheet);
+		//设置入库单项
+		List<SheetItem> sheetItems = new ArrayList<SheetItem>();
+		List<SheetItem> curSheetItems = sheet.getSheetItems();
+		if(null != curSheetItems){
+			for(SheetItem curSheetItem : curSheetItems){
+				if (null == curSheetItem.getQuantity() || curSheetItem.getQuantity() == 0 || null == curSheetItem.getSn()) {
+					continue;
+				}
+				SheetItem sheetItem = new SheetItem();
+				String sn = curSheetItem.getSn();
+				Product product = productService.findBySn(sn);
+				Sku sku = skuService.findBySn(sn);
+				sheetItem.setSn(sn);
+				sheetItem.setQuantity(curSheetItem.getQuantity());
+				sheetItem.setName(product.getName());
+				sheetItem.setType(product.getType());
+				sheetItem.setSheet(sheet);
+				sheetItem.setSku(sku);
+				sheetItems.add(sheetItem);
+			}
+		}
+		sheet.setSheetItems(sheetItems);
+		sheetDao.persist(sheet);
 	}
 	/**
 	 * 入库单入库

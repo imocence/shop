@@ -16,7 +16,6 @@ import net.shopxx.Page;
 import net.shopxx.Pageable;
 import net.shopxx.entity.Admin;
 import net.shopxx.entity.Country;
-import net.shopxx.entity.Order;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.ProductCategory;
 import net.shopxx.entity.Sheet;
@@ -59,12 +58,27 @@ public class SheetController extends BaseController{
 	@Inject
 	private ProductService productService;
 	/**
+	 * 更新
+	 */
+	@PostMapping("/update")
+	public String update(Long id,@CurrentUser Admin currentUser,SheetItem sheetItem,RedirectAttributes redirectAttributes){
+		Sheet sheet = sheetService.find(id);
+		if(null == sheet|| (!Sheet.Status.pendingReview.equals(sheet.getStatus()))){
+			return ERROR_VIEW;
+		}
+		sheet.setModifyName(currentUser.getUsername());
+		
+		sheetService.modify(sheet);
+		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
+		return "admin/sheet/log";
+	}
+	/**
 	 * 记录
 	 */
 	@GetMapping("/log")
-	public String log(String countryName,Pageable pageable,Sheet.Status status,String createName,String modifyName,String auditorName,Boolean hasExpired, ModelMap model) {
-		model.addAttribute("statuses", Sheet.Status.values());
-		model.addAttribute("status", status);
+	public String log(String countryName,Pageable pageable,Sheet.Status statusName,String createName,String modifyName,String auditorName,Boolean hasExpired, ModelMap model) {
+		model.addAttribute("statuss", Sheet.Status.values());
+		model.addAttribute("status", statusName);
 		model.addAttribute("createName", createName);
 		model.addAttribute("modifyName", modifyName);
 		model.addAttribute("auditorName", auditorName);
@@ -86,7 +100,7 @@ public class SheetController extends BaseController{
 		if(StringUtils.isNotEmpty(createName) && admin == null){
 			model.addAttribute("page", Page.emptyPage(pageable));
 		}else{
-			model.addAttribute("page", sheetService.findPage(status,admin,modifyName,country,hasExpired,pageable));
+			model.addAttribute("page", sheetService.findPage(statusName,admin,modifyName,country,hasExpired,pageable));
 		}
 		return "admin/sheet/log";
 	}
@@ -98,7 +112,7 @@ public class SheetController extends BaseController{
 		if (ids != null) {
 			for (Long id : ids) {
 				Sheet sheet = sheetService.find(id);
-				if (sheet == null) {
+				if (null == sheet || (!Sheet.Status.pendingReview.equals(sheet.getStatus()))) {
 					return Message.error("admin.order.deleteLockedNotAllowed", sheet.getSn());
 				}
 			}
@@ -220,6 +234,23 @@ public class SheetController extends BaseController{
 		return "redirect:log";
 	}
 	/**
+	 * 审核或拒绝
+	 */	
+	@PostMapping("/review")
+	public @ResponseBody Message review(Long id,@CurrentUser Admin currentUser,Sheet.Status status) {
+		// 待审核状态  状态改为“审核”或者“拒绝”
+		Sheet sheet = sheetService.find(id);
+		Set<Sheet> sheets = new HashSet<Sheet>();
+		sheets.add(sheet);
+		try {
+			sheetService.shippingReview(sheets,currentUser,status);//将入库单商品入库
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Message(Message.Type.error, e.getMessage());
+		}
+		return Message.success(SUCCESS_MESSAGE);
+	}
+	/**
 	 * 审核
 	 */
 	@PostMapping("/shippingReview")
@@ -266,17 +297,17 @@ public class SheetController extends BaseController{
 		return Message.success(SUCCESS_MESSAGE);
 	}
 	/**
-	 * 编辑
+	 * 查看
 	 */
-	@GetMapping("/edit")
-	public String edit(Long id, ModelMap model) {
+	@GetMapping("/view")
+	public String view(Long id, ModelMap model) {
 		Sheet sheet = sheetService.find(id);
-		if (sheet == null || (!Sheet.Status.pendingReview.equals(sheet.getStatus()) )) {
+		if (sheet == null) {
 			return ERROR_VIEW;
 		}
 		Country country = sheet.getCountry();
 		model.addAttribute("sheet", sheet);
 		model.addAttribute("country", country);
-		return "admin/sheet/edit";
+		return "admin/sheet/view";
 	}
 }

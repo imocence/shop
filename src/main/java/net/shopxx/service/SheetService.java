@@ -58,6 +58,11 @@ public interface SheetService extends BaseService<Sheet, Long> {
 	 * @throws Exception 
 	 */
 	boolean shippingReview(Set<Sheet> sheets,Admin admin,Sheet.Status status) throws Exception;
+	/**
+	 * 更新
+	 * @param sheet
+	 */
+	void modify(Sheet sheet);
 
 
 }
