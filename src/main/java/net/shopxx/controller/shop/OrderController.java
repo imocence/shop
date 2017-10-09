@@ -213,7 +213,7 @@ public class OrderController extends BaseController {
 			return "redirect:/cart/list";
 		}
 		List<PaymentMethod> paymentMethods = paymentMethodService.findAll();
-		List<ShippingMethod> shippingMethods = shippingMethodService.findAll();
+		List<ShippingMethod> shippingMethods = shippingMethodService.findAll(currentUser.getCountry());
 		PaymentMethod defaultPaymentMethod = CollectionUtils.isNotEmpty(paymentMethods) ? paymentMethods.get(0) : null;
 		ShippingMethod defaultShippingMethod = null;
 		if (defaultPaymentMethod != null) {

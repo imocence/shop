@@ -1563,8 +1563,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements
 		// 构建订单发货
 		OrderShipping orderShipping = new OrderShipping();
 		orderShipping.setOrder(order);
+
 		// 获取配送方式
-		orderShipping.setShippingMethod(shippingMethod);
+		orderShipping.setShippingMethod(order.getShippingMethod());
+		//orderShipping.setShippingMethod(shippingMethod);
 		orderShipping.setDeliveryCorp(deliveryCorp);
 		orderShipping.setDeliveryCorpUrl(deliveryCorpUrl);
 		orderShipping.setDeliveryCorpCode(deliveryCorpCode);
