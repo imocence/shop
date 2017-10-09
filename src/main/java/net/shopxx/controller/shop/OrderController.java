@@ -293,7 +293,7 @@ public class OrderController extends BaseController {
 		model.addAttribute("paymentMethods", paymentMethodService.findAll());
 		model.addAttribute("fiBankbookBalance", fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.balance));//会员余额账户
 		model.addAttribute("fiBankbookCoupon", fiBankbookBalanceService.find(currentUser,FiBankbookBalance.Type.coupon));//会员余额账户
-		model.addAttribute("shippingMethods", shippingMethodService.findAll());
+		model.addAttribute("shippingMethods", shippingMethodService.findAll(currentUser.getCountry()));
 		return "shop/order/checkout";
 	}
 
