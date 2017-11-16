@@ -66,9 +66,9 @@ public class MemberRankController extends BaseController {
 		if (!isValid(memberRank)) {
 			return ERROR_VIEW;
 		}
+		memberRank.setAmount(new BigDecimal("1"));
 		if (memberRank.getIsSpecial()) {
-			memberRank.setAmount(null);
-		} else if (memberRank.getAmount() == null || memberRankService.amountExists(memberRank.getAmount())) {
+		} else if (memberRank.getAmount() == null) {//|| memberRankService.amountExists(memberRank.getAmount())
 			return ERROR_VIEW;
 		}
 		memberRank.setCountry(countryService.find(memberRank.getCountry().getId()));
@@ -105,11 +105,11 @@ public class MemberRankController extends BaseController {
 		if (pMemberRank.getIsDefault()) {
 			memberRank.setIsDefault(true);
 		}
-		if (memberRank.getIsSpecial()) {
+		/*if (memberRank.getIsSpecial()) {
 			memberRank.setAmount(null);
 		} else if (memberRank.getAmount() == null || !memberRankService.amountUnique(id, memberRank.getAmount())) {
 			return ERROR_VIEW;
-		}
+		}*/
 		memberRank.setCountry(countryService.find(memberRank.getCountry().getId()));
 		memberRankService.update(memberRank, "members", "promotions");
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));

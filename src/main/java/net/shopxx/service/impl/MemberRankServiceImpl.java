@@ -6,6 +6,7 @@
 package net.shopxx.service.impl;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -87,5 +88,13 @@ public class MemberRankServiceImpl extends BaseServiceImpl<MemberRank, Long> imp
 	@Transactional
 	public MemberRank findByCountry(Country country,MemberRank.Type type){
     	return memberRankDao.findByCountry(country,type);
+    }
+    /**
+     * 根据国家取等级信息
+     */
+    @Override
+    @Transactional
+    public List<MemberRank> findMemberRankByType(MemberRank.Type type){
+    	return memberRankDao.findByType(type);
     }
 }

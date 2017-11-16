@@ -44,7 +44,19 @@ public class AreaController {
 	 */
 	@GetMapping
 	public @ResponseBody List<Map<String, Object>> index(Long parentId, Long countryId) {
-		if (parentId == null && countryId != null){
+		if (parentId == null && countryId == null){
+			List<Map<String, Object>> data = new ArrayList<>();
+			Country c  = countryService.getDefaultCountry();
+			Collection<Area> areas = c.getAreas();
+			for (Area area : areas) {
+				Map<String, Object> item = new HashMap<>();
+				item.put("name", area.getName());
+				item.put("value", area.getId());
+				data.add(item);
+			}
+			return data;
+		}else if(parentId == null && countryId != null){
+			
 			List<Map<String, Object>> data = new ArrayList<>();
 			Country c = countryService.find(countryId);
 			Collection<Area> areas = c.getAreas();

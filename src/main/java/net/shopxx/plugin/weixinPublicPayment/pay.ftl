@@ -7,7 +7,7 @@
 	<meta name="format-detection" content="telephone=no">
 	<meta name="author" content="SHOP++ Team">
 	<meta name="copyright" content="SHOP++">
-	<title>${message("shop.payment.pay")}[#if showPowered] - Powered By SHOP++[/#if]</title>
+	<title>${message("shop.payment.pay")}[#if showPowered] [/#if]</title>
 	<script type="text/javascript" src="${base}/resources/shop/js/jweixin.js"></script>
 	<script type="text/javascript">
 		if (typeof WeixinJSBridge == "undefined") {

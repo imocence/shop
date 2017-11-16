@@ -60,7 +60,6 @@ import net.shopxx.service.ProductTagService;
 import net.shopxx.service.PromotionService;
 import net.shopxx.service.SkuService;
 import net.shopxx.service.SpecificationItemService;
-import net.shopxx.service.SpecificationService;
 import net.shopxx.util.ExcelUtils;
 
 /**

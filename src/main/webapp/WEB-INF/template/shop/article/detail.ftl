@@ -4,7 +4,7 @@
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 [@seo type = "articleDetail"]
-	<title>[#if article.resolveSeoTitle()?has_content]${article.resolveSeoTitle()}[#else]${seo.resolveTitle()}[/#if][#if showPowered] - Powered By SHOP++[/#if]</title>
+	<title>[#if article.resolveSeoTitle()?has_content]${article.resolveSeoTitle()}[#else]${seo.resolveTitle()}[/#if][#if showPowered] [/#if]</title>
 	<meta name="author" content="SHOP++ Team" />
 	<meta name="copyright" content="SHOP++" />
 	[#if article.resolveSeoKeywords()?has_content]

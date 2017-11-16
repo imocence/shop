@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>${message("common.error.unprocessableEntity")}[#if showPowered] - Powered By SHOP++[/#if]</title>
+<title>${message("common.error.unprocessableEntity")}[#if showPowered] [/#if]</title>
 <meta name="author" content="SHOP++ Team" />
 <meta name="copyright" content="SHOP++" />
 <link href="${base}/resources/shop/css/common.css" rel="stylesheet" type="text/css" />

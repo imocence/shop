@@ -7,7 +7,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="author" content="SHOP++ Team">
     <meta name="copyright" content="SHOP++">
-    <title>${message("member.couponCode.transfer-record")}[#if showPowered] - Powered By SHOP++[/#if]</title>
+    <title>${message("member.couponCode.transfer-record")}[#if showPowered] [/#if]</title>
     <link href="${base}/favicon.ico" rel="icon">
     <link href="${base}/resources/mobile/member/css/bootstrap.css" rel="stylesheet">
     <link href="${base}/resources/mobile/member/css/font-awesome.css" rel="stylesheet">

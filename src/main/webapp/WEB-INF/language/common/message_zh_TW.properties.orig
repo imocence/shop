@@ -657,6 +657,7 @@ MemberRank.type.agent=\u4EE3\u7406\u5546
 MemberRank.type.service=\u670D\u52D9\u4E2D\u5FC3
 MemberRank.type.franchise=\u52A0\u76DF\u5E97
 MemberRank.type.mainstore=\u4E2D\u5FC3\u5E97
+MemberRank.type.register=\u8A3B\u518A\u7528\u6236
 MemberRank.scale=\u512a\u60e0\u6bd4\u4f8b
 MemberRank.amount=\u6d88\u8cbb\u91d1\u984d
 MemberRank.firstSingle=\u9996\u55AE\u5E95\u50F9

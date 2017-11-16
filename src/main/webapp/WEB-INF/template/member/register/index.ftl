@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>${message("member.register.title")}[#if showPowered] - Powered By SHOP++[/#if]</title>
+<title>${message("member.register.title")}[#if showPowered] [/#if]</title>
 <meta name="author" content="SHOP++ Team" />
 <meta name="copyright" content="SHOP++" />
 <link href="${base}/resources/member/css/animate.css" rel="stylesheet" type="text/css" />
@@ -146,7 +146,7 @@ $().ready(function() {
 										<span class="requiredField">*</span>${message("member.register.username")}:
 									</th>
 									<td>
-										<input type="text" name="username" class="text" maxlength="20" />
+										<input type="text" name="username" placeholder="${message("member.register.username.placeholder")}" class="text" maxlength="20" />
 									</td>
 								</tr>
 								<tr>

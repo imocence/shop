@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>${message("admin.consultation.reply")} - Powered By SHOP++</title>
+<title>${message("admin.consultation.reply")} </title>
 <meta name="author" content="SHOP++ Team" />
 <meta name="copyright" content="SHOP++" />
 <link href="${base}/resources/admin/css/common.css" rel="stylesheet" type="text/css" />

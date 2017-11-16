@@ -19,7 +19,7 @@
         <meta name="description" content="${seo.resolveDescription()}">
     [/#if]
     <title>[#if product.resolveSeoTitle()?has_content]${product.resolveSeoTitle()}[#else]${seo.resolveTitle()}[/#if][#if showPowered]
-        - Powered By SHOP++[/#if]</title>
+        [/#if]</title>
 [/@seo]
     <link href="${base}/favicon.ico" rel="icon">
     <link href="${base}/resources/mobile/shop/css/bootstrap.css" rel="stylesheet">

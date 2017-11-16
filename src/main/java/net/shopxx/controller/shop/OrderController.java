@@ -441,10 +441,14 @@ public class OrderController extends BaseController {
 		ShippingMethod shippingMethod = null;
 		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
 		if (currentCart.getIsDelivery()) {
-			/*receiver = receiverService.find(receiverId);
-			if (receiver == null || !currentUser.equals(receiver.getMember())) {
-				return Results.UNPROCESSABLE_ENTITY;
-			}*/
+			
+			if(currentUser.getMemberRank().getType().name().equals("register")){
+				receiver = receiverService.find(receiverId);
+				if (receiver == null || !currentUser.equals(receiver.getMember())) {
+					return Results.UNPROCESSABLE_ENTITY;
+				}
+			}
+			
 			shippingMethod = shippingMethodService.find(shippingMethodId);
 			if (shippingMethod == null) {
 				return Results.UNPROCESSABLE_ENTITY;

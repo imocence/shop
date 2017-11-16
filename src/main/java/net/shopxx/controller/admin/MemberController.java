@@ -42,6 +42,7 @@ import net.shopxx.entity.FiBankbookJournal;
 import net.shopxx.entity.Language;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
+import net.shopxx.entity.MemberRank;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.FiBankbookBalanceService;
 import net.shopxx.service.FiBankbookJournalService;
@@ -359,11 +360,21 @@ public class MemberController extends BaseController {
 			}
 			userCode = userCode.substring(0,userCode.length() - 1);
 			List<Member> newMemberList = memberService.getListMember(userCode);
-
+			List<MemberRank> memberRanks = memberRankService.findMemberRankByType(MemberRank.Type.register);
+			List<Member> resMemberList = null;
+			if(memberRanks.size() > 0){
+				for(MemberRank memberRank : memberRanks){
+					resMemberList = memberService.getRegisterMember(memberRank,10000);
+					//System.out.println(resMemberList);
+				}
+				
+			}
+			
 			member.getContent().clear();
 			member.getContent().addAll(newMemberList);
+			member.getContent().addAll(resMemberList);
 		}
-
+		
 		model.addAttribute("memberRanks", memberRankService.findAll());
 		model.addAttribute("memberAttributes", memberAttributeService.findAll());
 

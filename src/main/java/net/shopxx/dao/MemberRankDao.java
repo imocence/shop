@@ -6,6 +6,7 @@
 package net.shopxx.dao;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
@@ -56,5 +57,11 @@ public interface MemberRankDao extends BaseDao<MemberRank, Long> {
      * @return
      */
 	MemberRank findByCountry(Country country,MemberRank.Type type);
+	/**
+     * 根据会员类型查找
+     * @param MemberRank.Type
+     * @return
+     */
+	List<MemberRank> findByType(MemberRank.Type type);
 
 }

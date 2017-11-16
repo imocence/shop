@@ -5,7 +5,7 @@
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 [@seo type = "productDetail"]
-	<title>[#if product.resolveSeoTitle()?has_content]${product.resolveSeoTitle()}[#else]${seo.resolveTitle()}[/#if][#if showPowered] - Powered By SHOP++[/#if]</title>
+	<title>[#if product.resolveSeoTitle()?has_content]${product.resolveSeoTitle()}[#else]${seo.resolveTitle()}[/#if][#if showPowered] [/#if]</title>
 	<meta name="author" content="SHOP++ Team" />
 	<meta name="copyright" content="SHOP++" />
 	[#if product.resolveSeoKeywords()?has_content]

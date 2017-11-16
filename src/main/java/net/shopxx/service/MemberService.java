@@ -19,6 +19,8 @@ import net.shopxx.entity.Country;
 import net.shopxx.entity.DepositLog;
 import net.shopxx.entity.Language;
 import net.shopxx.entity.Member;
+import net.shopxx.entity.MemberRank;
+import net.shopxx.entity.MemberRank.Type;
 import net.shopxx.entity.PointLog;
 import net.shopxx.security.AuthenticationProvider;
 
@@ -200,5 +202,11 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	 * @throws Exception 
 	 */
 	boolean create(Member member,String companyCode, String userCode, String signature,String timestamp,HttpServletRequest request, RedirectAttributes redirectAttributes, Language language) throws Exception;
+	/**
+	 * 根据会员类型查找
+	 * @param register
+	 * @return
+	 */
+	List<Member> getRegisterMember(MemberRank memberRank,int count);
 
 }

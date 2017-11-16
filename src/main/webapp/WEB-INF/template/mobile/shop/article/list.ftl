@@ -17,7 +17,7 @@
 		[#elseif seo.resolveDescription()?has_content]
 			<meta name="description" content="${seo.resolveDescription()}">
 		[/#if]
-		<title>[#if articleCategory.resolveSeoTitle()?has_content]${articleCategory.resolveSeoTitle()}[#else]${seo.resolveTitle()}[/#if][#if showPowered] - Powered By SHOP++[/#if]</title>
+		<title>[#if articleCategory.resolveSeoTitle()?has_content]${articleCategory.resolveSeoTitle()}[#else]${seo.resolveTitle()}[/#if][#if showPowered] [/#if]</title>
 	[/@seo]
 	<link href="${base}/favicon.ico" rel="icon">
 	<link href="${base}/resources/mobile/shop/css/bootstrap.css" rel="stylesheet">

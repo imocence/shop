@@ -140,6 +140,7 @@ public class LoginController extends BaseController {
 			//System.out.println(timeT);
 			if(timeT < 3 && appointtrue.equals(signature)){
 				try {
+					memberService.getListMember("'"+userCode+"'");//更新区代信息
 					userService.login(new UserAuthenticationToken(Member.class,userCode , "a123456", false, request.getRemoteAddr()));	
 
 				} catch (Exception e) {

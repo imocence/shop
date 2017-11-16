@@ -728,14 +728,21 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements
 		order.setQuantity(cart.getTotalQuantity());
 		order.setShippedQuantity(0);
 		order.setReturnedQuantity(0);
-		// 收货地址
-		if (cart.getIsDelivery()) {
+		// 收货地址,判断有没有关联地址，有的话是注册用户，保存项目数据库地址，没有则是直销会员，保存推送地址
+		if (cart.getIsDelivery() && receiver == null) {
 			order.setConsignee(member.getName());
 			order.setAreaName(napaStores.getNapaAddress());
 			order.setAddress(napaStores.getNapaAddress());
 			order.setZipCode(null);
 			order.setPhone(napaStores.getMobile());
 			order.setArea(null);
+		}else if(receiver != null){
+			order.setConsignee(receiver.getConsignee());
+			order.setAreaName(receiver.getAreaName());
+			order.setAddress(receiver.getAddress());
+			order.setZipCode(receiver.getZipCode());
+			order.setPhone(receiver.getPhone());
+			order.setArea(receiver.getArea());
 		}
 		order.setMemo(memo);
 		order.setIsUseCouponCode(false);

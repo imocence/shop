@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>${message("member.login.title")}[#if showPowered] - Powered By SHOP++[/#if]</title>
+<title>${message("member.login.title")}[#if showPowered] [/#if]</title>
 <meta name="author" content="SHOP++ Team" />
 <meta name="copyright" content="SHOP++" />
 <link href="${base}/resources/member/css/animate.css" rel="stylesheet" type="text/css" />
@@ -179,24 +179,25 @@ $().ready(function() {
 										</td>
 									</tr>
 								[/#if]
-								[#--<tr class="register">--]
-									[#--<th>--]
-										[#--&nbsp;--]
-									[#--</th>--]
-									[#--<td>--]
-										[#--<dl>--]
-											[#--<dt>${message("member.login.noAccount")}</dt>--]
-											[#--<dd>--]
-												[#--${message("member.login.tips")}--]
-												[#--[#if socialUserId?has_content && uniqueId?has_content]--]
-													[#--<a href="${base}/member/register?socialUserId=${socialUserId}&uniqueId=${uniqueId}">${message("member.login.registerBind")}</a>--]
-												[#--[#else]--]
-													[#--<a href="${base}/member/register">${message("member.login.register")}</a>--]
-												[#--[/#if]--]
-											[#--</dd>--]
-										[#--</dl>--]
-									[#--</td>--]
-								[#--</tr>--]
+								<!-- 注册，第三方登录 -->
+								<tr class="register">
+									<th>
+										&nbsp;
+									</th>
+									<td>
+										<dl>
+											<dt>${message("member.login.noAccount")}</dt>
+											<dd>
+												${message("member.login.tips")}
+												[#if socialUserId?has_content && uniqueId?has_content]
+													<a href="${base}/member/register?socialUserId=${socialUserId}&uniqueId=${uniqueId}">${message("member.login.registerBind")}</a>
+												[#else]
+													<a href="${base}/member/register">${message("member.login.register")}</a>
+												[/#if]
+											</dd>
+										</dl>
+									</td>
+								</tr>
 							</table>
 						</form>
 					</div>

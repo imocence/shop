@@ -21,6 +21,7 @@ import net.shopxx.dao.MemberDao;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
+import net.shopxx.entity.MemberRank;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
@@ -133,5 +134,33 @@ public class MemberDaoImpl extends BaseDaoImpl<Member, Long> implements MemberDa
 			return list.get(0);
 		}
 		return null;
+	}
+	/**
+	 * 根据会员类型查找
+	 * 
+	 * @param MemberRank.Type
+	 *            用户编号
+	 * @return 会员，若不存在则返回null
+	 */
+	public List<Member> searchByType(MemberRank memberRank,int count){
+		/*String jpql = "SELECT member FROM Member member WHERE member.memberRank=:memberRank";
+		TypedQuery<Member> query = entityManager.createQuery(jpql, Member.class);
+		query.setParameter("memberRank", memberRank);
+
+		List<Member> list= query.getResultList();
+		return list;*/
+
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Member> criteriaQuery = criteriaBuilder.createQuery(Member.class);
+		Root<Member> root = criteriaQuery.from(Member.class);
+		criteriaQuery.select(root);
+		Predicate restrictions = criteriaBuilder.conjunction();
+		if (memberRank != null) {
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("memberRank"), memberRank));
+		}
+		//restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.or(criteriaBuilder.like(root.<String>get("username"), "%" + keyword + "%"), criteriaBuilder.like(root.<String>get("usercode"), "%" + keyword + "%")));
+		criteriaQuery.where(restrictions);
+		return super.findList(criteriaQuery, null, count, null, null);
 	}
 }

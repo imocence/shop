@@ -43,6 +43,7 @@ public class MemberRank extends BaseEntity<Long> {
 	 *
 	 */
 	public enum Type {
+		
 		/**
 		 * 游客
 		 */
@@ -63,7 +64,11 @@ public class MemberRank extends BaseEntity<Long> {
 		/**
 		 * 中心店
 		 */
-		mainstore;
+		mainstore,
+		/**
+		 * 注册用户
+		 */
+		register;
 	}
 	/**
 	 * 名称

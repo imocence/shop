@@ -86,4 +86,14 @@ public class MemberRankDaoImpl extends BaseDaoImpl<MemberRank, Long> implements 
 		}
 		return null;
     }
+    @Override
+    public List<MemberRank> findByType(MemberRank.Type type){
+    	
+    	String jpql = "select memberRank from MemberRank memberRank where type =:type ";
+    	TypedQuery<MemberRank> query = entityManager.createQuery(jpql, MemberRank.class);
+    	query.setParameter("type", type);
+    	query.setMaxResults(1);
+    	List<MemberRank> list= query.getResultList();
+    	return list;
+    }
 }

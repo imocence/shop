@@ -343,10 +343,12 @@ $().ready(function() {
 			if (parseFloat($balance.val()) != maxBalance) {
 				$balance.val(maxBalance);
 			}
-			[#if !(currentUser.napaStores.napaCode?has_content)]
+
+			[#if !(currentUser.napaStores.napaCode?has_content)&&(currentUser.memberRank.type != "register")]
 				$.alert("${message("shop.order.newAddres")}");
 				return false;
 			[/#if]
+			
 			if((amountPayable - $balance.val()) > 0 && (fiBankbookBalance-amount) < 0 || (fiBankbookCoupon - couponPrice) < 0){
 				$.alert("${message("shop.order.credit")}");
 				return false;
@@ -457,111 +459,116 @@ $().ready(function() {
 					<form id="receiverForm" action="save_receiver" method="post">
 						<div id="receiver" class="receiver">
 							<div class="title">${message("shop.order.receiver")}</div>
-							<!-- <ul class="clearfix[#if !currentUser.receivers?has_content] hidden[/#if]">
-								[#list currentUser.receivers as receiver]
-									<li[#if receiver == defaultReceiver] class="selected"[/#if] receiverId="${receiver.id}">
+							[#if currentUser.memberRank.type == "register"]
+								<ul class="clearfix[#if !currentUser.receivers?has_content] hidden[/#if]">
+									[#list currentUser.receivers as receiver]
+										<li[#if receiver == defaultReceiver] class="selected"[/#if] receiverId="${receiver.id}">
+											<span>
+												<strong>${receiver.consignee}</strong>
+												${message("shop.order.receive")}
+											</span>
+											<span>${receiver.areaName}${receiver.address}</span>
+											<span>${receiver.phone}</span>
+										</li>
+									[/#list]
+								</ul>
+								<div>
+									[#if currentUser.receivers?size > 5]
+										<a href="javascript:;" id="otherReceiverButton" class="button">${message("shop.order.otherReceiver")}</a>
+									[/#if]
+									<a href="javascript:;" id="newReceiverButton" class="button[#if currentUser.receivers?size > 5] hidden[/#if]">${message("shop.order.newReceiver")}</a>
+								</div>
+							
+							[#elseif currentUser.napaStores.napaAddress?has_content]
+								<ul class="clearfix">
+									<li class="selected" receiverId="${currentUser.napaStores.id}">
 										<span>
-											<strong>${receiver.consignee}</strong>
+											<strong>${currentUser.name}</strong>
 											${message("shop.order.receive")}
 										</span>
-										<span>${receiver.areaName}${receiver.address}</span>
-										<span>${receiver.phone}</span>
+										<span>
+											<strong>${message("${currentUser.country.nameLocal}")} - ${currentUser.country.name}</strong>
+											${message("shop.order.locale")}
+										</span>
+										<span>${currentUser.napaStores.napaAddress}</span>
+										<span>${currentUser.napaStores.mobile}</span>
 									</li>
-								[/#list]
-							</ul> -->
-							[#if currentUser.napaStores.napaAddress?has_content]
-							<ul class="clearfix">
-								<li class="selected" receiverId="${currentUser.napaStores.id}">
-									<span>
-										<strong>${currentUser.name}</strong>
-										${message("shop.order.receive")}
-									</span>
-									<span>
-										<strong>${message("${currentUser.country.nameLocal}")} - ${currentUser.country.name}</strong>
-										${message("shop.order.locale")}
-									</span>
-									<span>${currentUser.napaStores.napaAddress}</span>
-									<span>${currentUser.napaStores.mobile}</span>
-								</li>
-							</ul>
+								</ul>
 							[#else]
 								${message("shop.order.receiverRequired")}
 							[/#if]
-							<!-- <div>
-								[#if currentUser.receivers?size > 5]
-									<a href="javascript:;" id="otherReceiverButton" class="button">${message("shop.order.otherReceiver")}</a>
-								[/#if]
-								<a href="javascript:;" id="newReceiverButton" class="button[#if currentUser.receivers?size > 5] hidden[/#if]">${message("shop.order.newReceiver")}</a>
-							</div> -->
+
 						</div>
-						<!-- <div id="newReceiver" class="newReceiver[#if currentUser.receivers?has_content] hidden[/#if]">
-							<table>
-								<tr>
-									<th width="100">
-										<span class="requiredField">*</span>${message("Receiver.consignee")}:
-									</th>
-									<td>
-										<input type="text" id="consignee" name="consignee" class="text" maxlength="200" />
-									</td>
-								</tr>
-								<tr>
-									<th>
-										<span class="requiredField">*</span>${message("Receiver.area")}:
-									</th>
-									<td>
-										<span class="fieldSet">
-											<input type="hidden" id="areaId" name="areaId" />
-										</span>
-									</td>
-								</tr>
-								<tr>
-									<th>
-										<span class="requiredField">*</span>${message("Receiver.address")}:
-									</th>
-									<td>
-										<input type="text" id="address" name="address" class="text" maxlength="200" />
-									</td>
-								</tr>
-								<tr>
-									<th>
-										<span class="requiredField">*</span>${message("Receiver.zipCode")}:
-									</th>
-									<td>
-										<input type="text" id="zipCode" name="zipCode" class="text" maxlength="200" />
-									</td>
-								</tr>
-								<tr>
-									<th>
-										<span class="requiredField">*</span>${message("Receiver.phone")}:
-									</th>
-									<td>
-										<input type="text" id="phone" name="phone" class="text" maxlength="200" />
-									</td>
-								</tr>
-								<tr>
-									<th>
-										${message("Receiver.isDefault")}:
-									</th>
-									<td>
-										<input type="checkbox" name="isDefault" value="true" />
-										<input type="hidden" name="_isDefault" value="false" />
-									</td>
-								</tr>
-								<tr>
-									<th>
-										&nbsp;
-									</th>
-									<td>
-										<input type="submit" id="newReceiverSubmit" class="button" value="${message("shop.dialog.ok")}" />
-										<input type="button" id="newReceiverCancelButton" class="button" value="${message("shop.dialog.cancel")}" />
-									</td>
-								</tr>
-							</table>
-						</div> -->
+						[#if currentUser.memberRank.type == "register"]
+							<div id="newReceiver" class="newReceiver[#if currentUser.receivers?has_content] hidden[/#if]">
+								<table>
+									<tr>
+										<th width="100">
+											<span class="requiredField">*</span>${message("Receiver.consignee")}:
+										</th>
+										<td>
+											<input type="text" id="consignee" name="consignee" class="text" maxlength="200" />
+										</td>
+									</tr>
+									<tr>
+										<th>
+											<span class="requiredField">*</span>${message("Receiver.area")}:
+										</th>
+										<td>
+											<span class="fieldSet">
+												<input type="hidden" id="areaId" name="areaId" />
+											</span>
+										</td>
+									</tr>
+									<tr>
+										<th>
+											<span class="requiredField">*</span>${message("Receiver.address")}:
+										</th>
+										<td>
+											<input type="text" id="address" name="address" class="text" maxlength="200" />
+										</td>
+									</tr>
+									<tr>
+										<th>
+											<span class="requiredField">*</span>${message("Receiver.zipCode")}:
+										</th>
+										<td>
+											<input type="text" id="zipCode" name="zipCode" class="text" maxlength="200" />
+										</td>
+									</tr>
+									<tr>
+										<th>
+											<span class="requiredField">*</span>${message("Receiver.phone")}:
+										</th>
+										<td>
+											<input type="text" id="phone" name="phone" class="text" maxlength="200" />
+										</td>
+									</tr>
+									<tr>
+										<th>
+											${message("Receiver.isDefault")}:
+										</th>
+										<td>
+											<input type="checkbox" name="isDefault" value="true" />
+											<input type="hidden" name="_isDefault" value="false" />
+										</td>
+									</tr>
+									<tr>
+										<th>
+											&nbsp;
+										</th>
+										<td>
+											<input type="submit" id="newReceiverSubmit" class="button" value="${message("shop.dialog.ok")}" />
+											<input type="button" id="newReceiverCancelButton" class="button" value="${message("shop.dialog.cancel")}" />
+										</td>
+									</tr>
+								</table>
+							</div>
+						[/#if]
 					</form>
-				</div>
+				[/#if]
 			</div>
-		[/#if]
+		</div>
 		<form id="orderForm" action="create" method="post">
 			[#if order.type == "exchange"]
 				<input type="hidden" name="type" value="exchange" />
@@ -571,7 +578,7 @@ $().ready(function() {
 			<div class="row">
 				<div class="span12">
 					[#if order.isDelivery]
-						<!-- <input type="hidden" id="receiverId" name="receiverId"[#if defaultReceiver??] value="${defaultReceiver.id}"[/#if] /> -->
+						<input type="hidden" id="receiverId" name="receiverId"[#if defaultReceiver??] value="${defaultReceiver.id}"[/#if] />
 						<input type="hidden" id="napaStoresId" name="napaStoresId"[#if currentUser.napaStores??] value="${currentUser.napaStores.id}"[/#if] />
 					[/#if]
 					[#if order.type == "general"]
@@ -657,7 +664,7 @@ $().ready(function() {
 						[#list order.orderItems as orderItem]
 							<tr>
 								<td>
-									<img src="${orderItem.sku.thumbnail!setting.defaultThumbnailProductImage}" alt="${orderItem.sku.name}" />
+									<img src="${base}${orderItem.sku.thumbnail!setting.defaultThumbnailProductImage}" alt="${orderItem.sku.name}" />
 								</td>
 								<td>
 									<a href="${base}${orderItem.sku.path}" title="${orderItem.sku.name}" target="_blank">${abbreviate(orderItem.sku.name, 50, "...")}</a>

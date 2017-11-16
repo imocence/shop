@@ -36,6 +36,7 @@ import net.shopxx.Results;
 import net.shopxx.entity.Attribute;
 import net.shopxx.entity.BaseEntity;
 import net.shopxx.entity.Brand;
+import net.shopxx.entity.Language;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.Product;
 import net.shopxx.entity.ProductCategory;
@@ -46,6 +47,7 @@ import net.shopxx.exception.ResourceNotFoundException;
 import net.shopxx.security.CurrentUser;
 import net.shopxx.service.AttributeService;
 import net.shopxx.service.BrandService;
+import net.shopxx.service.LanguageService;
 import net.shopxx.service.ProductCategoryService;
 import net.shopxx.service.ProductService;
 import net.shopxx.service.ProductTagService;
@@ -95,7 +97,7 @@ public class ProductController extends BaseController {
 		}
 		model.addAttribute("product", product);
 		model.addAttribute("currentUser", currentUser);
-		if(null != currentUser && (currentUser.getNapaStores().getType() == 2 || currentUser.getNapaStores().getType() == 3)){
+		if(null != currentUser && (currentUser.getNapaStores().getType() != 0 || currentUser.getNapaStores().getType() != 1)){
 			model.addAttribute("permission", "permission");
 		}else{
 			model.addAttribute("permission", "noPermission");

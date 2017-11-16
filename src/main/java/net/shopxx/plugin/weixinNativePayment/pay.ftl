@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<meta name="author" content="SHOP++ Team">
 	<meta name="copyright" content="SHOP++">
-	<title>${message("shop.payment.pay")} - Powered By SHOP++</title>
+	<title>${message("shop.payment.pay")} </title>
 	<link href="${base}/favicon.ico" rel="icon">
 	<link href="${base}/resources/business/css/common.css" rel="stylesheet">
 	<!--[if lt IE 9]>

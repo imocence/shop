@@ -51,7 +51,7 @@ public class Country extends OrderedEntity<Long> {
     /**
      * 下级地区
      */
-    @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "country", fetch = FetchType.EAGER)
     @OrderBy("order asc")
     private Set<Area> areas = new HashSet<>();
     

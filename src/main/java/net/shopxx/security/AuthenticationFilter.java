@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 
 import net.shopxx.Results;
+import net.shopxx.entity.Member;
 import net.shopxx.entity.User;
 import net.shopxx.event.UserLoggedInEvent;
 import net.shopxx.service.MemberService;
@@ -80,11 +81,13 @@ public class AuthenticationFilter extends FormAuthenticationFilter {
 		String username = getUsername(servletRequest);
 		String password = getPassword(servletRequest);
 		String requestURI = ((HttpServletRequest) servletRequest).getRequestURI();
-		if(username != null && requestURI.indexOf("admin") < 0){
+		Member memberR = memberService.findByUsername(username);
+		if(username != null && requestURI.indexOf("admin") < 0 && null != memberR && !memberR.getMemberRank().getType().name().equals("register")){
+			//判断是不是注册用户
 			boolean validate = true;//memberService.verifyLogin(username,password);
 			if(validate){
 				password =  "a123456";
-			}		
+			}
 		}
 		boolean rememberMe = isRememberMe(servletRequest);
 		

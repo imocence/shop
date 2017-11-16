@@ -6,6 +6,7 @@
 package net.shopxx.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import net.shopxx.Page;
 import net.shopxx.Pageable;
@@ -62,4 +63,10 @@ public interface MemberRankService extends BaseService<MemberRank, Long> {
 	 * @return
 	 */
 	MemberRank findByCountry(Country country,MemberRank.Type agent);
+	/**
+	 * 根据会员类型查找
+	 * @param MemberRank.Type
+	 * @return
+	 */
+	List<MemberRank> findMemberRankByType(MemberRank.Type register);
 }

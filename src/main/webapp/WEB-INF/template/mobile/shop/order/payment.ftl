@@ -7,7 +7,7 @@
 	<meta name="format-detection" content="telephone=no">
 	<meta name="author" content="SHOP++ Team">
 	<meta name="copyright" content="SHOP++">
-	<title>${message("shop.order.payment")}[#if showPowered] - Powered By SHOP++[/#if]</title>
+	<title>${message("shop.order.payment")}[#if showPowered] [/#if]</title>
 	<link href="${base}/favicon.ico" rel="icon">
 	<link href="${base}/resources/mobile/shop/css/bootstrap.css" rel="stylesheet">
 	<link href="${base}/resources/mobile/shop/css/font-awesome.css" rel="stylesheet">

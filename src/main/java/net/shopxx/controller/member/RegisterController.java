@@ -11,6 +11,7 @@ import java.util.Date;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +25,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import net.shopxx.Results;
 import net.shopxx.Setting;
 import net.shopxx.entity.BaseEntity;
+import net.shopxx.entity.Country;
+import net.shopxx.entity.FiBankbookBalance;
+import net.shopxx.entity.Language;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
+import net.shopxx.entity.MemberRank;
+import net.shopxx.entity.NapaStores;
+import net.shopxx.entity.FiBankbookBalance.Type;
 import net.shopxx.security.UserAuthenticationToken;
+import net.shopxx.service.CountryService;
+import net.shopxx.service.FiBankbookBalanceService;
+import net.shopxx.service.LanguageService;
 import net.shopxx.service.MemberAttributeService;
 import net.shopxx.service.MemberRankService;
 import net.shopxx.service.MemberService;
+import net.shopxx.service.NapaStoresService;
 import net.shopxx.service.UserService;
 import net.shopxx.util.SystemUtils;
 
@@ -50,7 +61,15 @@ public class RegisterController extends BaseController {
 	@Inject
 	private MemberRankService memberRankService;
 	@Inject
+	private FiBankbookBalanceService fiBankbookBalanceService;
+	@Inject
 	private MemberAttributeService memberAttributeService;
+	@Inject
+	private NapaStoresService napaStoresService;
+	@Inject
+	private LanguageService languageService;
+	@Inject
+	private CountryService countryService;
 
 	/**
 	 * 检查用户名是否存在
@@ -117,22 +136,45 @@ public class RegisterController extends BaseController {
 			Object memberAttributeValue = memberAttributeService.toMemberAttributeValue(memberAttribute, values);
 			member.setAttributeValue(memberAttribute, memberAttributeValue);
 		}
+		
+		//区代账号创建
+		NapaStores napaStores = new NapaStores();
+		napaStores.setMobile(mobile);
+		napaStores.setNapaCode(null);
+		napaStores.setType(0);
+		napaStores.setBalance(BigDecimal.ZERO);
+		napaStoresService.save(napaStores);
+		member.setNapaStores(napaStores);
 
 		member.setUsername(username);
+		member.setUsercode(username);
+		
+		//设置国籍
+		Language language = languageService.getDefaultLanguage();
+		member.setLanguage(language);
+		
 		member.setPassword(password);
+		member.setEncodedPassword(DigestUtils.md5Hex(password));
+		
 		member.setEmail(email);
+		member.setIsEnabled(true);
+		
+		Country country = countryService.getDefaultCountry();
+		member.setCountry(country);	
+		MemberRank memberRank = memberRankService.findByCountry(country,MemberRank.Type.register);
+		member.setMemberRank(memberRank);
+		
 		member.setMobile(mobile);
 		member.setPoint(0L);
 		member.setBalance(BigDecimal.ZERO);
 		member.setAmount(BigDecimal.ZERO);
 		member.setCouponAmount(BigDecimal.ZERO);
-		member.setIsEnabled(true);
 		member.setIsLocked(false);
 		member.setLockDate(null);
 		member.setLastLoginIp(request.getRemoteAddr());
 		member.setLastLoginDate(new Date());
 		member.setSafeKey(null);
-		member.setMemberRank(memberRankService.findDefault());
+		//member.setMemberRank(memberRankService.findDefault());
 		member.setCart(null);
 		member.setOrders(null);
 		member.setPaymentTransactions(null);
@@ -147,6 +189,21 @@ public class RegisterController extends BaseController {
 		member.setOutMessages(null);
 		member.setPointLogs(null);
 		userService.register(member);
+		
+		//创建会员的存折
+		FiBankbookBalance balance1 = new FiBankbookBalance();
+		balance1.setBalance(BigDecimal.ZERO);
+		balance1.setType(Type.balance);
+		balance1.setMember(member);
+		balance1.setCountry(member.getCountry());
+		fiBankbookBalanceService.save(balance1);
+		FiBankbookBalance balance2 = new FiBankbookBalance();
+		balance2.setBalance(BigDecimal.ZERO);
+		balance2.setType(Type.coupon);
+		balance2.setMember(member);
+		balance2.setCountry(member.getCountry());
+		fiBankbookBalanceService.save(balance2);
+		
 		userService.login(new UserAuthenticationToken(Member.class, username, password, false, request.getRemoteAddr()));
 		return Results.ok("member.register.success");
 	}

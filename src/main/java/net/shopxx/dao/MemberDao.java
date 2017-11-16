@@ -13,6 +13,7 @@ import net.shopxx.Pageable;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.Member;
 import net.shopxx.entity.MemberAttribute;
+import net.shopxx.entity.MemberRank;
 
 /**
  * Dao - 会员
@@ -69,5 +70,11 @@ public interface MemberDao extends BaseDao<Member, Long> {
 	 * @return 会员，若不存在则返回null
 	 */
 	Member findByUsercode(String usercode);
+	/**
+	 * 根据会员类型查找
+	 * @param register
+	 * @return
+	 */
+	List<Member> searchByType(MemberRank memberRank,int count);
 
 }

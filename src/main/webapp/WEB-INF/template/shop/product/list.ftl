@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 [#if productCategory??]
 	[@seo type = "productList"]
-		<title>[#if productCategory.resolveSeoTitle()?has_content]${productCategory.resolveSeoTitle()}[#else]${seo.resolveTitle()}[/#if][#if showPowered] - Powered By SHOP++[/#if]</title>
+		<title>[#if productCategory.resolveSeoTitle()?has_content]${productCategory.resolveSeoTitle()}[#else]${seo.resolveTitle()}[/#if][#if showPowered] [/#if]</title>
 		<meta name="author" content="SHOP++ Team" />
 		<meta name="copyright" content="SHOP++" />
 		[#if productCategory.resolveSeoKeywords()?has_content]
@@ -20,7 +20,7 @@
 		[/#if]
 	[/@seo]
 [#else]
-	<title>${message("shop.product.title")}[#if showPowered] - Powered By SHOP++[/#if]</title>
+	<title>${message("shop.product.title")}[#if showPowered] [/#if]</title>
 	<meta name="author" content="SHOP++ Team" />
 	<meta name="copyright" content="SHOP++" />
 [/#if]

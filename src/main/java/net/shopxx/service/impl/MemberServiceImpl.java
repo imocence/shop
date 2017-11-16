@@ -7,6 +7,7 @@ package net.shopxx.service.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -470,8 +471,8 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		member.setCouponAmount(BigDecimal.ZERO);
 		member.setIsLocked(false);
 		member.setLockDate(null);
-		member.setLastLoginIp(null);
-		member.setLastLoginDate(null);
+		member.setLastLoginIp(request.getRemoteAddr());
+		member.setLastLoginDate(new Date());
 		member.setSafeKey(null);
 		member.setCart(null);
 		member.setOrders(null);
@@ -507,5 +508,15 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 			napaStoresService.delete(napaStores);
 		}
 		return true;
+	}
+	/**
+	 * 根据会员类型查找
+	 * @param register
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public List<Member> getRegisterMember(MemberRank memberRank,int count){
+		return memberDao.searchByType(memberRank,count);
 	}
 }

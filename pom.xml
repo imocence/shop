@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.lytech</groupId>
-	<artifactId>globalilife</artifactId>
+	<artifactId>mall</artifactId>
 	<packaging>war</packaging>
 	<version>1.0</version>
-	<name>Globalilife B2C</name>
+	<name>mall B2C</name>
 	<url>http://www.szgreenleaf.com</url>
 	<description>绿叶科技集团网上商城系统</description>
 	<build>
@@ -23,7 +23,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.3</version>
 				<configuration>
-					<warName>globalilife</warName>
+					<warName>mall</warName>
 					<!-- 激活spring profile -->
 					<webResources>
 						<resource>

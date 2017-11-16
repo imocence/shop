@@ -168,7 +168,7 @@ function changeLanguage(){
 		<div class="row">
 			<div class="span3">
 				<a href="${base}/">
-					<img src="${setting.logo}" style="width: 200px" alt="${message("shop.header.siteName")}" />
+					<img src="${base}${setting.logo}" style="width: 200px" alt="${message("shop.header.siteName")}" />
 				</a>
 			</div>
 			<div class="span6">

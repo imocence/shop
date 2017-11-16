@@ -7,7 +7,7 @@
 	<meta name="format-detection" content="telephone=no">
 	<meta name="author" content="SHOP++ Team">
 	<meta name="copyright" content="SHOP++">
-	<title>${message("shop.payment.pay")}[#if showPowered] - Powered By SHOP++[/#if]</title>
+	<title>${message("shop.payment.pay")}[#if showPowered] [/#if]</title>
 </head>
 <body onload="javascript: document.forms[0].submit();">
 	<form action="${requestUrl}" method="${requestMethod!"get"}"[#if requestCharset?has_content] accept-charset="${requestCharset}"[/#if]>

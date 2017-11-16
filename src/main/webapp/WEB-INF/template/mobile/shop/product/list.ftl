@@ -18,10 +18,10 @@
 			[#elseif seo.resolveDescription()?has_content]
 				<meta name="description" content="${seo.resolveDescription()}">
 			[/#if]
-			<title>[#if productCategory.resolveSeoTitle()?has_content]${productCategory.resolveSeoTitle()}[#else]${seo.resolveTitle()}[/#if][#if showPowered] - Powered By SHOP++[/#if]</title>
+			<title>[#if productCategory.resolveSeoTitle()?has_content]${productCategory.resolveSeoTitle()}[#else]${seo.resolveTitle()}[/#if][#if showPowered] [/#if]</title>
 		[/@seo]
 	[#else]
-		<title>${message("shop.product.title")}[#if showPowered] - Powered By SHOP++[/#if]</title>
+		<title>${message("shop.product.title")}[#if showPowered] [/#if]</title>
 	[/#if]
 	<link href="${base}/favicon.ico" rel="icon">
 	<link href="${base}/resources/mobile/shop/css/bootstrap.css" rel="stylesheet">

@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>${message("member.receiver.edit")}[#if showPowered] - Powered By SHOP++[/#if]</title>
+<title>${message("member.receiver.edit")}[#if showPowered] [/#if]</title>
 <meta name="author" content="SHOP++ Team" />
 <meta name="copyright" content="SHOP++" />
 <link href="${base}/resources/member/css/animate.css" rel="stylesheet" type="text/css" />
