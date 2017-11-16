@@ -45,6 +45,7 @@ member.register.emailExist=E-mail\u5df2\u88ab\u8a3b\u518a
 member.register.mobileIllegal=\u624b\u6a5f\u683c\u5f0f\u932f\u8aa4
 member.register.mobileExist=\u624b\u6a5f\u5df2\u88ab\u8a3b\u518a
 member.register.username=\u7528\u6236\u540d
+member.register.username.placeholder=\u4F8B\u5982:CN01000001,MY0100001
 member.register.password=\u5bc6 \u78bc
 member.register.rePassword=\u78ba\u8a8d\u5bc6\u78bc
 member.register.email=E-mail
