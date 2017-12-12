@@ -32,7 +32,7 @@ import net.shopxx.entity.Attribute;
 import net.shopxx.entity.Brand;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.Product;
-import net.shopxx.entity.Product.OrderType;
+import net.shopxx.entity.Product.Type;
 import net.shopxx.entity.ProductCategory;
 import net.shopxx.entity.ProductTag;
 import net.shopxx.entity.Promotion;
@@ -156,6 +156,66 @@ public class ProductDaoImpl extends BaseDaoImpl<Product, Long> implements Produc
 			criteriaQuery.orderBy(criteriaBuilder.desc(root.get("isTop")), criteriaBuilder.desc(root.get("createdDate")));
 		}
 		return super.findList(criteriaQuery, null, count, filters, orders);
+	}
+	public List<Product> findList(Type type, ProductCategory productCategory,Country country,Brand brand, Promotion promotion, ProductTag productTag,
+			Boolean isMarketable, Boolean isList, Boolean isTop,Boolean isOutOfStock, Boolean isStockAlert){
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
+		Root<Product> root = criteriaQuery.from(Product.class);
+		criteriaQuery.select(root);
+		Predicate restrictions = criteriaBuilder.conjunction();
+		if (type != null) {
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("type"), type));
+		}
+		if (productCategory != null) {
+			Subquery<ProductCategory> subquery = criteriaQuery.subquery(ProductCategory.class);
+			Root<ProductCategory> subqueryRoot = subquery.from(ProductCategory.class);
+			subquery.select(subqueryRoot);
+			subquery.where(criteriaBuilder.or(criteriaBuilder.equal(subqueryRoot, productCategory), criteriaBuilder.like(subqueryRoot.<String>get("treePath"), "%" + ProductCategory.TREE_PATH_SEPARATOR + productCategory.getId() + ProductCategory.TREE_PATH_SEPARATOR + "%")));
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.in(root.get("productCategory")).value(subquery));
+		}
+		if (country != null) {
+            Subquery<ProductCategory> subquery = criteriaQuery.subquery(ProductCategory.class);
+            Root<ProductCategory> subqueryRoot = subquery.from(ProductCategory.class);
+            subquery.select(subqueryRoot);
+            subquery.where(criteriaBuilder.equal(subqueryRoot.get("country"), country));
+            restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.in(root.get("productCategory")).value(subquery));
+        }
+		if (brand != null) {
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("brand"), brand));
+		}
+		if (promotion != null) {
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.join("promotions"), promotion));
+		}
+		if (productTag != null) {
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.join("productTags"), productTag));
+		}
+		if (isMarketable != null) {
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("isMarketable"), isMarketable));
+		}
+		if (isList != null) {
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("isList"), isList));
+		}
+		if (isTop != null) {
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("isTop"), isTop));
+		}
+		if (isStockAlert != null) {
+			Subquery<Sku> subquery = criteriaQuery.subquery(Sku.class);
+			Root<Sku> subqueryRoot = subquery.from(Sku.class);
+			subquery.select(subqueryRoot);
+			Path<Integer> stock = subqueryRoot.get("stock");
+			Path<Integer> allocatedStock = subqueryRoot.get("allocatedStock");
+			Setting setting = SystemUtils.getSetting();
+			if (isStockAlert) {
+				subquery.where(criteriaBuilder.equal(subqueryRoot.get("product"), root), criteriaBuilder.lessThanOrEqualTo(stock, criteriaBuilder.sum(allocatedStock, setting.getStockAlertCount())));
+			} else {
+				subquery.where(criteriaBuilder.equal(subqueryRoot.get("product"), root), criteriaBuilder.greaterThan(stock, criteriaBuilder.sum(allocatedStock, setting.getStockAlertCount())));
+			}
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.exists(subquery));
+		}
+		criteriaQuery.where(restrictions);
+		criteriaQuery.orderBy(criteriaBuilder.desc(root.get("isTop")), criteriaBuilder.desc(root.get("createdDate")));
+		return super.findList(criteriaQuery);
 	}
 
 	public List<Product> findList(ProductCategory productCategory, Boolean isMarketable, Date beginDate, Date endDate, Integer first, Integer count) {

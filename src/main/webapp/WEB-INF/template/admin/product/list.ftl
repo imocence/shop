@@ -196,7 +196,13 @@ $().ready(function() {
 			}
 		});
 	});
-	
+	$("#exportExcel").click(function(){  
+        var url = "exprotProductList";  
+        $('#listForm').attr('action', url);  
+        $('#listForm').submit();  
+        $('#listForm').attr('action', "list");  
+         
+    });  
 
 });
 </script>
@@ -222,6 +228,9 @@ $().ready(function() {
 				<span class="addIcon">&nbsp;</span>${message("admin.common.add")}
 			</a>
 			<a href="download" class="iconButton">
+				<span class="addIcon">&nbsp;</span>下载
+			</a>
+			<a href="javascript:;" id="exportExcel" class="iconButton">
 				<span class="addIcon">&nbsp;</span>下载
 			</a>
 			<div class="buttonGroup">

@@ -17,6 +17,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -30,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 
 import net.shopxx.ExcelViewNew;
 import net.shopxx.Message;
@@ -345,7 +345,43 @@ public class ProductController extends BaseController {
 		addFlashMessage(redirectAttributes, Message.success(SUCCESS_MESSAGE));
 		return "redirect:list";
 	}
-	
+	/**
+	 * 测试下载
+	 */
+	@GetMapping("/exprotProductList")  
+    public void exportExcel(Product.Type type,Long countryId, Long productCategoryId, Long brandId, Long promotionId, Long productTagId, Boolean isMarketable, Boolean isList, Boolean isTop, Boolean isOutOfStock, Boolean isStockAlert, ModelMap model,HttpSession session,HttpServletRequest request,HttpServletResponse response){  
+		String[] excelHeader = { "ID","国家", "商品编号", "名称","分类","创建日期"};  
+        String[] ds_titles = { "id","country", "sn", "name","productCategory","createdDate"};  
+        int[] ds_format = { 1,1, 1, 1,1,1};  
+        try{  
+        	Country country = null;
+    	    if (countryId != null) {
+    		    country =   countryService.find(countryId);
+    		}
+    	    ProductCategory productCategory = productCategoryService.find(productCategoryId);
+    		Brand brand = brandService.find(brandId);
+    		Promotion promotion = promotionService.find(promotionId);
+    		ProductTag productTag = productTagService.find(productTagId);
+        	List<Product> products = productService.findList(type, productCategory, country, brand, promotion, productTag,  isMarketable, isList, isTop, isOutOfStock, isStockAlert);
+            List<Map<String,Object>> data = new ArrayList<Map<String,Object>>();  
+            if(CollectionUtils.isNotEmpty(products)){  
+                for(Product product : products){  
+                    Map<String,Object> map = new HashMap<String,Object>();  
+                    map.put("id", product.getId());  
+                    map.put("country", product.getProductCategory().getCountry().getName());  
+                    map.put("sn", product.getSn());  
+                    map.put("name", product.getName());  
+                    map.put("productCategory", product.getProductCategory().getName());  
+                    map.put("createdDate", product.getCreatedDate());  
+                    data.add(map);  
+                }  
+            } 
+            ExcelUtils.export("商品表", "商品", excelHeader, ds_titles, ds_format, null, data, request, response);  
+        }catch(Exception e){  
+        	e.printStackTrace();
+        }  
+          
+    }  
 	/**
      * 下载优惠码
      */
@@ -381,6 +417,7 @@ public class ProductController extends BaseController {
 	    Country country = null;
 	    if (countryId != null) {
 		    country =   countryService.find(countryId);
+		    model.addAttribute("countryId",countryId);
 		    model.addAttribute("brands",country.getBrands());
 		    model.addAttribute("productCategoryTree", productCategoryService.findTree(country));
 		} else  {

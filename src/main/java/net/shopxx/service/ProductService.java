@@ -17,6 +17,7 @@ import net.shopxx.entity.Attribute;
 import net.shopxx.entity.Brand;
 import net.shopxx.entity.Country;
 import net.shopxx.entity.Product;
+import net.shopxx.entity.Product.Type;
 import net.shopxx.entity.ProductCategory;
 import net.shopxx.entity.ProductTag;
 import net.shopxx.entity.Promotion;
@@ -305,5 +306,32 @@ public interface ProductService extends BaseService<Product, Long> {
 	 * @return 商品
 	 */
 	Product modify(Product product, List<Sku> skus);
+	/**
+	 * 查找商品分页
+	 * 
+	 * @param type
+	 *            类型
+	 * @param productCategory
+	 *            商品分类
+	 * @param country 
+	 * @param brand
+	 *            品牌
+	 * @param promotion
+	 *            促销
+	 * @param productTag
+	 *            商品标签
+	 * @param isMarketable
+	 *            是否上架
+	 * @param isList
+	 *            是否列出
+	 * @param isTop
+	 *            是否置顶
+	 * @param isOutOfStock
+	 *            是否缺货
+	 * @param isStockAlert
+	 *            是否库存警告
+	 */
+	List<Product> findList(Type type, ProductCategory productCategory,Country country, Brand brand, Promotion promotion,ProductTag productTag, Boolean isMarketable, Boolean isList,
+			Boolean isTop, Boolean isOutOfStock, Boolean isStockAlert);
 
 }

@@ -76,6 +76,7 @@ import net.shopxx.entity.Sku;
 import net.shopxx.entity.Sn;
 import net.shopxx.entity.SpecificationItem;
 import net.shopxx.entity.StockLog;
+import net.shopxx.entity.Product.Type;
 import net.shopxx.service.AttributeService;
 import net.shopxx.service.CountryService;
 import net.shopxx.service.ProductImageService;
@@ -172,6 +173,11 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 			return Collections.emptyList();
 		}
 		return productDao.findList(type, productCategory, brand, promotion, productTag, map, startPrice, endPrice, isMarketable, isList, isTop, isOutOfStock, isStockAlert, hasPromotion, orderType, count, filters, orders);
+	}
+	@Transactional(readOnly = true)
+	public List<Product> findList(Type type, ProductCategory productCategory,Country country, Brand brand, Promotion promotion,ProductTag productTag, Boolean isMarketable, Boolean isList,
+			Boolean isTop, Boolean isOutOfStock, Boolean isStockAlert) {
+		return productDao.findList(type, productCategory,country, brand, promotion, productTag, isMarketable, isList, isTop, isOutOfStock, isStockAlert);
 	}
 	
 	/**
