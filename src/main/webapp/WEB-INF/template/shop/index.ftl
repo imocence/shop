@@ -1,5 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
@@ -7,15 +6,15 @@
     <meta name="renderer" content="webkit">
     <meta name="author" content="SHOP++ Team"/>
     <meta name="copyright" content="SHOP++"/>
-[@seo type = "index"]
-    <title>${seo.resolveTitle()}</title>
-    [#if seo.resolveKeywords()?has_content]
-        <meta name="keywords" content="${seo.resolveKeywords()}"/>
-    [/#if]
-    [#if seo.resolveDescription()?has_content]
-        <meta name="description" content="${seo.resolveDescription()}"/>
-    [/#if]
-[/@seo]
+    [@seo type="index";seo]
+        <title>${seo.resolveTitle()}</title>
+        [#if seo.resolveKeywords()?has_content]
+            <meta name="keywords" content="${seo.resolveKeywords()}"/>
+        [/#if]
+        [#if seo.resolveDescription()?has_content]
+            <meta name="description" content="${seo.resolveDescription()}"/>
+        [/#if]
+    [/@seo]
     <link href="${base}/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
     <link href="${base}/resources/shop/slider/slider.css" rel="stylesheet" type="text/css"/>
     <link href="${base}/resources/shop/css/animate.css" rel="stylesheet" type="text/css"/>
@@ -40,11 +39,11 @@
             var $hotProductImage = $("div.hotProduct img");
 
             $productCategoryMenuItem.hover(
-                    function () {
-                        $(this).children("div.menu").show();
-                    }, function () {
-                        $(this).children("div.menu").hide();
-                    }
+                function () {
+                    $(this).children("div.menu").show();
+                }, function () {
+                    $(this).children("div.menu").hide();
+                }
             );
 
             $slider.nivoSlider({
@@ -75,277 +74,277 @@
 <div class="container index">
     <div class="row">
         <div class="span2">
-        [@product_category_root_list count = 6]
-            <div id="productCategoryMenu" class="productCategoryMenu">
-                <ul>
-                    [#list productCategories as productCategory]
-                        <li>
-                            [@product_category_children_list productCategoryId = productCategory.id recursive = false count = 3]
-                                <div class="item[#if !productCategory_has_next] last[/#if]">
-                                    <div>
-                                        [#list productCategories as productCategory]
-                                            <a href="${base}${productCategory.path}">
-                                                <strong>${productCategory.name}</strong>
-                                            </a>
-                                        [/#list]
-                                    </div>
-                                    <div>
-                                        [@brand_list productCategoryId = productCategory.id count = 4]
-                                            [#list brands as brand]
-                                                <a href="${base}${brand.path}">${brand.name}</a>
+            [@product_category_root_list count = 6]
+                <div id="productCategoryMenu" class="productCategoryMenu">
+                    <ul>
+                        [#list productCategories as productCategory]
+                            <li>
+                                [@product_category_children_list productCategoryId = productCategory.id recursive = false count = 3]
+                                    <div class="item[#if !productCategory_has_next] last[/#if]">
+                                        <div>
+                                            [#list productCategories as productCategory]
+                                                <a href="${base}${productCategory.path}">
+                                                    <strong>${productCategory.name}</strong>
+                                                </a>
                                             [/#list]
-                                        [/@brand_list]
-                                    </div>
-                                </div>
-                            [/@product_category_children_list]
-                            [@product_category_children_list productCategoryId = productCategory.id recursive = false count = 8]
-                                <div class="menu">
-                                    [#list productCategories as productCategory]
-                                        <dl class="clearfix[#if !productCategory_has_next] last[/#if]">
-                                            <dt>
-                                                <a href="${base}${productCategory.path}">${productCategory.name}</a>
-                                            </dt>
-                                            [@product_category_children_list productCategoryId = productCategory.id recursive = false]
-                                                [#list productCategories as productCategory]
-                                                    <dd>
-                                                        <a href="${base}${productCategory.path}">${productCategory.name}</a>[#if productCategory_has_next]
-                                                        |[/#if]
-                                                    </dd>
+                                        </div>
+                                        <div>
+                                            [@brand_list productCategoryId = productCategory.id count = 4]
+                                                [#list brands as brand]
+                                                    <a href="${base}${brand.path}">${brand.name}</a>
                                                 [/#list]
-                                            [/@product_category_children_list]
-                                        </dl>
-                                    [/#list]
-                                    <div class="auxiliary">
-                                        [@brand_list productCategoryId = productCategory.id count = 8]
-                                            [#if brands?has_content]
-                                                <div>
-                                                    <strong>${message("shop.index.recommendBrand")}</strong>
-                                                    [#list brands as brand]
-                                                        <a href="${base}${brand.path}">${brand.name}</a>
-                                                    [/#list]
-                                                </div>
-                                            [/#if]
-                                        [/@brand_list]
-                                        [@promotion_list productCategoryId = productCategory.id hasEnded = false count = 4]
-                                            [#if promotions?has_content]
-                                                <div>
-                                                    <strong>${message("shop.index.hotPromotion")}</strong>
-                                                    [#list promotions as promotion]
-                                                        [#if promotion.image?has_content]
-                                                            <a href="${base}${promotion.path}"
-                                                               title="${promotion.title}">
-                                                                <img src="${promotion.image}" alt="${promotion.title}"/>
-                                                            </a>
-                                                        [/#if]
-                                                    [/#list]
-                                                </div>
-                                            [/#if]
-                                        [/@promotion_list]
+                                            [/@brand_list]
+                                        </div>
                                     </div>
-                                </div>
-                            [/@product_category_children_list]
-                        </li>
-                    [/#list]
-                </ul>
-            </div>
-        [/@product_category_root_list]
+                                [/@product_category_children_list]
+                                [@product_category_children_list productCategoryId = productCategory.id recursive = false count = 8]
+                                    <div class="menu">
+                                        [#list productCategories as productCategory]
+                                            <dl class="clearfix[#if !productCategory_has_next] last[/#if]">
+                                                <dt>
+                                                    <a href="${base}${productCategory.path}">${productCategory.name}</a>
+                                                </dt>
+                                                [@product_category_children_list productCategoryId = productCategory.id recursive = false]
+                                                    [#list productCategories as productCategory]
+                                                        <dd>
+                                                            <a href="${base}${productCategory.path}">${productCategory.name}</a>[#if productCategory_has_next]
+                                                            |[/#if]
+                                                        </dd>
+                                                    [/#list]
+                                                [/@product_category_children_list]
+                                            </dl>
+                                        [/#list]
+                                        <div class="auxiliary">
+                                            [@brand_list productCategoryId = productCategory.id count = 8]
+                                                [#if brands?has_content]
+                                                    <div>
+                                                        <strong>${message("shop.index.recommendBrand")}</strong>
+                                                        [#list brands as brand]
+                                                            <a href="${base}${brand.path}">${brand.name}</a>
+                                                        [/#list]
+                                                    </div>
+                                                [/#if]
+                                            [/@brand_list]
+                                            [@promotion_list productCategoryId = productCategory.id hasEnded = false count = 4]
+                                                [#if promotions?has_content]
+                                                    <div>
+                                                        <strong>${message("shop.index.hotPromotion")}</strong>
+                                                        [#list promotions as promotion]
+                                                            [#if promotion.image?has_content]
+                                                                <a href="${base}${promotion.path}"
+                                                                   title="${promotion.title}">
+                                                                    <img src="${promotion.image}" alt="${promotion.title}"/>
+                                                                </a>
+                                                            [/#if]
+                                                        [/#list]
+                                                    </div>
+                                                [/#if]
+                                            [/@promotion_list]
+                                        </div>
+                                    </div>
+                                [/@product_category_children_list]
+                            </li>
+                        [/#list]
+                    </ul>
+                </div>
+            [/@product_category_root_list]
         </div>
         <div class="span10">
-        [@ad_position orders = "1"]
-			[#noautoesc]
-		        ${adPosition.resolveTemplate()}
-		    [/#noautoesc]
-		[/@ad_position]
+            [@ad_position orders="1"]
+                [#noautoesc]
+                    ${adPosition.resolveTemplate()}
+                [/#noautoesc]
+            [/@ad_position]
         </div>
     </div>
     <div class="row">
         <div class="span9">
-       		[@ad_position orders = "2"]
-				[#noautoesc]
-		        	${adPosition.resolveTemplate()}
-		        [/#noautoesc]
-			[/@ad_position]
+            [@ad_position orders="2"]
+                [#noautoesc]
+                    ${adPosition.resolveTemplate()}
+                [/#noautoesc]
+            [/@ad_position]
         </div>
         <div class="span3">
-        [@article_category_root_list count = 2]
-            [#if articleCategories?has_content]
-                <div id="newArticle" class="newArticle">
-                    <ul class="tab">
+            [@article_category_root_list count=2]
+                [#if articleCategories?has_content]
+                    <div id="newArticle" class="newArticle">
+                        <ul class="tab">
+                            [#list articleCategories as articleCategory]
+                                <li>
+                                    <a href="${base}${articleCategory.path}" target="_blank">${articleCategory.name}</a>
+                                </li>
+                            [/#list]
+                        </ul>
                         [#list articleCategories as articleCategory]
-                            <li>
-                                <a href="${base}${articleCategory.path}" target="_blank">${articleCategory.name}</a>
-                            </li>
+                            [@article_list articleCategoryId = articleCategory.id count = 6]
+                                <ul class="tabContent[#if articleCategory_index > 0] hidden[/#if]">
+                                    [#list articles as article]
+                                        <li>
+                                            <a href="${base}${article.path}" title="${article.title}"
+                                               target="_blank">${abbreviate(article.title, 40)}</a>
+                                        </li>
+                                    [/#list]
+                                </ul>
+                            [/@article_list]
                         [/#list]
-                    </ul>
-                    [#list articleCategories as articleCategory]
-                        [@article_list articleCategoryId = articleCategory.id count = 6]
-                            <ul class="tabContent[#if articleCategory_index > 0] hidden[/#if]">
-                                [#list articles as article]
-                                    <li>
-                                        <a href="${base}${article.path}" title="${article.title}"
-                                           target="_blank">${abbreviate(article.title, 40)}</a>
-                                    </li>
-                                [/#list]
-                            </ul>
-                        [/@article_list]
-                    [/#list]
-                </div>
-            [/#if]
-        [/@article_category_root_list]
+                    </div>
+                [/#if]
+            [/@article_category_root_list]
         </div>
     </div>
     <div class="row">
         <div class="span12">
-        [@ad_position orders = "3"]
-					[#noautoesc]
-        ${adPosition.resolveTemplate()}
-        [/#noautoesc]
-				[/@ad_position]
+            [@ad_position orders = "3"]
+                [#noautoesc]
+                    ${adPosition.resolveTemplate()}
+                [/#noautoesc]
+            [/@ad_position]
         </div>
     </div>
-[@product_category_root_list count = 3]
-    [@ad_position orders = "4"]
-        [#if adPosition??]
-            [#assign adIterator = adPosition.ads.iterator() /]
-        [/#if]
-    [/@ad_position]
-    [#list productCategories as productCategory]
-        [@product_list productCategoryId = productCategory.id productTagId = 1 count = 10]
-            <div class="row">
-                <div class="span12">
-                    <div class="hotProduct">
-                        [@product_category_children_list productCategoryId = productCategory.id recursive = false count = 8]
-                            <dl class="title${productCategory_index + 1}">
-                                <dt>
-                                    <a href="${base}${productCategory.path}">${productCategory.name}</a>
-                                </dt>
-                                [#list productCategories as productCategory]
-                                    <dd>
+    [@product_category_root_list count = 3]
+        [@ad_position orders="4"]
+            [#if adPosition??]
+                [#assign adIterator = adPosition.ads.iterator() /]
+            [/#if]
+        [/@ad_position]
+        [#list productCategories as productCategory]
+            [@product_list productCategoryId = productCategory.id productTagId = 1 count = 10]
+                <div class="row">
+                    <div class="span12">
+                        <div class="hotProduct">
+                            [@product_category_children_list productCategoryId = productCategory.id recursive = false count = 8]
+                                <dl class="title${productCategory_index + 1}">
+                                    <dt>
                                         <a href="${base}${productCategory.path}">${productCategory.name}</a>
-                                    </dd>
-                                [/#list]
-                            </dl>
-                        [/@product_category_children_list]
-                        <div>
-                            [#if adIterator?? && adIterator.hasNext()]
-                                [#assign ad = adIterator.next() /]
-                                [#if ad.type == "image" && ad.hasBegun() && !ad.hasEnded()]
-                                    [#if ad.url??]
-                                        <a href="${ad.url}">
+                                    </dt>
+                                    [#list productCategories as productCategory]
+                                        <dd>
+                                            <a href="${base}${productCategory.path}">${productCategory.name}</a>
+                                        </dd>
+                                    [/#list]
+                                </dl>
+                            [/@product_category_children_list]
+                            <div>
+                                [#if adIterator?? && adIterator.hasNext()]
+                                    [#assign ad = adIterator.next() /]
+                                    [#if ad.type == "image" && ad.hasBegun() && !ad.hasEnded()]
+                                        [#if ad.url??]
+                                            <a href="${ad.url}">
+                                                <img src="${ad.path}" alt="${ad.title}" title="${ad.title}"/>
+                                            </a>
+                                        [#else]
                                             <img src="${ad.path}" alt="${ad.title}" title="${ad.title}"/>
-                                        </a>
-                                    [#else]
-                                        <img src="${ad.path}" alt="${ad.title}" title="${ad.title}"/>
+                                        [/#if]
                                     [/#if]
                                 [/#if]
-                            [/#if]
-                        </div>
-                        <ul>
-                            [#list products as product]
-                                [#if product_index < 5]
-                                    <li>
-                                        <a href="${base}${product.path}" title="${product.name}" target="_blank">
-                                            <div>
-                                                [#if product.caption?has_content]
-                                                    <span title="${product.name}">${abbreviate(product.name, 24)}</span>
-                                                    <em title="${product.caption}">${abbreviate(product.caption, 24)}</em>
+                            </div>
+                            <ul>
+                                [#list products as product]
+                                    [#if product_index < 5]
+                                        <li>
+                                            <a href="${base}${product.path}" title="${product.name}" target="_blank">
+                                                <div>
+                                                    [#if product.caption?has_content]
+                                                        <span title="${product.name}">${abbreviate(product.name, 24)}</span>
+                                                        <em title="${product.caption}">${abbreviate(product.caption, 24)}</em>
+                                                    [#else]
+                                                        ${abbreviate(product.name, 48)}
+                                                    [/#if]
+                                                </div>
+                                                [#if currentUser == null]
+                                                    [#list product.productGrades as pg]
+                                                        [#if pg.grade.isDefault == true]
+                                                            <strong>${currency(pg.price, true)}</strong>
+                                                        [/#if]
+                                                    [/#list]
                                                 [#else]
-                                                ${abbreviate(product.name, 48)}
+                                                    [#list product.productGrades as pg]
+                                                        [#if pg.grade.id == currentUser.memberRank.id]
+                                                            <strong>${currency(pg.price, true)}</strong>
+                                                        [/#if]
+                                                    [/#list]
                                                 [/#if]
-                                            </div>
-                                            [#if currentUser == null]
-                                                [#list product.productGrades as pg]
-                                                    [#if pg.grade.isDefault == true]
-                                                        <strong>${currency(pg.price, true)}</strong>
-                                                    [/#if]
-                                                [/#list]
-                                            [#else]
-                                                [#list product.productGrades as pg]
-                                                    [#if pg.grade.id == currentUser.memberRank.id]
-                                                        <strong>${currency(pg.price, true)}</strong>
-                                                    [/#if]
-                                                [/#list]
-                                            [/#if]
-                                            <!-- 券 -->
-                                            [#if currentUser == null]
+                                                <!-- 券 -->
+                                                [#if currentUser == null]
 
-                                            [#else]
-                                                [#list product.productGrades as pg]
-                                                    [#if pg.grade.id == currentUser.memberRank.id]
-                                                        <strong style="color: #ff7700;margin-left: 5px">${message("shop.index.coupon")}${pg.coupon}</strong>
-                                                    [/#if]
-                                                [/#list]
-                                                </dl>
-                                            [/#if]
-                                            <img src="${base}/upload/image/blank.gif"
-                                                 data-original="${product.image!setting.defaultThumbnailProductImage}"/>
-                                        </a>
-                                    </li>
-                                [#else]
-                                    <li class="low">
-                                        <a href="${base}${product.path}" title="${product.name}" target="_blank">
-                                            <img src="${base}/upload/image/blank.gif"
-                                                 data-original="${product.image!setting.defaultThumbnailProductImage}"/>
-                                            <span title="${product.name}">${abbreviate(product.name, 24)}</span>
-                                            [#if currentUser == null]
-                                                [#list product.productGrades as pg]
-                                                    [#if pg.grade.isDefault == true]
-                                                        <strong>${currency(pg.price, true)}</strong>
-                                                    [/#if]
-                                                [/#list]
-                                            [#else]
-                                                [#list product.productGrades as pg]
-                                                    [#if pg.grade.id == currentUser.memberRank.id]
-                                                        <strong>${currency(pg.price, true)}</strong>
-                                                    [/#if]
-                                                [/#list]
-                                            [/#if]
-                                            <!-- 券 -->
-                                            [#if currentUser == null]
-                                            [#else]
-                                                [#list product.productGrades as pg]
-                                                    [#if pg.grade.id == currentUser.memberRank.id]
-                                                        <em>${message("shop.index.coupon")}${pg.coupon}</em>
-                                                    [/#if]
-                                                [/#list]
-                                            [/#if]
-                                        </a>
-                                    </li>
-                                [/#if]
+                                                [#else]
+                                                    [#list product.productGrades as pg]
+                                                        [#if pg.grade.id == currentUser.memberRank.id]
+                                                            <strong style="color: #ff7700;margin-left: 5px">${message("shop.index.coupon")}${pg.coupon}</strong>
+                                                        [/#if]
+                                                    [/#list]
+                                                    </dl>
+                                                [/#if]
+                                                <img src="${base}/upload/image/blank.gif"
+                                                     data-original="${product.image!setting.defaultThumbnailProductImage}"/>
+                                            </a>
+                                        </li>
+                                    [#else]
+                                        <li class="low">
+                                            <a href="${base}${product.path}" title="${product.name}" target="_blank">
+                                                <img src="${base}/upload/image/blank.gif"
+                                                     data-original="${product.image!setting.defaultThumbnailProductImage}"/>
+                                                <span title="${product.name}">${abbreviate(product.name, 24)}</span>
+                                                [#if currentUser == null]
+                                                    [#list product.productGrades as pg]
+                                                        [#if pg.grade.isDefault == true]
+                                                            <strong>${currency(pg.price, true)}</strong>
+                                                        [/#if]
+                                                    [/#list]
+                                                [#else]
+                                                    [#list product.productGrades as pg]
+                                                        [#if pg.grade.id == currentUser.memberRank.id]
+                                                            <strong>${currency(pg.price, true)}</strong>
+                                                        [/#if]
+                                                    [/#list]
+                                                [/#if]
+                                                <!-- 券 -->
+                                                [#if currentUser == null]
+                                                [#else]
+                                                    [#list product.productGrades as pg]
+                                                        [#if pg.grade.id == currentUser.memberRank.id]
+                                                            <em>${message("shop.index.coupon")}${pg.coupon}</em>
+                                                        [/#if]
+                                                    [/#list]
+                                                [/#if]
+                                            </a>
+                                        </li>
+                                    [/#if]
+                                [/#list]
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            [/@product_list]
+        [/#list]
+    [/@product_category_root_list]
+    <div class="row">
+        <div class="span12">
+            [@ad_position orders="5"]
+                [#noautoesc]
+                    ${adPosition.resolveTemplate()}
+                [/#noautoesc]
+            [/@ad_position]
+        </div>
+    </div>
+    <div class="row">
+        <div class="span12">
+            [@brand_list type = "image" count = 9]
+                [#if brands?has_content]
+                    <div class="hotBrand">
+                        <ul class="clearfix">
+                            [#list brands as brand]
+                                <li>
+                                    <a href="${base}${brand.path}" title="${brand.name}">
+                                        <img src="${brand.logo}" alt="${brand.name}"/>
+                                    </a>
+                                </li>
                             [/#list]
                         </ul>
                     </div>
-                </div>
-            </div>
-        [/@product_list]
-    [/#list]
-[/@product_category_root_list]
-    <div class="row">
-        <div class="span12">
-        [@ad_position orders = "5"]
-					[#noautoesc]
-        ${adPosition.resolveTemplate()}
-        [/#noautoesc]
-				[/@ad_position]
-        </div>
-    </div>
-    <div class="row">
-        <div class="span12">
-        [@brand_list type = "image" count = 9]
-            [#if brands?has_content]
-                <div class="hotBrand">
-                    <ul class="clearfix">
-                        [#list brands as brand]
-                            <li>
-                                <a href="${base}${brand.path}" title="${brand.name}">
-                                    <img src="${brand.logo}" alt="${brand.name}"/>
-                                </a>
-                            </li>
-                        [/#list]
-                    </ul>
-                </div>
-            [/#if]
-        [/@brand_list]
+                [/#if]
+            [/@brand_list]
         </div>
     </div>
 </div>

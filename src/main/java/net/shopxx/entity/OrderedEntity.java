@@ -1,8 +1,3 @@
-/*
- * Copyright 2005-2017 shopxx.net. All rights reserved.
- * Support: http://www.shopxx.net
- * License: http://www.shopxx.net/license
- */
 package net.shopxx.entity;
 
 import java.io.Serializable;
@@ -75,5 +70,4 @@ public abstract class OrderedEntity<ID extends Serializable> extends BaseEntity<
 		}
 		return new CompareToBuilder().append(getOrder(), orderEntity.getOrder()).append(getId(), orderEntity.getId()).toComparison();
 	}
-
 }

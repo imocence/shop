@@ -1,8 +1,3 @@
-/*
- * Copyright 2005-2017 shopxx.net. All rights reserved.
- * Support: http://www.shopxx.net
- * License: http://www.shopxx.net/license
- */
 package net.shopxx.controller.shop;
 
 import org.springframework.stereotype.Controller;
@@ -31,5 +26,4 @@ public class IndexController extends BaseController {
 	    model.addAttribute("currentUser", currentUser);
 		return "shop/index";
 	}
-
 }

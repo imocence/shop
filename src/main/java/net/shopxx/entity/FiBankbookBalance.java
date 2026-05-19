@@ -60,10 +60,7 @@ public class FiBankbookBalance extends BaseEntity<Long> {
 	private Type type;
 	
 	/**
-
-	 * 获取会员
-	 * 
-	 * @return 会员
+	 * 国家实体
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="country", referencedColumnName="name_cn")

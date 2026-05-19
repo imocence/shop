@@ -1,20 +1,15 @@
 package net.shopxx.entity;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * 国家实体
- * 
+ *
  * @author Fred.xu
  * @version v0.0.1: Country.java, v 0.1 2017年8月23日 下午1:51:13 Fred.xu Exp $
  */
@@ -22,17 +17,17 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class Country extends OrderedEntity<Long> {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	/**
+    /**
      * 名称
      */
     @NotEmpty
     @Length(max = 200)
     @Column(name = "name_cn", nullable = false)
-    private String    name;
+    private String name;
 
     /**
      * 本地名称
@@ -40,13 +35,13 @@ public class Country extends OrderedEntity<Long> {
     @NotEmpty
     @Length(max = 200)
     @Column(name = "name_local", nullable = false)
-    private String    nameLocal;
+    private String nameLocal;
 
     /**
      * 名称
      */
     @Column(nullable = false)
-    private Integer   state;
+    private Integer state;
 
     /**
      * 下级地区
@@ -54,21 +49,21 @@ public class Country extends OrderedEntity<Long> {
     @OneToMany(mappedBy = "country", fetch = FetchType.EAGER)
     @OrderBy("order asc")
     private Set<Area> areas = new HashSet<>();
-    
+
     /**
      * 下级地区
      */
     @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
     @OrderBy("order asc")
     private Set<ProductCategory> productCategories = new HashSet<>();
-    
-    
+
+
     /**
      * 等级
      */
     @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
     private Set<MemberRank> grades = new HashSet<>();
-    
+
     /**
      * 下级地品牌
      */
@@ -123,6 +118,4 @@ public class Country extends OrderedEntity<Long> {
     public void setGrades(Set<MemberRank> grades) {
         this.grades = grades;
     }
-
-    
 }

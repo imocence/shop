@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class LanguageController {
 	
 	/**
-	 * "code
+	 * code
 	 */
 	public static final String CODE = "languageCode";
 	
